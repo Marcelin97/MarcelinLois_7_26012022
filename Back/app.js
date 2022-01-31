@@ -5,7 +5,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 // Envoi le contenu du fichier .env dans l'object process.env
-require("dotenv").config();
+// require("dotenv").config();
 
 // // j'importe ma BDD
 // require("./config/db.config");
