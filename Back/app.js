@@ -14,7 +14,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 
 // // J'importe mes routes qui sont mtn dans mon index.js
-// const router = require("./app/routes/index");
+const router = require("./app/routes/index");
 
 const hateoasLinker = require("express-hateoas-links");
 
@@ -57,7 +57,7 @@ app.use(bodyParser.json())
 app.use(hateoasLinker);
 
 // // On applique nos routes à notre app.
-// app.use("/api", router);
+app.use("/api", router);
 
 // // Serve static files
 // app.use("/images/", express.static(path.join(__dirname, "images")));
