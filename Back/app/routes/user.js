@@ -7,7 +7,7 @@ const router = express.Router();
 //ici je vais récupéré mes middlewares à appliqué sur mes routes user
 
 router.get('/', function (req, res, next) {
-    res.send('respond with a ressource');
+    res.send('respond with a ressource !');
 });
 //=================================>
 /////////////////// SIGNUP
