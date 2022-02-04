@@ -5,16 +5,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 // Envoi le contenu du fichier .env dans l'object process.env
-// require("dotenv").config();
-
-// // j'importe ma BDD
-// require("./config/db.config");
+require("dotenv").config();
 
 // Accéder au path de notre serveur
 const path = require("path");
 
-// // J'importe mes routes qui sont mtn dans mon index.js
-// const router = require("./app/routes/index");
+// J'importe mes routes qui sont mtn dans mon index.js
+const router = require("./app/routes/index");
 
 const hateoasLinker = require("express-hateoas-links");
 
@@ -56,11 +53,11 @@ app.use(bodyParser.json())
 // replace standard express res.json with the new version
 app.use(hateoasLinker);
 
-// // On applique nos routes à notre app.
-// app.use("/api", router);
+// On applique nos routes à notre app.
+app.use("/api", router);
 
-// // Serve static files
-// app.use("/images/", express.static(path.join(__dirname, "images")));
+// Serve static files
+app.use("/images/", express.static(path.join(__dirname, "images")));
 
 //=================================>
 ///////// Express Session Middleware
