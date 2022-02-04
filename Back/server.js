@@ -1,4 +1,5 @@
 const http = require('http');
+const db = require('./app/models')
 
 // on importe notre application, pour importé le app.js qui est dans le même dossier.
 const app = require('./app');
@@ -42,6 +43,11 @@ const errorHandler = (error) => {
       throw error;
   }
 };
+
+// mettre force sur false une fois que j'ai fini les models pour évité que cela écrase mes données à chaque fois.
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
+});
 
 //on passe à notre serveur notre application.
 const server = http.createServer(app);

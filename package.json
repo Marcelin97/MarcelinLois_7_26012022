@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "bunyan": "^1.8.15",
-    "dotenv": "^16.0.0",
-    "mysql2": "^2.3.3",
-    "sequelize": "^6.15.0"
-  }
-}

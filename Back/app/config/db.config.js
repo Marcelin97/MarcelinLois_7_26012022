@@ -1,4 +1,3 @@
-// const Sequelize = require("sequelize");
 // require("dotenv").config();
 // const bunyan = require("bunyan");
 
@@ -26,11 +25,6 @@
 //   ]
 // });
 
-let host = process.env.MYSQL_HOST || "localhost";
-let database = process.env.MYSQL_DATABASE || "groupomania";
-let username = process.env.MYSQL_USERNAME || "root";
-let password = process.env.MYSQL_PASSWORD;
-let port = process.env.MYSQL_PORT || 3306;
 
 // const sequelize = new Sequelize(database, username, password, {
 //   host: host,
@@ -38,17 +32,6 @@ let port = process.env.MYSQL_PORT || 3306;
 //   dialect: "mysql",
 //   logging: log.debug.bind(log) // Alternative way to use custom logger, displays all messages
 // });
-
-// try {
-//   (async () => {
-//     await sequelize.authenticate();
-//   })().catch(err => {
-//     console.log(err);
-//   });
-//   console.log("connection has established");
-// } catch (error) {
-//   console.log("Unable to connect", error);
-// }
 
 module.exports = {
   HOST: process.env.MYSQL_HOST || "localhost",

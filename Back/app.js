@@ -7,9 +7,6 @@ const bodyParser = require("body-parser");
 // Envoi le contenu du fichier .env dans l'object process.env
 require("dotenv").config();
 
-// j'importe ma BDD
-require("./config/db.config");
-
 // Accéder au path de notre serveur
 const path = require("path");
 
