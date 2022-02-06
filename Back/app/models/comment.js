@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Post = sequelize.define("post", {
+  const Comment = sequelize.define("comment", {
     title: {
       type: Sequelize.STRING,
       unique: false,
@@ -51,5 +51,5 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: 0
     }
   });
-  return Post;
+  return Comment;
 };
