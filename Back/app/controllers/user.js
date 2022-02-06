@@ -1,9 +1,26 @@
 //on a besoin de notre model users
-const User = require("../models/user");
-
-// package de cryptage du MDP
-const bcrypt = require("bcrypt");
+// const User = require("../models/user");
+const db = require("../models");
+const User = db.user;
+const Op = db.Sequelize.Op;
+// // package de cryptage du MDP
+// const bcrypt = require("bcrypt");
 
 exports.signup = (req, res, next) => {
-    console.log('Test signup');
+  console.log("Test signup");
+  res.send({ message: "Login successfully!" });
 };
+
+exports.login = (req, res, next) => {
+  console.log("Test");
+  res.send({ message: "Login successfully!" });
+};
+
+// Retrieve all Users from the database.
+exports.findAll = (req, res) => {};
+// Find a single User with an id
+exports.findOne = (req, res) => {};
+// Update a User by the id in the request
+exports.update = (req, res) => {};
+// Delete a User with the specified id in the request
+exports.delete = (req, res) => {};

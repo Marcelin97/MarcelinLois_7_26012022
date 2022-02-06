@@ -1,36 +1,35 @@
-
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
   const User = sequelize.define("user", {
     name: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       required: true,
     },
     username: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       required: true,
     },
     gender: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       enum: ["MALE", "FEMALE", "UNSPECIFIED", "NULL"],
       default: "NULL"
     },
     email: {
-      type: DataTypes.STRING(50),
+      type: Sequelize.STRING(50),
       trim: true,
       unique: true,
     },
     password: {
-      type: DataTypes.STRING(),
+      type: Sequelize.STRING(),
     },
     birthday: {
-      type: DataTypes.DATE,
+      type: Sequelize.DATE,
     },
     avatarURL: {
-      type: DataTypes.STRING(),
+      type: Sequelize.STRING(),
       default: `${process.env.ASSET_DIR}/blank-profile-picture-g3c1a4a1bf_1280.png`
     },
     isAdmin: {
-    type: DataTypes.ENUM(['user', 'admin']),
+    type: Sequelize.ENUM(['user', 'admin']),
     unique: false,
     defaultValue: 'user',
     },
