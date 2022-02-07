@@ -1,38 +1,46 @@
 module.exports = (sequelize, Sequelize) => {
   const User = sequelize.define("user", {
-    name: {
+    firstName: {
       type: Sequelize.STRING,
-      required: true,
+      required: true
+    },
+    lastName: {
+      type: Sequelize.STRING,
+      required: true
     },
     username: {
       type: Sequelize.STRING,
-      required: true,
-    },
-    gender: {
-      type: Sequelize.STRING,
-      enum: ["MALE", "FEMALE", "UNSPECIFIED", "NULL"],
-      default: "NULL"
+      required: true
     },
     email: {
       type: Sequelize.STRING(50),
       trim: true,
-      unique: true,
+      unique: true
     },
     password: {
-      type: Sequelize.STRING(),
+      type: Sequelize.STRING()
     },
     birthday: {
-      type: Sequelize.DATE,
+      type: Sequelize.DATE
     },
     avatarURL: {
       type: Sequelize.STRING(),
       default: `${process.env.ASSET_DIR}/blank-profile-picture-g3c1a4a1bf_1280.png`
     },
-    isAdmin: {
-    type: Sequelize.ENUM(['user', 'admin']),
-    unique: false,
-    defaultValue: 'user',
-    },
+    roles: {
+      type: Sequelize.ENUM(["user", "admin"]),
+      unique: false,
+      defaultValue: "user"
+    }
   });
+
+  User.associate = models => {
+    User.hasMany(models.comment, {
+      as: "comments"
+    });
+    User.hasMany(models.post, {
+      as: "posts"
+    });
+  };
   return User;
 };

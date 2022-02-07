@@ -8,15 +8,6 @@ module.exports = (sequelize, Sequelize) => {
         len: [5, 255]
       }
     },
-    createdAt: {
-      type: Date,
-      default: Date.now()
-    },
-    createdBy: {
-      type: Sequelize.STRING,
-      ref: "User",
-      required: true
-    },
     imageUrl: {
       type: Sequelize.STRING,
       required: false,
@@ -44,12 +35,15 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false
       //   defaultValue: 0,
     },
-    comments: {
-      type: Sequelize.INTEGER,
-      unique: false,
-      allowNull: false,
-      defaultValue: 0
-    }
   });
+  Post.associate = models => {
+    Post.belongsTo(models.user, {
+      foreignKey: "userId",
+      as: "user"
+    });
+    Post.hasMany(models.comment, {
+      as: "comments"
+    });
+  };
   return Post;
 };

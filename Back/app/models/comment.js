@@ -1,22 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
   const Comment = sequelize.define("comment", {
-    title: {
-      type: Sequelize.STRING,
-      unique: false,
-      allowNull: false,
-      validate: {
-        len: [5, 255]
-      }
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now()
-    },
-    createdBy: {
-      type: Sequelize.STRING,
-      ref: "User",
-      required: true
-    },
     imageUrl: {
       type: Sequelize.STRING,
       required: false,
@@ -27,10 +10,10 @@ module.exports = (sequelize, Sequelize) => {
       unique: false,
       required: false,
       default: "",
-      allowNull: false,
-      validate: {
-        len: [20, 5000]
-      }
+      allowNull: false
+      //   validate: {
+      //     len: [20, 5000]
+      //   }
     },
     upVotes: {
       type: Sequelize.INTEGER,
@@ -51,5 +34,19 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: 0
     }
   });
+
+  Comment.associate = models => {
+    Comment.belongsTo(models.user, {
+      foreignKey: "userId",
+      as: "user"
+    });
+    Comment.belongsTo(models.post, {
+      foreignKey: "postId",
+      as: "post"
+    });
+    Comment.hasMany(models.comment, {
+      as: "reply"
+    });  
+  };
   return Comment;
 };
