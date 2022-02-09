@@ -48,6 +48,6 @@ module.exports = (sequelize, Sequelize) => {
       as: "reply",
     });
   };
-  
+
   return Comment;
 };

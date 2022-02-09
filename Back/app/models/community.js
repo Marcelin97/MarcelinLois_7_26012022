@@ -23,15 +23,14 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-    Community.associate = (models) => {
-        Community.hasMany(models.post, {
-            as: "posts"
-        });
-        Community.hasMany(models.comment, {
-          as: "comments",
-        });
+  Community.associate = (models) => {
+    Community.hasMany(models.post, {
+      as: "posts",
+    });
+    Community.hasMany(models.user, {
+      as: "users",
+    });
+  };
 
-    }
-    
   return Community;
 };
