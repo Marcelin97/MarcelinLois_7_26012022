@@ -8,7 +8,7 @@ const Op = db.Sequelize.Op;
 
 exports.signup = (req, res, next) => {
   console.log("Test signup");
-  res.send({ message: "Login successfully!" });
+  res.send({ message: "Signup successfully!" });
 };
 
 exports.login = (req, res, next) => {
