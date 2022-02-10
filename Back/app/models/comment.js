@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     imageUrl: {
       type: Sequelize.STRING,
       required: false,
-      default: "",
+      default: ""
     },
     content: {
       type: Sequelize.TEXT,
@@ -12,40 +12,40 @@ module.exports = (sequelize, Sequelize) => {
       default: "",
       allowNull: false,
       validate: {
-        len: [20, 5000],
-      },
+        len: [20, 5000]
+      }
     },
     upVotes: {
       type: Sequelize.INTEGER,
       unique: false,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 0
     },
     downVotes: {
       type: Sequelize.INTEGER,
       unique: false,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 0
     },
     comments: {
       type: Sequelize.INTEGER,
       unique: false,
       allowNull: false,
-      defaultValue: 0,
-    },
+      defaultValue: 0
+    }
   });
 
-  Comment.associate = (models) => {
+  Comment.associate = models => {
     Comment.belongsTo(models.user, {
       foreignKey: "userId",
-      as: "user",
+      as: "user"
     });
     Comment.belongsTo(models.post, {
       foreignKey: "postId",
-      as: "post",
+      as: "post"
     });
     Comment.hasMany(models.comment, {
-      as: "reply",
+      as: "reply"
     });
   };
 

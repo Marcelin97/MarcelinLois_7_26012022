@@ -5,31 +5,38 @@ module.exports = (sequelize, Sequelize) => {
       required: true,
       allowNull: false,
       validate: {
-        len: [3, 255],
-      },
+        len: [3, 255]
+      }
     },
     about: {
       type: Sequelize.TEXT,
-      unique: false,
+      unique: false
     },
     icon: {
       type: Sequelize.STRING,
-      unique: false,
+      unique: false
     },
     active: {
       type: Sequelize.BOOLEAN,
       require: false,
-      default: true,
-    },
+      default: true
+    }
   });
 
-  Community.associate = (models) => {
+  Community.associate = models => {
     Community.hasMany(models.post, {
-      as: "posts",
+      as: "posts"
     });
     Community.hasMany(models.user, {
-      as: "users",
+      as: "users"
     });
+    Community.hasOne(models.moderator, {
+      as: "moderators"
+    });
+
+    // Many to Many associations
+    Community.belongsToMany(models.user, { through: "CommunityUsers" });
+    Community.belongsToMany(models.user, { through: "followers" });
   };
 
   return Community;
