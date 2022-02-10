@@ -3,38 +3,38 @@ module.exports = (sequelize, Sequelize) => {
     title: {
       type: Sequelize.STRING,
       unique: false,
-      allowNull: false,
+      allowNull: false, //THIS COLUMN CANNOT BE EMPTY
       validate: {
-        len: [5, 255]
-      }
+        len: [5, 255],
+      },
     },
     imageUrl: {
       type: Sequelize.STRING,
       required: false,
-      default: ""
+      default: "",
     },
     content: {
       type: Sequelize.TEXT,
       unique: false,
       required: false,
       default: "",
-      allowNull: false,
+      allowNull: false, 
       validate: {
-        len: [20, 5000]
-      }
+        len: [20, 5000],
+      },
     },
     upVotes: {
       type: Sequelize.INTEGER,
       unique: false,
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
     },
     downVotes: {
       type: Sequelize.INTEGER,
       unique: false,
       allowNull: false,
-      defaultValue: 0
-    }
+      defaultValue: 0,
+    },
   });
 
   Post.associate = models => {
@@ -44,6 +44,9 @@ module.exports = (sequelize, Sequelize) => {
     });
     Post.hasMany(models.comment, {
       as: "comments"
+    });
+    Post.hasMany(models.like, {
+      as: "likes",
     });
   };
 

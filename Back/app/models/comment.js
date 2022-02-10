@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
       default: "",
       allowNull: false,
       validate: {
-        len: [20, 5000]
+        len: [1, 1000]
       }
     },
     upVotes: {
@@ -28,10 +28,9 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: 0
     },
     comments: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.TEXT,
       unique: false,
       allowNull: false,
-      defaultValue: 0
     }
   });
 

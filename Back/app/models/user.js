@@ -49,6 +49,17 @@ module.exports = (sequelize, Sequelize) => {
     //   foreignKey: "communityId",
     //   as: "community",
     // });
+    User.hasMany(models.like, {
+      as: "likes",
+    });
+    User.hasMany(models.messagePrivate, {
+      // as: "messagesPrivate",
+      foreignKey: "fromUserId",
+    });
+    User.hasMany(models.messagePrivate, {
+      // as: "messagesPrivate",
+      foreignKey: "toUserId",
+    });
 
     // Many to Many associations
     User.belongsToMany(models.community, { through: "CommunityUsers" });
