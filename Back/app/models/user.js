@@ -49,34 +49,33 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  User.associate = models => {
+  // Sequelize associations
+  User.associate = (models) => {
     User.hasMany(models.comment, {
-      as: "comments"
+      as: "comments",
     });
     User.hasMany(models.post, {
-      as: "posts"
+      as: "posts",
     });
     User.hasMany(models.moderator, {
-      as: "moderators"
+      as: "moderators",
     });
     // User.belongsTo(models.community, {
     //   foreignKey: "communityId",
     //   as: "community",
     // });
-    User.hasMany(models.like, {
-      as: "likes",
+    User.hasMany(models.likePost, {
+      as: "likePosts",
     });
     User.hasMany(models.messagePrivate, {
-      // as: "messagesPrivate",
       foreignKey: "fromUserId",
     });
     User.hasMany(models.messagePrivate, {
-      // as: "messagesPrivate",
       foreignKey: "toUserId",
     });
 
     // Many to Many associations
-    User.belongsToMany(models.community, { through: "CommunityUsers" });
+    User.belongsToMany(models.community, { through: "Community_users" });
     User.belongsToMany(models.community, { through: "followers" });
   };
 

@@ -26,15 +26,12 @@ module.exports = (sequelize, Sequelize) => {
       unique: false,
       allowNull: false,
       defaultValue: 0
-    },
-    comments: {
-      type: Sequelize.TEXT,
-      unique: false,
-      allowNull: false,
     }
   });
 
+  // Sequelize associations
   Comment.associate = models => {
+    // is linked to
     Comment.belongsTo(models.user, {
       foreignKey: "userId",
       as: "user"
@@ -43,8 +40,19 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: "postId",
       as: "post"
     });
+
+    // boucle commentaire d'un commentaire
+    Comment.belongsTo(models.comment, {
+      foreignKey: "commentId",
+      as: "commentParent"
+    });
     Comment.hasMany(models.comment, {
       as: "reply"
+    });
+
+    // like a comment
+    Comment.hasMany(models.likeComment, {
+      as: "likeComment"
     });
   };
 

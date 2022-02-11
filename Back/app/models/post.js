@@ -18,35 +18,31 @@ module.exports = (sequelize, Sequelize) => {
       unique: false,
       required: false,
       default: "",
-      allowNull: false, 
+      allowNull: false,
       validate: {
         len: [20, 5000],
       },
     },
-    upVotes: {
-      type: Sequelize.INTEGER,
+    read: {
+      type: Sequelize.BOOLEAN,
       unique: false,
       allowNull: false,
-      defaultValue: 0,
-    },
-    downVotes: {
-      type: Sequelize.INTEGER,
-      unique: false,
-      allowNull: false,
-      defaultValue: 0,
+      defaultValue: false,
     },
   });
 
-  Post.associate = models => {
+  // Sequelize associations
+  Post.associate = (models) => {
+    // is linked to
     Post.belongsTo(models.user, {
       foreignKey: "userId",
-      as: "user"
+      as: "user",
     });
     Post.hasMany(models.comment, {
-      as: "comments"
+      as: "comments",
     });
-    Post.hasMany(models.like, {
-      as: "likes",
+    Post.hasMany(models.likePost, {
+      as: "likePosts",
     });
   };
 

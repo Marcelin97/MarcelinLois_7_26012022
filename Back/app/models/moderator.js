@@ -3,11 +3,13 @@ module.exports = (sequelize, Sequelize) => {
     isAdmin: {
       type: Sequelize.BOOLEAN,
       unique: false,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   });
 
-  Moderator.associate = models => {
+  // Sequelize associations
+  Moderator.associate = (models) => {
+    // is linked to
     Moderator.belongsTo(models.community);
     Moderator.belongsTo(models.user);
   };

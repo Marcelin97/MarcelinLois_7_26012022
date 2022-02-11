@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Like = sequelize.define("like", {
+  const LikePost = sequelize.define("likePost", {
     upVotes: {
       type: Sequelize.INTEGER,
       unique: false,
@@ -14,16 +14,18 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  Like.associate = (models) => {
-      Like.belongsTo(models.post, {
-        foreignKey: "postId",
-        as: "post",
-      });
-    Like.belongsTo(models.user, {
+  // Sequelize associations
+  LikePost.associate = (models) => {
+    // is linked to
+    LikePost.belongsTo(models.post, {
+      foreignKey: "postId",
+      as: "post",
+    });
+    LikePost.belongsTo(models.user, {
       foreignKey: "userId",
       as: "user",
     });
   };
 
-  return Like;
+  return LikePost;
 };
