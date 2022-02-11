@@ -2,37 +2,51 @@ module.exports = (sequelize, Sequelize) => {
   const User = sequelize.define("user", {
     firstName: {
       type: Sequelize.STRING,
-      required: true
+      required: true,
     },
     lastName: {
       type: Sequelize.STRING,
-      required: true
+      required: true,
     },
     username: {
       type: Sequelize.STRING,
-      required: true
+      required: true,
     },
     email: {
       type: Sequelize.STRING(50),
       trim: true,
-      unique: true
+      unique: true,
+      len: [5, 60],
+      allowNull: false,
+      validate: {
+        isEmail: { msg: "Please enter a valid email addresss" },
+      },
+      isEmail: true,
     },
     password: {
-      type: Sequelize.STRING()
+      type: Sequelize.STRING(255),
+      allowNull: false,
+      validate: {
+        isLongEnough: function (val) {
+          if (val.length < 8) {
+            throw new Error("Please choose a longer password");
+          }
+        },
+      },
     },
     birthday: {
       type: Sequelize.DATE,
-      defaultValue: Sequelize.NOW
+      defaultValue: Sequelize.NOW,
     },
     avatarURL: {
       type: Sequelize.STRING(),
-      default: `${process.env.ASSET_DIR}/blank-profile-picture-g3c1a4a1bf_1280.png`
+      default: `${process.env.ASSET_DIR}/blank-profile-picture-g3c1a4a1bf_1280.png`,
     },
     roles: {
       type: Sequelize.ENUM(["user", "admin"]),
       unique: false,
-      defaultValue: "user"
-    }
+      defaultValue: "user",
+    },
   });
 
   User.associate = models => {
