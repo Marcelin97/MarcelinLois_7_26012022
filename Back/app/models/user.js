@@ -11,6 +11,12 @@ module.exports = (sequelize, Sequelize) => {
     username: {
       type: Sequelize.STRING,
       required: true,
+      validate: {
+        len: {
+          args: [3, 25],
+          msg: "The username needs to be between 3 and 25 characteres long",
+        },
+      },
     },
     email: {
       type: Sequelize.STRING(50),
@@ -19,7 +25,7 @@ module.exports = (sequelize, Sequelize) => {
       len: [5, 60],
       allowNull: false,
       validate: {
-        isEmail: { msg: "Please enter a valid email addresss" },
+        isEmail: { args: true, msg: "Please enter a valid email addresss" },
       },
       isEmail: true,
     },
@@ -42,6 +48,15 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING(),
       default: `${process.env.ASSET_DIR}/blank-profile-picture-g3c1a4a1bf_1280.png`,
     },
+    imageUrn: Sequelize.STRING,
+    imageUrl: {
+      type: Sequelize.VIRTUAL,
+      get() {
+        return this.imageUrn
+          ? `${process.env.APP_URL}/images/profiles/${this.imageUrn}`
+          : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+      },
+    },
     roles: {
       type: Sequelize.ENUM(["user", "admin"]),
       unique: false,
@@ -50,28 +65,36 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   // Sequelize associations
-  User.associate = (models) => {
+  User.associate = models => {
     User.hasMany(models.comment, {
-      as: "comments",
+      as: "comments"
     });
     User.hasMany(models.post, {
-      as: "posts",
+      as: "posts"
     });
     User.hasMany(models.moderator, {
-      as: "moderators",
+      as: "moderators"
     });
     // User.belongsTo(models.community, {
     //   foreignKey: "communityId",
     //   as: "community",
     // });
     User.hasMany(models.likePost, {
-      as: "likePosts",
+      as: "likePosts"
     });
     User.hasMany(models.messagePrivate, {
-      foreignKey: "fromUserId",
+      foreignKey: "fromUserId"
     });
     User.hasMany(models.messagePrivate, {
-      foreignKey: "toUserId",
+      foreignKey: "toUserId"
+    });
+    User.hasMany(models.userReport, {
+      foreignKey: "UserReportedId",
+      as: "UserReported",
+    });
+    User.hasMany(models.userReport, {
+      foreignKey: "FromUserId",
+      as: "User",
     });
 
     // Many to Many associations

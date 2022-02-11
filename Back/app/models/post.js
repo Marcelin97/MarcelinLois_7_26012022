@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
         len: [20, 5000],
       },
     },
-    read: {
+    isRead: {
       type: Sequelize.BOOLEAN,
       unique: false,
       allowNull: false,

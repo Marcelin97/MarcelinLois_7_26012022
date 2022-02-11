@@ -1,6 +1,6 @@
 module.exports = function (sequelize, Sequelize) {
   // Model Definition
-  const Notification = sequelize.define("Notification", {
+  const Notification = sequelize.define("notification", {
     userId: {
       type: Sequelize.INTEGER,
       allowNull: false,

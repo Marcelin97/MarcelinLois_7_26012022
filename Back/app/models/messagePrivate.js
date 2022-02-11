@@ -10,7 +10,11 @@ module.exports = (sequelize, Sequelize) => {
         len: [1, 1000],
       },
     },
-    read: {
+    sender: {
+      allowNull: false,
+      type: Sequelize.STRING,
+    },
+    isRead: {
       type: Sequelize.BOOLEAN,
       unique: false,
       allowNull: false,
