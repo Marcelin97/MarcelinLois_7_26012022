@@ -1,4 +1,4 @@
-module.exports = function (sequelize, Sequelize) {
+module.exports = (sequelize, Sequelize) => {
   // Model Definition
   const UserReport = sequelize.define("userReport", {
     content: {
@@ -11,19 +11,19 @@ module.exports = function (sequelize, Sequelize) {
     },
   });
 
-  // Reference Definition
-  UserReport.associate = (models) => {
-    UserReport.belongsTo(models.user, {
-      foreignKey: "UserReportedId",
-      as: "UserReported",
-    });
-    UserReport.belongsTo(models.user, {
-      foreignKey: "FromUserId",
-      as: "User",
-    });
-    UserReport.belongsTo(models.community);
-  };
+  // Sequelize associations
+    UserReport.associate = (models) => {
+      // is linked to
+      UserReport.belongsTo(models.user, {
+        foreignKey: "UserReportedId",
+        as: "UserReported",
+      });
+      UserReport.belongsTo(models.user, {
+        foreignKey: "FromUserId",
+        as: "User",
+      });
+      UserReport.belongsTo(models.community);
+    };
 
-  // Return the UserReport model
   return UserReport;
 };
