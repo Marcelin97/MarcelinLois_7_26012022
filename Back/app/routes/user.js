@@ -5,11 +5,15 @@ const router = express.Router();
 const userCtrl = require("../controllers/user");
 
 //ici je vais récupéré mes middlewares à appliqué sur mes routes user
+//middleware d'authentification que nous appliquerons à nos routes pour les protégés
+const auth = require("../middleware/auth");
+
+const verifySignUp = require("../middleware/verifySignUp");
 
 //=================================>
 /////////////////// SIGNUP
 //=================================>
-router.post("/signup", userCtrl.signup);
+router.post("/signup", verifySignUp, userCtrl.signup);
 
 //=================================>
 /////////////////// LOGIN
@@ -19,7 +23,11 @@ router.post("/login", userCtrl.login);
 //=================================>
 /////////////////// READ DATAS
 //=================================>
-
+// router.get(
+//   "/read-datas",
+//   auth,
+//   userCtrl.readDatas
+// );
 //=================================>
 /////////////////// EXPORT DATAS
 //=================================>
