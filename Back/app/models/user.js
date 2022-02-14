@@ -44,14 +44,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW,
     },
-    imageUrn: Sequelize.STRING,
     imageUrl: {
-      type: Sequelize.VIRTUAL,
-      get() {
-        return this.imageUrn
-          ? `${process.env.CLIENT_ENDPOINT}/images/profiles/${this.imageUrn}`
-          : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
-      },
+      type: Sequelize.STRING,
+      required: false,
+      default: "",
     },
     roles: {
       type: Sequelize.ENUM(["user", "admin"]),
@@ -71,10 +67,6 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.moderator, {
       as: "moderators",
     });
-    // User.belongsTo(models.community, {
-    //   foreignKey: "communityId",
-    //   as: "community",
-    // });
     User.hasMany(models.likePost, {
       as: "likePosts",
     });
@@ -107,7 +99,6 @@ module.exports = (sequelize, Sequelize) => {
     });
 
     // Many to Many associations
-    User.belongsToMany(models.community, { through: "Community_users" });
     User.belongsToMany(models.community, { through: "followers" });
   };
 

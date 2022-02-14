@@ -31,12 +31,11 @@ module.exports = (sequelize, Sequelize) => {
     Community.hasMany(models.user, {
       as: "users",
     });
-    Community.hasOne(models.moderator, {
+    Community.hasMany(models.moderator, {
       as: "moderators",
     });
 
     // Many to Many associations
-    Community.belongsToMany(models.user, { through: "Community_users" });
     Community.belongsToMany(models.user, { through: "followers" });
   };
 
