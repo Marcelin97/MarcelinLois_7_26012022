@@ -12,18 +12,17 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   // Sequelize associations
-    UserReport.associate = (models) => {
-      // is linked to
-      UserReport.belongsTo(models.user, {
-        foreignKey: "UserReportedId",
-        as: "UserReported",
-      });
-      UserReport.belongsTo(models.user, {
-        foreignKey: "FromUserId",
-        as: "User",
-      });
-      UserReport.belongsTo(models.community);
-    };
+  UserReport.associate = (models) => {
+    // is linked to
+    UserReport.belongsTo(models.user, {
+      foreignKey: "userReportedId",
+      as: "userReported",
+    });
+    UserReport.belongsTo(models.user, {
+      foreignKey: "fromUserId",
+      as: "user",
+    });
+  };
 
   return UserReport;
 };

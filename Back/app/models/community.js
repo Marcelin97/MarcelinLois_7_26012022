@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       unique: false,
     },
-    active: {
+    isActive: {
       type: Sequelize.BOOLEAN,
       require: false,
       default: true,

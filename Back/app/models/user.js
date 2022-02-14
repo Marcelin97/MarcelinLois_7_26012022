@@ -44,16 +44,12 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW,
     },
-    avatarURL: {
-      type: Sequelize.STRING(),
-      default: `${process.env.ASSET_DIR}/blank-profile-picture-g3c1a4a1bf_1280.png`,
-    },
     imageUrn: Sequelize.STRING,
     imageUrl: {
       type: Sequelize.VIRTUAL,
       get() {
         return this.imageUrn
-          ? `${process.env.APP_URL}/images/profiles/${this.imageUrn}`
+          ? `${process.env.CLIENT_ENDPOINT}/images/profiles/${this.imageUrn}`
           : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
       },
     },
@@ -65,36 +61,49 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   // Sequelize associations
-  User.associate = models => {
+  User.associate = (models) => {
     User.hasMany(models.comment, {
-      as: "comments"
+      as: "comments",
     });
     User.hasMany(models.post, {
-      as: "posts"
+      as: "posts",
     });
     User.hasMany(models.moderator, {
-      as: "moderators"
+      as: "moderators",
     });
     // User.belongsTo(models.community, {
     //   foreignKey: "communityId",
     //   as: "community",
     // });
     User.hasMany(models.likePost, {
-      as: "likePosts"
+      as: "likePosts",
     });
     User.hasMany(models.messagePrivate, {
-      foreignKey: "fromUserId"
+      foreignKey: "fromUserId",
     });
     User.hasMany(models.messagePrivate, {
-      foreignKey: "toUserId"
+      foreignKey: "toUserId",
+    });
+    User.hasMany(models.notification, {
+      as: "notifications",
     });
     User.hasMany(models.userReport, {
-      foreignKey: "UserReportedId",
-      as: "UserReported",
+      foreignKey: "userReportedId",
+      as: "userReported",
     });
     User.hasMany(models.userReport, {
-      foreignKey: "FromUserId",
-      as: "User",
+      foreignKey: "fromUserId",
+      as: "user",
+    });
+    User.hasMany(models.postReport, {
+      as: "postReport",
+    });
+    User.hasMany(models.commentReport, {
+      foreignKey: "commentId",
+      as: "commentParent",
+    });
+    User.hasMany(models.commentReport, {
+      as: "replies",
     });
 
     // Many to Many associations

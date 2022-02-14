@@ -18,12 +18,11 @@ module.exports = function (sequelize, Sequelize) {
       allowNull: false,
       values: ["read", "unread"],
     },
-    // isRead: {
-    //   type: Sequelize.BOOLEAN,
-    //   unique: false,
-    //   allowNull: false,
-    //   defaultValue: false,
-    // },
+    link: {
+      type: Sequelize.STRING,
+      unique: false,
+      allowNull: false,
+    },
   });
 
   // Sequelize associations
@@ -32,26 +31,6 @@ module.exports = function (sequelize, Sequelize) {
     Notification.belongsTo(models.user, {
       foreignKey: "userId",
       as: "user",
-    });
-    Notification.belongsTo(models.post, {
-      foreignKey: "postId",
-      as: "post",
-    });
-    Notification.belongsTo(models.comment, {
-      foreignKey: "commentId",
-      as: "comment",
-    });
-    Notification.belongsTo(models.messagePrivate, {
-      foreignKey: "fromUserId",
-      as: "fromUser",
-    });
-    Notification.belongsTo(models.likeComment, {
-      // foreignKey: "",
-      as: "likeComment",
-    });
-    Notification.belongsTo(models.likePost, {
-      // foreignKey: "",
-      as: "likePost",
     });
   };
 

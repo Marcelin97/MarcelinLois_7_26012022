@@ -10,10 +10,6 @@ module.exports = (sequelize, Sequelize) => {
         len: [1, 1000],
       },
     },
-    sender: {
-      allowNull: false,
-      type: Sequelize.STRING,
-    },
     isRead: {
       type: Sequelize.BOOLEAN,
       unique: false,

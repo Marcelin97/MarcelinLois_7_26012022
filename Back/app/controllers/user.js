@@ -1,8 +1,7 @@
-//on a besoin de notre model users
-// const User = require("../models/user");
-const db = require("../models");
+const db = require("../models"); // models path
 const User = db.user;
 const Op = db.Sequelize.Op;
+
 // // package de cryptage du MDP
 // const bcrypt = require("bcrypt");
 

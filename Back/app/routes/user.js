@@ -6,11 +6,10 @@ const userCtrl = require("../controllers/user");
 
 //ici je vais récupéré mes middlewares à appliqué sur mes routes user
 
-
 //=================================>
 /////////////////// SIGNUP
 //=================================>
-router.post("/signup",userCtrl.signup);
+router.post("/signup", userCtrl.signup);
 
 //=================================>
 /////////////////// LOGIN
