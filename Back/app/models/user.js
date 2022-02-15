@@ -21,6 +21,7 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING(50),
       trim: true,
+      required: true,
       unique: true,
       len: [5, 60],
       allowNull: false,

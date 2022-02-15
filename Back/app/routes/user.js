@@ -8,6 +8,7 @@ const userCtrl = require("../controllers/user");
 //middleware d'authentification que nous appliquerons à nos routes pour les protégés
 const auth = require("../middleware/auth");
 
+//middleware verify username and email
 const verifySignUp = require("../middleware/verifySignUp");
 
 //=================================>
