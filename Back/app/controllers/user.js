@@ -115,6 +115,31 @@ exports.findAll = (req, res) => {};
 // Find a single User with an id
 exports.findOne = (req, res) => {};
 // Update a User by the id in the request
-exports.update = (req, res) => {};
+exports.update = (req, res, next) => {
+let { firstName, lastName, email } = req.body;
+let id = req.params.id;
+  
+User.findOne(id)
+  .then((user) => {
+    if (user) {
+      user.update({ firstName, lastName, email }).then((updateUser) => {
+        return res.status(202).json({
+          message: "User updated successfully",
+          updateUser,
+        });
+      });
+    } else {
+      return res.status(206).json({
+        message: "User not found",
+      });
+    }
+  })
+  .catch((error) => {
+    return res.status(400).json({
+      error: error,
+    });
+  });
+
+};
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {};
