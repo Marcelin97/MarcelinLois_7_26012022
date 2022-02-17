@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const CryptoJS = require("crypto-js");
+const Auth = require("./../middleware/auth");
 
 //=================================>
 /////////////////// ENCRYPTED EMAIL
@@ -115,31 +116,34 @@ exports.findAll = (req, res) => {};
 // Find a single User with an id
 exports.findOne = (req, res) => {};
 // Update a User by the id in the request
-exports.update = (req, res, next) => {
-let { firstName, lastName, email } = req.body;
-let id = req.params.id;
-  
-User.findOne(id)
-  .then((user) => {
-    if (user) {
-      user.update({ firstName, lastName, email }).then((updateUser) => {
-        return res.status(202).json({
-          message: "User updated successfully",
-          updateUser,
-        });
-      });
-    } else {
-      return res.status(206).json({
-        message: "User not found",
-      });
-    }
-  })
-  .catch((error) => {
-    return res.status(400).json({
-      error: error,
-    });
-  });
+exports.update = async (req, res) => {
+    try {
 
-};
+      const { email, name } = req.body;
+      
+      const conectedUser = await Auth.validateToken(req, res);
+      const userId = conectedUser.id;
+
+      const exists = await User.findByPk(userId, { attributes: ['email'] });
+      const emailAlreadyRegistered = await User.findOne({ where: { email }, attributes: ['email'] });
+      if (emailAlreadyRegistered) {
+        return res.status(422).json({ error: { message: 'This email is already in use' } }); 
+      }
+        
+      if (exists == null) {
+        return res.status(422).json({ error: { message: 'User not exist' } });
+      }
+
+      const user = await User.update(
+        { email, name},
+        { where: { id: userId } },
+        // { attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } },
+      );
+      res.status(200).json({ message: "User edit successfully", user });
+    } catch (error) {
+      res.status(401).json({ error:{msg:'Couldn´t edit user'} });
+    }
+  },
+
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {};

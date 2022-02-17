@@ -25,8 +25,9 @@ module.exports = {
 
       try {
         const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
-        req.decoded = decodedToken;
-        next();
+        // req.decoded = decodedToken;
+        // next();
+        return decodedToken;
       } catch (error) {
         return res
           .status(401)
