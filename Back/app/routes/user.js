@@ -40,8 +40,8 @@ router.post("/login", userCtrl.login);
 //=================================>
 /////////////////// UPDATE
 //=================================>
-router.put("/update", userCtrl.update);
-
+router.put("/updateMail", userCtrl.updateMail);
+router.put("/updatePass", userCtrl.updatePassword);
 //=================================>
 /////////////////// REPORT
 //=================================>

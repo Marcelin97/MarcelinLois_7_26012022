@@ -67,7 +67,7 @@ exports.signup = (req, res, next) => {
       .status(201)
       .json({
         message: "User created successfully",
-        user
+        user,
       })
       .catch((err) => {
         return res.status(400).json({
@@ -101,10 +101,10 @@ exports.login = (req, res) => {
       var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
         expiresIn: 86400, // 24 hours
       });
-        res.status(200).send({
-          user,
-          accessToken: token,
-        });
+      res.status(200).send({
+        user,
+        accessToken: token,
+      });
     })
     .catch((err) => {
       res.status(500).send({ message: err.message });
@@ -115,35 +115,72 @@ exports.login = (req, res) => {
 exports.findAll = (req, res) => {};
 // Find a single User with an id
 exports.findOne = (req, res) => {};
+
 // Update a User by the id in the request
-exports.update = async (req, res) => {
-    try {
+exports.updateMail = async (req, res) => {
+  try {
+    const { email} = req.body;
 
-      const { email, name } = req.body;
-      
-      const conectedUser = await Auth.validateToken(req, res);
-      const userId = conectedUser.id;
+    const conectedUser = await Auth.validateToken(req, res);
+    const userId = conectedUser.id;
 
-      const exists = await User.findByPk(userId, { attributes: ['email'] });
-      const emailAlreadyRegistered = await User.findOne({ where: { email }, attributes: ['email'] });
-      if (emailAlreadyRegistered) {
-        return res.status(422).json({ error: { message: 'This email is already in use' } }); 
-      }
-        
-      if (exists == null) {
-        return res.status(422).json({ error: { message: 'User not exist' } });
-      }
+    const exists = await User.findByPk(userId, { attributes: ["email"] });
+    if (exists == null) {
+      return res.status(422).json({ error: { message: "User not exist" } });
+    };
 
-      const user = await User.update(
-        { email, name},
-        { where: { id: userId } },
-        // { attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } },
-      );
-      res.status(200).json({ message: "User edit successfully", user });
-    } catch (error) {
-      res.status(401).json({ error:{msg:'Couldn´t edit user'} });
+    const emailAlreadyRegistered = await User.findOne({
+      where: { email },
+      attributes: ["email"],
+    });
+    if (emailAlreadyRegistered) {
+      return res
+        .status(422)
+        .json({ error: { message: "This email is already in use" } });
     }
-  },
 
-// Delete a User with the specified id in the request
-exports.delete = (req, res) => {};
+    const user = await User.update(
+      { email},
+      { where: { id: userId } },
+      // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
+    );
+    res.status(200).json({ message: "User edit successfully", user });
+  } catch (error) {
+    res.status(401).json({ error: { msg: "Couldn´t edit user" } });
+  }
+};
+  // Update a User by the id in the request
+exports.updatePassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    const conectedUser = await Auth.validateToken(req, res);
+    const userId = conectedUser.id;
+
+    const exists = await User.findByPk(userId, { attributes: ["password"] });
+    if (exists == null) {
+      return res.status(422).json({ error: { message: "User not exist" } });
+    }
+
+    const passwordNew = await User.findOne({
+      where: { password },
+      attributes: ["password"],
+    });
+    if (passwordNew) {
+      return res
+        .status(422)
+        .json({ error: { message: "This password is already in use" } });
+    }
+
+    const user = await User.update(
+      { password },
+      { where: { id: userId } },
+      // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
+    );
+    res.status(200).json({ message: "User edit successfully", user });
+  } catch (error) {
+    res.status(401).json({ error: { msg: "Couldn´t edit user" } });
+  }
+};
+  // Delete a User with the specified id in the request
+  exports.delete = (req, res) => {};
