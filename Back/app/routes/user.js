@@ -24,11 +24,10 @@ router.post("/login", userCtrl.login);
 //=================================>
 /////////////////// READ DATAS
 //=================================>
-// router.get(
-//   "/read-datas",
-//   auth,
-//   userCtrl.readDatas
-// );
+router.get("/findByName", userCtrl.findByName);
+router.get("/findById", userCtrl.findById);
+
+
 //=================================>
 /////////////////// EXPORT DATAS
 //=================================>
@@ -36,7 +35,7 @@ router.post("/login", userCtrl.login);
 //=================================>
 /////////////////// DELETE
 //=================================>
-
+router.delete("/delete", userCtrl.delete);
 //=================================>
 /////////////////// UPDATE
 //=================================>

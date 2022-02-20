@@ -112,75 +112,135 @@ exports.login = (req, res) => {
 };
 
 // Retrieve all Users from the database.
-exports.findAll = (req, res) => {};
+exports.findAll = (req, res) => { };
+
+// Find a single User with an username
+(exports.findByName = async (req, res) => {
+  User.findOne({
+    where: {
+      username: req.body.username,
+    },
+  })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send("User Not Found.");
+      }
+
+      res.status(200).send({ user });
+    })
+    .catch((err) => {
+      res.status(500).send("Error -> " + err);
+    });
+}),
+  
 // Find a single User with an id
-exports.findOne = (req, res) => {};
-
-// Update a User by the id in the request
-exports.updateMail = async (req, res) => {
+exports.findById = async (req, res) => {
   try {
-    const { email} = req.body;
-
     const conectedUser = await Auth.validateToken(req, res);
     const userId = conectedUser.id;
 
-    const exists = await User.findByPk(userId, { attributes: ["email"] });
-    if (exists == null) {
-      return res.status(422).json({ error: { message: "User not exist" } });
-    };
-
-    const emailAlreadyRegistered = await User.findOne({
-      where: { email },
-      attributes: ["email"],
-    });
-    if (emailAlreadyRegistered) {
-      return res
-        .status(422)
-        .json({ error: { message: "This email is already in use" } });
-    }
-
-    const user = await User.update(
-      { email},
-      { where: { id: userId } },
-      // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
-    );
-    res.status(200).json({ message: "User edit successfully", user });
+    const user = await User.findByPk(userId);
+    res.status(200).json({ user });
   } catch (error) {
-    res.status(401).json({ error: { msg: "Couldn´t edit user" } });
+    res.status(401).json({ error: { msg: "Couldn´t find user" } });
   }
-};
-  // Update a User by the id in the request
+},
+
+  // Update email
+  (exports.updateMail = async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      const conectedUser = await Auth.validateToken(req, res);
+      const userId = conectedUser.id;
+
+      const exists = await User.findByPk(userId, { attributes: ["email"] });
+      if (exists == null) {
+        return res.status(422).json({ error: { message: "User not exist" } });
+      }
+
+      const emailAlreadyRegistered = await User.findOne({
+        where: { email },
+        attributes: ["email"],
+      });
+      if (emailAlreadyRegistered) {
+        return res
+          .status(422)
+          .json({ error: { message: "This email is already in use" } });
+      }
+
+      const user = await User.update(
+        { email },
+        { where: { id: userId } }
+        // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
+      );
+      res.status(200).json({ message: "User edit successfully", user });
+    } catch (error) {
+      res.status(401).json({ error: { msg: "Couldn´t edit user" } });
+    }
+  });
+
+// Update password
 exports.updatePassword = async (req, res) => {
   try {
     const { password } = req.body;
 
+    // retrieve the connect User
     const conectedUser = await Auth.validateToken(req, res);
     const userId = conectedUser.id;
+    // console.log(userId);
 
+    // SELECT `password` FROM `users` AS `user` WHERE `user`.`id` = 7
     const exists = await User.findByPk(userId, { attributes: ["password"] });
+    console.log(exists);
+
     if (exists == null) {
       return res.status(422).json({ error: { message: "User not exist" } });
     }
 
+    // New password in the request
     const passwordNew = await User.findOne({
       where: { password },
       attributes: ["password"],
     });
+    console.log("passwordNew");
+    console.log(password);
+
     if (passwordNew) {
       return res
         .status(422)
         .json({ error: { message: "This password is already in use" } });
     }
+    // hash new password
+    const passwordNewHash = bcrypt.hashSync(password, 10);
+    console.log("passwordNewHash");
+    console.log(passwordNewHash);
 
-    const user = await User.update(
-      { password },
-      { where: { id: userId } },
-      // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
-    );
+    const user = await User.update({ password }, { where: { id: userId } });
+
     res.status(200).json({ message: "User edit successfully", user });
   } catch (error) {
     res.status(401).json({ error: { msg: "Couldn´t edit user" } });
   }
 };
-  // Delete a User with the specified id in the request
-  exports.delete = (req, res) => {};
+
+// Delete a User with the specified id in the request
+exports.delete = async (req, res) => {
+const conectedUser = await Auth.validateToken(req, res);
+const userId = conectedUser.id;
+
+  User.destroy({
+    where: { id: userId }
+  }).then((userId) => {
+          if (!userId) {
+            return res.status(404).send({
+              message: "User not found",
+            });
+    };
+    return res.status(200).json({
+      "message": "User Deleted successfully"
+    })
+  }).catch(error => {
+    return res.status(400).json({ error })
+  })
+};
