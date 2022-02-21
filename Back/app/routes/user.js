@@ -22,25 +22,32 @@ router.post("/signup", verifySignUp, userCtrl.signup);
 router.post("/login", userCtrl.login);
 
 //=================================>
-/////////////////// READ DATAS
+//////////// READ DATAS ONE USER
 //=================================>
 router.get("/findByName", userCtrl.findByName);
 router.get("/findById", userCtrl.findById);
 
+//=================================>
+//////////// READ DATAS ALL USERS
+//=================================>
+router.get("/findAll", userCtrl.findAll);
 
 //=================================>
 /////////////////// EXPORT DATAS
 //=================================>
+router.get("/export-datas", userCtrl.exportUserInfo);
 
 //=================================>
 /////////////////// DELETE
 //=================================>
 router.delete("/delete", userCtrl.delete);
+
 //=================================>
 /////////////////// UPDATE
 //=================================>
 router.put("/updateMail", userCtrl.updateMail);
 router.put("/updatePass", userCtrl.updatePassword);
+
 //=================================>
 /////////////////// REPORT
 //=================================>

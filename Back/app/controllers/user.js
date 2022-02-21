@@ -112,7 +112,16 @@ exports.login = (req, res) => {
 };
 
 // Retrieve all Users from the database.
-exports.findAll = (req, res) => { };
+exports.findAll = (req, res) => { 
+  User.findAll()
+    .then((users) => {
+      if (users.length <= 0) {
+        return res.status(404).send("Users not found");
+      }
+      res.status(200).json(users);
+    })
+    .catch((error) => res.status(500).json({ error }));
+};
 
 // Find a single User with an username
 (exports.findByName = async (req, res) => {
@@ -146,8 +155,8 @@ exports.findById = async (req, res) => {
   }
 },
 
-  // Update email
-  (exports.updateMail = async (req, res) => {
+// Update email
+exports.updateMail = async (req, res) => {
     try {
       const { email } = req.body;
 
@@ -178,50 +187,48 @@ exports.findById = async (req, res) => {
     } catch (error) {
       res.status(401).json({ error: { msg: "Couldn´t edit user" } });
     }
-  });
+};
 
 // Update password
 exports.updatePassword = async (req, res) => {
-  try {
-    const { password } = req.body;
-
-    // retrieve the connect User
-    const conectedUser = await Auth.validateToken(req, res);
-    const userId = conectedUser.id;
-    // console.log(userId);
-
-    // SELECT `password` FROM `users` AS `user` WHERE `user`.`id` = 7
-    const exists = await User.findByPk(userId, { attributes: ["password"] });
-    console.log(exists);
-
-    if (exists == null) {
-      return res.status(422).json({ error: { message: "User not exist" } });
-    }
-
-    // New password in the request
-    const passwordNew = await User.findOne({
-      where: { password },
-      attributes: ["password"],
-    });
-    console.log("passwordNew");
-    console.log(password);
-
-    if (passwordNew) {
-      return res
-        .status(422)
-        .json({ error: { message: "This password is already in use" } });
-    }
-    // hash new password
-    const passwordNewHash = bcrypt.hashSync(password, 10);
-    console.log("passwordNewHash");
-    console.log(passwordNewHash);
-
-    const user = await User.update({ password }, { where: { id: userId } });
-
-    res.status(200).json({ message: "User edit successfully", user });
-  } catch (error) {
-    res.status(401).json({ error: { msg: "Couldn´t edit user" } });
-  }
+  const conectedUser = await Auth.validateToken(req, res);
+  const userId = conectedUser.id;
+  console.log(userId);
+  // First, check if the user exist in the db
+  User.findOne({ where: { id: userId } })
+    .then((user) => {
+      // if not, respond with a 404 code
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+      // Then, check if the old password is valid
+      bcrypt
+        .compare(req.body.password, user.password)
+        .then((validPass) => {
+          if (!validPass) {
+            return res.status(401).send("Wrong password");
+          }
+          // Then, hash the new Password
+          bcrypt
+            .hash(req.body.newPassword, 10)
+            .then((newPassword) => {
+              // Finally update the password with the new one
+              User.update(
+                { password: newPassword},
+                {
+                  where: {
+                    id: userId,
+                  },
+                }
+              )
+                .then((response) => res.status(200).json({ user, "message": "User updated successfully" }))
+                .catch((error) => res.status(500).json({ error }));
+            })
+            .catch((error) => res.status(500).json({ error }));
+        })
+        .catch((error) => res.status(500).json({ error }));
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
 
 // Delete a User with the specified id in the request
@@ -244,3 +251,78 @@ const userId = conectedUser.id;
     return res.status(400).json({ error })
   })
 };
+
+
+// Export user info
+exports.exportUserInfo = async (req, res) => {
+const userDatas = [];
+const dataFile = `./userDatas/${req.params.id}`;
+User.findOne({ where: { id: req.params.id } })
+  .then((user) => {
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    userDatas.push(JSON.stringify(user.dataValues));
+    Post.findAll({ where: { user_id: user.id } })
+      .then((posts) => {
+        if (!posts) {
+          userDatas.push("You don't have any posts");
+        } else {
+          posts.forEach((post) => {
+            userDatas.push(JSON.stringify(post.dataValues));
+          });
+        }
+        Comment.findAll({ where: { user_id: user.id } })
+          .then((comments) => {
+            if (!comments) {
+              userDatas.push("You do not have any comments");
+            } else {
+              comments.forEach((comment) => {
+                userDatas.push(JSON.stringify(comment.dataValues));
+              });
+            }
+            fsPromise
+              .writeFile(dataFile, userDatas)
+              .then(() => {
+                res
+                  .status(201)
+                  .download(dataFile, "Vos_données_personnelles.txt", (err) => {
+                    if (err) {
+                      return res.status(500).json({ err });
+                    }
+                    fsPromise.unlink(dataFile, (err) => {
+                      if (err) {
+                        return res.status(500).json({ err });
+                      }
+                    });
+                  });
+              })
+              .catch((error) => {
+                res.status(500).json({ error });
+              });
+          })
+          .catch((error) => res.status(500).json({ error }));
+      })
+      .catch((error) => res.status(500).json({ error }));
+  })
+  .catch((error) => res.status(500).json({ error }));
+};
+
+async function getUserDatas() {
+  let user = await db.User.findByPk(userId, {
+    include: [
+      db.Post,
+      db.Community,
+      db.Moderator,
+      db.Follower,
+      db.PrivateMessage,
+      db.Notification,
+      db.PostReport,
+      db.PostComment,
+      db.CommentLike,
+      db.CommentReport
+    ],
+  });
+      console.log(user);
+
+}
