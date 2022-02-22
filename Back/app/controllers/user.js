@@ -1,6 +1,6 @@
 const db = require("../models"); // models path
 const User = db.user;
-const Op = db.Sequelize.Op;
+// const Op = db.Sequelize.Op;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -157,43 +157,44 @@ exports.findById = async (req, res) => {
 
 // Update email
 exports.updateMail = async (req, res) => {
-    try {
-      const { email } = req.body;
+  try {
+    const { email } = req.body;
 
-      const conectedUser = await Auth.validateToken(req, res);
-      const userId = conectedUser.id;
+    const conectedUser = await Auth.validateToken(req, res);
+    const userId = conectedUser.id;
 
-      const exists = await User.findByPk(userId, { attributes: ["email"] });
-      if (exists == null) {
-        return res.status(422).json({ error: { message: "User not exist" } });
-      }
-
-      const emailAlreadyRegistered = await User.findOne({
-        where: { email },
-        attributes: ["email"],
-      });
-      if (emailAlreadyRegistered) {
-        return res
-          .status(422)
-          .json({ error: { message: "This email is already in use" } });
-      }
-
-      const user = await User.update(
-        { email },
-        { where: { id: userId } }
-        // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
-      );
-      res.status(200).json({ message: "User edit successfully", user });
-    } catch (error) {
-      res.status(401).json({ error: { msg: "Couldn´t edit user" } });
+    const exists = await User.findByPk(userId, { attributes: ["email"] });
+    if (exists == null) {
+      return res.status(422).json({ error: { message: "User not exist" } });
     }
+
+    const emailAlreadyRegistered = await User.findOne({
+      where: { email },
+      attributes: ["email"],
+    });
+    if (emailAlreadyRegistered) {
+      return res
+        .status(422)
+        .json({ error: { message: "This email is already in use" } });
+    }
+
+    const user = await User.update(
+      { email },
+      { where: { id: userId } }
+      // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
+    );
+    res.status(200).json({ message: "User edit successfully", user });
+  } catch (error) {
+    res.status(401).json({ error: { msg: "Couldn´t edit user" } });
+  }
 };
 
 // Update password
 exports.updatePassword = async (req, res) => {
   const conectedUser = await Auth.validateToken(req, res);
   const userId = conectedUser.id;
-  console.log(userId);
+  // console.log(userId);
+
   // First, check if the user exist in the db
   User.findOne({ where: { id: userId } })
     .then((user) => {
@@ -252,77 +253,102 @@ const userId = conectedUser.id;
   })
 };
 
+// Import the filesystem module
+const fs = require("fs");
+const { get } = require("https");
+const fsPromise = fs.promises;
 
 // Export user info
 exports.exportUserInfo = async (req, res) => {
-const userDatas = [];
-const dataFile = `./userDatas/${req.params.id}`;
-User.findOne({ where: { id: req.params.id } })
-  .then((user) => {
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-    userDatas.push(JSON.stringify(user.dataValues));
-    Post.findAll({ where: { user_id: user.id } })
-      .then((posts) => {
-        if (!posts) {
-          userDatas.push("You don't have any posts");
-        } else {
-          posts.forEach((post) => {
-            userDatas.push(JSON.stringify(post.dataValues));
-          });
-        }
-        Comment.findAll({ where: { user_id: user.id } })
-          .then((comments) => {
-            if (!comments) {
-              userDatas.push("You do not have any comments");
-            } else {
-              comments.forEach((comment) => {
-                userDatas.push(JSON.stringify(comment.dataValues));
-              });
-            }
-            fsPromise
-              .writeFile(dataFile, userDatas)
-              .then(() => {
-                res
-                  .status(201)
-                  .download(dataFile, "Vos_données_personnelles.txt", (err) => {
-                    if (err) {
-                      return res.status(500).json({ err });
-                    }
-                    fsPromise.unlink(dataFile, (err) => {
-                      if (err) {
-                        return res.status(500).json({ err });
+  // First, check if the user exist in the db
+  const conectedUser = await Auth.validateToken(req, res);
+  const userId = conectedUser.id;
+  // console.log(userId);
+  console.log(getUserDatas(userId));
+  
+  const userDatas = [];
+  const dataFile = `./userDatas/${userId}`;
+  
+  // let userGet = await getUserDatas(userId);
+
+  User.findOne({ where: { id: userId } })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+      userDatas.push(JSON.stringify(user.dataValues));
+      console.log(userDatas);
+      
+      Post.findAll({ where: { id: userId } })
+        .then((post) => {
+          if (!post) {
+            userDatas.push("You don't have any posts");
+          } else {
+            Post.forEach((post) => {
+              console.log(post);
+              userDatas.push(JSON.stringify(post.dataValues));
+            });
+          }
+          Comment.findAll({ where: { id: userId } })
+            .then((comments) => {
+              if (!comments) {
+                userDatas.push("You do not have any comments");
+              } else {
+                comments.forEach((comment) => {
+                  userDatas.push(JSON.stringify(comment.dataValues));
+                });
+              }
+              fsPromise
+                .writeFile(dataFile, userDatas)
+                .then(() => {
+                  res
+                    .status(201)
+                    .download(
+                      dataFile,
+                      "Vos_données_personnelles.txt",
+                      (err) => {
+                        if (err) {
+                          return res.status(500).json({ err });
+                        }
+                        fsPromise.unlink(dataFile, (err) => {
+                          if (err) {
+                            return res.status(500).json({ err });
+                          }
+                        });
                       }
-                    });
-                  });
-              })
-              .catch((error) => {
-                res.status(500).json({ error });
-              });
-          })
-          .catch((error) => res.status(500).json({ error }));
-      })
-      .catch((error) => res.status(500).json({ error }));
-  })
-  .catch((error) => res.status(500).json({ error }));
+                    );
+                })
+                .catch((error) => {
+                  res.status(500).json({ error });
+                });
+            })
+            .catch((error) => res.status(500).json({ error }));
+        })
+        .catch((error) => res.status(500).json({ error }));
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
 
-async function getUserDatas() {
-  let user = await db.User.findByPk(userId, {
-    include: [
-      db.Post,
-      db.Community,
-      db.Moderator,
-      db.Follower,
-      db.PrivateMessage,
-      db.Notification,
-      db.PostReport,
-      db.PostComment,
-      db.CommentLike,
-      db.CommentReport
-    ],
-  });
-      console.log(user);
+async function getUserDatas(userId) {
+// const users = await User.findOne({ include: db.Community });
+// console.log(JSON.stringify(users, null, 2));
+    let user = await User.findByPk(userId, {
+      include: [
+        db.Post,
+        db.Community,
+        db.Moderator,
+        // db.Follower,
+        db.messagePrivate,
+        db.Notification,
+        db.PostReport,
+        db.LikeComment,
+        db.LikePost,
+        db.Comment,
+        db.CommentReport
+      ],
+    });
 
-}
+    if (user == null) throw new Error("Utilisateur introuvable");
+  return user;
+};
+
