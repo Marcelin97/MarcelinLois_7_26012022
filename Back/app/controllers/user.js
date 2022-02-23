@@ -54,13 +54,13 @@ exports.signup = (req, res, next) => {
 
   let { firstName, lastName, username, email } = req.body;
   const password = bcrypt.hashSync(req.body.password, 10);
-  // const emailCrypted = encrypted(req.body.email);
+  const emailCrypted = encrypted(req.body.email);
 
   User.create({
     username,
     firstName,
     lastName,
-    email,
+    email: emailCrypted,
     password,
   }).then((user) => {
     return res
@@ -112,7 +112,7 @@ exports.login = (req, res) => {
 };
 
 // Retrieve all Users from the database.
-exports.findAll = (req, res) => { 
+exports.findAll = (req, res) => {
   User.findAll()
     .then((users) => {
       if (users.length <= 0) {
@@ -141,62 +141,43 @@ exports.findAll = (req, res) => {
       res.status(500).send("Error -> " + err);
     });
 }),
-  
-// Find a single User with an id
-exports.findById = async (req, res) => {
-  try {
-    const conectedUser = await Auth.validateToken(req, res);
-    const userId = conectedUser.id;
+  // Update email
+  (exports.updateMail = async (req, res) => {
+    try {
+      const { email } = req.body;
 
-    const user = await User.findByPk(userId);
-    res.status(200).json({ user });
-  } catch (error) {
-    res.status(401).json({ error: { msg: "Couldn´t find user" } });
-  }
-},
+      const exists = await User.findByPk(req.auth.userId, {
+        attributes: ["email"],
+      });
+      if (exists == null) {
+        return res.status(422).json({ error: { message: "User not exist" } });
+      }
 
-// Update email
-exports.updateMail = async (req, res) => {
-  try {
-    const { email } = req.body;
+      const emailAlreadyRegistered = await User.findOne({
+        where: { email },
+        attributes: ["email"],
+      });
+      if (emailAlreadyRegistered) {
+        return res
+          .status(422)
+          .json({ error: { message: "This email is already in use" } });
+      }
 
-    const conectedUser = await Auth.validateToken(req, res);
-    const userId = conectedUser.id;
-
-    const exists = await User.findByPk(userId, { attributes: ["email"] });
-    if (exists == null) {
-      return res.status(422).json({ error: { message: "User not exist" } });
+      const user = await User.update(
+        { email },
+        { where: { id: userId } }
+        // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
+      );
+      res.status(200).json({ message: "User edit successfully", user });
+    } catch (error) {
+      res.status(401).json({ error: { msg: "Couldn´t edit user" } });
     }
-
-    const emailAlreadyRegistered = await User.findOne({
-      where: { email },
-      attributes: ["email"],
-    });
-    if (emailAlreadyRegistered) {
-      return res
-        .status(422)
-        .json({ error: { message: "This email is already in use" } });
-    }
-
-    const user = await User.update(
-      { email },
-      { where: { id: userId } }
-      // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
-    );
-    res.status(200).json({ message: "User edit successfully", user });
-  } catch (error) {
-    res.status(401).json({ error: { msg: "Couldn´t edit user" } });
-  }
-};
+  });
 
 // Update password
 exports.updatePassword = async (req, res) => {
-  const conectedUser = await Auth.validateToken(req, res);
-  const userId = conectedUser.id;
-  // console.log(userId);
-
   // First, check if the user exist in the db
-  User.findOne({ where: { id: userId } })
+  User.findOne({ where: { id: req.auth.userId } })
     .then((user) => {
       // if not, respond with a 404 code
       if (!user) {
@@ -215,14 +196,18 @@ exports.updatePassword = async (req, res) => {
             .then((newPassword) => {
               // Finally update the password with the new one
               User.update(
-                { password: newPassword},
+                { password: newPassword },
                 {
                   where: {
                     id: userId,
                   },
                 }
               )
-                .then((response) => res.status(200).json({ user, "message": "User updated successfully" }))
+                .then((response) =>
+                  res
+                    .status(200)
+                    .json({ user, message: "User updated successfully" })
+                )
                 .catch((error) => res.status(500).json({ error }));
             })
             .catch((error) => res.status(500).json({ error }));
@@ -234,23 +219,22 @@ exports.updatePassword = async (req, res) => {
 
 // Delete a User with the specified id in the request
 exports.delete = async (req, res) => {
-const conectedUser = await Auth.validateToken(req, res);
-const userId = conectedUser.id;
-
   User.destroy({
-    where: { id: userId }
-  }).then((userId) => {
-          if (!userId) {
-            return res.status(404).send({
-              message: "User not found",
-            });
-    };
-    return res.status(200).json({
-      "message": "User Deleted successfully"
-    })
-  }).catch(error => {
-    return res.status(400).json({ error })
+    where: { id: req.auth.userId },
   })
+    .then((userId) => {
+      if (!userId) {
+        return res.status(404).send({
+          message: "User not found",
+        });
+      }
+      return res.status(200).json({
+        message: "User Deleted successfully",
+      });
+    })
+    .catch((error) => {
+      return res.status(400).json({ error });
+    });
 };
 
 // Import the filesystem module
@@ -261,14 +245,10 @@ const fsPromise = fs.promises;
 // Export user info
 exports.exportUserInfo = async (req, res) => {
   // First, check if the user exist in the db
-  const conectedUser = await Auth.validateToken(req, res);
-  const userId = conectedUser.id;
-  // console.log(userId);
-  console.log(getUserDatas(userId));
-  
+
   const userDatas = [];
   const dataFile = `./userDatas/${userId}`;
-  
+
   // let userGet = await getUserDatas(userId);
 
   User.findOne({ where: { id: userId } })
@@ -278,7 +258,7 @@ exports.exportUserInfo = async (req, res) => {
       }
       userDatas.push(JSON.stringify(user.dataValues));
       console.log(userDatas);
-      
+
       Post.findAll({ where: { id: userId } })
         .then((post) => {
           if (!post) {
@@ -329,26 +309,15 @@ exports.exportUserInfo = async (req, res) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-async function getUserDatas(userId) {
-// const users = await User.findOne({ include: db.Community });
-// console.log(JSON.stringify(users, null, 2));
-    let user = await User.findByPk(userId, {
-      include: [
-        db.Post,
-        db.Community,
-        db.Moderator,
-        // db.Follower,
-        db.messagePrivate,
-        db.Notification,
-        db.PostReport,
-        db.LikeComment,
-        db.LikePost,
-        db.Comment,
-        db.CommentReport
-      ],
-    });
-
-    if (user == null) throw new Error("Utilisateur introuvable");
-  return user;
+exports.readUser = async (req, res) => {
+  User.findByPk(req.auth.userID, {
+    include: {
+      all: true,
+    },
+  })
+    .then((user) => {
+      if (user == null) throw new Error("Utilisateur introuvable");
+      return res.status(200).json(user);
+    })
+    .catch((error) => res.status(500).json(console.log(error)));
 };
-

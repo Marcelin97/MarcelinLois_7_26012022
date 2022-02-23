@@ -1,43 +1,35 @@
+//on a besoin de notre package pour vérifier les tokens
 const jwt = require("jsonwebtoken");
 
-module.exports = {
-  validateToken: async (req, res, next) => {
-    //  catch TokenExpiredError in verifyToken()
-    const { TokenExpiredError } = jwt;
-    const catchError = (err, res) => {
-      if (err instanceof TokenExpiredError) {
-        return res
-          .status(401)
-          .send({ message: "Unauthorized! Access Token was expired!" });
-      }
-      return res.sendStatus(401).send({ message: "Unauthorized!" });
-    };
-
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-      const token = authHeader.split(" ")[1];
-
-      if (!token) {
-        return res.status(403).send({
-          message: "No token provided!",
-        });
-      }
-
-      try {
-        const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
-        // req.decoded = decodedToken;
-        // next();
-        return decodedToken;
-      } catch (error) {
-        return res
-          .status(401)
-          .json({ status: "error", message: "Invalid Authentication.", error });
-      }
+//on utilise des blocs try catch, car il y a plusieurs éléments qui peuvent posé problème
+module.exports = (req, res, next) => {
+  try {
+    //on va utiliser le faite qu'on connaît la forme de se headers pour récupérer le token
+    //on utilise les headers de la requête et le header autorisation que l'on va splite autour d'un espace
+    // sa nous retourne un tableau avec bear en premier et le token en deuxième élément
+    //donc sa nous retournera uniquement le token
+    const token = req.headers.authorization.split(" ")[1];
+    //la seconde étape et de décoder le token
+    //on va utiliser le package jsonwebtoken et la fonction verify
+    //(on vérifie le token et on veut vérifier la clé secrete)
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    //quand on décode le token cela devient un objet JS
+    // donc on va pouvoir récupérer le userId qui est dedans
+    const userId = decodedToken.userId;
+    //nous ajoutons un objet  auth  à l'objet de requête qui contient le  userId  extrait du token
+    req.auth = { userID: userId };
+    //si jamais il y a un userId dans le corp de la requete on veut vérifier que cela correspond bien a celle du token
+    //dans le if c'est si cela ne correspond pas
+    if (req.body.userId && req.body.userId !== userId) {
+      //on peut utiliser throw pour renvoyé une erreur
+      throw "User ID non valable !";
+      //sinon si tout va bien on peut passer la requête au prochain middleware
     } else {
-      return res.status(401).json({
-        status: "error",
-        message: "Authentication error. Token required.",
-      });
+      next();
     }
-  },
+  } catch (error) {
+    //on renvoi une erreur 401 pour une erreur d'authentification
+    //et dans le json si on reçoit une erreur on veut l'envoyé sinon cela envoi un message
+    res.status(401).json({ error: error || "Requête non authentifiée" });
+  }
 };

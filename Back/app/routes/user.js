@@ -25,7 +25,6 @@ router.post("/login", userCtrl.login);
 //////////// READ DATAS ONE USER
 //=================================>
 router.get("/findByName", userCtrl.findByName);
-router.get("/findById", userCtrl.findById);
 
 //=================================>
 //////////// READ DATAS ALL USERS
@@ -51,6 +50,8 @@ router.put("/updatePass", userCtrl.updatePassword);
 //=================================>
 /////////////////// REPORT
 //=================================>
+
+router.get("/read", auth, userCtrl.readUser);
 
 //on exporte le router de ce fichier
 module.exports = router;

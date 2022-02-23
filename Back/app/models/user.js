@@ -25,10 +25,6 @@ module.exports = (sequelize, Sequelize) => {
       unique: true,
       len: [5, 60],
       allowNull: false,
-      validate: {
-        isEmail: { args: true, msg: "Please enter a valid email addresss" },
-      },
-      isEmail: true,
     },
     password: {
       type: Sequelize.STRING(255),
