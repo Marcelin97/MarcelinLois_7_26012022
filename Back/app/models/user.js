@@ -82,7 +82,7 @@ module.exports = (sequelize, Sequelize) => {
     });
     User.hasMany(models.userReport, {
       foreignKey: "fromUserId",
-      as: "user",
+      as: "userFrom",
     });
     User.hasMany(models.postReport, {
       as: "postReport",

@@ -1,11 +1,12 @@
-const db = require("../models"); // models path
-const User = db.user;
-// const Op = db.Sequelize.Op;
+const { user } = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const CryptoJS = require("crypto-js");
-const Auth = require("./../middleware/auth");
+// Import the filesystem module
+const fs = require("fs");
+const path = require("path");
+const dirPath = path.join(__dirname, "export");
 
 //=================================>
 /////////////////// ENCRYPTED EMAIL
@@ -237,87 +238,37 @@ exports.delete = async (req, res) => {
     });
 };
 
-// Import the filesystem module
-const fs = require("fs");
-const { get } = require("https");
-const fsPromise = fs.promises;
-
 // Export user info
-exports.exportUserInfo = async (req, res) => {
-  // First, check if the user exist in the db
-
-  const userDatas = [];
-  const dataFile = `./userDatas/${userId}`;
-
-  // let userGet = await getUserDatas(userId);
-
-  User.findOne({ where: { id: userId } })
-    .then((user) => {
-      if (!user) {
-        return res.status(404).send("User not found");
-      }
-      userDatas.push(JSON.stringify(user.dataValues));
-      console.log(userDatas);
-
-      Post.findAll({ where: { id: userId } })
-        .then((post) => {
-          if (!post) {
-            userDatas.push("You don't have any posts");
-          } else {
-            Post.forEach((post) => {
-              console.log(post);
-              userDatas.push(JSON.stringify(post.dataValues));
-            });
-          }
-          Comment.findAll({ where: { id: userId } })
-            .then((comments) => {
-              if (!comments) {
-                userDatas.push("You do not have any comments");
-              } else {
-                comments.forEach((comment) => {
-                  userDatas.push(JSON.stringify(comment.dataValues));
-                });
-              }
-              fsPromise
-                .writeFile(dataFile, userDatas)
-                .then(() => {
-                  res
-                    .status(201)
-                    .download(
-                      dataFile,
-                      "Vos_données_personnelles.txt",
-                      (err) => {
-                        if (err) {
-                          return res.status(500).json({ err });
-                        }
-                        fsPromise.unlink(dataFile, (err) => {
-                          if (err) {
-                            return res.status(500).json({ err });
-                          }
-                        });
-                      }
-                    );
-                })
-                .catch((error) => {
-                  res.status(500).json({ error });
-                });
-            })
-            .catch((error) => res.status(500).json({ error }));
-        })
-        .catch((error) => res.status(500).json({ error }));
+exports.exportUser = async (req, res) => {
+  user
+    .findOne({
+      include: {
+        association: "comments",
+      },
+      where: {
+        id: req.auth.userID,
+      },
     })
-    .catch((error) => res.status(500).json({ error }));
+    .then((datas) => {
+      const file = JSON.stringify(datas, null, 4);
+      fs.writeFileSync(dirPath + "/datas.txt", file);
+      return res.status(200).send(file);
+    })
+    .catch((error) => res.status(500).json(console.log(error)));
 };
 
+// Read user info
 exports.readUser = async (req, res) => {
-  User.findByPk(req.auth.userID, {
+  user.findOne({
     include: {
       all: true,
     },
+    where: {
+      id : req.auth.userID
+    }
   })
-    .then((user) => {
-      if (user == null) throw new Error("Utilisateur introuvable");
-      return res.status(200).json(user);
+    .then(datas => {
+      res.status(200).json(datas);
     })
     .catch((error) => res.status(500).json(console.log(error)));
 };

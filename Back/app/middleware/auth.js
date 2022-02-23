@@ -13,9 +13,10 @@ module.exports = (req, res, next) => {
     //on va utiliser le package jsonwebtoken et la fonction verify
     //(on vérifie le token et on veut vérifier la clé secrete)
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    // console.log(decodedToken);
     //quand on décode le token cela devient un objet JS
     // donc on va pouvoir récupérer le userId qui est dedans
-    const userId = decodedToken.userId;
+    const userId = decodedToken.id;
     //nous ajoutons un objet  auth  à l'objet de requête qui contient le  userId  extrait du token
     req.auth = { userID: userId };
     //si jamais il y a un userId dans le corp de la requete on veut vérifier que cela correspond bien a celle du token

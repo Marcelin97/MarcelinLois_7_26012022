@@ -34,7 +34,7 @@ router.get("/findAll", userCtrl.findAll);
 //=================================>
 /////////////////// EXPORT DATAS
 //=================================>
-router.get("/export-datas", userCtrl.exportUserInfo);
+router.get("/export", auth, userCtrl.exportUser);
 
 //=================================>
 /////////////////// DELETE
