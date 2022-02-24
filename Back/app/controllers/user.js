@@ -6,7 +6,6 @@ const CryptoJS = require("crypto-js");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
-const dirPath = path.join(__dirname, "export");
 
 //=================================>
 /////////////////// ENCRYPTED EMAIL
@@ -22,9 +21,6 @@ function encrypted(email) {
     }
   ).toString();
 }
-//=================================>
-/////////////////// ENCRYPTED EMAIL
-//=================================>
 
 //=================================>
 /////////////////// DECRYPT EMAIL
@@ -41,23 +37,21 @@ function decryptEmail(email) {
   );
   return bytes.toString(CryptoJS.enc.Utf8);
 }
-//=================================>
-/////////////////// DECRYPT EMAIL
-//=================================>
 
+// Signup a user
 exports.signup = (req, res, next) => {
   if (!req.body.username && !req.body.email) {
     res.status(400).send({
       message: "Content can not be empty!",
     });
     return;
-  }
+  };
 
-  let { firstName, lastName, username, email } = req.body;
+  let { firstName, lastName, username} = req.body;
   const password = bcrypt.hashSync(req.body.password, 10);
   const emailCrypted = encrypted(req.body.email);
 
-  User.create({
+  user.create({
     username,
     firstName,
     lastName,
@@ -79,12 +73,15 @@ exports.signup = (req, res, next) => {
   });
 };
 
+// Connected a user
 exports.login = (req, res) => {
-  User.findOne({
-    where: {
-      username: req.body.username,
-    },
-  })
+  var emailEncrypted = encrypted(req.body.email);
+  user
+    .findOne({
+      where: {
+        email: emailEncrypted,
+      },
+    })
     .then((user) => {
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
@@ -112,68 +109,91 @@ exports.login = (req, res) => {
     });
 };
 
+// Read user info
+exports.readUser = async (req, res) => {
+      user
+        .findOne({
+          include: {
+            all: true,
+          },
+          where: {
+            id: req.auth.userID,
+          },
+        })
+        .then((datas) => {
+          var emailEncrypted = datas.email;
+          datas.email = decryptEmail(emailEncrypted);
+          res.status(200).json({ datas });
+        })
+        .catch((error) => res.status(500).json({ message: err.message }));
+};
+
 // Retrieve all Users from the database.
-exports.findAll = (req, res) => {
-  User.findAll()
+exports.readAll = (req, res) => {
+  user.findAll()
     .then((users) => {
       if (users.length <= 0) {
         return res.status(404).send("Users not found");
-      }
+      };
       res.status(200).json(users);
     })
     .catch((error) => res.status(500).json({ error }));
 };
 
 // Find a single User with an username
-(exports.findByName = async (req, res) => {
-  User.findOne({
-    where: {
-      username: req.body.username,
-    },
-  })
+exports.readByName = async (req, res) => {
+  user
+    .findOne({
+      include: {
+        all: true,
+      },
+      where: {
+        username: req.body.username,
+      },
+    })
     .then((user) => {
       if (!user) {
         return res.status(404).send("User Not Found.");
       }
-
       res.status(200).send({ user });
     })
     .catch((err) => {
       res.status(500).send("Error -> " + err);
     });
-}),
-  // Update email
-  (exports.updateMail = async (req, res) => {
-    try {
-      const { email } = req.body;
+};
 
-      const exists = await User.findByPk(req.auth.userId, {
-        attributes: ["email"],
-      });
-      if (exists == null) {
-        return res.status(422).json({ error: { message: "User not exist" } });
-      }
+// Update email
+exports.updateMail = async (req, res) => {
+  try {
+    const { email } = req.body;
 
-      const emailAlreadyRegistered = await User.findOne({
-        where: { email },
-        attributes: ["email"],
-      });
-      if (emailAlreadyRegistered) {
-        return res
-          .status(422)
-          .json({ error: { message: "This email is already in use" } });
-      }
-
-      const user = await User.update(
-        { email },
-        { where: { id: userId } }
-        // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
-      );
-      res.status(200).json({ message: "User edit successfully", user });
-    } catch (error) {
-      res.status(401).json({ error: { msg: "Couldn´t edit user" } });
+    const exists = await User.findByPk(req.auth.userId, {
+      attributes: ["email"],
+    });
+    if (exists == null) {
+      return res.status(422).json({ error: { message: "User not exist" } });
     }
-  });
+
+    const emailAlreadyRegistered = await User.findOne({
+      where: { email },
+      attributes: ["email"],
+    });
+    if (emailAlreadyRegistered) {
+      return res
+        .status(422)
+        .json({ error: { message: "This email is already in use" } });
+    }
+
+    const user = await User.update(
+      { email },
+      { where: { id: userId } }
+      // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
+    );
+    res.status(200).json({ message: "User edit successfully", user });
+  } catch (error) {
+    res.status(401).json({ error: { msg: "Couldn´t edit user" } });
+  }
+};
 
 // Update password
 exports.updatePassword = async (req, res) => {
@@ -220,9 +240,12 @@ exports.updatePassword = async (req, res) => {
 
 // Delete a User with the specified id in the request
 exports.delete = async (req, res) => {
-  User.destroy({
-    where: { id: req.auth.userId },
-  })
+  user
+    .destroy({
+      where: {
+        id: req.auth.userID,
+      },
+    })
     .then((userId) => {
       if (!userId) {
         return res.status(404).send({
@@ -242,33 +265,31 @@ exports.delete = async (req, res) => {
 exports.exportUser = async (req, res) => {
   user
     .findOne({
-      include: {
-        association: "comments",
-      },
+      include: [
+        { association: "comments" },
+        { association: "posts" },
+        { association: "moderators" },
+        { association: "likePosts" },
+        { association: "userReported" },
+        { association: "postReport" },
+        { association: "replies" },
+        { association: "messageToUserId" },
+      ],
       where: {
         id: req.auth.userID,
       },
     })
     .then((datas) => {
+      var emailEncrypted = datas.email;
+      datas.email = decryptEmail(emailEncrypted);
+      const dataFile = path.join(
+        __dirname,
+        "export",
+        `datasUser.${req.auth.userID}.txt`
+      );
       const file = JSON.stringify(datas, null, 4);
-      fs.writeFileSync(dirPath + "/datas.txt", file);
+      fs.writeFileSync(dataFile, file);
       return res.status(200).send(file);
-    })
-    .catch((error) => res.status(500).json(console.log(error)));
-};
-
-// Read user info
-exports.readUser = async (req, res) => {
-  user.findOne({
-    include: {
-      all: true,
-    },
-    where: {
-      id : req.auth.userID
-    }
-  })
-    .then(datas => {
-      res.status(200).json(datas);
     })
     .catch((error) => res.status(500).json(console.log(error)));
 };

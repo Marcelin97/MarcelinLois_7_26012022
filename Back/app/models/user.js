@@ -68,9 +68,11 @@ module.exports = (sequelize, Sequelize) => {
       as: "likePosts",
     });
     User.hasMany(models.messagePrivate, {
+      as: "messageFromUserId",
       foreignKey: "fromUserId",
     });
     User.hasMany(models.messagePrivate, {
+      as: "messageToUserId",
       foreignKey: "toUserId",
     });
     User.hasMany(models.notification, {
@@ -87,11 +89,11 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.postReport, {
       as: "postReport",
     });
-    User.hasMany(models.commentReport, {
+    User.hasMany(models.comment, {
       foreignKey: "commentId",
       as: "commentParent",
     });
-    User.hasMany(models.commentReport, {
+    User.hasMany(models.comment, {
       as: "replies",
     });
 

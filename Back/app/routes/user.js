@@ -22,14 +22,19 @@ router.post("/signup", verifySignUp, userCtrl.signup);
 router.post("/login", userCtrl.login);
 
 //=================================>
+///////// READ DATAS CONNECTED USER
+//=================================>
+router.get("/read", auth, userCtrl.readUser);
+
+//=================================>
 //////////// READ DATAS ONE USER
 //=================================>
-router.get("/findByName", userCtrl.findByName);
+router.get("/readByName", userCtrl.readByName);
 
 //=================================>
 //////////// READ DATAS ALL USERS
 //=================================>
-router.get("/findAll", userCtrl.findAll);
+router.get("/readAll", userCtrl.readAll);
 
 //=================================>
 /////////////////// EXPORT DATAS
@@ -39,7 +44,7 @@ router.get("/export", auth, userCtrl.exportUser);
 //=================================>
 /////////////////// DELETE
 //=================================>
-router.delete("/delete", userCtrl.delete);
+router.delete("/delete", auth, userCtrl.delete);
 
 //=================================>
 /////////////////// UPDATE
@@ -50,8 +55,6 @@ router.put("/updatePass", userCtrl.updatePassword);
 //=================================>
 /////////////////// REPORT
 //=================================>
-
-router.get("/read", auth, userCtrl.readUser);
 
 //on exporte le router de ce fichier
 module.exports = router;
