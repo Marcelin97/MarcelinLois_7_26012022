@@ -37,9 +37,9 @@ router.get("/readByName", userCtrl.readByName);
 router.get("/readAll", userCtrl.readAll);
 
 //=================================>
-/////////////////// EXPORT DATAS
+/////////////////// UPDATE
 //=================================>
-router.get("/export", auth, userCtrl.exportUser);
+router.put("/update", auth, userCtrl.update);
 
 //=================================>
 /////////////////// DELETE
@@ -47,10 +47,9 @@ router.get("/export", auth, userCtrl.exportUser);
 router.delete("/delete", auth, userCtrl.delete);
 
 //=================================>
-/////////////////// UPDATE
+/////////////////// EXPORT DATAS
 //=================================>
-router.put("/updateMail", userCtrl.updateMail);
-router.put("/updatePass", userCtrl.updatePassword);
+router.get("/export", auth, userCtrl.exportUser);
 
 //=================================>
 /////////////////// REPORT

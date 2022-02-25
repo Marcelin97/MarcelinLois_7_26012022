@@ -1,0 +1,22 @@
+{
+    "id": 22,
+    "firstName": null,
+    "lastName": null,
+    "username": "TEST",
+    "email": "test@api.fr",
+    "password": "$2a$10$Z9FujeF6uN6D2drb/JmOYOE6imKjaVofHzjFSbFrXpl1DwDuV0nB6",
+    "birthday": "2022-02-24T13:42:53.000Z",
+    "imageUrl": null,
+    "roles": "user",
+    "createdAt": "2022-02-24T13:42:53.000Z",
+    "updatedAt": "2022-02-24T14:47:52.000Z",
+    "communityId": null,
+    "comments": [],
+    "posts": [],
+    "moderators": [],
+    "likePosts": [],
+    "userReported": [],
+    "postReport": [],
+    "replies": [],
+    "messageToUserId": []
+}

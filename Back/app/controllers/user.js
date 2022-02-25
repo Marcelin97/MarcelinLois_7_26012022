@@ -38,6 +38,13 @@ function decryptEmail(email) {
   return bytes.toString(CryptoJS.enc.Utf8);
 }
 
+// check if the string is an email.
+function validateEmail(email) {
+  const res =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return res.test(String(email).toLowerCase());
+}
+
 // Signup a user
 exports.signup = (req, res, next) => {
   if (!req.body.username && !req.body.email) {
@@ -45,32 +52,34 @@ exports.signup = (req, res, next) => {
       message: "Content can not be empty!",
     });
     return;
-  };
+  }
 
-  let { firstName, lastName, username} = req.body;
+  let { firstName, lastName, username } = req.body;
   const password = bcrypt.hashSync(req.body.password, 10);
   const emailCrypted = encrypted(req.body.email);
 
-  user.create({
-    username,
-    firstName,
-    lastName,
-    email: emailCrypted,
-    password,
-  }).then((user) => {
-    return res
-      .status(201)
-      .json({
-        message: "User created successfully",
-        user,
-      })
-      .catch((err) => {
-        return res.status(400).json({
-          message:
-            err.message || "Some error occurred while creating the User.",
+  user
+    .create({
+      username,
+      firstName,
+      lastName,
+      email: emailCrypted,
+      password,
+    })
+    .then((user) => {
+      return res
+        .status(201)
+        .json({
+          message: "User created successfully",
+          user,
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            message:
+              err.message || "Some error occurred while creating the User.",
+          });
         });
-      });
-  });
+    });
 };
 
 // Connected a user
@@ -111,33 +120,21 @@ exports.login = (req, res) => {
 
 // Read user info
 exports.readUser = async (req, res) => {
-      user
-        .findOne({
-          include: {
-            all: true,
-          },
-          where: {
-            id: req.auth.userID,
-          },
-        })
-        .then((datas) => {
-          var emailEncrypted = datas.email;
-          datas.email = decryptEmail(emailEncrypted);
-          res.status(200).json({ datas });
-        })
-        .catch((error) => res.status(500).json({ message: err.message }));
-};
-
-// Retrieve all Users from the database.
-exports.readAll = (req, res) => {
-  user.findAll()
-    .then((users) => {
-      if (users.length <= 0) {
-        return res.status(404).send("Users not found");
-      };
-      res.status(200).json(users);
+  user
+    .findOne({
+      include: {
+        all: true,
+      },
+      where: {
+        id: req.auth.userID,
+      },
     })
-    .catch((error) => res.status(500).json({ error }));
+    .then((datas) => {
+      var emailEncrypted = datas.email;
+      datas.email = decryptEmail(emailEncrypted);
+      res.status(200).json({ datas });
+    })
+    .catch((error) => res.status(500).json({ message: err.message }));
 };
 
 // Find a single User with an username
@@ -162,80 +159,91 @@ exports.readByName = async (req, res) => {
     });
 };
 
-// Update email
-exports.updateMail = async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    const exists = await User.findByPk(req.auth.userId, {
-      attributes: ["email"],
-    });
-    if (exists == null) {
-      return res.status(422).json({ error: { message: "User not exist" } });
-    }
-
-    const emailAlreadyRegistered = await User.findOne({
-      where: { email },
-      attributes: ["email"],
-    });
-    if (emailAlreadyRegistered) {
-      return res
-        .status(422)
-        .json({ error: { message: "This email is already in use" } });
-    }
-
-    const user = await User.update(
-      { email },
-      { where: { id: userId } }
-      // { attributes: { exclude: ["password", "createdAt", "updatedAt"] } }
-    );
-    res.status(200).json({ message: "User edit successfully", user });
-  } catch (error) {
-    res.status(401).json({ error: { msg: "Couldn´t edit user" } });
-  }
+// Retrieve all Users from the database.
+exports.readAll = (req, res) => {
+  user
+    .findAll()
+    .then((users) => {
+      if (users.length <= 0) {
+        return res.status(404).send("Users not found");
+      }
+      res.status(200).json(users);
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
 
 // Update password
-exports.updatePassword = async (req, res) => {
-  // First, check if the user exist in the db
-  User.findOne({ where: { id: req.auth.userId } })
+exports.update = async (req, res) => {
+  user
+    .findOne({
+      where: { id: req.auth.userID },
+    })
     .then((user) => {
       // if not, respond with a 404 code
       if (!user) {
         return res.status(404).send("User not found");
       }
-      // Then, check if the old password is valid
-      bcrypt
-        .compare(req.body.password, user.password)
-        .then((validPass) => {
-          if (!validPass) {
-            return res.status(401).send("Wrong password");
-          }
-          // Then, hash the new Password
-          bcrypt
-            .hash(req.body.newPassword, 10)
-            .then((newPassword) => {
-              // Finally update the password with the new one
-              User.update(
-                { password: newPassword },
-                {
-                  where: {
-                    id: userId,
-                  },
-                }
-              )
-                .then((response) =>
-                  res
-                    .status(200)
-                    .json({ user, message: "User updated successfully" })
-                )
-                .catch((error) => res.status(500).json({ error }));
-            })
-            .catch((error) => res.status(500).json({ error }));
-        })
-        .catch((error) => res.status(500).json({ error }));
+
+      // If user change password
+      // Check if the old password is valid
+      bcrypt.compare(req.body.password, user.password).then((validPass) => {
+        if (!validPass) {
+          return res
+            .status(401)
+            .send("The old password does not match the account password");
+        }
+
+        if (req.body.newPassword == req.body.password) {
+          return res
+            .status(401)
+            .send(
+              "Old password and new password can't be the same. You need to change the new password !"
+            );
+        }
+
+        // Then, hash the new Password
+        bcrypt
+          .hash(req.body.newPassword, 10)
+          .then((newPassword) => {
+            user.update(
+              { password: newPassword },
+              { where: { id: req.auth.userID } }
+            );
+            console.log(req.body.newPassword);
+            res.send({ message: "Password update successfully!" });
+          })
+          .catch((err) => {
+            res
+              .status(500)
+              .send(err, { message: "Could not update password user" });
+          });
+      });
+
+      // If user change email
+      if (req.body.newEmail) {
+        console.log(req.body.newEmail);
+        if (!req.body.email) {
+          return res.status(401).send("Old email is required !");
+        }
+
+        // Check new email validation
+        if (!validateEmail(req.body.newEmail)) {
+          return res
+            .status(400)
+            .json({ error: "The specified email is invalid." });
+        }
+      }
+      const emailAlreadyRegistered = req.body.newEmail;
+      // Encrypt email
+      var emailEncrypted = encrypted(emailAlreadyRegistered);
+      encrypted(emailAlreadyRegistered);
+      user.update(
+        { email: emailEncrypted },
+        { where: { id: req.auth.userID } }
+      );
+      res.send({ message: "Email update successfully!" });
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((error) => res.status(500).json(console.log(error)));
 };
 
 // Delete a User with the specified id in the request
