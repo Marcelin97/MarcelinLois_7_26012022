@@ -139,7 +139,7 @@ exports.readUser = async (req, res) => {
       data.email = decryptEmail(emailEncrypted);
       res.status(200).json({
         status: 200,
-        data
+        data,
       });
     })
     .catch((error) => res.status(500).json({ message: err.message }));
@@ -162,11 +162,11 @@ exports.readByName = async (req, res) => {
       }
       res.status(200).send({
         status: 200,
-        user
+        user,
       });
     })
     .catch((err) => {
-      res.status(500).send({ message : err.message });
+      res.status(500).send({ message: err.message });
     });
 };
 
@@ -180,10 +180,10 @@ exports.readAll = (req, res) => {
       }
       res.status(200).json({
         status: 200,
-        data: users
+        data: users,
       });
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((error) => res.status(500).json({ message: error.message }));
 };
 
 // Update password
@@ -192,7 +192,7 @@ exports.update = async (req, res) => {
     .findOne({
       where: { id: req.auth.userID },
     })
-    .then((user) => {
+    .then(async (user) => {
       // if not, respond with a 404 code
       if (!user) {
         return res.status(404).send("User not found");
@@ -215,15 +215,47 @@ exports.update = async (req, res) => {
 
       // 3 send back modified user
 
-      const { oldPassword, newPassword, newEmail } = req.body;
+      const { password, newPassword, newEmail } = req.body;
 
-      if (oldPassword != undefined && newPassword != undefined) {
+      if (newPassword != undefined) {
         // do 1
+        if (newPassword == password) {
+          return res
+            .status(401)
+            .send(
+              "Old password and new password can't be the same. You need to change the new password !"
+            );
+        };
+        
+        try {
+          const hashPass = await bcrypt.hash(newPassword, 10);
+          console.log(hashPass);
+
+            user.update(
+              {
+                password: hashPass,
+              },
+              { where: { id: req.auth.userID } }
+            );
+        } catch (err) {
+          console.log(err);
+        }
       }
 
       if (newEmail != undefined) {
         // do 2
+        if (newEmail) {
+          console.log(newEmail);
+          // Encrypt email
+          var emailEncrypted = encrypted(newEmail);
+        }
       }
+      user.update(
+        {
+          email: emailEncrypted,
+        },
+        { where: { id: req.auth.userID } }
+      );
 
       // 3
       res.status(200).json({
@@ -231,91 +263,38 @@ exports.update = async (req, res) => {
         data: user,
       });
 
-      return;
+      // // If user change password
+      // // Check if the old password is valid
+      // try {
+      //   const result = bcrypt.compare(oldPassword, user.password);
 
-      // If user change password
-      // Check if the old password is valid
-      try {
-        const result = await bcrypt.compare(oldPassword, user.password);
+      //   //.then
+      //   if (newPassword == oldPassword) {
+      //     return res
+      //       .status(401)
+      //       .send(
+      //         "Old password and new password can't be the same. You need to change the new password !"
+      //       );
+      //   }
+      //   try {
+      //     const result = bcrypt.hash(newPassword, 10);
 
-        //.then
-        if (newPassword == oldPassword) {
-          return res
-            .status(401)
-            .send(
-              "Old password and new password can't be the same. You need to change the new password !"
-            );
-        };
-        try {
-          const result = await bcrypt.hash(newPassword, 10);
+      //     console.log(result);
 
-          console.log(result);
-          
-          //.then
-          user.update(
-            { password: newPassword },
-            { where: { id: req.auth.userID } }
-          );
-          console.log(newPassword);
-          res.
-            status(200)
-          .json({ message: "Password update successfully!" });
-        } catch(e) {
-          //.catch
-        }
-      } catch(e) {
-        //.catch
-      }
+      //     //.then
+      //     user.update(
+      //       { password: newPassword },
+      //       { where: { id: req.auth.userID } }
+      //     );
+      //     console.log(newPassword);
+      //     res.status(200).json({ message: "Password update successfully!" });
+      //   } catch (e) {
+      //     //.catch
+      //   }
+      // } catch (e) {
+      //   //.catch
+      // }
 
-      bcrypt.compare(req.body.password, user.password)
-        .then((validPass) => {
-        if (req.body.newPassword == req.body.password) {
-          return res
-            .status(401)
-            .send(
-              "Old password and new password can't be the same. You need to change the new password !"
-            );
-        }
-
-        // Then, hash the new Password
-        bcrypt
-          .hash(req.body.newPassword, 10)
-          .then((newPassword) => {
-            user.update(
-              { password: newPassword },
-              { where: { id: req.auth.userID } }
-            );
-            console.log(req.body.newPassword);
-            res.send({ message: "Password update successfully!" });
-          })
-          .catch((err) => {
-            res
-              .status(500)
-              .send(err, { message: "Could not update password user" });
-          });
-      });
-
-      // If user change email
-      if (req.body.newEmail) {
-        console.log(req.body.newEmail);
-        // Check new email validation
-        if (!validateEmail(req.body.newEmail)) {
-          return res
-            .status(400)
-            .json({ error: "The specified email is invalid." });
-        }
-
-        const emailAlreadyRegistered = req.body.newEmail;
-        // Encrypt email
-        var emailEncrypted = encrypted(emailAlreadyRegistered);
-        encrypted(emailAlreadyRegistered);
-        user.update(
-          { email: emailEncrypted },
-          { where: { id: req.auth.userID } }
-        );
-      }
-      
-      res.send({ message: "Email update successfully!" });
       // res.json(user);
 
       // do 3
