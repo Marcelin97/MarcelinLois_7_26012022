@@ -6,20 +6,19 @@ const strongPasswordRegex = new RegExp(
 
 module.exports.registerValidation = (req, res, next) => {
   const schema = Joi.object().keys({
-    email: Joi.string().trim().email().min(6).required(),
-    newEmail: Joi.string().trim().email().min(6).required(),
-    // password: Joi.string()
-    //   .min(8)
-    //   .max(16)
-    //   .pattern(strongPasswordRegex)
-    //   .trim()
-    //   .required(),
-    newPassword: Joi.string()
+    email: Joi.string().trim().email().min(6),
+    newEmail: Joi.string().trim().email().min(6),
+    password: Joi.string()
       .min(8)
       .max(16)
       .pattern(strongPasswordRegex)
       .trim()
       .required(),
+    newPassword: Joi.string()
+      .min(8)
+      .max(16)
+      .pattern(strongPasswordRegex)
+      .trim()
   });
   try {
     const { error } = schema.validate({ ...req.body });

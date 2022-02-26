@@ -6,6 +6,7 @@ const CryptoJS = require("crypto-js");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
+const { Console } = require("console");
 
 //=================================>
 /////////////////// ENCRYPTED EMAIL
@@ -199,24 +200,10 @@ exports.update = async (req, res) => {
       }
 
       // verification of req.body with Joi
-      // res.status(400);
-
-      // possible call
-      // 1 2 3
-      // 1 3 => only if patch allowed
-      // 2 3 => only if patch allowed
-      // 3   => only if patch allowed
-
-      // 1 if password changed
-      // do the change
-
-      // 2 if email change
-      // do the change
-
-      // 3 send back modified user
 
       const { password, newPassword, newEmail } = req.body;
-
+      // 1 if password changed
+      // do the change
       if (newPassword != undefined) {
         // do 1
         if (newPassword == password) {
@@ -227,79 +214,60 @@ exports.update = async (req, res) => {
             );
         };
         
-        try {
-          const hashPass = await bcrypt.hash(newPassword, 10);
-          console.log(hashPass);
 
+        // try {
+        //   // Check if the old password is valid
+        //   const result = bcrypt.compare(password, user.password);
+        //   if (!result) {
+        //     return res.status(403).json({ error: "Incorrect password !" });
+        //   };
+          try {
+            // Hash the new password
+            const hashPass = await bcrypt.hash(newPassword, 10);
+
+            // 3 send back modified user
             user.update(
-              {
-                password: hashPass,
-              },
+              { password: hashPass },
               { where: { id: req.auth.userID } }
             );
-        } catch (err) {
-          console.log(err);
-        }
+          } catch (err) {
+            console.log(err);
+          }
+        // } catch (error) {
+        //   console.log(error)
+        // }
       }
 
+      // 2 if email change
+      // do the change
       if (newEmail != undefined) {
         // do 2
         if (newEmail) {
-          console.log(newEmail);
+          // console.log(newEmail);
           // Encrypt email
           var emailEncrypted = encrypted(newEmail);
         }
       }
+
+      // 3 send back modified user
       user.update(
-        {
-          email: emailEncrypted,
-        },
+        { email: emailEncrypted },
         { where: { id: req.auth.userID } }
       );
 
-      // 3
+      // do 3
       res.status(200).json({
         status: 200,
         data: user,
       });
 
-      // // If user change password
-      // // Check if the old password is valid
-      // try {
-      //   const result = bcrypt.compare(oldPassword, user.password);
-
-      //   //.then
-      //   if (newPassword == oldPassword) {
-      //     return res
-      //       .status(401)
-      //       .send(
-      //         "Old password and new password can't be the same. You need to change the new password !"
-      //       );
-      //   }
-      //   try {
-      //     const result = bcrypt.hash(newPassword, 10);
-
-      //     console.log(result);
-
-      //     //.then
-      //     user.update(
-      //       { password: newPassword },
-      //       { where: { id: req.auth.userID } }
-      //     );
-      //     console.log(newPassword);
-      //     res.status(200).json({ message: "Password update successfully!" });
-      //   } catch (e) {
-      //     //.catch
-      //   }
-      // } catch (e) {
-      //   //.catch
-      // }
-
-      // res.json(user);
-
-      // do 3
     })
-    .catch((error) => res.status(500).json(console.log(error)));
+    .catch((error) =>
+      res.status(500).json({
+        error: error.name,
+        message: error.message,
+      })
+    );
 };
 
 // Delete a User with the specified id in the request
@@ -316,12 +284,16 @@ exports.delete = async (req, res) => {
           message: "User not found",
         });
       }
-      return res.status(200).json({
+      return res.status(204).json({
+        status: 204,
         message: "User Deleted successfully",
       });
     })
     .catch((error) => {
-      return res.status(400).json({ error });
+      return res.status(400).json({
+        error: error.name,
+        message: error.message,
+      });
     });
 };
 
@@ -353,7 +325,15 @@ exports.exportUser = async (req, res) => {
       );
       const file = JSON.stringify(datas, null, 4);
       fs.writeFileSync(dataFile, file);
-      return res.status(200).send(file);
+      return res.status(200).send({
+        status: 200,
+        file,
+      });
     })
-    .catch((error) => res.status(500).json(console.log(error)));
+    .catch((error) =>
+      res.status(500).json({
+        error: error.name,
+        message: error.message,
+      })
+    );
 };
