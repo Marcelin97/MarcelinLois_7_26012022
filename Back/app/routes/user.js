@@ -11,6 +11,9 @@ const auth = require("../middleware/auth");
 //middleware verify username and email
 const verifySignUp = require("../middleware/verifySignUp");
 
+// middleware de vérification pour l'email et le mdp
+const { registerValidation } = require("../middleware/inputValidation");
+
 //=================================>
 /////////////////// SIGNUP
 //=================================>
@@ -39,7 +42,7 @@ router.get("/readAll", userCtrl.readAll);
 //=================================>
 /////////////////// UPDATE
 //=================================>
-router.put("/update", auth, userCtrl.update);
+router.patch("/update", auth, registerValidation, userCtrl.update);
 
 //=================================>
 /////////////////// DELETE

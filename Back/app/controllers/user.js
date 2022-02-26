@@ -54,6 +54,11 @@ exports.signup = (req, res, next) => {
     return;
   }
 
+  // Check email validation
+  if (!validateEmail(req.body.email)) {
+    return res.status(400).json({ error: "L'email indiqué est invalide." });
+  }
+
   let { firstName, lastName, username } = req.body;
   const password = bcrypt.hashSync(req.body.password, 10);
   const emailCrypted = encrypted(req.body.email);
@@ -129,10 +134,13 @@ exports.readUser = async (req, res) => {
         id: req.auth.userID,
       },
     })
-    .then((datas) => {
-      var emailEncrypted = datas.email;
-      datas.email = decryptEmail(emailEncrypted);
-      res.status(200).json({ datas });
+    .then((data) => {
+      var emailEncrypted = data.email;
+      data.email = decryptEmail(emailEncrypted);
+      res.status(200).json({
+        status: 200,
+        data
+      });
     })
     .catch((error) => res.status(500).json({ message: err.message }));
 };
@@ -152,10 +160,13 @@ exports.readByName = async (req, res) => {
       if (!user) {
         return res.status(404).send("User Not Found.");
       }
-      res.status(200).send({ user });
+      res.status(200).send({
+        status: 200,
+        user
+      });
     })
     .catch((err) => {
-      res.status(500).send("Error -> " + err);
+      res.status(500).send({ message : err.message });
     });
 };
 
@@ -167,7 +178,10 @@ exports.readAll = (req, res) => {
       if (users.length <= 0) {
         return res.status(404).send("Users not found");
       }
-      res.status(200).json(users);
+      res.status(200).json({
+        status: 200,
+        data: users
+      });
     })
     .catch((error) => res.status(500).json({ error }));
 };
@@ -184,15 +198,77 @@ exports.update = async (req, res) => {
         return res.status(404).send("User not found");
       }
 
+      // verification of req.body with Joi
+      // res.status(400);
+
+      // possible call
+      // 1 2 3
+      // 1 3 => only if patch allowed
+      // 2 3 => only if patch allowed
+      // 3   => only if patch allowed
+
+      // 1 if password changed
+      // do the change
+
+      // 2 if email change
+      // do the change
+
+      // 3 send back modified user
+
+      const { oldPassword, newPassword, newEmail } = req.body;
+
+      if (oldPassword != undefined && newPassword != undefined) {
+        // do 1
+      }
+
+      if (newEmail != undefined) {
+        // do 2
+      }
+
+      // 3
+      res.status(200).json({
+        status: 200,
+        data: user,
+      });
+
+      return;
+
       // If user change password
       // Check if the old password is valid
-      bcrypt.compare(req.body.password, user.password).then((validPass) => {
-        if (!validPass) {
+      try {
+        const result = await bcrypt.compare(oldPassword, user.password);
+
+        //.then
+        if (newPassword == oldPassword) {
           return res
             .status(401)
-            .send("The old password does not match the account password");
-        }
+            .send(
+              "Old password and new password can't be the same. You need to change the new password !"
+            );
+        };
+        try {
+          const result = await bcrypt.hash(newPassword, 10);
 
+          console.log(result);
+          
+          //.then
+          user.update(
+            { password: newPassword },
+            { where: { id: req.auth.userID } }
+          );
+          console.log(newPassword);
+          res.
+            status(200)
+          .json({ message: "Password update successfully!" });
+        } catch(e) {
+          //.catch
+        }
+      } catch(e) {
+        //.catch
+      }
+
+      bcrypt.compare(req.body.password, user.password)
+        .then((validPass) => {
         if (req.body.newPassword == req.body.password) {
           return res
             .status(401)
@@ -222,26 +298,27 @@ exports.update = async (req, res) => {
       // If user change email
       if (req.body.newEmail) {
         console.log(req.body.newEmail);
-        if (!req.body.email) {
-          return res.status(401).send("Old email is required !");
-        }
-
         // Check new email validation
         if (!validateEmail(req.body.newEmail)) {
           return res
             .status(400)
             .json({ error: "The specified email is invalid." });
         }
+
+        const emailAlreadyRegistered = req.body.newEmail;
+        // Encrypt email
+        var emailEncrypted = encrypted(emailAlreadyRegistered);
+        encrypted(emailAlreadyRegistered);
+        user.update(
+          { email: emailEncrypted },
+          { where: { id: req.auth.userID } }
+        );
       }
-      const emailAlreadyRegistered = req.body.newEmail;
-      // Encrypt email
-      var emailEncrypted = encrypted(emailAlreadyRegistered);
-      encrypted(emailAlreadyRegistered);
-      user.update(
-        { email: emailEncrypted },
-        { where: { id: req.auth.userID } }
-      );
+      
       res.send({ message: "Email update successfully!" });
+      // res.json(user);
+
+      // do 3
     })
     .catch((error) => res.status(500).json(console.log(error)));
 };
