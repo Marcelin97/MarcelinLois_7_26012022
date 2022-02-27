@@ -6,7 +6,6 @@ const CryptoJS = require("crypto-js");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
-const { Console } = require("console");
 
 //=================================>
 /////////////////// ENCRYPTED EMAIL
@@ -99,14 +98,14 @@ exports.login = (req, res) => {
     })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(404).json({ message: "User Not found." });
       }
       var passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
       );
       if (!passwordIsValid) {
-        return res.status(401).send({
+        return res.status(401).json({
           accessToken: null,
           message: "Invalid Password!",
         });
@@ -120,7 +119,10 @@ exports.login = (req, res) => {
       });
     })
     .catch((error) => {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        error: error.name,
+        message: error.message,
+      });
     });
 };
 
@@ -143,7 +145,12 @@ exports.readUser = async (req, res) => {
         data,
       });
     })
-    .catch((error) => res.status(500).json({ message: error.message }));
+    .catch((error) =>
+      res.status(500).json({
+        error: error.name,
+        message: error.message,
+      })
+    );
 };
 
 // Find a single User with an username
@@ -167,7 +174,10 @@ exports.readByName = async (req, res) => {
       });
     })
     .catch((error) => {
-      res.status(500).send({ message: error.message });
+      res.status(500).json({
+        error: error.name,
+        message: error.message,
+      });
     });
 };
 
@@ -177,14 +187,19 @@ exports.readAll = (req, res) => {
     .findAll()
     .then((users) => {
       if (users.length <= 0) {
-        return res.status(404).send("Users not found");
+        return res.status(404).json({ message: "Users not found" });
       }
       res.status(200).json({
         status: 200,
         data: users,
       });
     })
-    .catch((error) => res.status(500).json({ message: error.message }));
+    .catch((error) =>
+      res.status(500).json({
+        error: error.name,
+        message: error.message
+      })
+    );
 };
 
 // Update password
@@ -196,7 +211,7 @@ exports.update = async (req, res) => {
     .then(async (user) => {
       // if not, respond with a 404 code
       if (!user) {
-        return res.status(404).send("User not found");
+        return res.status(404).json({ message: "User not found" });
       }
 
       // verification of req.body with Joi
@@ -219,7 +234,7 @@ exports.update = async (req, res) => {
               error:
                 "Old password and new password can't be the same. You need to change the new password !",
             });
-          };
+          }
           try {
             // Hash the new password
             const hashPass = await bcrypt.hash(newPassword, 10);
@@ -233,9 +248,8 @@ exports.update = async (req, res) => {
             console.log(error);
           }
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
-        
       }
 
       // 2 if email change
@@ -260,7 +274,6 @@ exports.update = async (req, res) => {
         status: 200,
         data: user,
       });
-
     })
     .catch((error) =>
       res.status(500).json({
@@ -280,7 +293,7 @@ exports.delete = async (req, res) => {
     })
     .then((userId) => {
       if (!userId) {
-        return res.status(404).send({
+        return res.status(404).json({
           message: "User not found",
         });
       }
@@ -325,7 +338,7 @@ exports.exportUser = async (req, res) => {
       );
       const file = JSON.stringify(datas, null, 4);
       fs.writeFileSync(dataFile, file);
-      return res.status(200).send({
+      return res.status(200).json({
         status: 200,
         file,
       });
