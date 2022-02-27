@@ -49,7 +49,7 @@ function validateEmail(email) {
 // Signup a user
 exports.signup = (req, res, next) => {
   if (!req.body.username && !req.body.email) {
-    res.status(400).send({
+    res.status(400).json({
       message: "Content can not be empty!",
     });
     return;
@@ -79,10 +79,10 @@ exports.signup = (req, res, next) => {
           message: "User created successfully",
           user,
         })
-        .catch((err) => {
+        .catch((error) => {
           return res.status(400).json({
             message:
-              err.message || "Some error occurred while creating the User.",
+              error.message || "Some error occurred while creating the User.",
           });
         });
     });
@@ -114,13 +114,13 @@ exports.login = (req, res) => {
       var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
         expiresIn: 86400, // 24 hours
       });
-      res.status(200).send({
+      res.status(200).json({
         user,
         accessToken: token,
       });
     })
-    .catch((err) => {
-      res.status(500).send({ message: err.message });
+    .catch((error) => {
+      res.status(500).json({ message: error.message });
     });
 };
 
@@ -143,7 +143,7 @@ exports.readUser = async (req, res) => {
         data,
       });
     })
-    .catch((error) => res.status(500).json({ message: err.message }));
+    .catch((error) => res.status(500).json({ message: error.message }));
 };
 
 // Find a single User with an username
@@ -159,15 +159,15 @@ exports.readByName = async (req, res) => {
     })
     .then((user) => {
       if (!user) {
-        return res.status(404).send("User Not Found.");
+        return res.status(404).json({ message: "User Not Found." });
       }
-      res.status(200).send({
+      res.status(200).json({
         status: 200,
         user,
       });
     })
-    .catch((err) => {
-      res.status(500).send({ message: err.message });
+    .catch((error) => {
+      res.status(500).send({ message: error.message });
     });
 };
 
@@ -206,21 +206,20 @@ exports.update = async (req, res) => {
       // do the change
       if (newPassword != undefined) {
         // do 1
-        if (newPassword == password) {
-          return res
-            .status(401)
-            .send(
-              "Old password and new password can't be the same. You need to change the new password !"
-            );
-        };
-        
+        try {
+          // Check if the old password is valid
+          const result = await bcrypt.compare(password, user.password);
+          if (!result) {
+            return res.status(403).json({ error: "Incorrect password !" });
+          }
 
-        // try {
-        //   // Check if the old password is valid
-        //   const result = bcrypt.compare(password, user.password);
-        //   if (!result) {
-        //     return res.status(403).json({ error: "Incorrect password !" });
-        //   };
+          //Check if the newPassword is different
+          if (newPassword == password) {
+            return res.status(401).json({
+              error:
+                "Old password and new password can't be the same. You need to change the new password !",
+            });
+          };
           try {
             // Hash the new password
             const hashPass = await bcrypt.hash(newPassword, 10);
@@ -230,12 +229,13 @@ exports.update = async (req, res) => {
               { password: hashPass },
               { where: { id: req.auth.userID } }
             );
-          } catch (err) {
-            console.log(err);
+          } catch (error) {
+            console.log(error);
           }
-        // } catch (error) {
-        //   console.log(error)
-        // }
+        } catch (error) {
+          console.log(error)
+        }
+        
       }
 
       // 2 if email change
@@ -243,8 +243,7 @@ exports.update = async (req, res) => {
       if (newEmail != undefined) {
         // do 2
         if (newEmail) {
-          // console.log(newEmail);
-          // Encrypt email
+          // Encrypt new email
           var emailEncrypted = encrypted(newEmail);
         }
       }
@@ -257,6 +256,7 @@ exports.update = async (req, res) => {
 
       // do 3
       res.status(200).json({
+        message: "User updated successfully",
         status: 200,
         data: user,
       });
