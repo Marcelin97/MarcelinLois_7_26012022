@@ -42,7 +42,7 @@ module.exports = app;
 //=================================>
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 // parse application/json
 app.use(bodyParser.json())
 
@@ -68,7 +68,7 @@ const session = require("express-session");
 app.set('trust proxy', 1) // trust first proxy
 app.use(
   session({
-    secret: "keyboard cat", // secret string used in the signing of the session ID that is stored in the cookie
+    secret: "keyboard_cat", // secret string used in the signing of the session ID that is stored in the cookie
     resave: false,
     saveUninitialized: false,
     cookie: {

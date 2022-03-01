@@ -11,13 +11,13 @@ const auth = require("../middleware/auth");
 //middleware verify username and email
 const verifySignUp = require("../middleware/verifySignUp");
 
-// middleware de vérification pour l'email et le mdp
-const { registerValidation } = require("../middleware/inputValidation");
+//middleware pour les fichiers
+const multer = require('../middleware/multer-config');
 
 //=================================>
 /////////////////// SIGNUP
 //=================================>
-router.post("/signup", verifySignUp, userCtrl.signup);
+router.post("/signup", verifySignUp, multer, userCtrl.signup);
 
 //=================================>
 /////////////////// LOGIN
@@ -42,7 +42,7 @@ router.get("/readAll", userCtrl.readAll);
 //=================================>
 /////////////////// UPDATE
 //=================================>
-router.patch("/update", auth, registerValidation, userCtrl.update);
+// router.patch("/update", auth, registerValidation, userCtrl.update);
 
 //=================================>
 /////////////////// DELETE
@@ -53,6 +53,11 @@ router.delete("/delete", auth, userCtrl.delete);
 /////////////////// EXPORT DATAS
 //=================================>
 router.get("/export", auth, userCtrl.exportUser);
+
+//=================================>
+/////////////////// LOGOUT
+//=================================>
+router.post("/logout", auth, userCtrl.logout);
 
 //=================================>
 /////////////////// REPORT

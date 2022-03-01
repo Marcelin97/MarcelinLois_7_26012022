@@ -8,12 +8,12 @@ module.exports.registerValidation = (req, res, next) => {
   const schema = Joi.object().keys({
     email: Joi.string().trim().email().min(6),
     newEmail: Joi.string().trim().email().min(6),
-    password: Joi.string()
+    oldPassword: Joi.string()
       .min(8)
       .max(16)
       .pattern(strongPasswordRegex)
-      .trim()
-      .required(),
+      .trim(),
+      // .required(),
     newPassword: Joi.string()
       .min(8)
       .max(16)

@@ -11,7 +11,11 @@ module.exports = (sequelize, Sequelize) => {
     username: {
       type: Sequelize.STRING,
       required: true,
+      allowNull: false,
+      unique: true,
       validate: {
+        notEmpty: true,
+        isAlphanumeric: true,
         len: {
           args: [3, 25],
           msg: "The username needs to be between 3 and 25 characteres long",
@@ -23,12 +27,15 @@ module.exports = (sequelize, Sequelize) => {
       trim: true,
       required: true,
       unique: true,
-      len: [5, 60],
+      len: [1, 60],
       allowNull: false,
     },
     password: {
       type: Sequelize.STRING(255),
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
       validate: {
         isLongEnough: function (val) {
           if (val.length < 8) {
@@ -38,13 +45,15 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     birthday: {
+      // ex : "birthday": "1990-02-17" - "year-month-day"
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW,
     },
     imageUrl: {
       type: Sequelize.STRING,
-      required: false,
-      default: "",
+      validate: {
+        notEmpty: true,
+      },
     },
     roles: {
       type: Sequelize.ENUM(["user", "admin"]),

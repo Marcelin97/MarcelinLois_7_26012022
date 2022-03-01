@@ -38,53 +38,67 @@ function decryptEmail(email) {
   return bytes.toString(CryptoJS.enc.Utf8);
 }
 
-// check if the string is an email.
+// Check if the string is an email.
 function validateEmail(email) {
   const res =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return res.test(String(email).toLowerCase());
 }
 
+// Password regex
+const passwordRegex = new RegExp(
+  /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
+);
+
 // Signup a user
-exports.signup = (req, res, next) => {
+exports.signup = async (req, res, next) => {
+  // Check if request contain username and email
   if (!req.body.username && !req.body.email) {
-    res.status(400).json({
-      message: "Content can not be empty!",
-    });
-    return;
+    return res.status(400).json({ error : "Content can not be empty!" });
   }
 
   // Check email validation
   if (!validateEmail(req.body.email)) {
-    return res.status(400).json({ error: "L'email indiqué est invalide." });
+    return res.status(400).json({ error : "L'email indiqué est invalide." });
   }
 
-  let { firstName, lastName, username } = req.body;
-  const password = bcrypt.hashSync(req.body.password, 10);
+  // Check password validation
+  if (passwordRegex.test(req.body.password) == false) {
+    return res.status(401).send("Please enter a strong password");
+  }
+
+  // Path to my default image
+  image = `${req.protocol}://${req.get("host")}/images/public/anonyme_avatar.png`;
+
+  //  Crypte email
   const emailCrypted = encrypted(req.body.email);
 
-  user
-    .create({
-      username,
-      firstName,
-      lastName,
-      email: emailCrypted,
-      password,
-    })
-    .then((user) => {
-      return res
-        .status(201)
-        .json({
-          message: "User created successfully",
-          user,
+  // Hash password
+  bcrypt
+    .hash(req.body.password, 10)
+    .then((hashPass) => {
+      const userObject = {
+        ...req.body,
+        email: emailCrypted,
+        password: hashPass,
+        imageUrl: req.file ? req.file.location : image,
+      };
+      user
+        .create(userObject)
+        .then((createdUser) => {
+          res.status(201).send({
+            status: 200,
+            message: "User created successfully",
+            createdUser,
+          });
         })
         .catch((error) => {
-          return res.status(400).json({
-            message:
-              error.message || "Some error occurred while creating the User.",
-          });
+          res.status(500).json({ error });
         });
-    });
+    })
+    .catch((error) =>
+      res.status(500).json({ error: error.name, message: error.message || "Some error occurred while creating the User." })
+    );
 };
 
 // Connected a user
@@ -114,8 +128,9 @@ exports.login = (req, res) => {
         expiresIn: 86400, // 24 hours
       });
       res.status(200).json({
-        user,
+        status: 200,
         accessToken: token,
+        user,
       });
     })
     .catch((error) => {
@@ -197,91 +212,63 @@ exports.readAll = (req, res) => {
     .catch((error) =>
       res.status(500).json({
         error: error.name,
-        message: error.message
-      })
-    );
-};
-
-// Update password
-exports.update = async (req, res) => {
-  user
-    .findOne({
-      where: { id: req.auth.userID },
-    })
-    .then(async (user) => {
-      // if not, respond with a 404 code
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      // verification of req.body with Joi
-
-      const { password, newPassword, newEmail } = req.body;
-      // 1 if password changed
-      // do the change
-      if (newPassword != undefined) {
-        // do 1
-        try {
-          // Check if the old password is valid
-          const result = await bcrypt.compare(password, user.password);
-          if (!result) {
-            return res.status(403).json({ error: "Incorrect password !" });
-          }
-
-          //Check if the newPassword is different
-          if (newPassword == password) {
-            return res.status(401).json({
-              error:
-                "Old password and new password can't be the same. You need to change the new password !",
-            });
-          }
-          try {
-            // Hash the new password
-            const hashPass = await bcrypt.hash(newPassword, 10);
-
-            // 3 send back modified user
-            user.update(
-              { password: hashPass },
-              { where: { id: req.auth.userID } }
-            );
-          } catch (error) {
-            console.log(error);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      // 2 if email change
-      // do the change
-      if (newEmail != undefined) {
-        // do 2
-        if (newEmail) {
-          // Encrypt new email
-          var emailEncrypted = encrypted(newEmail);
-        }
-      }
-
-      // 3 send back modified user
-      user.update(
-        { email: emailEncrypted },
-        { where: { id: req.auth.userID } }
-      );
-
-      // do 3
-      res.status(200).json({
-        message: "User updated successfully",
-        status: 200,
-        data: user,
-      });
-    })
-    .catch((error) =>
-      res.status(500).json({
-        error: error.name,
         message: error.message,
       })
     );
 };
+
+// // Update password
+// exports.update = async (req, res) => {
+//   console.log("test");
+//   user
+//     .findOne({
+//       where: { id: req.auth.userID },
+//     })
+//     .then(async (result) => {
+//       console.log(result);
+//       // if not, respond with a 404 code
+//       if (!result) {
+//         return res.status(404).json({ message: "User not found" });
+//       }
+//       console.log("test")
+//       //Body avec firstname, lastname, username, email, password, imageUrl
+//       //       //Facile : firstname, lastname, username
+//       //       //Gestion image ==> req.body.img = string de l'image après avoir stockée l'image
+//       //       //Gestion password ==> req.body.password
+//       if(req.body.newPassword && req.body.newPassword !== req.body.oldPassword){
+//         const isGoodPassword = await bcrypt.compare(result.password,  req.body.oldPassword);
+//         if (!isGoodPassword) {
+//           return res.status(403).json({ error: "Incorrect old password !" });
+//         }
+
+//         const hashPass = await bcrypt.hash(req.body.newPassword, 10);
+//         req.body.password=hashPass;
+//       }
+
+//       //Gestion email ==> req.body.email
+//       if(req.body.email){
+//         req.body.email=encrypted(req.body.email)
+//       }
+//       console.log(...req.body);
+//       user.update(
+//           req.body,
+//           { where: { id: result.id } }
+//       ).then(() => {
+//         res.status(200).json({
+//           message: "User updated successfully",
+//           status: 200,
+//           data: user,
+//         });
+//       })
+
+//     })
+//     .catch((error) =>
+//       res.status(500).json({
+//         error: error.name,
+//         message: error.message,
+//       })
+//     );
+// };
 
 // Delete a User with the specified id in the request
 exports.delete = async (req, res) => {
@@ -349,4 +336,25 @@ exports.exportUser = async (req, res) => {
         message: error.message,
       })
     );
+};
+
+// Logout
+exports.logout = async (req, res) => {
+  res.cookie("jwt", "", { maxAge: 1 });
+  res.status(200).json({ msg: "Vous vous êtes déconnecté" });
+};
+
+exports.logout = (request, response, next) => {
+  const token = request.cookies.jwt;
+  const decodedToken = jwt.verify(token, `${process.env.TOKEN_KEY}`);
+  const userId = decodedToken.userId;
+
+  if (userId) {
+    response.cookie("jwt", "", { maxAge: 1 });
+    response.redirect("/");
+  } else {
+    return response
+      .status(403)
+      .json({ message: "Vous n'êtes pas authentifié !" });
+  }
 };

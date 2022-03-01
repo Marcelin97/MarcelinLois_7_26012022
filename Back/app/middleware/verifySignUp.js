@@ -1,30 +1,30 @@
-const db = require("../models");
-const User = db.user;
+// const db = require("../models");
+// const User = db.user;
+const { user } = require("../models");
 
 // checkDuplicateUsernameOrEmail
 
 module.exports = (req, res, next) => {
-  // Username
-  User.findOne({
+  user.findOne({
     where: {
-      username: req.body.username
-    }
-  }).then(user => {
-    if (user) {
+      username: req.body.username,
+    },
+  }).then((result) => {
+    if (result) {
       res.status(400).send({
-        message: "Failed! Username is already in use!"
+        message: "Failed! Username is already in use!",
       });
       return;
     }
     // Email
-    User.findOne({
+    user.findOne({
       where: {
-        email: req.body.email
-      }
-    }).then(user => {
-      if (user) {
+        email: req.body.email,
+      },
+    }).then((result) => {
+      if (result) {
         res.status(400).send({
-          message: "Failed! Email is already in use!"
+          message: "Failed! Email is already in use!",
         });
         return;
       }
