@@ -173,7 +173,7 @@ exports.readUser = async (req, res) => {
     );
 };
 
-// Find a single User with an username
+// Find a single user with an username
 exports.readByName = async (req, res) => {
   user
     .findOne({
@@ -184,13 +184,13 @@ exports.readByName = async (req, res) => {
         username: req.body.username,
       },
     })
-    .then((user) => {
-      if (!user) {
+    .then((result) => {
+      if (!result) {
         return res.status(404).json({ message: "User Not Found." });
       }
       res.status(200).json({
         status: 200,
-        user,
+        data: result,
       });
     })
     .catch((error) => {
@@ -222,53 +222,9 @@ exports.readAll = (req, res) => {
     );
 };
 
-// exports.update = async (req, res) => {
-//   const userFind = await user.findOne({ where: { id: req.auth.userID } });
-//   if (!userFind) {
-//     return res.status(404).json({ message: "User not found" });
-//   }
-
-//   try {
-
-//     // si je reçois une image
-//     if (req.files) {
-//       const userObject = req.file
-//         ? {
-//             // Récupère toutes les informations du user
-//             ...JSON.stringify(req.body.user),
-//             // Génère l'image url
-//             imageUrl: `/images/${req.file.filename}`,
-//             // = Si req.file n'existe pas: on prend le corps de la requête
-//           }
-//         : { ...req.body };
-
-//       // Delete the old image
-//       try {
-//         if (userFind.imageUrl) {
-//           fs.unlinkSync(`images/${filename}`);
-//         }
-//       } catch (error) {
-//         console.log(error);
-//       }
-
-//       // modifie l'identifiant de l'objet créé
-
-//     }
-//     userFind
-//       .update({ ...userObject })
-//       .then(() => res.status(200).json({ message: "User modifié !" }))
-//       .catch((error) => res.status(400).json({ error: error.message }));
-//   } catch (error) {
-//     return res
-//       .status(500)
-//       .json({ message: "Something went wrong. Please try again." });
-//   }
-//   return true;
-// };
-
 // Update
 exports.update = async (req, res) => {
-  // 1 formulaire - 1 Body avec firstname, lastname, username, email, password, imageUrl
+  // 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
   user
     .findOne({ where: { id: req.auth.userID } })
     .then(async (result) => {
@@ -295,23 +251,27 @@ exports.update = async (req, res) => {
         console.log(error.message);
       }
 
-      // const filename = result.imageUrl.split("/images/")[1];
-      // console.log(filename);
-      // const userObject = req.file
-      //   ? {
-      //       ...JSON.parse(req.body.sauce),
-      //       imageUrl: `/images/${req.file.filename}`,
-      //     }
-      //   : { ...req.body };
-
-      // // Delete the old image
+      // // Gestion image
       // try {
-      //   if (userObject.imageUrl) {
-      //     fs.unlinkSync(`images/${filename}`);
+      //   const file = req.file;
+      //   if (file) {
+      //     // console.log(file);
+      //     const filename = result.imageUrl.split("/images/")[1];
+      //     // console.log(filename);
+      //     req.body.imageUrl = `/images/${req.file.filename}`;
+      //     // Delete the old image
+      //     try {
+      //       if (result.imageUrl) {
+      //         fs.unlinkSync(`images/${filename}`);
+      //       }
+      //     } catch (error) {
+      //       console.log(error);
+      //     }
       //   }
       // } catch (error) {
-      //   console.log(error);
+      //   console.log(error.message);
       // }
+
       console.log(req.body);
       // console.log(result.id)
       // console.log(req.auth.userID)
@@ -337,7 +297,7 @@ exports.update = async (req, res) => {
     });
 };
 
-// Delete a User with the specified id in the request
+// Delete a user with the specified id in the request
 exports.delete = async (req, res) => {
   user
     .destroy({
