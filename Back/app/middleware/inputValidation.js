@@ -4,21 +4,18 @@ const strongPasswordRegex = new RegExp(
   /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 );
 
-module.exports.registerValidation = (req, res, next) => {
+module.exports.inputValidation = (req, res, next) => {
   const schema = Joi.object().keys({
-    email: Joi.string().trim().email().min(6),
+    firstName: Joi.string().alphanum().min(1).max(30),
+    lastName: Joi.string().alphanum().min(1).max(30),
+    username: Joi.string().alphanum().min(1).max(30),
+    birthday: Joi.string(),
     newEmail: Joi.string().trim().email().min(6),
-    oldPassword: Joi.string()
-      .min(8)
-      .max(16)
-      .pattern(strongPasswordRegex)
-      .trim(),
-      // .required(),
     newPassword: Joi.string()
       .min(8)
       .max(16)
       .pattern(strongPasswordRegex)
-      .trim()
+      .trim(),
   });
   try {
     const { error } = schema.validate({ ...req.body });

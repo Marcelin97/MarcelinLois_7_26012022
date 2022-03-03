@@ -14,6 +14,8 @@ const verifySignUp = require("../middleware/verifySignUp");
 //middleware pour les fichiers
 const multer = require('../middleware/multer-config');
 
+const { inputValidation } = require("../middleware/inputValidation");
+
 //=================================>
 /////////////////// SIGNUP
 //=================================>
@@ -42,7 +44,7 @@ router.get("/readAll", userCtrl.readAll);
 //=================================>
 /////////////////// UPDATE
 //=================================>
-// router.patch("/update", auth, registerValidation, userCtrl.update);
+router.patch("/update", auth, inputValidation, multer, userCtrl.update);
 
 //=================================>
 /////////////////// DELETE

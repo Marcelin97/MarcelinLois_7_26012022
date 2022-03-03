@@ -6,6 +6,7 @@ const CryptoJS = require("crypto-js");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
+const fsPromises = require("fs/promises");
 
 //=================================>
 /////////////////// ENCRYPTED EMAIL
@@ -50,16 +51,15 @@ const passwordRegex = new RegExp(
   /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 );
 
-// Signup a user
 exports.signup = async (req, res, next) => {
   // Check if request contain username and email
   if (!req.body.username && !req.body.email) {
-    return res.status(400).json({ error : "Content can not be empty!" });
+    return res.status(400).json({ error: "Content can not be empty!" });
   }
 
   // Check email validation
   if (!validateEmail(req.body.email)) {
-    return res.status(400).json({ error : "L'email indiqué est invalide." });
+    return res.status(400).json({ error: "L'email indiqué est invalide." });
   }
 
   // Check password validation
@@ -68,7 +68,7 @@ exports.signup = async (req, res, next) => {
   }
 
   // Path to my default image
-  image = `${req.protocol}://${req.get("host")}/images/public/anonyme_avatar.png`;
+  // image = `${req.protocol}://${req.get("host")}/images/public/anonyme_avatar.png`;
 
   //  Crypte email
   const emailCrypted = encrypted(req.body.email);
@@ -78,10 +78,11 @@ exports.signup = async (req, res, next) => {
     .hash(req.body.password, 10)
     .then((hashPass) => {
       const userObject = {
+        // formulaire d'inscription avec username, email, password
         ...req.body,
         email: emailCrypted,
         password: hashPass,
-        imageUrl: req.file ? req.file.location : image,
+        // imageUrl: req.file ? req.file.location : image,
       };
       user
         .create(userObject)
@@ -97,7 +98,11 @@ exports.signup = async (req, res, next) => {
         });
     })
     .catch((error) =>
-      res.status(500).json({ error: error.name, message: error.message || "Some error occurred while creating the User." })
+      res.status(500).json({
+        error: error.name,
+        message:
+          error.message || "Some error occurred while creating the User.",
+      })
     );
 };
 
@@ -217,58 +222,120 @@ exports.readAll = (req, res) => {
     );
 };
 
-// // Update password
 // exports.update = async (req, res) => {
-//   console.log("test");
-//   user
-//     .findOne({
-//       where: { id: req.auth.userID },
-//     })
-//     .then(async (result) => {
-//       console.log(result);
-//       // if not, respond with a 404 code
-//       if (!result) {
-//         return res.status(404).json({ message: "User not found" });
-//       }
-//       console.log("test")
-//       //Body avec firstname, lastname, username, email, password, imageUrl
-//       //       //Facile : firstname, lastname, username
-//       //       //Gestion image ==> req.body.img = string de l'image après avoir stockée l'image
-//       //       //Gestion password ==> req.body.password
-//       if(req.body.newPassword && req.body.newPassword !== req.body.oldPassword){
-//         const isGoodPassword = await bcrypt.compare(result.password,  req.body.oldPassword);
-//         if (!isGoodPassword) {
-//           return res.status(403).json({ error: "Incorrect old password !" });
+//   const userFind = await user.findOne({ where: { id: req.auth.userID } });
+//   if (!userFind) {
+//     return res.status(404).json({ message: "User not found" });
+//   }
+
+//   try {
+
+//     // si je reçois une image
+//     if (req.files) {
+//       const userObject = req.file
+//         ? {
+//             // Récupère toutes les informations du user
+//             ...JSON.stringify(req.body.user),
+//             // Génère l'image url
+//             imageUrl: `/images/${req.file.filename}`,
+//             // = Si req.file n'existe pas: on prend le corps de la requête
+//           }
+//         : { ...req.body };
+
+//       // Delete the old image
+//       try {
+//         if (userFind.imageUrl) {
+//           fs.unlinkSync(`images/${filename}`);
 //         }
-
-//         const hashPass = await bcrypt.hash(req.body.newPassword, 10);
-//         req.body.password=hashPass;
+//       } catch (error) {
+//         console.log(error);
 //       }
 
-//       //Gestion email ==> req.body.email
-//       if(req.body.email){
-//         req.body.email=encrypted(req.body.email)
-//       }
-//       console.log(...req.body);
-//       user.update(
-//           req.body,
-//           { where: { id: result.id } }
-//       ).then(() => {
-//         res.status(200).json({
-//           message: "User updated successfully",
-//           status: 200,
-//           data: user,
-//         });
-//       })
+//       // modifie l'identifiant de l'objet créé
 
-//     })
-//     .catch((error) =>
-//       res.status(500).json({
-//         error: error.name,
-//         message: error.message,
-//       })
-//     );
+//     }
+//     userFind
+//       .update({ ...userObject })
+//       .then(() => res.status(200).json({ message: "User modifié !" }))
+//       .catch((error) => res.status(400).json({ error: error.message }));
+//   } catch (error) {
+//     return res
+//       .status(500)
+//       .json({ message: "Something went wrong. Please try again." });
+//   }
+//   return true;
 // };
+
+// Update
+exports.update = async (req, res) => {
+  // 1 formulaire - 1 Body avec firstname, lastname, username, email, password, imageUrl
+  user
+    .findOne({ where: { id: req.auth.userID } })
+    .then(async (result) => {
+      if (!result) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Gestion e-mail
+      try {
+        if (req.body.newEmail) {
+          req.body.email = encrypted(req.body.email);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+
+      // Gestion password ==> req.body.password
+      try {
+        if (req.body.newPassword) {
+          const hashPass = await bcrypt.hash(req.body.newPassword, 10);
+          req.body.password = hashPass;
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+
+      // const filename = result.imageUrl.split("/images/")[1];
+      // console.log(filename);
+      // const userObject = req.file
+      //   ? {
+      //       ...JSON.parse(req.body.sauce),
+      //       imageUrl: `/images/${req.file.filename}`,
+      //     }
+      //   : { ...req.body };
+
+      // // Delete the old image
+      // try {
+      //   if (userObject.imageUrl) {
+      //     fs.unlinkSync(`images/${filename}`);
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      // }
+      console.log(req.body);
+      // console.log(result.id)
+      // console.log(req.auth.userID)
+      // console.log(result)
+      result
+        .update(req.body, { where: { id: result.id } })
+        .then(() => {
+          res.status(200).json({
+            message: " User updated",
+            status: 200,
+            data: result,
+          });
+        })
+        .catch((error) =>
+          res.status(500).json({ error: error.name, message: error.message })
+        );
+
+      // FIN if USER UPDATED
+    })
+    .catch((error) => {
+      const message = "L'utilisateur n'a pas pu être modifié";
+      res.status(500).json({ error: error.message, message });
+    });
+};
 
 // Delete a User with the specified id in the request
 exports.delete = async (req, res) => {

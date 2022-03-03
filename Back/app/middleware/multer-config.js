@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
     const extension = MIME_TYPES[file.mimetype];
 
     // nous retourne le nom complet comme nous le désirons
-    callback(null, name + "-" + Date.now() + "." + extension);
+    callback(null, name + '-' +Date.now() + "." + extension);
   },
 });
 
