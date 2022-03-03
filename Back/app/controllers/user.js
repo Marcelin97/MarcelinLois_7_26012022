@@ -234,7 +234,7 @@ exports.update = async (req, res) => {
 
       // Gestion e-mail
       try {
-        if (req.body.newEmail) {
+        if (req.body.email) {
           req.body.email = encrypted(req.body.email);
         }
       } catch (error) {
@@ -251,31 +251,32 @@ exports.update = async (req, res) => {
         console.log(error.message);
       }
 
-      // // Gestion image
-      // try {
-      //   const file = req.file;
-      //   if (file) {
-      //     // console.log(file);
-      //     const filename = result.imageUrl.split("/images/")[1];
-      //     // console.log(filename);
-      //     req.body.imageUrl = `/images/${req.file.filename}`;
-      //     // Delete the old image
-      //     try {
-      //       if (result.imageUrl) {
-      //         fs.unlinkSync(`images/${filename}`);
-      //       }
-      //     } catch (error) {
-      //       console.log(error);
-      //     }
-      //   }
-      // } catch (error) {
-      //   console.log(error.message);
-      // }
+      // Gestion image
+      try {
+        const file = req.file;
+        if (file) {
+          // console.log(file);
+          req.body.imageUrl = `/images/${req.file.filename}`;
+          // console.log(req.file.filename);
 
-      console.log(req.body);
-      // console.log(result.id)
-      // console.log(req.auth.userID)
-      // console.log(result)
+          // Delete the old image
+          try {
+            // Si je trouve une image à mon utilisateur
+            if (result.imageUrl) {
+              // je récupère l'image de mon utilisateur
+              const filename = result.imageUrl.split("/images/")[1];
+              // je supprime l'image
+              fs.unlinkSync(`images/${filename}`);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+
+      // console.log(req.body);
       result
         .update(req.body, { where: { id: result.id } })
         .then(() => {
@@ -288,8 +289,6 @@ exports.update = async (req, res) => {
         .catch((error) =>
           res.status(500).json({ error: error.name, message: error.message })
         );
-
-      // FIN if USER UPDATED
     })
     .catch((error) => {
       const message = "L'utilisateur n'a pas pu être modifié";

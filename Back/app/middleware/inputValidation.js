@@ -10,7 +10,7 @@ module.exports.inputValidation = (req, res, next) => {
     lastName: Joi.string().alphanum().min(1).max(30),
     username: Joi.string().alphanum().min(1).max(30),
     birthday: Joi.string(),
-    newEmail: Joi.string().trim().email().min(6),
+    email: Joi.string().trim().email().min(6),
     newPassword: Joi.string()
       .min(8)
       .max(16)
