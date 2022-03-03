@@ -6,7 +6,6 @@ const CryptoJS = require("crypto-js");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
-const fsPromises = require("fs/promises");
 
 //=================================>
 /////////////////// ENCRYPTED EMAIL
@@ -291,7 +290,7 @@ exports.update = async (req, res) => {
         );
     })
     .catch((error) => {
-      const message = "L'utilisateur n'a pas pu être modifié";
+      const message = "User could not be changed";
       res.status(500).json({ error: error.message, message });
     });
 };
@@ -299,29 +298,46 @@ exports.update = async (req, res) => {
 // Delete a user with the specified id in the request
 exports.delete = async (req, res) => {
   user
-    .destroy({
-      where: {
-        id: req.auth.userID,
-      },
-    })
-    .then((userId) => {
-      if (!userId) {
-        return res.status(404).json({
-          message: "User not found",
+    .findOne({ where: { id: req.auth.userID } })
+    .then((result) => {
+      if (result.imageUrl == null) {
+        user
+          .destroy({
+            where: {
+              id: req.auth.userID,
+            },
+          })
+          .then(() =>
+            res.status(200).json({
+              message:
+                "Account deleted successfully, see you soon " + result.username,
+            })
+          )
+          .catch((error) => res.status(501).json(error));
+      } else {
+        const imageProfile = result.imageUrl.split("/images/")[1];
+        fs.unlink(`images/${imageProfile}`, () => {
+          user
+            .destroy({
+              where: {
+                id: req.auth.userID,
+              },
+            })
+            .then(() =>
+              res.status(200).json({
+                message:
+                  "Account deleted successfully, see you soon " +
+                  result.username,
+              })
+            )
+            .catch((error) => res.status(501).json(error));
         });
       }
-      return res.status(204).json({
-        status: 204,
-        message: "User Deleted successfully",
-      });
     })
     .catch((error) => {
-      return res.status(400).json({
-        error: error.name,
-        message: error.message,
-      });
-    });
-};
+      const message = "User could not be deleted";
+      res.status(500).json({ error: error.message, message });
+    });};
 
 // Export user info
 exports.exportUser = async (req, res) => {
