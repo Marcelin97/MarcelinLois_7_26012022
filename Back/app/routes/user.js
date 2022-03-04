@@ -64,6 +64,9 @@ router.post("/logout", auth, userCtrl.logout);
 //=================================>
 /////////////////// REPORT
 //=================================>
+router.post("/report/:id", auth, userCtrl.report);
+
+// router.post("users/:id/report", auth, userCtrl.report);
 
 //on exporte le router de ce fichier
 module.exports = router;

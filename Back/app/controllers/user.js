@@ -1,4 +1,5 @@
 const { user } = require("../models");
+const { userReport } = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -337,7 +338,8 @@ exports.delete = async (req, res) => {
     .catch((error) => {
       const message = "User could not be deleted";
       res.status(500).json({ error: error.message, message });
-    });};
+    });
+};
 
 // Export user info
 exports.exportUser = async (req, res) => {
@@ -380,12 +382,87 @@ exports.exportUser = async (req, res) => {
     );
 };
 
-// Logout
-exports.logout = async (req, res) => {
-  res.cookie("jwt", "", { maxAge: 1 });
-  res.status(200).json({ msg: "Vous vous êtes déconnecté" });
+exports.report = async (req, res) => {
+  user.findOne({ where: { id: req.auth.userID } }).then(async (currUser) => {
+    if (!currUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    // I find the user to report
+    const { id } = req.params;
+    const targetUser = await user.findOne({ where: { id } });
+    if (!targetUser) {
+      return res.status(404).json({ error: "Reportable user not found." });
+    }
+
+    // I check if a report has already been made
+    const isAlreadyReported = await userReport.count({
+      where: { userReportedId: targetUser.id, fromUserId: currUser.id },
+    });
+    if (isAlreadyReported) {
+      return res
+        .status(409)
+        .json({ message: "You have already reported this post" });
+    }
+
+    userReport
+      .create({
+        userReportedId: targetUser.id,
+        fromUserId: currUser.id,
+        content: req.body.content,
+      })
+      .then(() => {
+        res.status(201).json({
+          message: " User" + targetUser.username + "reported successfully"
+        });
+      })
+      .catch((error) =>
+        res.status(500).json({ error: error.name, message: error.message })
+      );
+  })
+  .catch((error) => {
+    const message = "Reporting not possible";
+    res.status(500).json({ error: error.message, message });
+  });
 };
 
+// Report a user
+exports.report = async (req, res) => {
+  // I find the logged in user
+  const currUser = await user.findOne({ where: { id: req.auth.userID } });
+  if (!currUser) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  // I find the user to report
+  const { id } = req.params;
+  const targetUser = await user.findOne({ where: { id } });
+  if (!targetUser) {
+    return res.status(404).json({ error: "Reportable user not found." });
+  }
+
+  // I check if a report has already been made
+  const isAlreadyReported = await userReport.count({
+    where: { userReportedId: targetUser.id, fromUserId: currUser.id },
+  });
+  if (isAlreadyReported) {
+    return res
+      .status(409)
+      .json({ message: "Vous avez déjà signalé cette publication" });
+  }
+
+  // Create a report
+  await userReport.create({
+    userReportedId: targetUser.id,
+    fromUserId: currUser.id,
+    content: req.body.content,
+  });
+
+  return res.status(201).json({
+    message: " User" + targetUser.username + "reported successfully",
+  });
+};
+
+// Logout
 exports.logout = (request, response, next) => {
   const token = request.cookies.jwt;
   const decodedToken = jwt.verify(token, `${process.env.TOKEN_KEY}`);
