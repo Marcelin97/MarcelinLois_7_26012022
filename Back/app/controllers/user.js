@@ -382,6 +382,7 @@ exports.exportUser = async (req, res) => {
     );
 };
 
+// Report a user
 exports.report = async (req, res) => {
   user.findOne({ where: { id: req.auth.userID } }).then(async (currUser) => {
     if (!currUser) {
@@ -401,7 +402,7 @@ exports.report = async (req, res) => {
     if (isAlreadyReported) {
       return res
         .status(409)
-        .json({ message: "You have already reported this post" });
+        .json({ message: "You have already reported this user" });
     }
 
     userReport
@@ -412,7 +413,7 @@ exports.report = async (req, res) => {
       })
       .then(() => {
         res.status(201).json({
-          message: " User" + targetUser.username + "reported successfully"
+          message: " User" + " " + targetUser.username + " " + "reported successfully"
         });
       })
       .catch((error) =>
@@ -425,55 +426,18 @@ exports.report = async (req, res) => {
   });
 };
 
-// Report a user
-exports.report = async (req, res) => {
-  // I find the logged in user
-  const currUser = await user.findOne({ where: { id: req.auth.userID } });
-  if (!currUser) {
-    return res.status(404).json({ error: "User not found" });
-  }
+// // Logout
+// exports.logout = (request, response, next) => {
+//   const token = request.cookies.jwt;
+//   const decodedToken = jwt.verify(token, `${process.env.TOKEN_KEY}`);
+//   const userId = decodedToken.userId;
 
-  // I find the user to report
-  const { id } = req.params;
-  const targetUser = await user.findOne({ where: { id } });
-  if (!targetUser) {
-    return res.status(404).json({ error: "Reportable user not found." });
-  }
-
-  // I check if a report has already been made
-  const isAlreadyReported = await userReport.count({
-    where: { userReportedId: targetUser.id, fromUserId: currUser.id },
-  });
-  if (isAlreadyReported) {
-    return res
-      .status(409)
-      .json({ message: "Vous avez déjà signalé cette publication" });
-  }
-
-  // Create a report
-  await userReport.create({
-    userReportedId: targetUser.id,
-    fromUserId: currUser.id,
-    content: req.body.content,
-  });
-
-  return res.status(201).json({
-    message: " User" + targetUser.username + "reported successfully",
-  });
-};
-
-// Logout
-exports.logout = (request, response, next) => {
-  const token = request.cookies.jwt;
-  const decodedToken = jwt.verify(token, `${process.env.TOKEN_KEY}`);
-  const userId = decodedToken.userId;
-
-  if (userId) {
-    response.cookie("jwt", "", { maxAge: 1 });
-    response.redirect("/");
-  } else {
-    return response
-      .status(403)
-      .json({ message: "Vous n'êtes pas authentifié !" });
-  }
-};
+//   if (userId) {
+//     response.cookie("jwt", "", { maxAge: 1 });
+//     response.redirect("/");
+//   } else {
+//     return response
+//       .status(403)
+//       .json({ message: "Vous n'êtes pas authentifié !" });
+//   }
+// };
