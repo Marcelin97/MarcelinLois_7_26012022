@@ -59,7 +59,7 @@ router.get("/export", auth, userCtrl.exportUser);
 //=================================>
 /////////////////// LOGOUT
 //=================================>
-router.post("/logout", auth, userCtrl.logout);
+// router.post("/logout", auth, userCtrl.logout);
 
 //=================================>
 /////////////////// REPORT

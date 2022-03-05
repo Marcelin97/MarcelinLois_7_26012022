@@ -60,6 +60,11 @@ module.exports = (sequelize, Sequelize) => {
       unique: false,
       defaultValue: "user",
     },
+    // isAdmin: {
+    //   type: Sequelize.BOOLEAN,
+    //   unique: false,
+    //   defaultValue: false,
+    // },
   });
 
   // Sequelize associations
