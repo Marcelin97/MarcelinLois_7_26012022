@@ -1,4 +1,5 @@
-const { user } = require("../models");
+// const config = require("../config/auth.config");
+const { user, refreshToken: RefreshToken } = require("../models");
 const { userReport } = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -115,7 +116,7 @@ exports.login = (req, res) => {
         email: emailEncrypted,
       },
     })
-    .then((user) => {
+    .then(async (user) => {
       if (!user) {
         return res.status(404).json({ message: "User Not found." });
       }
@@ -130,11 +131,14 @@ exports.login = (req, res) => {
         });
       }
       var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: 86400, // 24 hours
+        expiresIn: process.env.JWTExpirationTest, // 24 hours
       });
+      // expose the POST API for creating new Access Token from received Refresh Token
+      let refreshToken = await RefreshToken.createToken(user.id);
       res.status(200).json({
         status: 200,
         accessToken: token,
+        refreshToken: refreshToken,
         user,
       });
     })
@@ -144,6 +148,42 @@ exports.login = (req, res) => {
         message: error.message,
       });
     });
+};
+
+// Refresh Token
+exports.refreshToken = async (req, res) => {
+  const { refreshToken: requestToken } = req.body;
+  if (requestToken == null) {
+    return res.status(403).json({ message: "Refresh Token is required!" });
+  }
+  try {
+    let refreshToken = await RefreshToken.findOne({
+      where: { token: requestToken },
+    });
+    // console.log(refreshToken);
+    if (!refreshToken) {
+      res.status(403).json({ message: "Refresh token is not in database!" });
+      return;
+    }
+    if (RefreshToken.verifyExpiration(refreshToken)) {
+      RefreshToken.destroy({ where: { id: refreshToken.id } });
+
+      res.status(403).json({
+        message: "Refresh token was expired. Please make a new signin request",
+      });
+      return;
+    }
+    const user = await refreshToken.getUser();
+    let newAccessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWTExpiration, // 24 hours
+    });
+    return res.status(200).json({
+      accessToken: newAccessToken,
+      refreshToken: refreshToken.token,
+    });
+  } catch (err) {
+    return res.status(500).send({ message: err });
+  }
 };
 
 // Read user info
@@ -433,39 +473,34 @@ exports.report = async (req, res) => {
     });
 };
 
-// // Logout
-// exports.logout = (request, response, next) => {
-//   const token = request.cookies.jwt;
-//   const decodedToken = jwt.verify(token, `${process.env.TOKEN_KEY}`);
-//   const userId = decodedToken.userId;
+// Logout
+exports.logout = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) throw new Error(
+      "Vous n'avez plus accès"
+    );
 
-//   if (userId) {
-//     response.cookie("jwt", "", { maxAge: 1 });
-//     response.redirect("/");
-//   } else {
-//     return response
-//       .status(403)
-//       .json({ message: "Vous n'êtes pas authentifié !" });
-//   }
-// };
+    const userId = await verifyRefreshToken(refreshToken)
+    client.DEL(userId, (err, val) => {
+      if (err) {
+        console.log(err.message);
+        throw createError.InternalServerError();
+      }
+      console.log(val);
+      res.sendStatus(204);
+    });
 
-  //  try {
-  //    req.session.destroy(() => {});
-  //    req.logout();
-  //    res.status(200).send({
-  //      meta: {
-  //        type: "success",
-  //        status: 200,
-  //        message: "",
-  //      },
-  //    });
-  //  } catch (err) {
-  //    console.log(err);
-  //    res.status(500).send({
-  //      meta: {
-  //        type: "error",
-  //        status: 500,
-  //        message: "server error",
-  //      },
-  //    });
-  //  }
+ } catch (error) {
+   next(error)
+   res.status(500).send({
+     meta: {
+       type: "error",
+       status: 500,
+       message: "server error",
+     },
+   });
+ }
+};
+
+

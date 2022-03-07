@@ -11,33 +11,41 @@ module.exports = async function (req, res, next) {
   try {
     // 401 Unauthorized
 
-    // Find for community
+    // I find community
     if (req.params.communityId) {
       communityExist = await community.findOne(req.params.communityId);
       if (communityExist == null)
-        throw new Error("Cette communauté n'existe pas.");
+        throw new Error("This community does not exist.");
     }
-
-    // Check if current user is admin of this community
-
+    
     // I find the current user
     const currUser = await user.findOne({ where: { id: req.auth.userID } });
-    console.log(currUser.id);
+    if (currUser == null) throw new Error("You are not authenticated.");
 
-    // Check if current user is admin 
+    // Check if current user is admin
     if (currUser.roles === "admin") return true;
-    return res
-      .status(403)
-      .send({ error: { status: 403, message: "Access denied." } });
 
-    // je vérifie qu'il est admin d'une communauté
-    const currUserIsAdmin = await moderator.findOne({
-      where: { userId: currUser },
+    // Check if moderator is admin
+    const moderatorIsAdmin = await moderator.findOne({
+      where: { isAdmin: true },
     });
-    if (!currUserIsAdmin) {
+    if (!moderatorIsAdmin) {
+      throw new Error("You don't have community admin rights");
+    }
+
+    // Check if current user is moderator
+    const currUserIsModerator = await moderator.findOne({
+      where: { userId: currUser.id },
+    });
+
+    // Check if user community is the same has moderator community
+    const currUserCommunity = await moderator.findOne({
+      where: { communityId: currUser.communityId },
+    });
+
+    if (!currUserIsModerator && !currUserCommunity) {
       throw new Error("Access denied.");
     }
-    console.log(currUserIsAdmin);
   } catch (error) {
     res.status(401).json({ error: error || "Requête non authentifiée" });
   }

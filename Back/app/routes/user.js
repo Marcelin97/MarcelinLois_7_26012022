@@ -27,6 +27,11 @@ router.post("/signup", verifySignUp, multer, userCtrl.signup);
 router.post("/login", userCtrl.login);
 
 //=================================>
+/////////////////// REFRESH TOKEN
+//=================================>
+router.post("/refreshtoken", userCtrl.refreshToken);
+
+//=================================>
 ///////// READ DATAS CONNECTED USER
 //=================================>
 router.get("/read", auth, userCtrl.readUser);

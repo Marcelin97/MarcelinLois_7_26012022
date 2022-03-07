@@ -68,13 +68,14 @@ const session = require("express-session");
 app.set('trust proxy', 1) // trust first proxy
 app.use(
   session({
+    key: "hello_hello",
     secret: "keyboard_cat", // secret string used in the signing of the session ID that is stored in the cookie
     resave: false,
     saveUninitialized: false,
     cookie: {
       // Les attaques cross-site scripting ou XSS
       secure: true, // only send cookie over https
-      httponly: true, // minimize risk of XSS attacks by restricting the client from reading the cookie
+      httpOnly: true, // minimize risk of XSS attacks by restricting the client from reading the cookie
       domain: "http://localhost:3000",
       maxAge: 60000 * 60 * 24, // set cookie expiry length in ms
     },

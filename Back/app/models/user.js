@@ -110,6 +110,10 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.comment, {
       as: "replies",
     });
+    User.hasOne(models.refreshToken, {
+      foreignKey: "userId",
+      targetKey: "id",
+    });
 
     // Many to Many associations
     User.belongsToMany(models.community, { through: "followers" });
