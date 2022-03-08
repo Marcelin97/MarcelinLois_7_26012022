@@ -23,11 +23,11 @@ module.exports = (sequelize, Sequelize) => {
     // is linked to
     MessagePrivate.belongsTo(models.user, {
       foreignKey: "fromUserId",
-      as: "fromUser",
+      as: "messageFromUserId",
     });
     MessagePrivate.belongsTo(models.user, {
       foreignKey: "toUserId",
-      as: "toUser",
+      as: "messageToUserId",
     });
   };
 

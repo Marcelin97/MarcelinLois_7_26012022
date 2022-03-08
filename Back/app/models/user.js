@@ -11,7 +11,11 @@ module.exports = (sequelize, Sequelize) => {
     username: {
       type: Sequelize.STRING,
       required: true,
+      allowNull: false,
+      unique: true,
       validate: {
+        notEmpty: true,
+        isAlphanumeric: true,
         len: {
           args: [3, 25],
           msg: "The username needs to be between 3 and 25 characteres long",
@@ -21,17 +25,17 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING(50),
       trim: true,
+      required: true,
       unique: true,
-      len: [5, 60],
+      len: [1, 60],
       allowNull: false,
-      validate: {
-        isEmail: { args: true, msg: "Please enter a valid email addresss" },
-      },
-      isEmail: true,
     },
     password: {
       type: Sequelize.STRING(255),
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
       validate: {
         isLongEnough: function (val) {
           if (val.length < 8) {
@@ -41,19 +45,26 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     birthday: {
+      // ex : "birthday": "1990-02-17" - "year-month-day"
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW,
     },
     imageUrl: {
       type: Sequelize.STRING,
-      required: false,
-      default: "",
+      validate: {
+        notEmpty: true,
+      },
     },
     roles: {
       type: Sequelize.ENUM(["user", "admin"]),
       unique: false,
       defaultValue: "user",
     },
+    // isAdmin: {
+    //   type: Sequelize.BOOLEAN,
+    //   unique: false,
+    //   defaultValue: false,
+    // },
   });
 
   // Sequelize associations
@@ -71,9 +82,11 @@ module.exports = (sequelize, Sequelize) => {
       as: "likePosts",
     });
     User.hasMany(models.messagePrivate, {
+      as: "messageFromUserId",
       foreignKey: "fromUserId",
     });
     User.hasMany(models.messagePrivate, {
+      as: "messageToUserId",
       foreignKey: "toUserId",
     });
     User.hasMany(models.notification, {
@@ -85,17 +98,21 @@ module.exports = (sequelize, Sequelize) => {
     });
     User.hasMany(models.userReport, {
       foreignKey: "fromUserId",
-      as: "user",
+      as: "userFrom",
     });
     User.hasMany(models.postReport, {
       as: "postReport",
     });
-    User.hasMany(models.commentReport, {
+    User.hasMany(models.comment, {
       foreignKey: "commentId",
       as: "commentParent",
     });
-    User.hasMany(models.commentReport, {
+    User.hasMany(models.comment, {
       as: "replies",
+    });
+    User.hasOne(models.refreshToken, {
+      foreignKey: "userId",
+      targetKey: "id",
     });
 
     // Many to Many associations
