@@ -474,33 +474,33 @@ exports.report = async (req, res) => {
 };
 
 // Logout
-exports.logout = async (req, res, next) => {
-  try {
-    const { refreshToken } = req.body;
-    if (!refreshToken) throw new Error(
-      "Vous n'avez plus accès"
-    );
+// exports.logout = async (req, res, next) => {
+//   try {
+//     const { refreshToken } = req.body;
+//     if (!refreshToken) throw new Error(
+//       "Vous n'avez plus accès"
+//     );
 
-    const userId = await verifyRefreshToken(refreshToken)
-    client.DEL(userId, (err, val) => {
-      if (err) {
-        console.log(err.message);
-        throw createError.InternalServerError();
-      }
-      console.log(val);
-      res.sendStatus(204);
-    });
+//     const userId = await verifyRefreshToken(refreshToken)
+//     client.DEL(userId, (err, val) => {
+//       if (err) {
+//         console.log(err.message);
+//         throw createError.InternalServerError();
+//       }
+//       console.log(val);
+//       res.sendStatus(204);
+//     });
 
- } catch (error) {
-   next(error)
-   res.status(500).send({
-     meta: {
-       type: "error",
-       status: 500,
-       message: "server error",
-     },
-   });
- }
-};
+//  } catch (error) {
+//    next(error)
+//    res.status(500).send({
+//      meta: {
+//        type: "error",
+//        status: 500,
+//        message: "server error",
+//      },
+//    });
+//  }
+// };
 
 

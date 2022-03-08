@@ -13,7 +13,18 @@ const authCommunity = require("../middleware/authCommunity");
 //middleware pour les fichiers
 const multer = require("../middleware/multer-config");
 
-router.post("/community", auth, authCommunity, communityCtrl.create);
+//=================================>
+/////////////////// CREATE COMMUNITY
+//=================================>
+router.post("/community", multer, communityCtrl.create);
 
+// router.get("/:communityId", communityCtrl.readOne);
+// router.put("/:communityId", authMiddleware, communityModeratorMiddleware, imageUploadMiddleware, communityController.update);
+// router.delete("/:communityId", authMiddleware, communityModeratorMiddleware, communityController.delete);
+// router.get("/:communityId/reports", authMiddleware, communityModeratorMiddleware, communityController.readReports);
+// router.post("/:communityId/follow", authMiddleware, communityController.follow);
+// router.delete("/:communityId/unfollow", authMiddleware, communityController.unfollow);
+// router.post("/:communityId/moderator", authMiddleware, communityModeratorMiddleware, communityController.addModerator);
+// router.delete("/:communityId/moderator", authMiddleware, communityModeratorMiddleware, communityController.deleteModerator);
 //on exporte le router de ce fichier
 module.exports = router;
