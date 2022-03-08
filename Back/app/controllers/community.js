@@ -66,3 +66,27 @@ exports.create = async (req, res, next) => {
 //     return Helper.errorResponse(req, res, error.message);
 //   }
 // };
+
+// Read all communities active
+exports.readAllCommunity = async (req, res) => {
+  community
+    .findAll({
+      where: {
+        isActive: true,
+      },
+      raw: true,
+    })
+    .then((communitiesActive) => {
+      if (communitiesActive.length <= 0) {
+        return res.status(404).json({ message: "Communities not found" });
+      }
+      res.status(200).json({
+        status: 200,
+        data: communitiesActive,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message, message });
+    });
+};
+
