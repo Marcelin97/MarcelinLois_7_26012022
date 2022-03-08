@@ -18,12 +18,12 @@ const multer = require("../middleware/multer-config");
 //=================================>
 router.post("/community", multer, communityCtrl.create);
 
-// router.get("/:communityId", communityCtrl.readOne);
+router.get("/community/:id", communityCtrl.readOne);
 
 //=================================>
 //////////// READ DATAS ALL USERS
 //=================================>
-router.get("/readAllCommunities", communityCtrl.readAllCommunity);
+router.get("/community/readAllCommunities", communityCtrl.readAllCommunity);
 
 // router.put("/:communityId", authMiddleware, communityModeratorMiddleware, imageUploadMiddleware, communityController.update);
 // router.delete("/:communityId", authMiddleware, communityModeratorMiddleware, communityController.delete);

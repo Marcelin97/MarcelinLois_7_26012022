@@ -45,27 +45,30 @@ exports.create = async (req, res, next) => {
 };
 
 // Read community
-// exports.readOne = async (req, res) => {
-//   try {
-//     let community = await db.Community.findByPk(req.params.communityId, {
-//       include: [
-//         db.Post,
-//         { model: db.CommunityModerator, include: db.User },
-//         db.Follower,
-//       ],
-//     });
-//     if (community == null) throw new Error("Cette communauté n'existe pas.");
+exports.readOne = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // console.log(id);
+    let communityFind = await community.findOne(
+      { where: { id } },
+      {
+        include: {
+          all: true,
+        },
+      }
+    );
+    // console.log(communityFind);
+    if (communityFind == null)
+      throw new Error("Cette communauté n'existe pas.");
 
-//     // Set image full url
-//     const baseUri = req.protocol + "://" + req.get("host");
-//     community.icon = baseUri + "/" + prefixPath + "/" + community.icon;
-
-//     return Helper.successResponse(req, res, { community }, hateoas(req));
-//   } catch (error) {
-//     console.error(error);
-//     return Helper.errorResponse(req, res, error.message);
-//   }
-// };
+    return res.status(201).json({
+      status: 201,
+      data: communityFind,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // Read all communities active
 exports.readAllCommunity = async (req, res) => {
@@ -89,4 +92,3 @@ exports.readAllCommunity = async (req, res) => {
       res.status(500).json({ error: error.message, message });
     });
 };
-
