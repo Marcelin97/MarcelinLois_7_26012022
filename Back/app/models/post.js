@@ -1,9 +1,10 @@
 module.exports = (sequelize, Sequelize) => {
+  //* Model Definition
   const Post = sequelize.define("post", {
     title: {
       type: Sequelize.STRING,
       unique: false,
-      allowNull: false, //THIS COLUMN CANNOT BE EMPTY
+      allowNull: false, //? THIS COLUMN CANNOT BE EMPTY
       validate: {
         len: [5, 255],
       },
@@ -31,7 +32,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  // Sequelize associations
+  //* Sequelize associations
   Post.associate = (models) => {
     // is linked to
     Post.belongsTo(models.user, {

@@ -4,11 +4,11 @@ const { community } = require("../models");
 const fs = require("fs");
 const path = require("path");
 
-// Create community
+//* Create community
 exports.create = async (req, res, next) => {
   try {
     // console.log(req.file);
-    // Check if request contain files uploaded
+    // TODO : Check if request contain files uploaded
     const { file } = req;
     if (!file) {
       return res.status(422).json({ error: { msg: "Icon is required" } });
@@ -44,7 +44,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-// Read community
+//* Read community
 exports.readOne = async (req, res) => {
   try {
     const { id } = req.params;
@@ -70,7 +70,7 @@ exports.readOne = async (req, res) => {
   }
 };
 
-// Read all communities active
+//* Read all communities active
 exports.readAllCommunity = async (req, res) => {
   community
     .findAll({

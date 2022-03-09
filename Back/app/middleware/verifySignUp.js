@@ -1,10 +1,9 @@
-// const db = require("../models");
-// const User = db.user;
 const { user } = require("../models");
 
-// checkDuplicateUsernameOrEmail
+//* checkDuplicateUsernameOrEmail
 
 module.exports = (req, res, next) => {
+  //* Verify Username
   user.findOne({
     where: {
       username: req.body.username,
@@ -16,7 +15,7 @@ module.exports = (req, res, next) => {
       });
       return;
     }
-    // Email
+    //* Verify Email
     user.findOne({
       where: {
         email: req.body.email,

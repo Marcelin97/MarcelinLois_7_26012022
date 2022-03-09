@@ -10,7 +10,7 @@ const fs = require("fs");
 const path = require("path");
 
 //=================================>
-/////////////////// ENCRYPTED EMAIL
+//* ENCRYPTED EMAIL
 //=================================>
 function encrypted(email) {
   return CryptoJS.AES.encrypt(
@@ -25,7 +25,7 @@ function encrypted(email) {
 }
 
 //=================================>
-/////////////////// DECRYPT EMAIL
+//* DECRYPT EMAIL
 //=================================>
 function decryptEmail(email) {
   var bytes = CryptoJS.AES.decrypt(
@@ -52,29 +52,30 @@ const passwordRegex = new RegExp(
   /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 );
 
+//* SIGNUP 
 exports.signup = async (req, res, next) => {
-  // Check if request contain username and email
+  // TODO : Check if request contain username and email
   if (!req.body.username && !req.body.email) {
     return res.status(400).json({ error: "Content can not be empty!" });
   }
 
-  // Check email validation
+  // TODO : Check email validation
   if (!validateEmail(req.body.email)) {
     return res.status(400).json({ error: "L'email indiqué est invalide." });
   }
 
-  // Check password validation
+  // TODO : Check password validation
   if (passwordRegex.test(req.body.password) == false) {
     return res.status(401).send("Please enter a strong password");
   }
 
-  // Path to my default image
-  // image = `${req.protocol}://${req.get("host")}/images/public/anonyme_avatar.png`;
+  //? Path to my default image
+  //? image = `${req.protocol}://${req.get("host")}/images/public/anonyme_avatar.png`;
 
-  //  Crypte email
+  // TODO : Crypte email
   const emailCrypted = encrypted(req.body.email);
 
-  // Hash password
+  // TODO : Hash password
   bcrypt
     .hash(req.body.password, 10)
     .then((hashPass) => {
@@ -83,7 +84,7 @@ exports.signup = async (req, res, next) => {
         ...req.body,
         email: emailCrypted,
         password: hashPass,
-        // imageUrl: req.file ? req.file.location : image,
+        //? imageUrl: req.file ? req.file.location : image,
       };
       user
         .create(userObject)
@@ -107,7 +108,7 @@ exports.signup = async (req, res, next) => {
     );
 };
 
-// Connected a user
+//* Connected a user
 exports.login = (req, res) => {
   var emailEncrypted = encrypted(req.body.email);
   user
@@ -131,9 +132,9 @@ exports.login = (req, res) => {
         });
       }
       var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWTExpirationTest, // 24 hours
+        expiresIn: process.env.JWTExpirationTest,
       });
-      // expose the POST API for creating new Access Token from received Refresh Token
+      //* expose the POST API for creating new Access Token from received Refresh Token
       let refreshToken = await RefreshToken.createToken(user.id);
       res.status(200).json({
         status: 200,
@@ -150,7 +151,7 @@ exports.login = (req, res) => {
     });
 };
 
-// Refresh Token
+//* Refresh Token
 exports.refreshToken = async (req, res) => {
   const { refreshToken: requestToken } = req.body;
   if (requestToken == null) {
@@ -186,7 +187,7 @@ exports.refreshToken = async (req, res) => {
   }
 };
 
-// Read user info
+//* Read user info
 exports.readUser = async (req, res) => {
   user
     .findOne({
@@ -213,7 +214,7 @@ exports.readUser = async (req, res) => {
     );
 };
 
-// Find a single user with an username
+//* Find a single user with an username
 exports.readByName = async (req, res) => {
   user
     .findOne({
@@ -241,7 +242,7 @@ exports.readByName = async (req, res) => {
     });
 };
 
-// Retrieve all Users from the database.
+//* Retrieve all Users from the database.
 exports.readAll = (req, res) => {
   user
     .findAll()
@@ -262,9 +263,9 @@ exports.readAll = (req, res) => {
     );
 };
 
-// Update
+//* Update
 exports.update = async (req, res) => {
-  // 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
+  // TODO : 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
   user
     .findOne({ where: { id: req.auth.userID } })
     .then(async (result) => {
@@ -272,7 +273,7 @@ exports.update = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Gestion e-mail
+      // TODO : Gestion e-mail
       try {
         if (req.body.email) {
           req.body.email = encrypted(req.body.email);
@@ -281,7 +282,7 @@ exports.update = async (req, res) => {
         console.log(error.message);
       }
 
-      // Gestion password ==> req.body.password
+      // TODO : Gestion password ==> req.body.password
       try {
         if (req.body.newPassword) {
           const hashPass = await bcrypt.hash(req.body.newPassword, 10);
@@ -291,7 +292,7 @@ exports.update = async (req, res) => {
         console.log(error.message);
       }
 
-      // Gestion image
+      // TODO : Gestion image
       try {
         const file = req.file;
         if (file) {
@@ -299,7 +300,7 @@ exports.update = async (req, res) => {
           req.body.imageUrl = `/images/${req.file.filename}`;
           // console.log(req.file.filename);
 
-          // Delete the old image
+          // TODO : Delete the old image
           try {
             // Si je trouve une image à mon utilisateur
             if (result.imageUrl) {
@@ -336,7 +337,7 @@ exports.update = async (req, res) => {
     });
 };
 
-// Delete a user with the specified id in the request
+//* Delete a user with the specified id in the request
 exports.delete = async (req, res) => {
   user
     .findOne({ where: { id: req.auth.userID } })
@@ -381,7 +382,7 @@ exports.delete = async (req, res) => {
     });
 };
 
-// Export user info
+//* Export user info
 exports.exportUser = async (req, res) => {
   user
     .findOne({
@@ -422,7 +423,7 @@ exports.exportUser = async (req, res) => {
     );
 };
 
-// Report a user
+//* Report a user
 exports.report = async (req, res) => {
   user
     .findOne({ where: { id: req.auth.userID } })
@@ -430,14 +431,14 @@ exports.report = async (req, res) => {
       if (!currUser) {
         return res.status(404).json({ error: "User not found" });
       }
-      // I find the user to report
+      // TODO : I find the user to report
       const { id } = req.params;
       const targetUser = await user.findOne({ where: { id } });
       if (!targetUser) {
         return res.status(404).json({ error: "Reportable user not found." });
       }
 
-      // I check if a report has already been made
+      // TODO : I check if a report has already been made
       const isAlreadyReported = await userReport.count({
         where: { userReportedId: targetUser.id, fromUserId: currUser.id },
       });

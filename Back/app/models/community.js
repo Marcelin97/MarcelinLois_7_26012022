@@ -1,4 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
+  //* Model Definition
   const Community = sequelize.define("community", {
     title: {
       type: Sequelize.STRING,
@@ -23,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  // Sequelize associations
+  //* Sequelize associations
   Community.associate = (models) => {
     Community.hasMany(models.post, {
       as: "posts",
@@ -35,7 +36,7 @@ module.exports = (sequelize, Sequelize) => {
       as: "moderators",
     });
 
-    // Many to Many associations
+    //* Many to Many associations
     Community.belongsToMany(models.user, { through: "followers" });
   };
 

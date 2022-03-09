@@ -1,4 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
+  //* Model Definition
   const Moderator = sequelize.define("moderator", {
     isAdmin: {
       type: Sequelize.BOOLEAN,
@@ -7,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  // Sequelize associations
+  //* Sequelize associations
   Moderator.associate = (models) => {
     // is linked to
     Moderator.belongsTo(models.community);

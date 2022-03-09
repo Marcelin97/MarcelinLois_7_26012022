@@ -1,7 +1,7 @@
-//on a besoin de notre package pour vérifier les tokens
+// * Verify token
 const jwt = require("jsonwebtoken");
 
-//on utilise des blocs try catch, car il y a plusieurs éléments qui peuvent posé problème
+// on utilise des blocs try catch, car il y a plusieurs éléments qui peuvent posé problème
 module.exports = (req, res, next) => {
   try {
     //on va utiliser le faite qu'on connaît la forme de se headers pour récupérer le token
@@ -29,8 +29,7 @@ module.exports = (req, res, next) => {
       next();
     }
   } catch (error) {
-    //on renvoi une erreur 401 pour une erreur d'authentification
-    //et dans le json si on reçoit une erreur on veut l'envoyé sinon cela envoi un message
+    // 401 pour une erreur d'authentification
     res.status(401).json({ error: error || "Requête non authentifiée" });
   }
 };
