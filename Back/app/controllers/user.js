@@ -131,11 +131,11 @@ exports.login = (req, res) => {
           message: "Invalid Password!",
         });
       }
-      var token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWTExpirationTest,
+      let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWTExpirationTest, // 2 minutes
       });
       //* expose the POST API for creating new Access Token from received Refresh Token
-      let refreshToken = await RefreshToken.createToken(user.id);
+      let refreshToken = await RefreshToken.createToken(user);
       res.status(200).json({
         status: 200,
         accessToken: token,
@@ -161,7 +161,6 @@ exports.refreshToken = async (req, res) => {
     let refreshToken = await RefreshToken.findOne({
       where: { token: requestToken },
     });
-    // console.log(refreshToken);
     if (!refreshToken) {
       res.status(403).json({ message: "Refresh token is not in database!" });
       return;
@@ -175,8 +174,9 @@ exports.refreshToken = async (req, res) => {
       return;
     }
     const user = await refreshToken.getUser();
+    //  TODO : I create a new token
     let newAccessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWTExpiration, // 24 hours
+      expiresIn: process.env.JWTExpirationTest, // 2 minutes
     });
     return res.status(200).json({
       accessToken: newAccessToken,
