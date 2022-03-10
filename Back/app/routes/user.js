@@ -13,7 +13,7 @@ const { inputValidation } = require("../middleware/inputValidation");
 //=================================>
 //* SIGNUP
 //=================================>
-router.post("/signup", verifySignUp, multer, userCtrl.signup);
+router.post("/signup", multer, userCtrl.signup);
 
 //=================================>
 //* LOGIN

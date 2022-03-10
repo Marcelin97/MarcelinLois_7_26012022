@@ -56,16 +56,11 @@ module.exports = (sequelize, Sequelize) => {
         notEmpty: true,
       },
     },
-    roles: {
-      type: Sequelize.ENUM(["user", "admin"]),
+    isAdmin: {
+      type: Sequelize.BOOLEAN,
       unique: false,
-      defaultValue: "user",
+      defaultValue: false,
     },
-    // isAdmin: {
-    //   type: Sequelize.BOOLEAN,
-    //   unique: false,
-    //   defaultValue: false,
-    // },
   });
 
   //* Sequelize associations

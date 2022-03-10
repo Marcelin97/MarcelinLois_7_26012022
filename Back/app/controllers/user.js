@@ -52,7 +52,7 @@ const passwordRegex = new RegExp(
   /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/
 );
 
-//* SIGNUP 
+//* SIGNUP
 exports.signup = async (req, res, next) => {
   // TODO : Check if request contain username and email
   if (!req.body.username && !req.body.email) {
@@ -131,13 +131,20 @@ exports.login = (req, res) => {
           message: "Invalid Password!",
         });
       }
-      let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWTExpirationTest, // 2 minutes
-      });
+
+      const expiresIn = parseInt(process.env.JWTExpiration);
+
+      const token = jwt.sign(
+        { id: user.id, isAdmin: user.isAdmin },
+        process.env.JWT_SECRET,
+        { expiresIn }
+      );
+
       //* expose the POST API for creating new Access Token from received Refresh Token
-      let refreshToken = await RefreshToken.createToken(user);
+      const refreshToken = await RefreshToken.createToken(user);
       res.status(200).json({
         status: 200,
+        userId: user.id,
         accessToken: token,
         refreshToken: refreshToken,
         user,
@@ -173,12 +180,17 @@ exports.refreshToken = async (req, res) => {
       });
       return;
     }
+    const expiresIn = parseInt(process.env.JWTExpiration);
     const user = await refreshToken.getUser();
+
+    const newAccessToken = jwt.sign(
+      { id: user.id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET,
+      { expiresIn }
+    );
     //  TODO : I create a new token
-    let newAccessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWTExpirationTest, // 2 minutes
-    });
     return res.status(200).json({
+      userId: user.id,
       accessToken: newAccessToken,
       refreshToken: refreshToken.token,
     });
@@ -189,6 +201,7 @@ exports.refreshToken = async (req, res) => {
 
 //* Read user info
 exports.readUser = async (req, res) => {
+  console.log(req.auth);
   user
     .findOne({
       include: {
@@ -503,5 +516,3 @@ exports.report = async (req, res) => {
 //    });
 //  }
 // };
-
-

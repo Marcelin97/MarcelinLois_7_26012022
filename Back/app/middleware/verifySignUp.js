@@ -2,8 +2,19 @@ const { user } = require("../models");
 
 //* checkDuplicateUsernameOrEmail
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   //* Verify Username
+  const username = await user.findOne({
+    where: {
+      username: req.body.username,
+    },
+  });
+
+  if (username) {
+    return res.status(400).json({message: "Failed! Username is already in use!"});
+  }
+ 
+
   user.findOne({
     where: {
       username: req.body.username,
@@ -27,6 +38,7 @@ module.exports = (req, res, next) => {
         });
         return;
       }
+
       next();
     });
   });

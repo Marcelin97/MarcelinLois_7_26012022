@@ -18,8 +18,7 @@ module.exports = (sequelize, Sequelize) => {
   RefreshToken.createToken = async function (user) {
     let expiredAt = new Date();
     expiredAt.setSeconds(
-      expiredAt.getSeconds() + process.env.JWTRefreshExpirationTest // 4 minutes
-    );
+      expiredAt.getSeconds() + parseInt(process.env.JWTRefreshExpirationTest));
 
     let _token = uuidv4();
     let refreshToken = await this.create({
