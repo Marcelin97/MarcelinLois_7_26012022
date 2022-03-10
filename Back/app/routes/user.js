@@ -7,7 +7,7 @@ const userCtrl = require("../controllers/user");
 //* Middlewares
 const auth = require("../middleware/auth");
 const verifySignUp = require("../middleware/verifySignUp");
-const multer = require('../middleware/multer-config');
+const multer = require("../middleware/multer-config");
 const { inputValidation } = require("../middleware/inputValidation");
 
 //=================================>

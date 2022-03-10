@@ -17,7 +17,7 @@ module.exports = async function (req, res, next) {
       if (communityExist == null)
         throw new Error("This community does not exist.");
     }
-    
+
     // TODO : I find the current user
     const currUser = await user.findOne({ where: { id: req.auth.userID } });
     if (currUser == null) throw new Error("You are not authenticated.");

@@ -12,7 +12,7 @@ const multer = require("../middleware/multer-config");
 //=================================>
 //* CREATE COMMUNITY
 //=================================>
-router.post("/community", multer, communityCtrl.create);
+router.post("/community", auth, multer, communityCtrl.create);
 
 //=================================>
 //* READ DATAS ONE COMMUNITY
@@ -27,14 +27,13 @@ router.get("/community/readAllCommunities", communityCtrl.readAllCommunity);
 //=================================>
 //* UPDATE COMMUNIY
 //=================================>
-// router.put("/community/:id", multer, communityCtrl.update);
+// router.put("/community/:id/update", multer, communityCtrl.update);
 
-
-// router.delete("/:communityId", authMiddleware, communityModeratorMiddleware, communityController.delete);
-// router.get("/:communityId/reports", authMiddleware, communityModeratorMiddleware, communityController.readReports);
-// router.post("/:communityId/follow", authMiddleware, communityController.follow);
-// router.delete("/:communityId/unfollow", authMiddleware, communityController.unfollow);
-// router.post("/:communityId/moderator", authMiddleware, communityModeratorMiddleware, communityController.addModerator);
-// router.delete("/:communityId/moderator", authMiddleware, communityModeratorMiddleware, communityController.deleteModerator);
+// router.delete("/community/:id/delete", communityCtrl.delete);
+// router.get("/community/:id/reports",communityCtrl.readReports);
+// router.post("/community/:id/follow", communityCtrl.follow);
+// router.delete("/community/:id/unfollow", communityCtrl.unfollow);
+// router.post("/community/:id/moderator", communityCtrl.addModerator);
+// router.delete("/community/:id/moderator", communityCtrl.deleteModerator);
 
 module.exports = router;
