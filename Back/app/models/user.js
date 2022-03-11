@@ -112,7 +112,12 @@ module.exports = (sequelize, Sequelize) => {
     });
 
     //* Many to Many associations
-    User.belongsToMany(models.community, { through: "followers" });
+    
+    // One user can own 0 or many communities
+    User.hasMany(models.community, { as: "communities" });
+
+    // One user can join one or many communities
+    User.belongsToMany(models.community, { through: "users_community" });
   };
 
   return User;

@@ -7,6 +7,6 @@ const communityRoutes = require("./community")
 
 //* on applique nos routes à notre router
 router.use("/auth", userRoutes);
-router.use("/", communityRoutes);
+router.use("/community", communityRoutes);
 
 module.exports = router;

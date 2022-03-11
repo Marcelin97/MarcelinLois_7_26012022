@@ -5,8 +5,8 @@ const router = express.Router();
 const userCtrl = require("../controllers/user");
 
 //* Middlewares
-const auth = require("../middleware/auth");
-const verifySignUp = require("../middleware/verifySignUp");
+// const auth = require("../middleware/auth");
+// const verifySignUp = require("../middleware/verifySignUp");
 const multer = require("../middleware/multer-config");
 const { inputValidation } = require("../middleware/inputValidation");
 
@@ -28,7 +28,7 @@ router.post("/refreshtoken", userCtrl.refreshToken);
 //=================================>
 //* READ DATAS CONNECTED USER
 //=================================>
-router.get("/read", auth, userCtrl.readUser);
+router.get("/read", userCtrl.readUser);
 
 //=================================>
 //* READ DATAS ONE USER
@@ -43,22 +43,22 @@ router.get("/readAll", userCtrl.readAll);
 //=================================>
 //* UPDATE
 //=================================>
-router.patch("/update", auth, inputValidation, multer, userCtrl.update);
+router.patch("/update",inputValidation, multer, userCtrl.update);
 
 //=================================>
 //* DELETE
 //=================================>
-router.delete("/delete", auth, userCtrl.delete);
+router.delete("/delete", userCtrl.delete);
 
 //=================================>
 //* EXPORT DATAS
 //=================================>
-router.get("/export", auth, userCtrl.exportUser);
+router.get("/export", userCtrl.exportUser);
 
 //=================================>
 //* REPORT
 //=================================>
-router.post("/report/:id", auth, userCtrl.report);
+router.post("/report/:id", userCtrl.report);
 //? router.post("users/:id/report", auth, userCtrl.report);
 
 //=================================>

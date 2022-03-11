@@ -1,47 +1,31 @@
-const { user } = require("../models");
-const { community } = require("../models");
+const { user, community, moderator, users_community } = require("../models");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
 
 //* Create community
 exports.create = async (req, res, next) => {
-  try {
-    // console.log(req.file);
-    // TODO : Check if request contain files uploaded
-    const { file } = req;
-    if (!file) {
-      return res.status(422).json({ error: { msg: "Icon is required" } });
-    }
+  // console.log(req.file);
+  // TODO : Check if request contain files uploaded
+  const { file } = req;
+  if (!file) {
+    return res.status(422).json({ error: { msg: "Icon is required" } });
+  }
+  const datas = await community.create({ ...req.body }, {
+    include: [user]
+  });
+  console.log(datas);
 
-    community
-      .findOne({
-        where: {
-          title: req.body.title,
-        },
-      })
-      .then((result) => {
-        if (result) {
-          res.status(400).send({
-            message: "Failed! title is already in use!",
-          });
-        }
-      });
-
-    let communityCreate = await community.create({
-      title: req.body.title,
-      about: req.body.about,
-      isActive: true,
-      icon: `/images/${req.file.filename}`,
-    });
-    res.status(201).send({
+  res
+    .status(201)
+    .send({
       status: 200,
       message: "Community created successfully",
-      communityCreate,
+      datas,
+    })
+    .catch((error) => {
+      console.log(error);
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message, message });
-  }
 };
 
 //* Read community

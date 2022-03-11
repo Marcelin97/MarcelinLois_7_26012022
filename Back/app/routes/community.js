@@ -6,13 +6,12 @@ const communityCtrl = require("../controllers/community");
 
 //* Middlewares
 const auth = require("../middleware/auth");
-const authCommunity = require("../middleware/authCommunity");
 const multer = require("../middleware/multer-config");
 
 //=================================>
 //* CREATE COMMUNITY
 //=================================>
-router.post("/community", auth, multer, communityCtrl.create);
+router.post("/community",multer, communityCtrl.create);
 
 //=================================>
 //* READ DATAS ONE COMMUNITY
