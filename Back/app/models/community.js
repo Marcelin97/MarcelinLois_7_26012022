@@ -37,14 +37,6 @@ module.exports = (sequelize, Sequelize) => {
     Community.hasMany(models.post, {
       as: "posts",
     });
-
-    // Community.hasMany(models.user, {
-    //   as: "users",
-    // });
-
-    Community.hasMany(models.moderator, {
-      as: "moderators",
-    });
    
     // One community is owned by one user
     Community.belongsTo(models.user, { foreignKey: "userId", as: "owner" });

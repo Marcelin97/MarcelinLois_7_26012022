@@ -5,23 +5,23 @@ const router = express.Router();
 const communityCtrl = require("../controllers/community");
 
 //* Middlewares
-const auth = require("../middleware/auth");
+const { isLoggedIn, isAdmin} = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 
 //=================================>
 //* CREATE COMMUNITY
 //=================================>
-router.post("/community",multer, communityCtrl.create);
+router.post("/", isLoggedIn ,multer, communityCtrl.create);
 
 //=================================>
 //* READ DATAS ONE COMMUNITY
 //=================================>
-router.get("/community/:id", communityCtrl.readOne);
+router.get("/readOne/:id",isLoggedIn, communityCtrl.readOne);
 
 //=================================>
 //* READ DATAS ALL COMMUNITIES
 //=================================>
-router.get("/community/readAllCommunities", communityCtrl.readAllCommunity);
+router.get("/readAllCommunities", communityCtrl.readAllCommunity);
 
 //=================================>
 //* UPDATE COMMUNIY

@@ -5,8 +5,7 @@ const router = express.Router();
 const userCtrl = require("../controllers/user");
 
 //* Middlewares
-// const auth = require("../middleware/auth");
-// const verifySignUp = require("../middleware/verifySignUp");
+const { isLoggedIn } = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 const { inputValidation } = require("../middleware/inputValidation");
 
@@ -28,7 +27,7 @@ router.post("/refreshtoken", userCtrl.refreshToken);
 //=================================>
 //* READ DATAS CONNECTED USER
 //=================================>
-router.get("/read", userCtrl.readUser);
+router.get("/read", isLoggedIn, userCtrl.readUser);
 
 //=================================>
 //* READ DATAS ONE USER
@@ -43,27 +42,22 @@ router.get("/readAll", userCtrl.readAll);
 //=================================>
 //* UPDATE
 //=================================>
-router.patch("/update",inputValidation, multer, userCtrl.update);
+router.patch("/update", isLoggedIn, inputValidation, multer, userCtrl.update);
 
 //=================================>
 //* DELETE
 //=================================>
-router.delete("/delete", userCtrl.delete);
+router.delete("/delete", isLoggedIn, userCtrl.delete);
 
 //=================================>
 //* EXPORT DATAS
 //=================================>
-router.get("/export", userCtrl.exportUser);
+router.get("/export", isLoggedIn, userCtrl.exportUser);
 
 //=================================>
 //* REPORT
 //=================================>
-router.post("/report/:id", userCtrl.report);
+router.post("/report/:id", isLoggedIn, userCtrl.report);
 //? router.post("users/:id/report", auth, userCtrl.report);
-
-//=================================>
-//* LOGOUT
-//=================================>
-// router.post("/logout", auth, userCtrl.logout);
 
 module.exports = router;

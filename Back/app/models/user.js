@@ -71,9 +71,6 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.post, {
       as: "posts",
     });
-    User.hasMany(models.moderator, {
-      as: "moderators",
-    });
     User.hasMany(models.likePost, {
       as: "likePosts",
     });
