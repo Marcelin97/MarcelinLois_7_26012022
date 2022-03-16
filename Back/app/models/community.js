@@ -10,6 +10,10 @@ module.exports = (sequelize, Sequelize) => {
       title: {
         type: Sequelize.STRING,
         required: true,
+        unique: {
+          args: true,
+          msg: "Title must be unique",
+        },
         allowNull: false,
         validate: {
           len: [3, 255],
@@ -22,11 +26,11 @@ module.exports = (sequelize, Sequelize) => {
       icon: {
         type: Sequelize.STRING,
         unique: false,
+        require: true,
       },
       isActive: {
         type: Sequelize.BOOLEAN,
-        require: false,
-        default: true,
+        defaultValue: true,
       },
     },
     { tableName: "community" }

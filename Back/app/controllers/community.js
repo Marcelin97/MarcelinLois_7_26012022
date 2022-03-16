@@ -2,6 +2,7 @@ const { user, community, moderator, users_community } = require("../models");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
+// const { title } = require("process");
 
 //* Create community
 exports.create = async (req, res, next) => {
@@ -11,20 +12,22 @@ exports.create = async (req, res, next) => {
   if (!file) {
     return res.status(422).json({ error: { msg: "Icon is required" } });
   }
-  const datas = await community.create({ ...req.body }, {
-    include: [user]
-  });
-  console.log(datas);
-
-  res
-    .status(201)
-    .send({
-      status: 200,
-      message: "Community created successfully",
-      datas,
+  // console.log(req.auth.userID);
+  community
+    .create({
+      ...req.body,
+      icon: `/images/${file.filename}`,
+      userId: req.auth.userID,
+    })
+    .then((datas) => {
+      res.status(201).send({
+        status: 200,
+        message: "Community created successfully",
+        datas,
+      });
     })
     .catch((error) => {
-      console.log(error);
+      res.status(500).json({ error: error.message });
     });
 };
 
@@ -73,6 +76,6 @@ exports.readAllCommunity = async (req, res) => {
       });
     })
     .catch((error) => {
-      res.status(500).json({ error: error.message, message });
+      res.status(500).json({ error: error.message});
     });
 };
