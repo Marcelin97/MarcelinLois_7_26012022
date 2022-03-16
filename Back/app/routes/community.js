@@ -11,7 +11,7 @@ const multer = require("../middleware/multer-config");
 //=================================>
 //* CREATE COMMUNITY
 //=================================>
-router.post("/", isLoggedIn ,multer, communityCtrl.create);
+router.post("/", isLoggedIn, isAdmin, multer, communityCtrl.create);
 
 //=================================>
 //* READ DATAS ONE COMMUNITY
@@ -26,7 +26,7 @@ router.get("/readAllCommunities", communityCtrl.readAllCommunity);
 //=================================>
 //* UPDATE COMMUNIY
 //=================================>
-// router.put("/community/:id/update", multer, communityCtrl.update);
+// router.patch("/update/:id", isLoggedIn, isAdmin, multer, communityCtrl.update);
 
 // router.delete("/community/:id/delete", communityCtrl.delete);
 // router.get("/community/:id/reports",communityCtrl.readReports);

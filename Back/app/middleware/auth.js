@@ -1,24 +1,24 @@
 const jwt = require("jsonwebtoken");
-// const { user } = require("../models");
+const { user } = require("../models");
 
-//* Le créateur de la communauté devient automatiquement modérateur de sa communauté
-
-// TODO : Seul le propriétaire de la communauté peut update / delete la communauté / readReports /
-
-// * vérifie le role de l'utilisateur connecté
 
 const isAdmin = async (req, res, next) => {
-  const user = await user.findByPk(req.userId)
-  console.log(user);
-  if (!user) {
-    return res.status(404).json({'error': 'Logged in user not found'});
+  try {
+    const currentUser = await user.findOne({ where: { id: req.auth.userID } });
+    // console.log(currentUser);
+      if (!currentUser) {
+        return res.status(404).json({ error: "Logged in user not found" });
+      }
+
+      if (!currentUser.isAdmin) {
+        return res.status(403).json({ error: "Insufficient rights" });
+      }
+
+      next();
+  } catch (error) {
+       res.status(401).json({ error: error.message || "Requête non authentifiée" });
   }
 
-  if (!user.isAdmin) {
-    return res.status(403).json({'error': 'Insufficient rights'})
-  }
-
-  next();
 };
 
 const isLoggedIn = async (req, res, next) => {

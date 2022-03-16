@@ -79,3 +79,9 @@ exports.readAllCommunity = async (req, res) => {
       res.status(500).json({ error: error.message});
     });
 };
+
+// * Update community
+exports.updateCommunity = async (req, res, next) => {
+  Community.findByPk(req.params.communityId);
+  
+}
