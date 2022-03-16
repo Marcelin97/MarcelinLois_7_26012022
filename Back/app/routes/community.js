@@ -26,7 +26,7 @@ router.get("/readAllCommunities", communityCtrl.readAllCommunity);
 //=================================>
 //* UPDATE COMMUNIY
 //=================================>
-// router.patch("/update/:id", isLoggedIn, isAdmin, multer, communityCtrl.update);
+router.patch("/updateCommunity/:id", isLoggedIn, multer, communityCtrl.updateCommunity);
 
 // router.delete("/community/:id/delete", communityCtrl.delete);
 // router.get("/community/:id/reports",communityCtrl.readReports);

@@ -76,12 +76,62 @@ exports.readAllCommunity = async (req, res) => {
       });
     })
     .catch((error) => {
-      res.status(500).json({ error: error.message});
+      res.status(500).json({ error: error.message });
     });
 };
 
 // * Update community
 exports.updateCommunity = async (req, res, next) => {
-  Community.findByPk(req.params.communityId);
-  
-}
+  community
+    .findByPk(req.params.id)
+    .then((result) => {
+      // console.log(result);
+      // TODO : Check if community exist
+      if (!result) {
+        return res.status(404).json({ message: "Community not found" });
+      }
+
+      // TODO : gestion de l'image
+      try {
+        const file = req.file;
+        if (file) {
+          // console.log(file);
+          req.body.icon = `/images/${req.file.filename}`;
+          // console.log(req.file.filename);
+
+          // TODO : Delete the old image
+          try {
+            // Si je trouve une image à mon utilisateur
+            if (result.icon) {
+              // je récupère l'image de mon utilisateur
+              const filename = result.icon.split("/images/")[1];
+              // je supprime l'image
+              fs.unlinkSync(`images/${filename}`);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      } catch (error) {
+        res.status(401).json({ error: { msg: "Couldn´t edit community" } });
+      }
+
+      // TODO : gestion du text
+
+       result
+         .update(req.body, { where: { id: result.id } })
+         .then(() => {
+           res.status(200).json({
+             message: "Community updated",
+             status: 200,
+             data: result,
+           });
+         })
+         .catch((error) =>
+           res.status(500).json({ error: error.name, message: error.message })
+         );
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
