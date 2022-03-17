@@ -437,52 +437,50 @@ exports.exportUser = async (req, res) => {
 };
 
 //* Report a user
-exports.report = async (req, res) => {
-  user
-    .findOne({ where: { id: req.auth.userID } })
-    .then(async (currUser) => {
-      if (!currUser) {
-        return res.status(404).json({ error: "User not found" });
-      }
-      // TODO : I find the user to report
-      const { id } = req.params;
-      const targetUser = await user.findOne({ where: { id } });
-      if (!targetUser) {
-        return res.status(404).json({ error: "Reportable user not found." });
-      }
+exports.report = (req, res) => {
+  // TODO : I find the user to report
+  user.findOne({ where: { id: req.params.id } }).then((targetUser) => {
+    if (!targetUser) {
+      return res.status(404).json({ error: "Reportable user not found." });
+    }
+    // TODO : I check if a report has already been made
+    userReport
+      .count({
+        where: { userReportedId: targetUser.id, fromUserId: req.auth.userID },
+      })
+      .then((isAlreadyReported) => {
+        if (isAlreadyReported) {
+          return res
+            .status(409)
+            .json({ message: "You have already reported this user" });
+        }
 
-      // TODO : I check if a report has already been made
-      const isAlreadyReported = await userReport.count({
-        where: { userReportedId: targetUser.id, fromUserId: currUser.id },
+            userReport
+              .create({
+                userReportedId: targetUser.id,
+                fromUserId: req.auth.userID,
+                content: req.body.content,
+              })
+              .then(() => {
+                res.status(201).json({
+                  message:
+                    " User" +
+                    " " +
+                    targetUser.username +
+                    " " +
+                    "reported successfully",
+                });
+              })
+              .catch((error) =>
+                res
+                  .status(500)
+                  .json({ error: error.name, message: error.message })
+              );
+      })
+      .catch((err) => {
+        return res.status(500).json({ error: err.message });
       });
-      if (isAlreadyReported) {
-        return res
-          .status(409)
-          .json({ message: "You have already reported this user" });
-      }
 
-      userReport
-        .create({
-          userReportedId: targetUser.id,
-          fromUserId: currUser.id,
-          content: req.body.content,
-        })
-        .then(() => {
-          res.status(201).json({
-            message:
-              " User" +
-              " " +
-              targetUser.username +
-              " " +
-              "reported successfully",
-          });
-        })
-        .catch((error) =>
-          res.status(500).json({ error: error.name, message: error.message })
-        );
-    })
-    .catch((error) => {
-      const message = "Reporting not possible";
-      res.status(500).json({ error: error.message, message });
-    });
+
+  });
 };

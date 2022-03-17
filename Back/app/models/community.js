@@ -40,13 +40,20 @@ module.exports = (sequelize, Sequelize) => {
     Community.hasMany(models.post, {
       as: "posts",
     });
-   
+
     // One community is owned by one user
     Community.belongsTo(models.user, { foreignKey: "userId", as: "owner" });
 
     //* One community can be joined by 0 or many users
     Community.belongsToMany(models.user, { through: "users_community" });
+
+    // // One community can be managed by 0 or many users
+    // Community.belongsToMany(models.user, {
+    //   through: "moderators",
+    //   uniqueKey: "my_custom_unique",
+    // });
   };
 
   return Community;
 };
+

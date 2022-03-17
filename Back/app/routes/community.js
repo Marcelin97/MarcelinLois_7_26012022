@@ -21,7 +21,7 @@ router.get("/readOne/:id", isLoggedIn, communityCtrl.readOne);
 //=================================>
 //* READ DATAS ALL COMMUNITIES
 //=================================>
-router.get("/readAllCommunities", communityCtrl.readAllCommunity);
+router.get("/readAllCommunities", isLoggedIn, communityCtrl.readAllCommunity);
 
 //=================================>
 //* UPDATE COMMUNIY
@@ -47,9 +47,19 @@ router.delete(
 //=================================>
 //* FOLLOW COMMUNIY
 //=================================>
-router.post("/follow/:id", communityCtrl.followCommunity);
+router.post("/follow/:id",isLoggedIn, communityCtrl.followCommunity);
 
-// router.delete("/unfollow/:id", communityCtrl.unfollow);
+//=================================>
+//* UNFOLLOW COMMUNIY
+//=================================>
+router.post("/unfollow/:id", isLoggedIn, communityCtrl.unfollowCommunity);
 
+//=================================>
+//* FOLLOW COMMUNIY
+//=================================>
+router.post("/report/:id", isLoggedIn, communityCtrl.reportCommunity);
+
+router.post("/moderator/:id", isLoggedIn, multer, communityCtrl.addModerator);
 
 module.exports = router;
+

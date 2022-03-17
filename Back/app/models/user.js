@@ -149,6 +149,12 @@ module.exports = (sequelize, Sequelize) => {
 
     // One user can join one or many communities
     User.belongsToMany(models.community, { through: "users_community" });
+
+    // // One user can manage one or many communities
+    // User.belongsToMany(models.community, {
+    //   through: "moderators",
+    //   uniqueKey: "my_custom_unique",
+    // });
   };
 
   return User;

@@ -1,10 +1,10 @@
-const { user, community, moderator, users_community } = require("../models");
+const { user, community, communityReport, communityModerator} = require("../models");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
 // const { title } = require("process");
 
-//* Create community
+// * Create community
 exports.create = async (req, res, next) => {
   // console.log(req.file);
   // TODO : Check if request contain files uploaded
@@ -31,7 +31,7 @@ exports.create = async (req, res, next) => {
     });
 };
 
-//* Read community
+// * Read community
 exports.readOne = async (req, res) => {
   try {
     const { id } = req.params;
@@ -57,7 +57,7 @@ exports.readOne = async (req, res) => {
   }
 };
 
-//* Read all communities active
+// * Read all communities active
 exports.readAllCommunity = async (req, res) => {
   community
     .findAll({
@@ -178,18 +178,111 @@ exports.deleteCommunity = async (req, res) => {
     });
 };
 
-//* Follow community
+// * Follow community
 exports.followCommunity = async (req, res) => {
   // Find the community to follow
-  community.findByPk(req.params.id).then((result) => {
-    if (!result) {
-      return res.status(404).json({ message: "Community not found" });
-    }
-    
-    // Check if the user is already a member of the community
-    users_community.findOne({
-      where: { userId: req.auth.userID, communityId: result.id },
+  community
+    .findByPk(req.params.id)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "Community not found" });
+      }
+
+      user.findOne({ where: { id: req.auth.userID } })
+      .then((resultUser) => {
+        result.addUser(resultUser);
+
+        return res.status(200).json({ message: "Community successfully follow" });
+      }).catch((err) => {
+        
+      });
+      
+
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
     });
-  });
-  // Find the following members
+};
+
+// * unfollow
+exports.unfollowCommunity = async (req, res) => {
+  // Find the community to unfollow
+  community
+    .findByPk(req.params.id)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "Community not found" });
+      }
+
+      user
+        .findOne({ where: { id: req.auth.userID } })
+        .then((resultUser) => {
+          result.removeUser(resultUser);
+
+          return res
+            .status(200)
+            .json({ message: "Community successfully unfollow" });
+        })
+        .catch((err) => {});
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
+};
+
+// * Report community
+exports.reportCommunity = async (req, res) => {
+  // Find the community to report
+  community
+    .findByPk(req.params.id)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "Community not found" });
+      }
+      communityReport.create({
+        ...req.body,
+        "communityId": result.id,
+        "userId": req.auth.userID
+      })
+
+      return res
+        .status(200)
+        .json({ message: "Community successfully reported" });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
+};
+
+//* Add Moderator
+exports.addModerator = async (req, res) => {
+  // Find the community to add moderator
+  community
+    .findByPk(req.params.id)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "Community not found" });
+      }
+      console.log(result.userId)
+      console.log(req.auth.userID)
+      // TODO : Check if the user is the owner of the community
+      if (result.userId != req.auth.userID)
+        throw new Error(
+          "Vous n'avez pas la permission de gérer les rôles de la communauté."
+        );
+
+      user
+        .findOne({ where: { id: req.auth.userID } })
+        .then((resultUser) => {
+          result.addUser(resultUser);
+
+          return res
+            .status(200)
+            .json({ message: "Community successfully follow" });
+        })
+        .catch((err) => {});
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
 };
