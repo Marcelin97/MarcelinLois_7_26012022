@@ -5,18 +5,18 @@ const router = express.Router();
 const communityCtrl = require("../controllers/community");
 
 //* Middlewares
-const { isLoggedIn, isAdmin} = require("../middleware/auth");
+const { isLoggedIn, isAdmin } = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 
 //=================================>
 //* CREATE COMMUNITY
 //=================================>
-router.post("/", isLoggedIn, isAdmin, multer, communityCtrl.create);
+router.post("/", isLoggedIn, multer, communityCtrl.create);
 
 //=================================>
 //* READ DATAS ONE COMMUNITY
 //=================================>
-router.get("/readOne/:id",isLoggedIn, communityCtrl.readOne);
+router.get("/readOne/:id", isLoggedIn, communityCtrl.readOne);
 
 //=================================>
 //* READ DATAS ALL COMMUNITIES
@@ -26,16 +26,30 @@ router.get("/readAllCommunities", communityCtrl.readAllCommunity);
 //=================================>
 //* UPDATE COMMUNIY
 //=================================>
-router.patch("/updateCommunity/:id", isLoggedIn, multer, communityCtrl.updateCommunity);
+router.patch(
+  "/updateCommunity/:id",
+  isLoggedIn,
+  isAdmin,
+  multer,
+  communityCtrl.updateCommunity
+);
 
 //=================================>
 //* DELETE COMMUNIY
 //=================================>
-router.delete("/deleteCommunity/:id", isLoggedIn, communityCtrl.deleteCommunity);
+router.delete(
+  "/deleteCommunity/:id",
+  isLoggedIn,
+  isAdmin,
+  communityCtrl.deleteCommunity
+);
 
-// router.post("/community/:id/follow", communityCtrl.follow);
-// router.delete("/community/:id/unfollow", communityCtrl.unfollow);
-// router.post("/community/:id/moderator", communityCtrl.addModerator);
-// router.delete("/community/:id/moderator", communityCtrl.deleteModerator);
+//=================================>
+//* FOLLOW COMMUNIY
+//=================================>
+router.post("/follow/:id", communityCtrl.followCommunity);
+
+// router.delete("/unfollow/:id", communityCtrl.unfollow);
+
 
 module.exports = router;

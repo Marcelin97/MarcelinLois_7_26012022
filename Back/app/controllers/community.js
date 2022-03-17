@@ -118,18 +118,18 @@ exports.updateCommunity = async (req, res, next) => {
 
       // TODO : gestion du text
 
-       result
-         .update(req.body, { where: { id: result.id } })
-         .then(() => {
-           res.status(200).json({
-             message: "Community updated",
-             status: 200,
-             data: result,
-           });
-         })
-         .catch((error) =>
-           res.status(500).json({ error: error.name, message: error.message })
-         );
+      result
+        .update(req.body, { where: { id: result.id } })
+        .then(() => {
+          res.status(200).json({
+            message: "Community updated",
+            status: 200,
+            data: result,
+          });
+        })
+        .catch((error) =>
+          res.status(500).json({ error: error.name, message: error.message })
+        );
     })
     .catch((err) => {
       console.log(err);
@@ -138,7 +138,6 @@ exports.updateCommunity = async (req, res, next) => {
 
 // * Delete Community
 exports.deleteCommunity = async (req, res) => {
-
   community
     .findByPk(req.params.id)
     .then((result) => {
@@ -151,8 +150,8 @@ exports.deleteCommunity = async (req, res) => {
           })
           .then(() =>
             res.status(200).json({
-              message:
-                "Community deleted successfully"})
+              message: "Community deleted successfully",
+            })
           )
           .catch((error) => res.status(501).json(error));
       } else {
@@ -166,8 +165,7 @@ exports.deleteCommunity = async (req, res) => {
             })
             .then(() =>
               res.status(200).json({
-                message:
-                  "Community deleted successfully"
+                message: "Community deleted successfully",
               })
             )
             .catch((error) => res.status(501).json(error));
@@ -178,7 +176,20 @@ exports.deleteCommunity = async (req, res) => {
       const message = "Community could not be deleted";
       res.status(500).json({ error: error.message, message });
     });
-  
+};
 
-
+//* Follow community
+exports.followCommunity = async (req, res) => {
+  // Find the community to follow
+  community.findByPk(req.params.id).then((result) => {
+    if (!result) {
+      return res.status(404).json({ message: "Community not found" });
+    }
+    
+    // Check if the user is already a member of the community
+    users_community.findOne({
+      where: { userId: req.auth.userID, communityId: result.id },
+    });
+  });
+  // Find the following members
 };
