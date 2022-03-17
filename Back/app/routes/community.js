@@ -28,8 +28,11 @@ router.get("/readAllCommunities", communityCtrl.readAllCommunity);
 //=================================>
 router.patch("/updateCommunity/:id", isLoggedIn, multer, communityCtrl.updateCommunity);
 
-// router.delete("/community/:id/delete", communityCtrl.delete);
-// router.get("/community/:id/reports",communityCtrl.readReports);
+//=================================>
+//* DELETE COMMUNIY
+//=================================>
+router.delete("/deleteCommunity/:id", isLoggedIn, communityCtrl.deleteCommunity);
+
 // router.post("/community/:id/follow", communityCtrl.follow);
 // router.delete("/community/:id/unfollow", communityCtrl.unfollow);
 // router.post("/community/:id/moderator", communityCtrl.addModerator);
