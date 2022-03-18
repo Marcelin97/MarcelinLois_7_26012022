@@ -1,4 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
+  //* Model Definition
   const User = sequelize.define("user", {
     firstName: {
       type: Sequelize.STRING,
@@ -12,10 +13,18 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       required: true,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Please enter your username",
+        },
+        is: {
+          args: /^[a-z0-9]+$/i,
+          msg: "Username can only contain numbers and letters",
+        },
+      },
       unique: true,
       validate: {
         notEmpty: true,
-        isAlphanumeric: true,
         len: {
           args: [3, 25],
           msg: "The username needs to be between 3 and 25 characteres long",
@@ -23,18 +32,44 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     email: {
-      type: Sequelize.STRING(50),
+      type: Sequelize.STRING(),
       trim: true,
       required: true,
-      unique: true,
-      len: [1, 60],
+      unique: {
+        args: true,
+        msg: "The email address is already registered",
+      },
       allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: "The email address is empty",
+        },
+        notEmpty: {
+          args: true,
+          msg: "The email address is empty",
+        },
+        len: {
+          args: [5, 60],
+          msg: "Email address must be between 5 and 60 characters",
+        },
+      },
     },
     password: {
-      type: Sequelize.STRING(255),
+      type: Sequelize.STRING(64),
       allowNull: false,
       validate: {
         notEmpty: true,
+      },
+      validate: {
+        notNull: {
+          args: true,
+          msg: "Password is empty",
+        },
+        notEmpty: {
+          args: true,
+          msg: "Password is empty",
+        },
       },
       validate: {
         isLongEnough: function (val) {
@@ -55,19 +90,14 @@ module.exports = (sequelize, Sequelize) => {
         notEmpty: true,
       },
     },
-    roles: {
-      type: Sequelize.ENUM(["user", "admin"]),
+    isAdmin: {
+      type: Sequelize.BOOLEAN,
       unique: false,
-      defaultValue: "user",
+      defaultValue: false,
     },
-    // isAdmin: {
-    //   type: Sequelize.BOOLEAN,
-    //   unique: false,
-    //   defaultValue: false,
-    // },
   });
 
-  // Sequelize associations
+  //* Sequelize associations
   User.associate = (models) => {
     User.hasMany(models.comment, {
       as: "comments",
@@ -75,8 +105,8 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.post, {
       as: "posts",
     });
-    User.hasMany(models.moderator, {
-      as: "moderators",
+    User.hasMany(models.post, {
+      as: "own",
     });
     User.hasMany(models.likePost, {
       as: "likePosts",
@@ -110,13 +140,28 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.comment, {
       as: "replies",
     });
+    // User.hasMany(models.community_moderator),
+      
     User.hasOne(models.refreshToken, {
       foreignKey: "userId",
       targetKey: "id",
     });
 
-    // Many to Many associations
-    User.belongsToMany(models.community, { through: "followers" });
+    //* Many to Many associations
+
+    // One user can own 0 or many communities
+    User.hasMany(models.community, { as: "communities" });
+
+    // One user can join one or many communities
+    User.belongsToMany(models.community, {
+      through: "users_community"});
+
+    // One user can manage one or many communities
+    User.belongsToMany(models.community, {
+      through: "community_moderator",
+      // foreignKey: "moderatorId", // replaces `userId`
+      // otherKey: "communityId", // replaces `communityId`
+    });
   };
 
   return User;

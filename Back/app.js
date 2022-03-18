@@ -1,4 +1,3 @@
-// On a besoin d'express. On importe express dans une constante
 const express = require("express");
 
 // On importe bodyParser pour transformer le corp de la requête en JSON, en objet JS utilisable
@@ -13,6 +12,7 @@ const path = require("path");
 // J'importe mes routes qui sont mtn dans mon index.js
 const router = require("./app/routes/index");
 
+// Hateoas links
 const hateoasLinker = require("express-hateoas-links");
 
 // On crée une constante app qui est notre application. 
@@ -20,17 +20,17 @@ const hateoasLinker = require("express-hateoas-links");
 const app = express();
 
 //=================================>
-/////////////////// Middleware CORS
+//* Middleware CORS
 //=================================>
 const cors = require("cors");
 app.use(
   cors({
-    // CORS n’accepte qu’un seul client, qui est l’application Frontend
+    //? CORS n’accepte qu’un seul client, qui est l’application Frontend
     origin: process.env.CLIENT_ENDPOINT,
   })
 );
 //=================================>
-//////////////// End Middleware CORS
+//* End Middleware CORS
 //=================================>
 
 // Exportons notre variable d'application afin qu'elle puisse être importée et utilisée dans d'autres fichiers.
@@ -38,7 +38,7 @@ app.use(
 module.exports = app;
 
 //=================================>
-///////////////// Limit payload size
+//* Limit payload size
 //=================================>
 
 // parse application/x-www-form-urlencoded
@@ -47,10 +47,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 //=================================>
-///////////// End Limit payload size
+//* End Limit payload size
 //=================================>
 
-// replace standard express res.json with the new version
+// Replace standard express res.json with the new version
 app.use(hateoasLinker);
 
 // On applique nos routes à notre app.
@@ -60,7 +60,7 @@ app.use("/api", router);
 app.use("/images/", express.static(path.join(__dirname, "images")));
 
 //=================================>
-///////// Express Session Middleware
+//* Express Session Middleware
 //=================================>
 const session = require("express-session");
 
@@ -82,17 +82,17 @@ app.use(
   })
 );
 //=================================>
-///// End Express Session Middleware
+//* End Express Session Middleware
 //=================================>
 
 //=================================>
-// x - xss - protection
-// Set some secure headers with helmet.js
+//* x - xss - protection
+//* Set some secure headers with helmet.js
 //=================================>
 // module that helps secure your applications by setting various HTTP headers.
 const helmet = require("helmet");
 app.use(helmet());
 //=================================>
-// End - x - xss - protection
-// Set some secure headers with helmet.js
+//* End - x - xss - protection
+//* Set some secure headers with helmet.js
 //=================================>

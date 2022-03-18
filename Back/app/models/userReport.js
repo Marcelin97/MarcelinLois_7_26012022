@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  // Model Definition
+  //* Model Definition
   const UserReport = sequelize.define("userReport", {
     content: {
       type: Sequelize.TEXT,
@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  // Sequelize associations
+  //* Sequelize associations
   UserReport.associate = (models) => {
     // is linked to
     UserReport.belongsTo(models.user, {

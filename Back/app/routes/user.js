@@ -1,77 +1,63 @@
 const express = require("express");
 const router = express.Router();
 
-// //on a besoin de notre contrôler pour associé les fonctions au différentes routes
+//* User controller
 const userCtrl = require("../controllers/user");
 
-//ici je vais récupéré mes middlewares à appliqué sur mes routes user
-//middleware d'authentification que nous appliquerons à nos routes pour les protégés
-const auth = require("../middleware/auth");
-
-//middleware verify username and email
-const verifySignUp = require("../middleware/verifySignUp");
-
-//middleware pour les fichiers
-const multer = require('../middleware/multer-config');
-
+//* Middlewares
+const { isLoggedIn } = require("../middleware/auth");
+const multer = require("../middleware/multer-config");
 const { inputValidation } = require("../middleware/inputValidation");
 
 //=================================>
-/////////////////// SIGNUP
+//* SIGNUP
 //=================================>
-router.post("/signup", verifySignUp, multer, userCtrl.signup);
+router.post("/signup", multer, userCtrl.signup);
 
 //=================================>
-/////////////////// LOGIN
+//* LOGIN
 //=================================>
 router.post("/login", userCtrl.login);
 
 //=================================>
-/////////////////// REFRESH TOKEN
+//* REFRESH TOKEN
 //=================================>
 router.post("/refreshtoken", userCtrl.refreshToken);
 
 //=================================>
-///////// READ DATAS CONNECTED USER
+//* READ DATAS CONNECTED USER
 //=================================>
-router.get("/read", auth, userCtrl.readUser);
+router.get("/read", isLoggedIn, userCtrl.readUser);
 
 //=================================>
-//////////// READ DATAS ONE USER
+//* READ DATAS ONE USER
 //=================================>
 router.get("/readByName", userCtrl.readByName);
 
 //=================================>
-//////////// READ DATAS ALL USERS
+//* READ DATAS ALL USERS
 //=================================>
 router.get("/readAll", userCtrl.readAll);
 
 //=================================>
-/////////////////// UPDATE
+//* UPDATE
 //=================================>
-router.patch("/update", auth, inputValidation, multer, userCtrl.update);
+router.patch("/update", isLoggedIn, inputValidation, multer, userCtrl.update);
 
 //=================================>
-/////////////////// DELETE
+//* DELETE
 //=================================>
-router.delete("/delete", auth, userCtrl.delete);
+router.delete("/delete", isLoggedIn, userCtrl.delete);
 
 //=================================>
-/////////////////// EXPORT DATAS
+//* EXPORT DATAS
 //=================================>
-router.get("/export", auth, userCtrl.exportUser);
+router.get("/export", isLoggedIn, userCtrl.exportUser);
 
 //=================================>
-/////////////////// LOGOUT
+//* REPORT
 //=================================>
-// router.post("/logout", auth, userCtrl.logout);
+router.post("/report/:id", isLoggedIn, userCtrl.report);
+//? router.post("users/:id/report", auth, userCtrl.report);
 
-//=================================>
-/////////////////// REPORT
-//=================================>
-router.post("/report/:id", auth, userCtrl.report);
-
-// router.post("users/:id/report", auth, userCtrl.report);
-
-//on exporte le router de ce fichier
 module.exports = router;

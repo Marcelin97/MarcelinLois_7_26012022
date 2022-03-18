@@ -1,36 +1,73 @@
 const express = require("express");
 const router = express.Router();
 
+//* Community controller
 const communityCtrl = require("../controllers/community");
 
-//ici je vais récupéré mes middlewares à appliqué sur mes routes user
-//middleware d'authentification que nous appliquerons à nos routes pour les protégés
-const auth = require("../middleware/auth");
-
-//middleware d'authentification que nous appliquerons à nos routes pour les protégés
-const authCommunity = require("../middleware/authCommunity");
-
-//middleware pour les fichiers
+//* Middlewares
+const { isLoggedIn, isAdmin } = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 
 //=================================>
-/////////////////// CREATE COMMUNITY
+//* CREATE COMMUNITY
 //=================================>
-router.post("/community", multer, communityCtrl.create);
-
-// router.get("/:communityId", communityCtrl.readOne);
+router.post("/", isLoggedIn, multer, communityCtrl.create);
 
 //=================================>
-//////////// READ DATAS ALL USERS
+//* READ DATAS ONE COMMUNITY
 //=================================>
-router.get("/readAllCommunities", communityCtrl.readAllCommunity);
+router.get("/readOne/:id", isLoggedIn, communityCtrl.readOne);
 
-// router.put("/:communityId", authMiddleware, communityModeratorMiddleware, imageUploadMiddleware, communityController.update);
-// router.delete("/:communityId", authMiddleware, communityModeratorMiddleware, communityController.delete);
-// router.get("/:communityId/reports", authMiddleware, communityModeratorMiddleware, communityController.readReports);
-// router.post("/:communityId/follow", authMiddleware, communityController.follow);
-// router.delete("/:communityId/unfollow", authMiddleware, communityController.unfollow);
-// router.post("/:communityId/moderator", authMiddleware, communityModeratorMiddleware, communityController.addModerator);
-// router.delete("/:communityId/moderator", authMiddleware, communityModeratorMiddleware, communityController.deleteModerator);
-//on exporte le router de ce fichier
+//=================================>
+//* READ DATAS ALL COMMUNITIES
+//=================================>
+router.get("/readAllCommunities", isLoggedIn, communityCtrl.readAllCommunity);
+
+//=================================>
+//* UPDATE COMMUNIY
+//=================================>
+router.patch(
+  "/updateCommunity/:id",
+  isLoggedIn,
+  isAdmin,
+  multer,
+  communityCtrl.updateCommunity
+);
+
+//=================================>
+//* DELETE COMMUNIY
+//=================================>
+router.delete(
+  "/deleteCommunity/:id",
+  isLoggedIn,
+  isAdmin,
+  communityCtrl.deleteCommunity
+);
+
+//=================================>
+//* FOLLOW COMMUNIY
+//=================================>
+router.post("/follow/:id",isLoggedIn, communityCtrl.followCommunity);
+
+//=================================>
+//* UNFOLLOW COMMUNIY
+//=================================>
+router.post("/unfollow/:id", isLoggedIn, communityCtrl.unfollowCommunity);
+
+//=================================>
+//* FOLLOW COMMUNIY
+//=================================>
+router.post("/report/:id", isLoggedIn, communityCtrl.reportCommunity);
+
+//=================================>
+//* ADD MODERATOR COMMUNIY
+//=================================>
+router.post("/moderator/:id", isLoggedIn, communityCtrl.addModerator);
+
+//=================================>
+//* DELETE MODERATOR COMMUNIY
+//=================================>
+router.delete("/moderator/delete/:id", isLoggedIn, communityCtrl.deleteModerator);
+
 module.exports = router;
+

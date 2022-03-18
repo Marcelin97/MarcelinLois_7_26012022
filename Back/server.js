@@ -1,11 +1,11 @@
 const http = require('http');
 const db = require('./app/models')
 
-// on importe notre application, pour importé le app.js qui est dans le même dossier.
+//* On importe notre application : app.js
 const app = require('./app');
 
-//la fonction normalizePort renvoie un port valide, 
-//qu'il soit fourni sous la forme d'un numéro ou d'une chaîne
+// La fonction normalizePort renvoie un port valide, 
+// qu'il soit fourni sous la forme d'un numéro ou d'une chaîne
 const normalizePort = (val) => {
   const port = parseInt(val, 10);
 
@@ -20,13 +20,13 @@ const normalizePort = (val) => {
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-//la fonction errorHandler recherche les différentes 
-//erreurs et les gère de manière appropriée.
+// La fonction errorHandler recherche les différentes 
+// erreurs et les gère de manière appropriée.
 const errorHandler = (error) => {
   if (error.syscall !== "listen") {
     throw error;
   }
-  //Elle est ensuite enregistrée dans le serveur
+  // Elle est ensuite enregistrée dans le serveur
   const address = server.address();
   const bind =
     typeof address === "string" ? "pipe " + address : "port: " + port;
@@ -45,18 +45,23 @@ const errorHandler = (error) => {
 };
 
 //=================================>
-// Sync models in DB
+//* Sync models in DB
+//=================================>
 
-// mettre force sur false une fois que j'ai fini les models pour évité que cela écrase mes données à chaque fois.
+// Mettre force sur false une fois que j'ai fini les models pour évité que cela écrase mes données à chaque fois.
 db.sequelize.sync({ force: false }).then(() => {
   console.log("Drop and re-sync db.");
 });
 
-//on passe à notre serveur notre application.
+//=================================>
+//* Sync models in DB
+//=================================>
+
+// On passe à notre serveur notre application.
 const server = http.createServer(app);
 
-//un écouteur d'évènements est également enregistré, consignant le port ou 
-//le canal nommé sur lequel le serveur s'exécute dans la console.
+// Un écouteur d'évènements est également enregistré, consignant le port ou 
+// le canal nommé sur lequel le serveur s'exécute dans la console.
 server.on("error", errorHandler);
 server.on("listening", () => {
   const address = server.address();
