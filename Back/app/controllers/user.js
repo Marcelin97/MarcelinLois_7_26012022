@@ -455,32 +455,28 @@ exports.report = (req, res) => {
             .json({ message: "You have already reported this user" });
         }
 
-            userReport
-              .create({
-                userReportedId: targetUser.id,
-                fromUserId: req.auth.userID,
-                content: req.body.content,
-              })
-              .then(() => {
-                res.status(201).json({
-                  message:
-                    " User" +
-                    " " +
-                    targetUser.username +
-                    " " +
-                    "reported successfully",
-                });
-              })
-              .catch((error) =>
-                res
-                  .status(500)
-                  .json({ error: error.name, message: error.message })
-              );
+        userReport
+          .create({
+            userReportedId: targetUser.id,
+            fromUserId: req.auth.userID,
+            content: req.body.content,
+          })
+          .then(() => {
+            res.status(201).json({
+              message:
+                " User" +
+                " " +
+                targetUser.username +
+                " " +
+                "reported successfully",
+            });
+          })
+          .catch((error) =>
+            res.status(500).json({ error: error.name, message: error.message })
+          );
       })
       .catch((err) => {
         return res.status(500).json({ error: err.message });
       });
-
-
   });
 };

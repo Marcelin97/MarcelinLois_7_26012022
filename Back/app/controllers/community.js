@@ -187,7 +187,7 @@ exports.deleteCommunity = async (req, res) => {
 // * Follow community
 exports.followCommunity = async (req, res) => {
   // Find the community to follow
-  community
+    community
     .findByPk(req.params.id)
     .then((result) => {
       if (!result) {
@@ -275,7 +275,7 @@ exports.addModerator = async (req, res) => {
         throw new Error(
           "Vous n'avez pas la permission de gérer les rôles de la communauté."
         );
-      
+
       // TODO : Find a user
       user
         .findOne({ where: { id: req.body.id } })
@@ -294,6 +294,45 @@ exports.addModerator = async (req, res) => {
           });
         })
         .catch((err) => {});
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
+};
+
+//* Delete Moderator
+exports.deleteModerator = async (req, res) => {
+  // Find the community to follow
+  community
+    .findByPk(req.params.id)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "Community not found" });
+      }
+
+      // TODO : Check if the current user is the owner of this community
+      if (result.userId != req.auth.userID)
+        throw new Error(
+          "Vous n'avez pas la permission de gérer les rôles de la communauté."
+        );
+
+      // TODO : Find a user
+      user
+        .findOne({ where: { id: req.body.id } })
+        .then((resultUser) => {
+          result.addUser(resultUser);
+
+          // TODO : Add this user to the moderator list
+          community_moderator.destroy({
+            where: { userId: resultUser.id, communityId: result.id },
+          });
+          return res.status(200).json({
+            message: "You have been desappointed moderator of this community.",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });

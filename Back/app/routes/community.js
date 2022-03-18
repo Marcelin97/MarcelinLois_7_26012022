@@ -59,7 +59,15 @@ router.post("/unfollow/:id", isLoggedIn, communityCtrl.unfollowCommunity);
 //=================================>
 router.post("/report/:id", isLoggedIn, communityCtrl.reportCommunity);
 
+//=================================>
+//* ADD MODERATOR COMMUNIY
+//=================================>
 router.post("/moderator/:id", isLoggedIn, communityCtrl.addModerator);
+
+//=================================>
+//* DELETE MODERATOR COMMUNIY
+//=================================>
+router.delete("/moderator/delete/:id", isLoggedIn, communityCtrl.deleteModerator);
 
 module.exports = router;
 

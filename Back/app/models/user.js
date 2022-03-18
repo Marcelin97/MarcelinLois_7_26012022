@@ -105,6 +105,9 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.post, {
       as: "posts",
     });
+    User.hasMany(models.post, {
+      as: "own",
+    });
     User.hasMany(models.likePost, {
       as: "likePosts",
     });
