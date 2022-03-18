@@ -1,4 +1,10 @@
-const { user, community, communityReport, communityModerator} = require("../models");
+const {
+  user,
+  community,
+  communityReport,
+  users_community,
+  community_moderator,
+} = require("../models");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
@@ -188,16 +194,16 @@ exports.followCommunity = async (req, res) => {
         return res.status(404).json({ message: "Community not found" });
       }
 
-      user.findOne({ where: { id: req.auth.userID } })
-      .then((resultUser) => {
-        result.addUser(resultUser);
+      user
+        .findOne({ where: { id: req.auth.userID } })
+        .then((resultUser) => {
+          result.addUser(resultUser);
 
-        return res.status(200).json({ message: "Community successfully follow" });
-      }).catch((err) => {
-        
-      });
-      
-
+          return res
+            .status(200)
+            .json({ message: "Community successfully follow" });
+        })
+        .catch((err) => {});
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });
@@ -241,9 +247,9 @@ exports.reportCommunity = async (req, res) => {
       }
       communityReport.create({
         ...req.body,
-        "communityId": result.id,
-        "userId": req.auth.userID
-      })
+        communityId: result.id,
+        userId: req.auth.userID,
+      });
 
       return res
         .status(200)
@@ -256,29 +262,36 @@ exports.reportCommunity = async (req, res) => {
 
 //* Add Moderator
 exports.addModerator = async (req, res) => {
-  // Find the community to add moderator
+  // Find the community to follow
   community
     .findByPk(req.params.id)
     .then((result) => {
       if (!result) {
         return res.status(404).json({ message: "Community not found" });
       }
-      console.log(result.userId)
-      console.log(req.auth.userID)
-      // TODO : Check if the user is the owner of the community
+
+      // TODO : Check if the current user is the owner of this community
       if (result.userId != req.auth.userID)
         throw new Error(
           "Vous n'avez pas la permission de gérer les rôles de la communauté."
         );
-
+      
+      // TODO : Find a user
       user
-        .findOne({ where: { id: req.auth.userID } })
+        .findOne({ where: { id: req.body.id } })
         .then((resultUser) => {
-          result.addUser(resultUser);
+          // result.addUser(resultUser);
 
-          return res
-            .status(200)
-            .json({ message: "Community successfully follow" });
+          // TODO : Add this user to the moderator list
+          community_moderator.create({
+            userId: resultUser.id,
+            communityId: result.id,
+            isAdmin: true,
+          });
+
+          return res.status(200).json({
+            message: "You have been appointed moderator of this community.",
+          });
         })
         .catch((err) => {});
     })

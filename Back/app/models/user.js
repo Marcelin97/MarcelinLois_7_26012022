@@ -137,6 +137,8 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.comment, {
       as: "replies",
     });
+    // User.hasMany(models.community_moderator),
+      
     User.hasOne(models.refreshToken, {
       foreignKey: "userId",
       targetKey: "id",
@@ -148,13 +150,15 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.community, { as: "communities" });
 
     // One user can join one or many communities
-    User.belongsToMany(models.community, { through: "users_community" });
+    User.belongsToMany(models.community, {
+      through: "users_community"});
 
-    // // One user can manage one or many communities
-    // User.belongsToMany(models.community, {
-    //   through: "moderators",
-    //   uniqueKey: "my_custom_unique",
-    // });
+    // One user can manage one or many communities
+    User.belongsToMany(models.community, {
+      through: "community_moderator",
+      // foreignKey: "moderatorId", // replaces `userId`
+      // otherKey: "communityId", // replaces `communityId`
+    });
   };
 
   return User;
