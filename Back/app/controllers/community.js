@@ -2,13 +2,11 @@ const {
   user,
   community,
   communityReport,
-  users_community,
   community_moderator,
 } = require("../models");
+
 // Import the filesystem module
 const fs = require("fs");
-const path = require("path");
-// const { title } = require("process");
 
 // * Create community
 exports.create = async (req, res, next) => {
@@ -56,7 +54,8 @@ exports.readOne = async (req, res) => {
 
     return res.status(201).json({
       status: 201,
-      data: communityFind,
+      message: "Community found successfully",
+      datas: communityFind,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -78,7 +77,7 @@ exports.readAllCommunity = async (req, res) => {
       }
       res.status(200).json({
         status: 200,
-        data: communitiesActive,
+        datas: communitiesActive,
       });
     })
     .catch((error) => {
@@ -115,11 +114,13 @@ exports.updateCommunity = async (req, res, next) => {
               fs.unlinkSync(`images/${filename}`);
             }
           } catch (error) {
-            console.log(error);
+            return res.status(404).json({ message: "Image not found" });
           }
         }
       } catch (error) {
-        res.status(401).json({ error: { msg: "Couldn´t edit community" } });
+        res
+          .status(401)
+          .json({ error: { msg: "Couldn´t edit image community" } });
       }
 
       // TODO : gestion du text
@@ -137,8 +138,9 @@ exports.updateCommunity = async (req, res, next) => {
           res.status(500).json({ error: error.name, message: error.message })
         );
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      const message = "Community could not be edited";
+      res.status(500).json({ error: error.message, message });
     });
 };
 
@@ -187,7 +189,7 @@ exports.deleteCommunity = async (req, res) => {
 // * Follow community
 exports.followCommunity = async (req, res) => {
   // Find the community to follow
-    community
+  community
     .findByPk(req.params.id)
     .then((result) => {
       if (!result) {
@@ -199,11 +201,15 @@ exports.followCommunity = async (req, res) => {
         .then((resultUser) => {
           result.addUser(resultUser);
 
-          return res
-            .status(200)
-            .json({ message: "Community successfully follow" });
+          return res.status(200).json({
+            status: 200,
+            message:
+              "Community" + " " + result.title + " " + "successfully follow",
+          });
         })
-        .catch((err) => {});
+        .catch((err) => {
+          return res.status(404).json({ err, message: "Follower not found" });
+        });
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });
@@ -225,11 +231,15 @@ exports.unfollowCommunity = async (req, res) => {
         .then((resultUser) => {
           result.removeUser(resultUser);
 
-          return res
-            .status(200)
-            .json({ message: "Community successfully unfollow" });
+          return res.status(200).json({
+            status: 200,
+            message:
+              "Community" + " " + result.title + " " + "successfully unfollow",
+          });
         })
-        .catch((err) => {});
+        .catch((err) => {
+          return res.status(404).json({ err, message: "Follower not found" });
+        });
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });
@@ -251,9 +261,10 @@ exports.reportCommunity = async (req, res) => {
         userId: req.auth.userID,
       });
 
-      return res
-        .status(200)
-        .json({ message: "Community successfully reported" });
+      return res.status(200).json({
+        status: 200,
+        message: "Community successfully reported",
+      });
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });
@@ -290,10 +301,16 @@ exports.addModerator = async (req, res) => {
           });
 
           return res.status(200).json({
-            message: "You have been appointed moderator of this community.",
+            status: 200,
+            message:
+              "You have been appointed moderator of this community :" +
+              " " +
+              result.title,
           });
         })
-        .catch((err) => {});
+        .catch((err) => {
+          return res.status(404).json({ err, message: "Moderator not found" });
+        });
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });
@@ -327,11 +344,15 @@ exports.deleteModerator = async (req, res) => {
             where: { userId: resultUser.id, communityId: result.id },
           });
           return res.status(200).json({
-            message: "You have been desappointed moderator of this community.",
+            status: 200,
+            message:
+              "You have been desappointed moderator of this community :" +
+              " " +
+              result.title,
           });
         })
         .catch((err) => {
-          console.log(err);
+          return res.status(404).json({ err, message: "Moderator not found" });
         });
     })
     .catch((error) => {

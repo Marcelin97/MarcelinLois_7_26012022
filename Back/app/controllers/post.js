@@ -19,9 +19,11 @@ exports.createPost = (req, res, next) => {
           communityId: result.id,
           creatorId: req.auth.userID,
         })
-        .then(() => {
+        .then((datas) => {
           res.status(201).json({
+            status: 201,
             message: " Post create successfully",
+            datas,
           });
         })
         .catch((error) =>
@@ -54,9 +56,13 @@ exports.getPostById = (req, res, next) => {
       ],
     })
     .then((result) => {
-      res.status(200).json({ result });
+      res.status(200).json({
+        status: 200,
+        message: "Post find with success",
+        result,
+      });
     })
     .catch((err) => {
-      console.log(err.name, err.message);
+      res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
     });
 };

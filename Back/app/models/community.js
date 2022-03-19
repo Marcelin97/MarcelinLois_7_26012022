@@ -38,7 +38,7 @@ module.exports = (sequelize, Sequelize) => {
   //* Sequelize associations
   Community.associate = (models) => {
     Community.hasMany(models.post, {
-      as: "posts",
+      as: "category",
       targetKey:"communityId"
     });
 
