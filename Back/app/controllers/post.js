@@ -1,4 +1,6 @@
 const { user, post, community, like } = require("../models");
+// Import the filesystem module
+const fs = require("fs");
 
 // * Create posts
 exports.createPost = (req, res, next) => {
@@ -13,7 +15,7 @@ exports.createPost = (req, res, next) => {
       post
         .create({
           ...req.body,
-          imageUrl: `/images/${file.filename}`,
+          imageUrl: `/images/${req.file.filename}`,
           communityId: result.id,
           creatorId: req.auth.userID,
         })
@@ -49,10 +51,6 @@ exports.getPostById = (req, res, next) => {
           as: "posts",
           attributes: ["id", "title", "about"],
         },
-        //   limit the likes based on the logged in user
-        //   {
-        //     model: like,
-        //   },
       ],
     })
     .then((result) => {
@@ -61,6 +59,4 @@ exports.getPostById = (req, res, next) => {
     .catch((err) => {
       console.log(err.name, err.message);
     });
-
 };
-

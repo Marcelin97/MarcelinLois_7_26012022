@@ -48,8 +48,9 @@ module.exports = (sequelize, Sequelize) => {
     Post.belongsTo(models.user, {
       as: "creator",
     });
-    Post.belongsTo(models.community, { 
+    Post.belongsTo(models.community, {
       as: "posts",
+      foreignKey: "communityId",
     });
     Post.hasMany(models.comment, {
       as: "comments",

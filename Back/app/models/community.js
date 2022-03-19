@@ -39,6 +39,7 @@ module.exports = (sequelize, Sequelize) => {
   Community.associate = (models) => {
     Community.hasMany(models.post, {
       as: "posts",
+      targetKey:"communityId"
     });
 
     // One community is owned by one user
