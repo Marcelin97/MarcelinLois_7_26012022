@@ -104,9 +104,7 @@ module.exports = (sequelize, Sequelize) => {
     });
     User.hasMany(models.post, {
       as: "posts",
-    });
-    User.hasMany(models.post, {
-      as: "own",
+      foreignKey: "creatorId"
     });
     User.hasMany(models.likePost, {
       as: "likePosts",

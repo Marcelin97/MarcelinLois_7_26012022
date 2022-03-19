@@ -12,33 +12,31 @@ module.exports = (sequelize, Sequelize) => {
     imageUrl: {
       type: Sequelize.STRING,
       required: false,
-      default: "",
     },
     content: {
       type: Sequelize.TEXT,
       unique: false,
       required: false,
       default: "",
-      allowNull: false,
       validate: {
-        len: [20, 5000],
+        len: [2, 5000],
       },
     },
-    isRead: {
-      type: Sequelize.BOOLEAN,
-      unique: false,
-      allowNull: false,
-      defaultValue: false,
-    },
+    // isRead: {
+    //   type: Sequelize.BOOLEAN,
+    //   unique: false,
+    //   allowNull: false,
+    //   defaultValue: false,
+    // },
   });
 
   //* Sequelize associations
   Post.associate = (models) => {
     // is linked to
     Post.belongsTo(models.user, {
-      foreignKey: "userId",
-      as: "user",
+      as: "creator",
     });
+    Post.belongsTo(models.community);
     Post.hasMany(models.comment, {
       as: "comments",
     });
