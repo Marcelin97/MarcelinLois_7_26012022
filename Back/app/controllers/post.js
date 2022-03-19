@@ -50,7 +50,7 @@ exports.getPostById = (req, res, next) => {
         },
         {
           model: community,
-          as: "posts",
+          as: "category",
           attributes: ["id", "title", "about"],
         },
       ],
@@ -59,6 +59,40 @@ exports.getPostById = (req, res, next) => {
       res.status(200).json({
         status: 200,
         message: "Post find with success",
+        result,
+      });
+    })
+    .catch((err) => {
+      res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
+    });
+};
+
+// * Read all posts
+exports.getAllPosts = (req, res, next) => {
+  post
+    .findAll({
+      include: [
+        {
+          model: user,
+          as: "creator",
+          attributes: ["id", "username", "imageUrl"],
+        },
+        {
+          model: community,
+          as: "category",
+          attributes: ["id", "title", "about"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+      limit: 6,
+    })
+    .then(async (result) => {
+      const count = await post.count();
+      // console.log(count);
+      res.status(200).json({
+        status: 200,
+        message: "Post find with success",
+        count,
         result,
       });
     })

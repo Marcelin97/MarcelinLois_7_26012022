@@ -5,12 +5,13 @@ const router = express.Router();
 const postsCtrl = require("../controllers/post");
 
 //* Middlewares
-const { isLoggedIn } = require("../middleware/auth");
+const { isLoggedIn, isAdmin } = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 
 router.post("/", isLoggedIn, multer, postsCtrl.createPost);
 router.get("/read/:id",isLoggedIn, postsCtrl.getPostById);
-// router.get("/", postsController.getAllPosts);
+router.get("/readAll", isLoggedIn, postsCtrl.getAllPosts);
+
 
 // router.post("/:id/likes", postsController.handleLike);
 // router.post("/:id/reports", postsController.reportPost);
