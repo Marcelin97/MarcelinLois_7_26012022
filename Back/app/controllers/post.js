@@ -119,7 +119,7 @@ exports.updatePost = (req, res, next) => {
         const file = req.file;
         if (file) {
           // console.log(file);
-          req.body.icon = `/images/${req.file.filename}`;
+          req.body.imageUrl = `/images/${req.file.filename}`;
           // console.log(req.file.filename);
 
           // TODO : Delete the old image
