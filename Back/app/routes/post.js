@@ -9,9 +9,9 @@ const { isLoggedIn, isAdmin } = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 
 router.post("/", isLoggedIn, multer, postsCtrl.createPost);
-router.get("/read/:id",isLoggedIn, postsCtrl.getPostById);
+router.get("/read/:id", isLoggedIn, postsCtrl.getPostById);
 router.get("/readAll", isLoggedIn, postsCtrl.getAllPosts);
-
+router.patch("/update/:id", isLoggedIn, multer, postsCtrl.updatePost);
 
 // router.post("/:id/likes", postsController.handleLike);
 // router.post("/:id/reports", postsController.reportPost);
@@ -21,8 +21,6 @@ router.get("/readAll", isLoggedIn, postsCtrl.getAllPosts);
 // router.get("/:id/likes", hasRole("admin"), postsController.getPostLikes);
 // router.delete("/:id/likes", postsController.unlikePost);
 // router.get("/:id/reports", hasRole("admin"), postsController.getPostReports);
-
-// router.patch("/:id", postsController.updatePost);
 
 // router.delete("/:id", postsController.deletePost);
 // router.delete(
