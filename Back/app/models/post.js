@@ -17,9 +17,20 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.TEXT,
       unique: false,
       required: false,
-      default: "",
+      trim: true,
       validate: {
-        len: [2, 5000],
+        notNull: {
+          args: true,
+          msg: "Content is empty",
+        },
+        notEmpty: {
+          args: true,
+          msg: "Content is empty",
+        },
+        len: {
+          args: [2, 400],
+          msg: "The content must contain between 2 and 400 characters",
+        },
       },
     },
     // isRead: {
