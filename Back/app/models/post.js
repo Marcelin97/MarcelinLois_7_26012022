@@ -18,6 +18,7 @@ module.exports = (sequelize, Sequelize) => {
       unique: false,
       required: false,
       trim: true,
+      allowNull:false,
       validate: {
         notNull: {
           args: true,
@@ -47,7 +48,9 @@ module.exports = (sequelize, Sequelize) => {
     Post.belongsTo(models.user, {
       as: "creator",
     });
-    Post.belongsTo(models.community);
+    Post.belongsTo(models.community, { 
+      as: "posts",
+    });
     Post.hasMany(models.comment, {
       as: "comments",
     });

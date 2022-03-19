@@ -100,14 +100,16 @@ module.exports = (sequelize, Sequelize) => {
   //* Sequelize associations
   User.associate = (models) => {
     User.hasMany(models.comment, {
-      as: "comments",
+      as: "author",
+      foreignKey: "postId"
     });
     User.hasMany(models.post, {
-      as: "posts",
+      as: "creator",
       foreignKey: "creatorId"
     });
     User.hasMany(models.likePost, {
       as: "likePosts",
+      foreignKey: "resourceId",
     });
     User.hasMany(models.messagePrivate, {
       as: "messageFromUserId",
