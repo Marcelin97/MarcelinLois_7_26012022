@@ -22,7 +22,7 @@ router.patch("/update/:id", isLoggedIn, multer, postsCtrl.updatePost);
 // router.delete("/:id/likes", postsController.unlikePost);
 // router.get("/:id/reports", hasRole("admin"), postsController.getPostReports);
 
-// router.delete("/:id", postsController.deletePost);
+router.delete("/delete/:id", isLoggedIn, postsCtrl.deletePost); // isAdmin or isModerator
 // router.delete(
 //   "/:id/reports",
 //   hasRole("admin"),

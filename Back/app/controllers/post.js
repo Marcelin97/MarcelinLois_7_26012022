@@ -103,11 +103,8 @@ exports.getAllPosts = (req, res, next) => {
 
 // * Update a post
 exports.updatePost = (req, res, next) => {
-      post.findOne({
-        where: {
-          id: req.params.id,
-        },
-      })
+  post
+    .findOne({ where: { id: req.params.id } })
     .then((result) => {
       // TODO : Check if post exist
       if (!result) {
@@ -118,10 +115,7 @@ exports.updatePost = (req, res, next) => {
       try {
         const file = req.file;
         if (file) {
-          // console.log(file);
           req.body.imageUrl = `/images/${req.file.filename}`;
-          // console.log(req.file.filename);
-
           // TODO : Delete the old image
           try {
             // Si je trouve une image à mon utilisateur
@@ -140,7 +134,6 @@ exports.updatePost = (req, res, next) => {
       }
 
       // TODO : gestion du text
-
       result
         .update(req.body, { where: { id: result.id } })
         .then(() => {
@@ -153,8 +146,52 @@ exports.updatePost = (req, res, next) => {
         .catch((error) =>
           res.status(500).json({ error: error.name, message: error.message })
         );
-    }).catch((err) => {
-        const message = "Post could not be edited";
-        res.status(500).json({ error: err.message, message });
+    })
+    .catch((err) => {
+      const message = "Post could not be edited";
+      res.status(500).json({ error: err.message, message });
     });
-}
+};
+
+// * Delete post
+exports.deletePost = (req, res, next) => {
+  // TODO : Must be admin or moderator to delete a post
+
+  post
+    .findOne({ where: { id: req.params.id } })
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "Post not exists" });
+      }
+
+      // ? Must be the owner
+      if (req.auth.userID !== result.creatorId) {
+        return res.status(403).json({ message: "Insufficient permissions" });
+      }
+
+      // TODO : Delete file
+      if (result.imageUrl == null) {
+        post
+          .destroy({ where: { id: req.params.id } })
+          .then(() =>
+            res.status(200).json({ message: "Post has been deleted!" })
+          )
+          .catch((error) => res.status(501).json(error));
+      } else {
+        const imagePost = result.imageUrl.split("/images/")[1];
+        fs.unlink(`images/${imagePost}`, () => {
+          post
+            .destroy({ where: { id: req.params.id } })
+            .then(() =>
+              res.status(200).json({ message: "Post has been deleted!" })
+            )
+            .catch((error) => res.status(501).json(error));
+        });
+      }
+    })
+    .catch((err) => {
+      res
+        .status(401)
+        .json({ err, error: { msg: "Couldn´t delete this post" } });
+    });
+};
