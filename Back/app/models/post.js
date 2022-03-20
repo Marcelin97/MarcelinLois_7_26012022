@@ -18,7 +18,7 @@ module.exports = (sequelize, Sequelize) => {
       unique: false,
       required: false,
       trim: true,
-      allowNull:false,
+      allowNull: false,
       validate: {
         notNull: {
           args: true,
@@ -32,6 +32,15 @@ module.exports = (sequelize, Sequelize) => {
           args: [2, 400],
           msg: "The content must contain between 2 and 400 characters",
         },
+      },
+    },
+    likes: {
+      type: Sequelize.INTEGER,
+      unique: false,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0,
       },
     },
     // isRead: {
@@ -57,6 +66,7 @@ module.exports = (sequelize, Sequelize) => {
     });
     Post.hasMany(models.likePost, {
       as: "likePosts",
+      foreignKey: "postId",
     });
   };
 

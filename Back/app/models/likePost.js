@@ -4,8 +4,7 @@ module.exports = (sequelize, Sequelize) => {
     vote: {
       type: Sequelize.BOOLEAN,
       unique: false,
-      allowNull: false,
-      defaultValue: 0,
+      defaultValue: false,
     },
   });
 
@@ -14,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
     // is linked to
     LikePost.belongsTo(models.post, {
       foreignKey: "postId",
-      as: "post",
+      as: "likePosts",
     });
     LikePost.belongsTo(models.user, {
       foreignKey: "userId",

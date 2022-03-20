@@ -1,4 +1,4 @@
-const { user, post, community, like } = require("../models");
+const { user, post, community, like, likePost } = require("../models");
 // Import the filesystem module
 const fs = require("fs");
 
@@ -164,7 +164,7 @@ exports.deletePost = (req, res, next) => {
         return res.status(404).json({ message: "Post not exists" });
       }
 
-      // ? Must be the owner
+      // ! Must be the owner
       if (req.auth.userID !== result.creatorId) {
         return res.status(403).json({ message: "Insufficient permissions" });
       }
@@ -193,5 +193,59 @@ exports.deletePost = (req, res, next) => {
       res
         .status(401)
         .json({ err, error: { msg: "Couldn´t delete this post" } });
+    });
+};
+
+// * Like post
+exports.likePost = (req, res, next) => {
+  let vote = req.body.vote;
+
+  // TODO : Find the post to be like
+  post
+    .findOne({ where: { id: req.params.id } })
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({ message: "Post not exists" });
+      }
+      // console.log(post)
+      // TODO : Check if the current user is in the list of liked posts
+      likePost
+        .findOne({
+          where: { userId: req.auth.userID, postId: post.id },
+        })
+        .then((result) => {
+          // TODO : if no like and If user want to like
+          if (!result && vote == true) {
+              likePost.create({
+                vote: true,
+              postId: post.id,
+              userId: req.auth.userID,
+            });
+            // ! Must be add to the post
+            post.likes += 1;
+
+            return res.status(200).json({ message: "You liked this post" });
+          }
+
+          // TODO : If user want to unlike
+          if (result && vote == false) {
+            likePost.destroy({where: { userId: req.auth.userID, postId: post.id }});
+
+            // ! Must be delete to the post
+            post.likes -= 1;
+            return res.json({
+              message: "Vous avez enlevé votre j'aime de la publication",
+            });
+          }
+
+          // ! Save the post to update likes count
+          post.save();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      res.status(401).json({ error: { msg: "Couldn´t like post" } });
     });
 };

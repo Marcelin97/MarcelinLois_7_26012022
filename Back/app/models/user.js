@@ -109,7 +109,6 @@ module.exports = (sequelize, Sequelize) => {
     });
     User.hasMany(models.likePost, {
       as: "likePosts",
-      foreignKey: "resourceId",
     });
     User.hasMany(models.messagePrivate, {
       as: "messageFromUserId",
