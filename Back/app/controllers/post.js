@@ -10,25 +10,55 @@ exports.createPost = (req, res, next) => {
     .then((result) => {
       if (!result) {
         return res.status(404).json({ message: "Community not found" });
-      }
+        }
+        
+        // if (!req.files) {
+        //                   return res
+        //                     .status(422)
+        //                     .json({ error: { msg: "Image is required" } });
 
-      post
-        .create({
-          ...req.body,
-          imageUrl: `/images/${req.file.filename}`,
-          communityId: result.id,
-          creatorId: req.auth.userID,
-        })
-        .then((datas) => {
-          res.status(201).json({
-            status: 201,
-            message: " Post create successfully",
-            datas,
-          });
-        })
-        .catch((error) =>
-          res.status(500).json({ error: error.name, message: error.message })
-        );
+        // }
+        if (req.file) {
+
+            post
+                .create({
+                    ...req.body,
+                    imageUrl: `/images/${req.file.filename}`,
+                    communityId: result.id,
+                    creatorId: req.auth.userID,
+                })
+        
+                .then((datas) => {
+                    res.status(201).json({
+                        status: 201,
+                        message: " Post create successfully",
+                        datas,
+                    });
+                })
+                .catch((error) =>
+                    res.status(500).json({ error: error.name, message: error.message })
+                );
+        } else {
+            post
+              .create({
+                ...req.body,
+                communityId: result.id,
+                creatorId: req.auth.userID,
+              })
+
+              .then((datas) => {
+                res.status(201).json({
+                  status: 201,
+                  message: " Post create successfully",
+                  datas,
+                });
+              })
+              .catch((error) =>
+                res
+                  .status(500)
+                  .json({ error: error.name, message: error.message })
+              );
+        }
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });
@@ -140,11 +170,11 @@ exports.updatePost = (req, res, next) => {
           res.status(200).json({
             message: "Post updated",
             status: 200,
-            data: result,
+            datas: result,
           });
         })
-        .catch((error) =>
-          res.status(500).json({ error: error.name, message: error.message })
+        .catch((err) =>
+          res.status(500).json({ error: err.name, message: err.message })
         );
     })
     .catch((err) => {
@@ -174,24 +204,30 @@ exports.deletePost = (req, res, next) => {
         post
           .destroy({ where: { id: req.params.id } })
           .then(() =>
-            res.status(200).json({ message: "Post has been deleted!" })
+            res.status(200).json({
+              status: 200,
+              message: "Post has been deleted!",
+            })
           )
-          .catch((error) => res.status(501).json(error));
+          .catch((err) => res.status(501).json(err));
       } else {
         const imagePost = result.imageUrl.split("/images/")[1];
         fs.unlink(`images/${imagePost}`, () => {
           post
             .destroy({ where: { id: req.params.id } })
             .then(() =>
-              res.status(200).json({ message: "Post has been deleted!" })
+              res.status(200).json({
+                status: 200,
+                message: "Post has been deleted!",
+              })
             )
-            .catch((error) => res.status(501).json(error));
+            .catch((err) => res.status(500).json(err));
         });
       }
     })
     .catch((err) => {
       res
-        .status(401)
+        .status(500)
         .json({ err, error: { msg: "Couldn´t delete this post" } });
     });
 };
@@ -247,10 +283,10 @@ exports.likePost = (req, res, next) => {
           post.save({ where: { id: req.params.id } });
         })
         .catch((err) => {
-          console.log(err);
+          res.status(500).json({ error: err.name, message: err.message });
         });
     })
     .catch((err) => {
-      res.status(401).json({ error: { msg: "Couldn´t like post" } });
+      res.status(500).json({ err, error: { msg: "Couldn´t like post" } });
     });
 };
