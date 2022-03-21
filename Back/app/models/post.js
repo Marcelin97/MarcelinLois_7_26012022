@@ -68,6 +68,10 @@ module.exports = (sequelize, Sequelize) => {
       as: "likePosts",
       foreignKey: "postId",
     });
+    Post.hasMany(models.savePost, {
+      as: "savePosts",
+      foreignKey: "postId",
+    });
   };
 
   return Post;

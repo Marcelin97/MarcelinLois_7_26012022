@@ -139,8 +139,10 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.comment, {
       as: "replies",
     });
-    // User.hasMany(models.community_moderator),
-      
+    User.hasMany(models.savePost, {
+      as: "savePosts",
+    });
+    
     User.hasOne(models.refreshToken, {
       foreignKey: "userId",
       targetKey: "id",
