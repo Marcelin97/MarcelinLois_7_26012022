@@ -1,4 +1,4 @@
-const { user, post, community, like, likePost } = require("../models");
+const { user, post, community, postReport, likePost } = require("../models");
 // Import the filesystem module
 const fs = require("fs");
 
@@ -10,55 +10,46 @@ exports.createPost = (req, res, next) => {
     .then((result) => {
       if (!result) {
         return res.status(404).json({ message: "Community not found" });
-        }
-        
-        // if (!req.files) {
-        //                   return res
-        //                     .status(422)
-        //                     .json({ error: { msg: "Image is required" } });
+      }
 
-        // }
-        if (req.file) {
+      if (req.file) {
+        post
+          .create({
+            ...req.body,
+            imageUrl: `/images/${req.file.filename}`,
+            communityId: result.id,
+            creatorId: req.auth.userID,
+          })
 
-            post
-                .create({
-                    ...req.body,
-                    imageUrl: `/images/${req.file.filename}`,
-                    communityId: result.id,
-                    creatorId: req.auth.userID,
-                })
-        
-                .then((datas) => {
-                    res.status(201).json({
-                        status: 201,
-                        message: " Post create successfully",
-                        datas,
-                    });
-                })
-                .catch((error) =>
-                    res.status(500).json({ error: error.name, message: error.message })
-                );
-        } else {
-            post
-              .create({
-                ...req.body,
-                communityId: result.id,
-                creatorId: req.auth.userID,
-              })
+          .then((datas) => {
+            res.status(201).json({
+              status: 201,
+              message: " Post create successfully",
+              datas,
+            });
+          })
+          .catch((error) =>
+            res.status(500).json({ error: error.name, message: error.message })
+          );
+      } else {
+        post
+          .create({
+            ...req.body,
+            communityId: result.id,
+            creatorId: req.auth.userID,
+          })
 
-              .then((datas) => {
-                res.status(201).json({
-                  status: 201,
-                  message: " Post create successfully",
-                  datas,
-                });
-              })
-              .catch((error) =>
-                res
-                  .status(500)
-                  .json({ error: error.name, message: error.message })
-              );
-        }
+          .then((datas) => {
+            res.status(201).json({
+              status: 201,
+              message: " Post create successfully",
+              datas,
+            });
+          })
+          .catch((error) =>
+            res.status(500).json({ error: error.name, message: error.message })
+          );
+      }
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });
@@ -288,5 +279,31 @@ exports.likePost = (req, res, next) => {
     })
     .catch((err) => {
       res.status(500).json({ err, error: { msg: "Couldn´t like post" } });
+    });
+};
+
+// * Report post
+exports.reportPost = async (req, res) => {
+  // Find the community to report
+  post
+    .findByPk(req.params.id)
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({ message: "Post not exists" });
+      }
+
+      postReport.create({
+        ...req.body,
+        postId: post.id,
+        userId: req.auth.userID,
+      });
+
+      return res.status(200).json({
+        status: 200,
+        message: "Post successfully reported",
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
     });
 };

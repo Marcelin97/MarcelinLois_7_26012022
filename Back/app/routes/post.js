@@ -14,11 +14,9 @@ router.get("/readAll", isLoggedIn, postsCtrl.getAllPosts);
 router.patch("/update/:id", isLoggedIn, multer, postsCtrl.updatePost);
 
 router.post("/:id/likes",isLoggedIn, postsCtrl.likePost);
-// router.delete("/:id/likes", postsController.unlikePost);
 // router.get("/:id/likes", hasRole("admin"), postsController.getPostLikes);
 
-// router.post("/:id/reports", postsController.reportPost);
-// router.get("/:username/feed", postsController.getPostsFeed);
+router.post("/:id/reports", isLoggedIn, postsCtrl.reportPost);
 
 router.delete("/delete/:id", isLoggedIn, postsCtrl.deletePost); // add isAdmin or isModerator
 

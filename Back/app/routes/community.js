@@ -55,7 +55,7 @@ router.post("/follow/:id",isLoggedIn, communityCtrl.followCommunity);
 router.post("/unfollow/:id", isLoggedIn, communityCtrl.unfollowCommunity);
 
 //=================================>
-//* FOLLOW COMMUNIY
+//* REPORT COMMUNIY
 //=================================>
 router.post("/report/:id", isLoggedIn, communityCtrl.reportCommunity);
 
