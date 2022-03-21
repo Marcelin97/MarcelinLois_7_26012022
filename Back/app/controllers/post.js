@@ -199,7 +199,7 @@ exports.deletePost = (req, res, next) => {
 // * Like post
 exports.likePost = (req, res, next) => {
   let vote = req.body.vote;
-
+  let transaction;
   // TODO : Find the post to be like
   post
     .findOne({ where: { id: req.params.id } })
@@ -214,32 +214,37 @@ exports.likePost = (req, res, next) => {
           where: { userId: req.auth.userID, postId: post.id },
         })
         .then((result) => {
-          // TODO : if no like and If user want to like
+          // TODO : If no like and If user want to like
           if (!result && vote == true) {
-              likePost.create({
-                vote: true,
+            likePost.create({
+              vote: true,
               postId: post.id,
               userId: req.auth.userID,
             });
             // ! Must be add to the post
-            post.likes += 1;
+            // post.likes += 1;
+            post.increment("likes", { by: 1, transaction });
 
             return res.status(200).json({ message: "You liked this post" });
           }
 
           // TODO : If user want to unlike
           if (result && vote == false) {
-            likePost.destroy({where: { userId: req.auth.userID, postId: post.id }});
+            likePost.destroy({
+              where: { userId: req.auth.userID, postId: post.id },
+            });
 
             // ! Must be delete to the post
-            post.likes -= 1;
+            // post.likes -= 1;
+            post.decrement("likes", { by: 1, transaction });
+
             return res.json({
-              message: "Vous avez enlevé votre j'aime de la publication",
+              message: "You removed your like from the post",
             });
           }
 
           // ! Save the post to update likes count
-          post.save();
+          post.save({ where: { id: req.params.id } });
         })
         .catch((err) => {
           console.log(err);
