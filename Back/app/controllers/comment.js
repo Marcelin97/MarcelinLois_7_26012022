@@ -5,6 +5,7 @@ const {
   postReport,
   likePost,
   savePost,
+  comment,
 } = require("../models");
 
 // Import the filesystem module
@@ -12,7 +13,7 @@ const fs = require("fs");
 
 // * Create posts
 exports.createComment = (req, res, next) => {
-      let transaction;
+  let transaction;
   post
     .findOne({ where: { id: req.body.postId } })
     .then((post) => {
@@ -46,71 +47,87 @@ exports.createComment = (req, res, next) => {
 };
 
 // * Update a comment
-// editComment: async (req: any, res: Response) => {
-//     let transaction;
-//     console.log("testtttt", req.body);
-//     const currentUser = isUser(req);
-//     if (req.body.comment_body && req.body.gifUrl) {
-//       return res.status(401).send({
-//         message: "Can't edit both",
-//       });
-//     }
-//     console.log("dfdfdfd", req.params.userId, currentUser);
-//     if (req.params.userId != currentUser) {
-//       return res.status(401).send({
-//         message: "Can't edit another users post",
-//       });
-//     } else {
-//       try {
-//         transaction = await models.sequelize.transaction();
-//         return models.Comments.update(
-//           {
-//             comment_body: filterbadWords(req.body.commentData)
-//               ? filterbadWords(req.body.commentData)
-//               : "",
-//             gifUrl: req.body.gifUrl ? req.body.gifUrl : "",
-//           },
-//           {
-//             where: {
-//               id: req.params.commentId,
-//             },
-//           },
-//           { transaction }
-//         ).then(async (comment) => {
-//           console.log("anothfdf", comment);
-//           await transaction.commit();
-//           return res.status(200).send({
-//             message: "Comment Edited Successfully",
-//           });
-//         });
-//       } catch (err) {
-//         console.log("something went wrong", err);
-//         res.status(401).send({
-//           message: "Something went wrong",
-//         });
-//       }
-//     }
-//   },
+exports.updateComment = (req, res, next) => {
+  // Find the comment to update
+  comment
+    .findByPk(req.params.id)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "Comment not exists" });
+      }
+
+      // ! Must be the owner of the comment to edit
+      if (result.userId != req.auth.userID) {
+        return res.status(401).send({
+          message: "Can't edit another users post",
+        });
+      }
+
+      result
+        .update(req.body, { where: { id: result.id } })
+        .then(() => {
+          res.status(200).send({
+            status: 200,
+            message: "Comment Edited Successfully",
+          });
+        })
+        .catch((err) =>
+          res.status(500).json({ error: err.name, message: err.message })
+        );
+    })
+    .catch((err) => {
+      res.status(401).send({
+        message: "Something went wrong",
+        err,
+      });
+    });
+};
 
 // * Delete a comment
-// deleteComment: async (req: any, res: Response) => {
-//     const currentUser = isUser(req);
-//     if (req.params.userId == currentUser) {
-//       try {
-//         await models.Comments.destroy({
-//           where: {
-//             id: req.params.id,
-//           },
-//         });
-//         return res.status(200).send("Comment has been deleted!");
-//       } catch (error) {
-//         console.log("There was an error", error);
-//         res.status(401).send("Failed to delete comment");
-//       }
-//     } else {
-//       return res.status(500).send("You can't delete another user comment");
-//     }
-//   },
+exports.deleteComment = (req, res, next) => {
+  let transaction;
+  comment
+    .findByPk(req.params.id)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "Comment not exists" });
+      }
+
+      // ! Must be the owner
+      if (result.userId == req.auth.userID) {
+
+          comment.destroy({
+            where: {
+              id: req.params.id,
+            },
+          });
+
+          post.findOne({ where: { id: result.postId } })
+          .then((post) => {
+            // ! Must be delete to the post count
+            post.decrement("commentsCount", { by: 1, transaction });
+            // ! Save the post to update comments count
+            post.save();
+          }).catch((err) => {
+              console.log(err)
+          });
+          
+          return res.status(200).send("Comment has been deleted!");
+
+      } else {
+        return res.status(500).send("You can't delete another user comment");
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.name, message: err.message });
+    });
+};
+
+// *Like a comment
+
+
+// * Report a comment
+
 
 // * Reply a comment
 // replyComment: async (req: any, res: Response) => {

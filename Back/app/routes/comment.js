@@ -14,25 +14,27 @@ const multer = require("../middleware/multer-config");
 router.post("/", isLoggedIn, commentsCtrl.createComment);
 
 // router.get("/:commentId", commentController.readOne);
-// router.put(
-//   "/:commentId",
-//   authMiddleware,
-//   moderatorMiddleware,
-//   commentController.update
-// );
-// router.delete(
-//   "/:commentId",
-//   authMiddleware,
-//   moderatorMiddleware,
-//   commentController.delete
-// );
+
+//=================================>
+//* UPDATE A COMMENT
+//=================================>
+router.put(
+  "/update/:id",
+  isLoggedIn,
+  //   moderatorMiddleware,
+  commentsCtrl.updateComment
+);
+
+router.delete(
+  "/delete/:id",
+  isLoggedIn,
+  //   moderatorMiddleware,
+  commentsCtrl.deleteComment
+);
+
 // router.post("/:commentId/like", authMiddleware, commentController.like);
 // router.post("/:commentId/report", authMiddleware, commentController.report);
-// router.delete(
-//   "/:commentId/report/:reportId",
-//   authMiddleware,
-//   commentController.deleteReport
-// );
+
 // router.get("/post/:postId", commentController.readAll);
 
 module.exports = router;
