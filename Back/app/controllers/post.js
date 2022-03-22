@@ -1,4 +1,11 @@
-const { user, post, community, postReport, likePost, savePost } = require("../models");
+const {
+  user,
+  post,
+  community,
+  postReport,
+  likePost,
+  savePost,
+} = require("../models");
 // Import the filesystem module
 const fs = require("fs");
 
@@ -242,7 +249,7 @@ exports.likeDislikePost = (req, res, next) => {
         })
         .then((result) => {
           // TODO : If no like and If user want to like
-          if (!result && vote == true) {
+          if (!result && req.body.vote == true) {
             likePost.create({
               vote: true,
               postId: post.id,
@@ -256,7 +263,7 @@ exports.likeDislikePost = (req, res, next) => {
           }
 
           // TODO : If user want to unlike
-          if (result && vote == false) {
+          if (result && req.body.vote == false) {
             likePost.destroy({
               where: { userId: req.auth.userID, postId: post.id },
             });
@@ -310,47 +317,47 @@ exports.reportPost = async (req, res) => {
 
 // * Save post
 exports.saveUnsavePost = (req, res) => {
-      // TODO : Find the post to be save
-      post
-        .findOne({ where: { id: req.params.id } })
-        .then((post) => {
-          if (!post) {
-            return res.status(404).json({ message: "Post not exists" });
-          }
-          // console.log(post)
-          // TODO : Check if the current user is in the list of saved posts
-          savePost
-            .findOne({
-              where: { userId: req.auth.userID, postId: post.id },
-            })
-            .then((result) => {
-              // TODO : If user don't already save the post
-              if (!result && save == true) {
-                savePost.create({
-                  save: true,
-                  postId: post.id,
-                  userId: req.auth.userID,
-                });
-
-                return res.status(200).json({ message: "You saved this post" });
-              }
-
-              // TODO : If user want to unsave
-              if (result && save == false) {
-                savePost.destroy({
-                  where: { userId: req.auth.userID, postId: post.id },
-                });
-
-                return res.json({
-                  message: "The post is no longer saved",
-                });
-              }
-            })
-            .catch((err) => {
-              res.status(500).json({ error: err.name, message: err.message });
+  // TODO : Find the post to be save
+  post
+    .findOne({ where: { id: req.params.id } })
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({ message: "Post not exists" });
+      }
+      // console.log(post)
+      // TODO : Check if the current user is in the list of saved posts
+      savePost
+        .findOne({
+          where: { userId: req.auth.userID, postId: post.id },
+        })
+        .then((result) => {
+          // TODO : If user don't already save the post
+          if (!result && req.body.vote == true) {
+            savePost.create({
+              vote: true,
+              postId: post.id,
+              userId: req.auth.userID,
             });
+
+            return res.status(200).json({ message: "You saved this post" });
+          }
+
+          // TODO : If user want to unsave
+          if (result && req.body.vote == false) {
+            savePost.destroy({
+              where: { userId: req.auth.userID, postId: post.id },
+            });
+
+            return res.json({
+              message: "The post is no longer saved",
+            });
+          }
         })
         .catch((err) => {
-          res.status(500).json({ err, error: { msg: "Couldn´t save this post" } });
+          res.status(500).json({ error: err.name, message: err.message });
         });
-}
+    })
+    .catch((err) => {
+      res.status(500).json({ err, error: { msg: "Couldn´t save this post" } });
+    });
+};

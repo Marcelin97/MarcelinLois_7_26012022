@@ -1,12 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
   //* Model Definition
-    const SavePost = sequelize.define("savePost", {
-      save: {
-        type: Sequelize.BOOLEAN,
-        unique: false,
-        defaultValue: false,
-      },
-    });
+  const SavePost = sequelize.define("savePost", {
+    vote: {
+      type: Sequelize.BOOLEAN,
+      unique: false,
+      defaultValue: false,
+    },
+  });
 
   //* Sequelize associations
   SavePost.associate = (models) => {
