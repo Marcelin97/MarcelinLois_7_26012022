@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
   //* Model Definition
   const SavePost = sequelize.define("savePost", {
-    vote: {
+    save: {
       type: Sequelize.BOOLEAN,
       unique: false,
       defaultValue: false,

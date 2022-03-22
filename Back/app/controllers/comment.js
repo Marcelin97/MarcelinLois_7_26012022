@@ -12,98 +12,37 @@ const fs = require("fs");
 
 // * Create posts
 exports.createComment = (req, res, next) => {
-    Posts.findOne({ where: { id: req.body.postId } })
+      let transaction;
+  post
+    .findOne({ where: { id: req.body.postId } })
     .then((post) => {
-        if (!post) {
-          return res.status(404).json({ message: "Publication introuvable" });
-        }
+      if (!post) {
+        return res.status(404).json({ message: "Publication introuvable" });
+      }
 
-        post.createComment({})
-    }).catch((err) => {
-        
-    });
-
-    try {
-
-        comments.create()
-            .then((comment) => {
-        models.Comments.findOne({
-          where: {
-            id: comment.id,
-          },
-          include: [
-            {
-              model: models.User,
-              as: "author",
-              attributes: ["username", "gravatar"],
-            },
-            {
-              model: models.CommentReplies,
-              as: "commentReplies",
-              include: [
-                {
-                  model: models.User,
-                  as: "author",
-                  attributes: ["username", "gravatar", "bio"],
-                },
-              ],
-            },
-          ],
-        }).then(async (newComment) => {
-          const body = req.body.comment_body;
-          if (usernames.some((user) => body.includes(user))) {
-            const regex = /^@/i;
-            const sentence = body.split(" ");
-            for (let i = 0; i < sentence.length; i++) {
-              const word = sentence[i];
-              let username;
-              if (regex.test(word)) {
-                console.log("this test passed bro", word);
-                username = word;
-                const newUsername = username.slice(1);
-                if (usernames.includes(newUsername)) {
-                  NotificationServ.userMention(
-                    currentUser,
-                    newComment.postId,
-                    newUsername,
-                    newComment.userId
-                  );
-                  console.log(newUsername + " got mentioned");
-                }
-              }
-            }
-            console.log("this got called");
-
-            pusherConfig.trigger("post-comments", "user-mention", {
-              comment: newComment,
-            });
-          } else {
-            console.log("no luck finding user");
-          }
-          console.log("dsdsdssdsd", currentUser, newComment.userId); // con
-
-          NotificationServ.newCommentNotification(
-            currentUser,
-            newComment.postId,
-            newComment.userId
-          );
-
-          pusherConfig.trigger("post-comments", "new-comment", {
-            comment: newComment,
-          });
-          return res.status(200).send({
-            message: "comment created",
-            comment: newComment,
-          });
-        });
+      post.createComment({
+        content: req.body.content,
+        userId: req.auth.userID,
+        PostId: post.id,
       });
-    } catch (error) {
-      console.log("There was an error", error);
+
+      // ! Must be add to the post
+      post.increment("commentsCount", { by: 1, transaction });
+
+      // ! Save the post to update comments count
+      post.save({ where: { id: req.body.postId } });
+
+      return res.status(200).json({
+        status: 200,
+        message: "Comment created",
+      });
+    })
+    .catch((err) => {
       return res.status(500).send({
         message: "Failed to write a comment",
-        error,
+        err,
       });
-    }
+    });
 };
 
 // * Update a comment

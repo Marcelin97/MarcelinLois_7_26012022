@@ -250,27 +250,25 @@ exports.likeDislikePost = (req, res, next) => {
         })
         .then((result) => {
           // TODO : If no like and If user want to like
-          if (!result && req.body.vote == true) {
+          if (!result && vote == true) {
             likePost.create({
               vote: true,
               postId: post.id,
               userId: req.auth.userID,
             });
             // ! Must be add to the post
-            // post.likes += 1;
             post.increment("likes", { by: 1, transaction });
 
             return res.status(200).json({ message: "You liked this post" });
           }
 
           // TODO : If user want to unlike
-          if (result && req.body.vote == false) {
+          if (result && vote == false) {
             likePost.destroy({
               where: { userId: req.auth.userID, postId: post.id },
             });
 
             // ! Must be delete to the post
-            // post.likes -= 1;
             post.decrement("likes", { by: 1, transaction });
 
             return res.json({
@@ -318,6 +316,7 @@ exports.reportPost = async (req, res) => {
 
 // * Save post
 exports.saveUnsavePost = (req, res) => {
+    let save = req.body.save;
   // TODO : Find the post to be save
   post
     .findOne({ where: { id: req.params.id } })
@@ -333,9 +332,9 @@ exports.saveUnsavePost = (req, res) => {
         })
         .then((result) => {
           // TODO : If user don't already save the post
-          if (!result && req.body.vote == true) {
+          if (!result && save == true) {
             savePost.create({
-              vote: true,
+              save: true,
               postId: post.id,
               userId: req.auth.userID,
             });
@@ -344,7 +343,7 @@ exports.saveUnsavePost = (req, res) => {
           }
 
           // TODO : If user want to unsave
-          if (result && req.body.vote == false) {
+          if (result && save == false) {
             savePost.destroy({
               where: { userId: req.auth.userID, postId: post.id },
             });
