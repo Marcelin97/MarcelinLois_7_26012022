@@ -133,10 +133,9 @@ module.exports = (sequelize, Sequelize) => {
       as: "postReport",
     });
     User.hasMany(models.comment, {
-      foreignKey: "commentId",
       as: "commentParent",
     });
-    User.hasMany(models.comment, {
+    User.hasMany(models.commentReplies, {
       as: "replies",
     });
     User.hasMany(models.savePost, {

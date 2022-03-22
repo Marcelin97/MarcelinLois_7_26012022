@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const CryptoJS = require("crypto-js");
+
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");

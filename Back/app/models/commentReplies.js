@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
   //* Model Definition
-  const Comment = sequelize.define("comment", {
-    content: {
+  const CommentReplies = sequelize.define("commentReplies", {
+    replyBody: {
       type: Sequelize.TEXT,
       unique: false,
       required: false,
@@ -14,28 +14,22 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   //* Sequelize associations
-  Comment.associate = (models) => {
+  CommentReplies.associate = (models) => {
     // is linked to
-    Comment.belongsTo(models.user, {
+    CommentReplies.belongsTo(models.user, {
       foreignKey: "userId",
       as: "author",
     });
-    Comment.belongsTo(models.post, {
+    CommentReplies.belongsTo(models.post, {
       foreignKey: "postId",
-      as: "post",
+      targetKey: "id",
     });
-    // Reply a comment
-    Comment.hasMany(models.commentReplies, {
+    CommentReplies.belongsTo(models.comment, {
       as: "commentReplies",
       foreignKey: "commentId",
       targetKey: "id",
     });
-
-    // Like a comment
-    Comment.hasMany(models.likeComment, {
-      as: "likeComment",
-    });
   };
 
-  return Comment;
+  return CommentReplies;
 };
