@@ -100,13 +100,12 @@ module.exports = (sequelize, Sequelize) => {
   //* Sequelize associations
   User.associate = (models) => {
     User.hasMany(models.comment, {
-      as: "comments",
+      as: "author",
+      foreignKey: "postId"
     });
     User.hasMany(models.post, {
-      as: "posts",
-    });
-    User.hasMany(models.post, {
-      as: "own",
+      as: "creator",
+      foreignKey: "creatorId"
     });
     User.hasMany(models.likePost, {
       as: "likePosts",
@@ -140,8 +139,10 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.comment, {
       as: "replies",
     });
-    // User.hasMany(models.community_moderator),
-      
+    User.hasMany(models.savePost, {
+      as: "savePosts",
+    });
+    
     User.hasOne(models.refreshToken, {
       foreignKey: "userId",
       targetKey: "id",

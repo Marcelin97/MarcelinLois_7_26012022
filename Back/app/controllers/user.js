@@ -1,4 +1,3 @@
-// const config = require("../config/auth.config");
 const { user, refreshToken: RefreshToken } = require("../models");
 const { userReport } = require("../models");
 const bcrypt = require("bcryptjs");

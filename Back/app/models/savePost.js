@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   //* Model Definition
-  const LikePost = sequelize.define("likePost", {
+  const SavePost = sequelize.define("savePost", {
     vote: {
       type: Sequelize.BOOLEAN,
       unique: false,
@@ -9,17 +9,17 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   //* Sequelize associations
-  LikePost.associate = (models) => {
+  SavePost.associate = (models) => {
     // is linked to
-    LikePost.belongsTo(models.post, {
-      foreignKey: "postId",
-      as: "likePosts",
-    });
-    LikePost.belongsTo(models.user, {
+    SavePost.belongsTo(models.user, {
       foreignKey: "userId",
       as: "user",
     });
+    SavePost.belongsTo(models.post, {
+      foreignKey: "postId",
+      as: "savePosts",
+    });
   };
 
-  return LikePost;
+  return SavePost;
 };

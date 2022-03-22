@@ -12,38 +12,65 @@ module.exports = (sequelize, Sequelize) => {
     imageUrl: {
       type: Sequelize.STRING,
       required: false,
-      default: "",
     },
     content: {
       type: Sequelize.TEXT,
       unique: false,
       required: false,
-      default: "",
+      trim: true,
       allowNull: false,
       validate: {
-        len: [20, 5000],
+        notNull: {
+          args: true,
+          msg: "Content is empty",
+        },
+        notEmpty: {
+          args: true,
+          msg: "Content is empty",
+        },
+        len: {
+          args: [2, 400],
+          msg: "The content must contain between 2 and 400 characters",
+        },
       },
     },
-    isRead: {
-      type: Sequelize.BOOLEAN,
+    likes: {
+      type: Sequelize.INTEGER,
       unique: false,
       allowNull: false,
-      defaultValue: false,
+      defaultValue: 0,
+      validate: {
+        min: 0,
+      },
     },
+    // isRead: {
+    //   type: Sequelize.BOOLEAN,
+    //   unique: false,
+    //   allowNull: false,
+    //   defaultValue: false,
+    // },
   });
 
   //* Sequelize associations
   Post.associate = (models) => {
     // is linked to
     Post.belongsTo(models.user, {
-      foreignKey: "userId",
-      as: "user",
+      as: "creator",
+    });
+    Post.belongsTo(models.community, {
+      as: "category",
+      foreignKey: "communityId",
     });
     Post.hasMany(models.comment, {
       as: "comments",
     });
     Post.hasMany(models.likePost, {
       as: "likePosts",
+      foreignKey: "postId",
+    });
+    Post.hasMany(models.savePost, {
+      as: "savePosts",
+      foreignKey: "postId",
     });
   };
 

@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
     // is linked to
     Comment.belongsTo(models.user, {
       foreignKey: "userId",
-      as: "user",
+      as: "author",
     });
     Comment.belongsTo(models.post, {
       foreignKey: "postId",
