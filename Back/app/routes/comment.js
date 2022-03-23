@@ -37,7 +37,8 @@ router.post(
   isLoggedIn,
   commentsCtrl.likeDislikeComment
 );
-// router.post("/:commentId/report", authMiddleware, commentController.report);
+
+router.post("/reports/:id", isLoggedIn, commentsCtrl.reportComment);
 
 // router.get("/post/:postId", commentController.readAll);
 

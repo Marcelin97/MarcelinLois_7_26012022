@@ -1,12 +1,9 @@
 const {
   user,
   post,
-  community,
-  postReport,
-  likePost,
-  savePost,
   comment,
-  likeComment
+  likeComment,
+  commentReport
 } = require("../models");
 
 // Import the filesystem module
@@ -96,25 +93,25 @@ exports.deleteComment = (req, res, next) => {
 
       // ! Must be the owner
       if (result.userId == req.auth.userID) {
+        comment.destroy({
+          where: {
+            id: req.params.id,
+          },
+        });
 
-          comment.destroy({
-            where: {
-              id: req.params.id,
-            },
-          });
-
-          post.findOne({ where: { id: result.postId } })
+        post
+          .findOne({ where: { id: result.postId } })
           .then((post) => {
             // ! Must be delete to the post count
             post.decrement("commentsCount", { by: 1, transaction });
             // ! Save the post to update comments count
             post.save();
-          }).catch((err) => {
-              console.log(err)
+          })
+          .catch((err) => {
+            console.log(err);
           });
-          
-          return res.status(200).send("Comment has been deleted!");
 
+        return res.status(200).send("Comment has been deleted!");
       } else {
         return res.status(500).send("You can't delete another user comment");
       }
@@ -182,7 +179,33 @@ exports.likeDislikeComment = (req, res, next) => {
 };
 
 // * Report a comment
+exports.reportComment = (req, res, next) => {
+  comment
+    .findOne({ where: { id: req.params.id } })
+    .then((comment) => {
+      if (!comment) {
+        return res.status(404).json({ message: "Post not exists" });
+      }
 
+      commentReport.create({
+        ...req.body,
+        commentId: comment.id,
+        userId: req.auth.userID,
+      });
+
+      return res.status(200).json({
+        status: 200,
+        message: "Comment successfully reported",
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
+};
+
+// * Get one comment
+
+// * Get all comments
 
 // * Reply a comment
 // replyComment: async (req: any, res: Response) => {
