@@ -204,8 +204,47 @@ exports.reportComment = (req, res, next) => {
 };
 
 // * Get one comment
+exports.readCommentById = (req, res, next) => {
+  comment
+    .findOne({
+      where: {
+        id: req.params.id,
+      },
+      include: [
+        {
+          model: user,
+          as: "author",
+          attributes: ["id", "username", "imageUrl"],
+        },
+        {
+          model: post,
+          as: "post",
+          attributes: ["id", "title", "content", "communityId", "creatorId"],
+        },
+      ],
+    })
+    .then((result) => {
+      // TODO : Check if comment exist
+      if (!result) {
+        return res.status(404).json({ message: "Comment not found" });
+      }
+      res.status(200).json({
+        status: 200,
+        message: "Comment find with success",
+        result,
+      });
+    })
+    .catch((err) => {
+      res.status(401).json({ err, error: { msg: "Couldn´t find comment" } });
+    });
+};
 
 // * Get all comments
+// comments.findAndCountAll({
+//   offset,
+//   limit,
+//   order: [["createdAt", "DESC"]],
+// });
 
 // * Reply a comment
 // replyComment: async (req: any, res: Response) => {

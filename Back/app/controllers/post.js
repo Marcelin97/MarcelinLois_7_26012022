@@ -85,6 +85,11 @@ exports.readPostById = (req, res, next) => {
       ],
     })
     .then((result) => {
+      // TODO : Check if post exist
+      if (!result) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      
       res.status(200).json({
         status: 200,
         message: "Post find with success",
@@ -116,8 +121,14 @@ exports.readAllPosts = (req, res, next) => {
       limit: 6,
     })
     .then(async (result) => {
+      // TODO : Check if post exist
+      if (!result) {
+        return res.status(404).json({ message: "Posts not found" });
+      }
+
       const count = await post.count();
       // console.log(count);
+
       res.status(200).json({
         status: 200,
         message: "Posts find with success",
