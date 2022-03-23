@@ -6,6 +6,7 @@ const {
   likePost,
   savePost,
   comment,
+  likeComment
 } = require("../models");
 
 // Import the filesystem module
@@ -124,7 +125,61 @@ exports.deleteComment = (req, res, next) => {
 };
 
 // *Like a comment
+exports.likeDislikeComment = (req, res, next) => {
+  let vote = req.body.vote;
+  let transaction;
+  // TODO : Find the post to be like
+  comment
+    .findOne({ where: { id: req.params.id } })
+    .then((comment) => {
+      if (!comment) {
+        return res.status(404).json({ message: "Post not exists" });
+      }
+      // console.log(post)
+      // TODO : Check if the current user is in the list of liked posts
+      likeComment
+        .findOne({
+          where: { userId: req.auth.userID, commentId: comment.id },
+        })
+        .then((result) => {
+          // TODO : If no like and If user want to like
+          if (!result && vote == true) {
+            likeComment.create({
+              vote: true,
+              commentId: comment.id,
+              userId: req.auth.userID,
+            });
+            // ! Must be add to the post
+            comment.increment("likes", { by: 1, transaction });
 
+            return res.status(200).json({ message: "You liked this comment" });
+          }
+
+          // TODO : If user want to unlike
+          if (result && vote == false) {
+            likeComment.destroy({
+              where: { userId: req.auth.userID, commentId: comment.id },
+            });
+
+            // ! Must be delete to the post
+            comment.decrement("likes", { by: 1, transaction });
+
+            return res.json({
+              message: "You removed your like from the comment",
+            });
+          }
+
+          // ! Save the post to update likes count
+          comment.save({ where: { id: req.params.id } });
+        })
+        .catch((err) => {
+          res.status(500).json({ error: err.name, message: err.message });
+        });
+    })
+    .catch((err) => {
+      res.status(500).json({ err, error: { msg: "Couldn´t like post" } });
+    });
+};
 
 // * Report a comment
 

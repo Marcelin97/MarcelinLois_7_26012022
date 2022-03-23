@@ -32,7 +32,11 @@ router.delete(
   commentsCtrl.deleteComment
 );
 
-// router.post("/:commentId/like", authMiddleware, commentController.like);
+router.post(
+  "//like/:id",
+  isLoggedIn,
+  commentsCtrl.likeDislikeComment
+);
 // router.post("/:commentId/report", authMiddleware, commentController.report);
 
 // router.get("/post/:postId", commentController.readAll);

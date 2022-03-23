@@ -11,6 +11,15 @@ module.exports = (sequelize, Sequelize) => {
         len: [1, 1000],
       },
     },
+    likes: {
+      type: Sequelize.INTEGER,
+      unique: false,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0,
+      },
+    },
   });
 
   //* Sequelize associations
