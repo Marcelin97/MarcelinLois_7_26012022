@@ -33,7 +33,7 @@ router.delete(
 );
 
 router.post(
-  "//like/:id",
+  "/likes/:id",
   isLoggedIn,
   commentsCtrl.likeDislikeComment
 );
