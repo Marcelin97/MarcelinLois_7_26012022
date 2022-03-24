@@ -9,6 +9,7 @@ const {
 
 // Import the filesystem module
 const fs = require("fs");
+const comment = require("../models/comment");
 
 // * Create posts
 exports.createPost = (req, res, next) => {
@@ -82,6 +83,11 @@ exports.readPostById = (req, res, next) => {
           as: "category",
           attributes: ["id", "title", "about"],
         },
+        {
+          model: comment,
+          as: "comments",
+          attributes: ["id", "content", "likes"],
+        },
       ],
     })
     .then((result) => {
@@ -89,7 +95,7 @@ exports.readPostById = (req, res, next) => {
       if (!result) {
         return res.status(404).json({ message: "Post not found" });
       }
-      
+
       res.status(200).json({
         status: 200,
         message: "Post find with success",
@@ -101,7 +107,41 @@ exports.readPostById = (req, res, next) => {
     });
 };
 
-// * Read all posts
+// *Read all post by community
+exports.readAllPostByCommunity = function (req, res, next) {
+  community
+    .findOne({
+      where: {
+        id: req.params.id,
+      },
+      include: [
+        {
+          model: post,
+          as: "category",
+          attributes: ["id", "title", "imageUrl", "content", "likes", "communityId", "creatorId"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+      limit: 6,
+    })
+    .then((result) => {
+      // TODO : Check if i find post by community
+      if (!result) {
+        return res.status(404).json({ message: "Any post found in this community" });
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: "Posts find with success in this community",
+        result,
+      });
+    })
+    .catch((err) => {
+            res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
+    });
+}
+// * Read all post by communty follow
+// * Read all post with more likes
 exports.readAllPosts = (req, res, next) => {
   post
     .findAll({
@@ -243,6 +283,8 @@ exports.deletePost = (req, res, next) => {
 };
 
 // * Like post
+// * gestion neutre si pas like et pas dislike
+
 exports.likeDislikePost = (req, res, next) => {
   let vote = req.body.vote;
   let transaction;

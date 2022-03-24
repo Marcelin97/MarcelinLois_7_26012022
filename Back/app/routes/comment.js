@@ -42,8 +42,4 @@ router.post(
 
 router.post("/reports/:id", isLoggedIn, commentsCtrl.reportComment);
 
-router.get("/read/:id", isLoggedIn, commentsCtrl.readCommentById);
-
-router.get("/readAll",isLoggedIn, commentsCtrl.readAllComments);
-
 module.exports = router;

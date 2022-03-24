@@ -23,6 +23,9 @@ router.get("/read/:id", isLoggedIn, postsCtrl.readPostById);
 //=================================>
 router.get("/readAll", isLoggedIn, postsCtrl.readAllPosts);
 
+// * Find all posts by community
+router.get("/readAllPostByCommunity/:id", isLoggedIn, postsCtrl.readAllPostByCommunity);
+
 //=================================>
 //* UPDATE A POST
 //=================================>
