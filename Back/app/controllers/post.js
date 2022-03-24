@@ -5,6 +5,7 @@ const {
   postReport,
   likePost,
   savePost,
+  users_community,
 } = require("../models");
 
 // Import the filesystem module
@@ -107,7 +108,7 @@ exports.readPostById = (req, res, next) => {
     });
 };
 
-// *Read all post by community
+// * Read all post by community
 exports.readAllPostByCommunity = function (req, res, next) {
   community
     .findOne({
@@ -118,7 +119,15 @@ exports.readAllPostByCommunity = function (req, res, next) {
         {
           model: post,
           as: "category",
-          attributes: ["id", "title", "imageUrl", "content", "likes", "communityId", "creatorId"],
+          attributes: [
+            "id",
+            "title",
+            "imageUrl",
+            "content",
+            "likes",
+            "communityId",
+            "creatorId",
+          ],
         },
       ],
       order: [["createdAt", "DESC"]],
@@ -127,7 +136,9 @@ exports.readAllPostByCommunity = function (req, res, next) {
     .then((result) => {
       // TODO : Check if i find post by community
       if (!result) {
-        return res.status(404).json({ message: "Any post found in this community" });
+        return res
+          .status(404)
+          .json({ message: "Any post found in this community" });
       }
 
       res.status(200).json({
@@ -137,11 +148,45 @@ exports.readAllPostByCommunity = function (req, res, next) {
       });
     })
     .catch((err) => {
-            res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
+      res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
     });
-}
-// * Read all post by communty follow
-// * Read all post with more likes
+};
+
+// * Read all posts by community follow
+exports.readAllPostByCommunityFollow = (req, res, next) => {
+  community.findOne({
+    where: { id: req.params.id },
+  });
+};
+
+// * Read all posts with more likes
+exports.readAllPostMoreLikes = (req, res, next) => {
+  post
+    .findAll({
+      // where: { id: req.params.id },
+      order: [["likes", "DESC"]],
+      limit: 6,
+    })
+    .then((result) => {
+      // TODO : Check if i find post by community
+      if (!result) {
+        return res
+          .status(404)
+          .json({ message: "Any post found with lot of likes" });
+      }
+      res.status(200).json({
+        status: 200,
+        message: "Posts find with lot of likes",
+        result,
+      });
+    })
+    .catch((err) => {
+      res
+        .status(401)
+        .json({ err, error: { msg: "Couldn´t find post with lot of likes" } });
+    });
+};
+// * Read all posts
 exports.readAllPosts = (req, res, next) => {
   post
     .findAll({
@@ -369,7 +414,7 @@ exports.reportPost = async (req, res) => {
 
 // * Save post
 exports.saveUnsavePost = (req, res) => {
-    let save = req.body.save;
+  let save = req.body.save;
   // TODO : Find the post to be save
   post
     .findOne({ where: { id: req.params.id } })

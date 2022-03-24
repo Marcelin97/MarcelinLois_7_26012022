@@ -26,6 +26,16 @@ router.get("/readAll", isLoggedIn, postsCtrl.readAllPosts);
 // * Find all posts by community
 router.get("/readAllPostByCommunity/:id", isLoggedIn, postsCtrl.readAllPostByCommunity);
 
+// * Find all posts by community follow
+router.get(
+  "/readAllPostByCommunityFollow/:id",
+  isLoggedIn,
+  postsCtrl.readAllPostByCommunityFollow
+);
+
+// * Find all posts with a lot of likes
+router.get("/readAllPostMoreLikes", isLoggedIn, postsCtrl.readAllPostMoreLikes);
+
 //=================================>
 //* UPDATE A POST
 //=================================>
