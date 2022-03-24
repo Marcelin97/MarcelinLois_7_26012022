@@ -247,53 +247,5 @@ exports.readCommentById = (req, res, next) => {
 // });
 
 // * Reply a comment
-// replyComment: async (req: any, res: Response) => {
-//     const currentUser = isUser(req);
-//     console.log("dsfsfsf checking for reqboyd", req.body);
-//     try {
-//       await models.CommentReplies.create({
-//         postId: req.params.postId,
-//         commentId: req.params.commentId,
-//         userId: currentUser,
-//         replyBody: req.body.replyBody,
-//       }).then((reply) => {
-//         models.CommentReplies.findOne({
-//           where: {
-//             id: reply.id,
-//           },
-//           include: [
-//             {
-//               model: models.User,
-//               as: "author",
-//               attributes: ["username", "gravatar"],
-//             },
-//           ],
-//         }).then((newReply) => {
-//           return res.status(200).send({
-//             reply: newReply,
-//             message: "Reply added successfully",
-//           });
-//         });
-//       });
-//     } catch (err) {
-//       res.status(401).send("Failed to add reply");
-//     }
-//   },
 
-// * Delete a reply
-// deleteReply: async (req: any, res: Response) => {
-//     try {
-//       await models.CommentReplies.destroy({
-//         where: {
-//           id: req.params.id,
-//           postId: req.params.postId,
-//         },
-//       });
-//       return res.status(200).send({
-//         message: "Reply has been deleted",
-//       });
-//     } catch (err) {
-//       console.log(err);
-//       res.status(401).send("Failed to delete reply");
-//     }
-//   },
+// * Delete a reply comment

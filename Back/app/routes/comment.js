@@ -21,14 +21,16 @@ router.post("/", isLoggedIn, commentsCtrl.createComment);
 router.put(
   "/update/:id",
   isLoggedIn,
-  //   moderatorMiddleware,
+  // isModerator,
+  // isAdmin
   commentsCtrl.updateComment
 );
 
 router.delete(
   "/delete/:id",
   isLoggedIn,
-  //   moderatorMiddleware,
+  // isModerator,
+  // isAdmin
   commentsCtrl.deleteComment
 );
 
@@ -40,8 +42,8 @@ router.post(
 
 router.post("/reports/:id", isLoggedIn, commentsCtrl.reportComment);
 
-router.get("/read/:id", commentsCtrl.readCommentById);
+router.get("/read/:id", isLoggedIn, commentsCtrl.readCommentById);
 
-// router.get("/post/:postId", commentController.readAll);
+router.get("/readAll",isLoggedIn, commentsCtrl.readAllComments);
 
 module.exports = router;
