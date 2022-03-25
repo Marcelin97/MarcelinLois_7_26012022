@@ -39,7 +39,7 @@ router.get("/manyLikes", isLoggedIn, postsCtrl.manyLikes);
 //=================================>
 // * UPDATE A POST
 //=================================>
-router.patch("/update/:id", isLoggedIn, multer, postsCtrl.updatePost);
+router.patch("/:id/update", isLoggedIn, multer, postsCtrl.updatePost);
 
 //=================================>
 // * DELETE A POST
@@ -52,9 +52,14 @@ router.delete("/:id/delete", isLoggedIn, postsCtrl.deletePost); // add isAdmin o
 router.post("/:id/reports", isLoggedIn, postsCtrl.reportPost);
 
 //=================================>
-// * LIKE OR DISLIKE A POST
+// * LIKE A POST
 //=================================>
-router.post("/:id/likes", isLoggedIn, postsCtrl.likeDislikePost);
+router.post("/:id/likes", isLoggedIn, postsCtrl.likePost);
+
+//=================================>
+// * DISLIKE A POST
+//=================================>
+// router.post("/:id/dislikes", isLoggedIn, postsCtrl.dislikePost);
 
 //=================================>
 // * SAVE OR UNSAVE A POST
