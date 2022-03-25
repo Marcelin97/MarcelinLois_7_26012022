@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const SavePost = sequelize.define("savePost", {
     save: {
       type: Sequelize.BOOLEAN,
@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   SavePost.associate = (models) => {
     // is linked to
     SavePost.belongsTo(models.user, {

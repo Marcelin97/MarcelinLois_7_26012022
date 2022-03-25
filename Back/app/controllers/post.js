@@ -1,6 +1,7 @@
 const {
   user,
   post,
+  comment,
   community,
   postReport,
   likePost,
@@ -10,7 +11,6 @@ const {
 
 // Import the filesystem module
 const fs = require("fs");
-const comment = require("../models/comment");
 
 // * Create posts
 exports.createPost = (req, res, next) => {
@@ -66,7 +66,7 @@ exports.createPost = (req, res, next) => {
     });
 };
 
-// Read one post by a specific ID
+// * Read one post by a specific ID
 exports.readPostById = (req, res, next) => {
   post
     .findOne({
@@ -235,7 +235,15 @@ exports.updatePost = (req, res, next) => {
       if (!result) {
         return res.status(404).json({ message: "Post not found" });
       }
-
+      // TODO : Check if current user is the owner of the post
+      if (result.creatorId != req.auth.userID) {
+        return res
+          .status(403)
+          .json({
+            error:
+              "You are not the creator of this publication, you cannot modify it.",
+          });
+      }
       // TODO : gestion de l'image
       try {
         const file = req.file;

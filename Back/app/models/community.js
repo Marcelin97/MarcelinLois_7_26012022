@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const Community = sequelize.define(
     "community",
     {
@@ -35,21 +35,24 @@ module.exports = (sequelize, Sequelize) => {
     { tableName: "community" }
   );
 
-  //* Sequelize associations
+  // * Sequelize associations
   Community.associate = (models) => {
     Community.hasMany(models.post, {
       as: "category",
-      targetKey:"communityId"
+      targetKey: "communityId",
     });
 
-    // One community is owned by one user
+    // * Many to Many associations
+    
+    // ! One community is owned by one user
     Community.belongsTo(models.user, { foreignKey: "userId", as: "owner" });
 
-    //* One community can be joined by 0 or many users
+    // ! One community can be joined by 0 or many users
     Community.belongsToMany(models.user, {
-      through: "users_community"});
+      through: "users_community",
+    });
 
-    // One community can be managed by 0 or many users
+    // ! One community can be managed by 0 or many users
     Community.belongsToMany(models.user, {
       through: "community_moderator",
       // foreignKey: "communityId", // replaces `communityId`

@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const User = sequelize.define("user", {
     firstName: {
       type: Sequelize.STRING,
@@ -80,7 +80,7 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     birthday: {
-      // ex : "birthday": "1990-02-17" - "year-month-day"
+      // ? ex : "birthday": "1990-02-17" - "year-month-day"
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW,
     },
@@ -97,7 +97,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   User.associate = (models) => {
     User.hasMany(models.comment, {
       as: "author",
@@ -147,16 +147,16 @@ module.exports = (sequelize, Sequelize) => {
       targetKey: "id",
     });
 
-    //* Many to Many associations
+    // * Many to Many associations
 
-    // One user can own 0 or many communities
+    // ! One user can own 0 or many communities
     User.hasMany(models.community, { as: "communities" });
 
-    // One user can join one or many communities
+    // ! One user can join one or many communities
     User.belongsToMany(models.community, {
       through: "users_community"});
 
-    // One user can manage one or many communities
+    // ! One user can manage one or many communities
     User.belongsToMany(models.community, {
       through: "community_moderator",
       // foreignKey: "moderatorId", // replaces `userId`

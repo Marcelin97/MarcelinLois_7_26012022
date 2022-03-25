@@ -1,7 +1,7 @@
 const http = require('http');
 const db = require('./app/models')
 
-//* On importe notre application : app.js
+// * On importe notre application : app.js
 const app = require('./app');
 
 // La fonction normalizePort renvoie un port valide, 
@@ -45,7 +45,7 @@ const errorHandler = (error) => {
 };
 
 //=================================>
-//* Sync models in DB
+// * Sync models in DB
 //=================================>
 
 // Mettre force sur false une fois que j'ai fini les models pour évité que cela écrase mes données à chaque fois.
@@ -54,7 +54,7 @@ db.sequelize.sync({ force: false }).then(() => {
 });
 
 //=================================>
-//* Sync models in DB
+// * Sync models in DB
 //=================================>
 
 // On passe à notre serveur notre application.

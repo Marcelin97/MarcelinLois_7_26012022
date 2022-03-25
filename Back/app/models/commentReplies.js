@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const CommentReplies = sequelize.define("commentReplies", {
     replyBody: {
       type: Sequelize.TEXT,
@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   CommentReplies.associate = (models) => {
     // is linked to
     CommentReplies.belongsTo(models.user, {

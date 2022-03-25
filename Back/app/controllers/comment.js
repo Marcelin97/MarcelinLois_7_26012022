@@ -251,6 +251,9 @@ exports.deleteCommentReply = (req, res, next) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({ error: err.name, message: err.message });
+      res.status(500).json({
+        error: err.name,
+        message: err.message,
+      });
     });
 };

@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const LikeComment = sequelize.define("likeComment", {
     vote: {
       type: Sequelize.BOOLEAN,
@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   LikeComment.associate = (models) => {
     // is linked to
     LikeComment.belongsTo(models.comment, {

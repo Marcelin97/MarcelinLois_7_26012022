@@ -1,19 +1,19 @@
 const express = require("express");
 const router = express.Router();
 
-//* Post controller
+// * Comment controller
 const commentsCtrl = require("../controllers/comment");
 
-//* Middlewares
+// * Middlewares
 const { isLoggedIn, isAdmin } = require("../middleware/auth");
 
 //=================================>
-//* CREATE A COMMENT
+// * CREATE A COMMENT
 //=================================>
 router.post("/", isLoggedIn, commentsCtrl.createComment);
 
 //=================================>
-//* UPDATE A COMMENT
+// * UPDATE A COMMENT
 //=================================>
 router.put(
   "/update/:id",
@@ -24,7 +24,7 @@ router.put(
 );
 
 //=================================>
-//* DELETE A COMMENT
+// * DELETE A COMMENT
 //=================================>
 router.delete(
   "/delete/:id",
@@ -35,22 +35,22 @@ router.delete(
 );
 
 //=================================>
-//* LIKE OR DISLIKE A COMMENT
+// * LIKE OR DISLIKE A COMMENT
 //=================================>
 router.post("/likes/:id", isLoggedIn, commentsCtrl.likeDislikeComment);
 
 //=================================>
-//* REPORT A COMMENT
+// * REPORT A COMMENT
 //=================================>
 router.post("/reports/:id", isLoggedIn, commentsCtrl.reportComment);
 
 //=================================>
-//* REPLY A COMMENT
+// * REPLY A COMMENT
 //=================================>
 router.post("/reply/:id", isLoggedIn, commentsCtrl.commentReply);
 
 //=================================>
-//* DELETE A COMMENT REPLY
+// * DELETE A COMMENT REPLY
 //=================================>
 router.delete("/delete/reply/:id", isLoggedIn, commentsCtrl.deleteCommentReply);
 
