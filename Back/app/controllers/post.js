@@ -104,7 +104,7 @@ exports.readPostById = (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
+      res.status(500).json({ err, error: { msg: "Couldn´t find post" } });
     });
 };
 
@@ -160,10 +160,9 @@ exports.readAllPostByCommunityFollow = (req, res, next) => {
 };
 
 // * Read all posts with more likes
-exports.readAllPostMoreLikes = (req, res, next) => {
+exports.manyLikes = (req, res, next) => {
   post
     .findAll({
-      // where: { id: req.params.id },
       order: [["likes", "DESC"]],
       limit: 6,
     })
@@ -186,6 +185,7 @@ exports.readAllPostMoreLikes = (req, res, next) => {
         .json({ err, error: { msg: "Couldn´t find post with lot of likes" } });
     });
 };
+
 // * Read all posts
 exports.readAllPosts = (req, res, next) => {
   post

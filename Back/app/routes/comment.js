@@ -6,14 +6,11 @@ const commentsCtrl = require("../controllers/comment");
 
 //* Middlewares
 const { isLoggedIn, isAdmin } = require("../middleware/auth");
-const multer = require("../middleware/multer-config");
 
 //=================================>
 //* CREATE A COMMENT
 //=================================>
 router.post("/", isLoggedIn, commentsCtrl.createComment);
-
-// router.get("/:commentId", commentController.readOne);
 
 //=================================>
 //* UPDATE A COMMENT
@@ -26,6 +23,9 @@ router.put(
   commentsCtrl.updateComment
 );
 
+//=================================>
+//* DELETE A COMMENT
+//=================================>
 router.delete(
   "/delete/:id",
   isLoggedIn,
@@ -34,12 +34,24 @@ router.delete(
   commentsCtrl.deleteComment
 );
 
-router.post(
-  "/likes/:id",
-  isLoggedIn,
-  commentsCtrl.likeDislikeComment
-);
+//=================================>
+//* LIKE OR DISLIKE A COMMENT
+//=================================>
+router.post("/likes/:id", isLoggedIn, commentsCtrl.likeDislikeComment);
 
+//=================================>
+//* REPORT A COMMENT
+//=================================>
 router.post("/reports/:id", isLoggedIn, commentsCtrl.reportComment);
+
+//=================================>
+//* REPLY A COMMENT
+//=================================>
+router.post("/reply/:id", isLoggedIn, commentsCtrl.commentReply);
+
+//=================================>
+//* DELETE A COMMENT REPLY
+//=================================>
+router.delete("/delete/reply/:id", isLoggedIn, commentsCtrl.deleteCommentReply);
 
 module.exports = router;

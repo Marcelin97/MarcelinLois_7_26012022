@@ -34,7 +34,7 @@ router.get(
 );
 
 // * Find all posts with a lot of likes
-router.get("/readAllPostMoreLikes", isLoggedIn, postsCtrl.readAllPostMoreLikes);
+router.get("/manyLikes", isLoggedIn, postsCtrl.manyLikes);
 
 //=================================>
 //* UPDATE A POST

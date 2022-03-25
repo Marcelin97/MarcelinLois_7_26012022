@@ -3,15 +3,17 @@ const {
   post,
   comment,
   likeComment,
-  commentReport
+  commentReport,
+  commentReplies,
 } = require("../models");
 
 // Import the filesystem module
 const fs = require("fs");
 
-// * Create posts
+// * Create comment
 exports.createComment = (req, res, next) => {
   let transaction;
+  // TODO : Find a post to create a related comment
   post
     .findOne({ where: { id: req.body.postId } })
     .then((post) => {
@@ -25,14 +27,14 @@ exports.createComment = (req, res, next) => {
         PostId: post.id,
       });
 
-      // ! Must be add to the post
+      // ! Must be added to the post
       post.increment("commentsCount", { by: 1, transaction });
 
       // ! Save the post to update comments count
       post.save({ where: { id: req.body.postId } });
 
       return res.status(200).json({
-        status: 200,
+        status: 201,
         message: "Comment created",
       });
     })
@@ -46,7 +48,7 @@ exports.createComment = (req, res, next) => {
 
 // * Update a comment
 exports.updateComment = (req, res, next) => {
-  // Find the comment to update
+  // TODO : Find the comment to update
   comment
     .findByPk(req.params.id)
     .then((result) => {
@@ -54,7 +56,7 @@ exports.updateComment = (req, res, next) => {
         return res.status(404).json({ message: "Comment not exists" });
       }
 
-      // ! Must be the owner of the comment to edit
+      // ! Must be the owner to be able to edit the comment
       if (result.userId != req.auth.userID) {
         return res.status(401).send({
           message: "Can't edit another users post",
@@ -63,10 +65,11 @@ exports.updateComment = (req, res, next) => {
 
       result
         .update(req.body, { where: { id: result.id } })
-        .then(() => {
+        .then((datas) => {
           res.status(200).send({
             status: 200,
             message: "Comment Edited Successfully",
+            datas,
           });
         })
         .catch((err) =>
@@ -74,7 +77,7 @@ exports.updateComment = (req, res, next) => {
         );
     })
     .catch((err) => {
-      res.status(401).send({
+      res.status(500).send({
         message: "Something went wrong",
         err,
       });
@@ -84,6 +87,7 @@ exports.updateComment = (req, res, next) => {
 // * Delete a comment
 exports.deleteComment = (req, res, next) => {
   let transaction;
+  // TODO : Find the comment to update
   comment
     .findByPk(req.params.id)
     .then((result) => {
@@ -91,29 +95,25 @@ exports.deleteComment = (req, res, next) => {
         return res.status(404).json({ message: "Comment not exists" });
       }
 
-      // ! Must be the owner
+      // ! Must be the owner to delete the comment
       if (result.userId == req.auth.userID) {
-        comment.destroy({
-          where: {
-            id: req.params.id,
-          },
-        });
+        comment.destroy({ where: { id: req.params.id } });
 
         post
           .findOne({ where: { id: result.postId } })
           .then((post) => {
-            // ! Must be delete to the post count
+            // ! Decrement the comment linked to this post
             post.decrement("commentsCount", { by: 1, transaction });
             // ! Save the post to update comments count
             post.save();
           })
           .catch((err) => {
-            console.log(err);
+            res.status(404).json({ err, error: { msg: "Couldn´t find post" } });
           });
 
         return res.status(200).send("Comment has been deleted!");
       } else {
-        return res.status(500).send("You can't delete another user comment");
+        return res.status(403).send("You can't delete another user comment");
       }
     })
     .catch((err) => {
@@ -121,7 +121,7 @@ exports.deleteComment = (req, res, next) => {
     });
 };
 
-// *Like a comment
+// * Like a comment
 exports.likeDislikeComment = (req, res, next) => {
   let vote = req.body.vote;
   let transaction;
@@ -184,7 +184,7 @@ exports.reportComment = (req, res, next) => {
     .findOne({ where: { id: req.params.id } })
     .then((comment) => {
       if (!comment) {
-        return res.status(404).json({ message: "Post not exists" });
+        return res.status(404).json({ message: "Comment not exists" });
       }
 
       commentReport.create({
@@ -204,6 +204,53 @@ exports.reportComment = (req, res, next) => {
 };
 
 // * Reply a comment
+exports.commentReply = (req, res) => {
+  comment
+    .findOne({ where: { id: req.params.id } })
+    .then((comment) => {
+      if (!comment) {
+        return res.status(404).json({ message: "Comment not exists" });
+      }
 
+      commentReplies.create({
+        replyBody: req.body.replyBody,
+        userId: req.auth.userID,
+        postId: comment.postId,
+        commentId: comment.id,
+      });
 
-// * Delete a reply comment
+      return res.status(200).json({
+        status: 200,
+        message: "Comment reply successfully created",
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.name, message: err.message });
+    });
+};
+
+// * Delete a comment reply
+exports.deleteCommentReply = (req, res, next) => {
+  // TODO : Find the comment reply to delete
+  commentReplies
+    .findByPk(req.params.id)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "Comment reply not exists" });
+      }
+
+      // ! Must be the owner to delete the comment reply
+      if (result.userId == req.auth.userID) {
+        commentReplies.destroy({ where: { id: req.params.id } });
+
+        return res.status(200).send("Comment has been deleted!");
+      } else {
+        return res
+          .status(403)
+          .send("You can't delete another user comment reply");
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.name, message: err.message });
+    });
+};

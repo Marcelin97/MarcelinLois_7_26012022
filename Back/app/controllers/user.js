@@ -201,7 +201,6 @@ exports.refreshToken = async (req, res) => {
 
 //* Read user info
 exports.readUser = async (req, res) => {
-  console.log(req.auth);
   user
     .findOne({
       include: {

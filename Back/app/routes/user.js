@@ -5,7 +5,7 @@ const router = express.Router();
 const userCtrl = require("../controllers/user");
 
 //* Middlewares
-const { isLoggedIn } = require("../middleware/auth");
+const { isLoggedIn, isAdmin } = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 const { inputValidation } = require("../middleware/inputValidation");
 
@@ -32,12 +32,12 @@ router.get("/read", isLoggedIn, userCtrl.readUser);
 //=================================>
 //* READ DATAS ONE USER
 //=================================>
-router.get("/readByName", userCtrl.readByName);
+router.get("/readByName", isLoggedIn, isAdmin, userCtrl.readByName);
 
 //=================================>
 //* READ DATAS ALL USERS
 //=================================>
-router.get("/readAll", userCtrl.readAll);
+router.get("/readAll", isLoggedIn, isAdmin, userCtrl.readAll);
 
 //=================================>
 //* UPDATE
