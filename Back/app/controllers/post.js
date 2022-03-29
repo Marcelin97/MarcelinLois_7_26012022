@@ -5,6 +5,7 @@ const {
   community,
   postReport,
   likePost,
+  dislikePost,
   savePost,
   users_community,
 } = require("../models");
@@ -154,9 +155,23 @@ exports.readAllPostByCommunity = function (req, res, next) {
 
 // * Read all posts by community follow
 exports.readAllPostByCommunityFollow = (req, res, next) => {
-  community.findOne({
-    where: { id: req.params.id },
-  });
+  user
+    .findOne({
+      include: {
+        all: true,
+      },
+      where: {
+        id: req.auth.userID,
+      },
+    })
+    .then((result) => {
+      res.status(200).json({
+        status: 200,
+        message: "community follow by you",
+        result,
+      });
+    })
+    .catch((err) => {});
 };
 
 // * Read all posts with more likes
@@ -237,12 +252,10 @@ exports.updatePost = (req, res, next) => {
       }
       // TODO : Check if current user is the owner of the post
       if (result.creatorId != req.auth.userID) {
-        return res
-          .status(403)
-          .json({
-            error:
-              "You are not the creator of this publication, you cannot modify it.",
-          });
+        return res.status(403).json({
+          error:
+            "You are not the creator of this publication, you cannot modify it.",
+        });
       }
       // TODO : gestion de l'image
       try {
@@ -339,96 +352,86 @@ exports.deletePost = (req, res, next) => {
 // * gestion neutre si pas like et pas dislike
 
 exports.likePost = (req, res, next) => {
-  let vote = req.body.vote;
+  let like = req.body.vote;
   let transaction;
 
   // TODO : Find the post to be like
   post
     .findOne({ where: { id: req.params.id } })
-    .then((post) => {
-      if (!post) {
+    .then((result) => {
+      if (!result) {
         return res.status(404).json({ message: "Post not exists" });
       }
-      // console.log(post)
-      // TODO : Check if the current user is in the list of liked posts
-      likePost
-        .findOne({
-          where: { userId: req.auth.userID, postId: post.id },
+
+
+      function changeLike(post, state) {
+
+        // If the user already like the sauce
+        if (likePost.findOne({ where: { userId: req.auth.userID, postId: result.id } })) {
+          // Remove the user from the like array
+          likePost.destroy({where: { userId: req.auth.userID, postId: result.id }});
+          post.decrement("likes", { by: 1, transaction });
+        }
+
+        // If the user already dislike
+        if (dislikePost.findOne({ where: { userId: req.auth.userID, postId: result.id } })) {
+          // Remove the user from the dislike array
+          dislikePost.destroy({where: { userId: req.auth.userID, postId: result.id }});
+          post.decrement("dislikes", { by: 1, transaction });
+        }
+
+        // The user want to like
+        if (state == 1) {
+          likePost.create({
+            vote: true,
+            postId: result.id,
+            userId: req.auth.userID,
+          });
+          result.increment("likes", { by: 1, transaction });
+        }
+        // The user want to dislike
+        else if (state == -1) {
+          dislikePost.create({
+            vote: true,
+            postId: result.id,
+            userId: req.auth.userID,
+          });
+          result.increment("dislikes", { by: 1, transaction });
+        }
+      }
+
+      switch (like) {
+        // If it is a like
+        case 1:
+          changeLike(post, 1);
+          console.log("j'aime ++");
+          res.status(200).json({ message: "You loved this post" });
+          break;
+
+        // if it's nolike/nodislike
+        case 0:
+          changeLike(post, 0);
+          console.log("je ne fais rien");
+          res.status(200).json({ message: "Nothing" });
+          break;
+
+        // if it's a dislike
+        case -1:
+          changeLike(post, -1);
+          console.log("j'aime pas");
+          res.status(200).json({ message: "You disliked this post" });
+          break;
+        default:
+          break;
+      }
+
+      result
+        .update({ where: { id: req.params.id } })
+        .then((datas) => {
+          res.status(200).json(datas);
         })
-        .then((result) => {
-          // if (result) {
-          //   return res
-          //     .status(404)
-          //     .json({ message: "You have already liked this post" });
-          // }
-          // console.log(result.vote)
-          // TODO : If no like and If user want to like
-          if (!result.vote == true) {
-            likePost.create({
-              vote: true,
-              postId: post.id,
-              userId: req.auth.userID,
-            });
-            // ! Must be add to the post
-            post.increment("likes", { by: 1, transaction });
-            return res.status(200).json({ message: "You liked this post" });
-
-            // TODO : If no dislike and if user want to dislike this post
-          } else if (!result.vote == false) {
-            likePost.create({
-              vote: false,
-              postId: post.id,
-              userId: req.auth.userID,
-            });
-            // ! Must be add to the post
-            post.increment("dislikes", { by: 1, transaction });
-            return res.status(200).json({ message: "You disliked this post" });
-          }
-
-          // TODO : if user already dislike this post, remove the user from the dislike list and move the user to the like
-          if (result.vote == false) {
-            // likePost.destroy({
-            //   where: { userId: req.auth.userID, postId: post.id },
-            // });
-            post.decrement("dislikes", { by: 1, transaction });
-
-            likePost.update({
-              vote: true,
-              postId: post.id,
-              userId: req.auth.userID,
-            });
-            post.increment("likes", { by: 1, transaction });
-
-            return res.json({
-              message: "You removed your dislike from the post and you like this post now !",
-            });
-          }
-
-          // TODO : if user already like this post, remove the user from the like list and move the user to the dislike
-          if (result.vote == true) {
-            // likePost.destroy({
-            //   where: { userId: req.auth.userID, postId: post.id },
-            // });
-            post.decrement("likes", { by: 1, transaction });
-
-            likePost.update({
-              vote: false,
-              postId: post.id,
-              userId: req.auth.userID,
-            });
-            post.increment("dislikes", { by: 1, transaction });
-
-            return res.json({
-              message: "You removed your like from the post and you dislike this post now !",
-            });
-          }
-
-
-          // ! Save the post to update likes count
-          post.save({ where: { id: req.params.id } });
-        })
-        .catch((err) => {
-          res.status(500).json({ error: err.name, message: err.message });
+        .catch((error) => {
+          res.status(500).json({ error });
         });
     })
     .catch((err) => {
