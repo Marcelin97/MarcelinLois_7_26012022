@@ -175,9 +175,11 @@ exports.readAllPostByCommunityFollow = (req, res, next) => {
 
 // * Read all posts with more likes
 exports.manyLikes = (req, res, next) => {
-  post
+  likePost
     .findAll({
-      order: [["likes", "DESC"]],
+      where: {
+        vote: [1],
+      },
       limit: 6,
     })
     .then((result) => {
@@ -348,24 +350,22 @@ exports.deletePost = (req, res, next) => {
 };
 
 // * Like post
-// * gestion neutre si pas like et pas dislike
-
-//
-
+// ? gestion neutre si pas like et pas dislike
 exports.likePost = async (req, res, next) => {
   let like = req.body.vote;
 
   // TODO : Find the post to be like
   post
     .findOne({ where: { id: req.params.id } })
-    .then(async(result) => {
+    .then(async (result) => {
       if (!result) {
         return res.status(404).json({ message: "Post not exists" });
       }
- const likePostFind = await likePost.findOne({
-   where: { userId: req.auth.userID, postId: result.id },
- });
- console.log(likePostFind);
+      // ? Search if current user already like of dislike this post
+      const likePostFind = await likePost.findOne({
+        where: { userId: req.auth.userID, postId: result.id },
+      });
+
       function changeLike(userId, postId, state) {
         switch (state) {
           case -1:
@@ -379,9 +379,10 @@ exports.likePost = async (req, res, next) => {
                     postId,
                   },
                 })
-                .then(function (datas) {
-                  res.json({
-                    status: 1,
+                .then((datas) => {
+                  return res.status(200).json({
+                    status: 200,
+                    message: "You disliked this post",
                     data: datas,
                   });
                 })
@@ -399,6 +400,7 @@ exports.likePost = async (req, res, next) => {
 
           case 0:
             likePost.destroy({ where: { userId, postId } });
+            return res.status(200).json({ message: "you removed your like or your dislike" });
             break;
 
           case 1:
@@ -412,9 +414,10 @@ exports.likePost = async (req, res, next) => {
                     postId,
                   },
                 })
-                .then(function (datas) {
-                  res.json({
-                    status: 1,
+                .then((datas) => {
+                  return res.status(200).json({
+                    status: 200,
+                    message: "You loved this post",
                     data: datas,
                   });
                 })
@@ -431,41 +434,30 @@ exports.likePost = async (req, res, next) => {
             break;
         }
       }
-      // changeLike(req.auth.userID, result.id, like);
 
+      // changeLike(req.auth.userID, result.id, like);
+      
       switch (like) {
         // If it is a like
         case 1:
-          console.log("j'aime ++");
           changeLike(req.auth.userID, result.id, 1);
-          res.status(200).json({ message: "You loved this post" });
+          // return res.status(200).json({ message: "You loved this post" });
           break;
 
         // if it's nolike/nodislike
         case 0:
-          console.log("je ne fais rien");
           changeLike(req.auth.userID, result.id, 0);
-          res.status(200).json({ message: "Nothing" });
+          // return res.status(200).json({ message: "you removed your like or your dislike" });
           break;
 
         // if it's a dislike
         case -1:
-          console.log("j'aime pas");
-          changeLike(req.auth.userID, result.id, 1);
-          res.status(200).json({ message: "You disliked this post" });
+          changeLike(req.auth.userID, result.id, -1);
+          // return res.status(200).json({ message: "You disliked this post" });
           break;
         default:
           break;
       }
-
-      result
-        .update({ where: { id: req.params.id } })
-        .then(async(datas) => {
-          return res.status(200).json(datas);
-        })
-        .catch((error) => {
-          res.status(500).json({ error });
-        });
     })
     .catch((err) => {
       res.status(500).json({ err, error: { msg: "Couldn´t like post" } });
