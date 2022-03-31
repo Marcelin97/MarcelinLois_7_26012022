@@ -34,24 +34,6 @@ module.exports = (sequelize, Sequelize) => {
         },
       },
     },
-    likes: {
-      type: Sequelize.INTEGER,
-      unique: false,
-      allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-      },
-    },
-    dislikes: {
-      type: Sequelize.INTEGER,
-      unique: false,
-      allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-      },
-    },
     commentsCount: {
       type: Sequelize.INTEGER,
       unique: false,

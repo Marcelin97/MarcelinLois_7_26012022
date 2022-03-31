@@ -5,7 +5,6 @@ const {
   community,
   postReport,
   likePost,
-  dislikePost,
   savePost,
   users_community,
 } = require("../models");
@@ -351,74 +350,108 @@ exports.deletePost = (req, res, next) => {
 // * Like post
 // * gestion neutre si pas like et pas dislike
 
-exports.likePost = (req, res, next) => {
+//
+
+exports.likePost = async (req, res, next) => {
   let like = req.body.vote;
-  let transaction;
 
   // TODO : Find the post to be like
   post
     .findOne({ where: { id: req.params.id } })
-    .then((result) => {
+    .then(async(result) => {
       if (!result) {
         return res.status(404).json({ message: "Post not exists" });
       }
+ const likePostFind = await likePost.findOne({
+   where: { userId: req.auth.userID, postId: result.id },
+ });
+ console.log(likePostFind);
+      function changeLike(userId, postId, state) {
+        switch (state) {
+          case -1:
+            if (likePostFind) {
+              // Edit row to set vote to -1
+              // UPDATE
+              likePost
+                .update(req.body, {
+                  where: {
+                    userId,
+                    postId,
+                  },
+                })
+                .then(function (datas) {
+                  res.json({
+                    status: 1,
+                    data: datas,
+                  });
+                })
+                .catch(next);
+            } else {
+              // Create row and set vote to -1
+              // INSERT
+              likePost.create({
+                vote: -1,
+                userId,
+                postId,
+              });
+            }
+            break;
 
+          case 0:
+            likePost.destroy({ where: { userId, postId } });
+            break;
 
-      function changeLike(post, state) {
-
-        // If the user already like the sauce
-        if (likePost.findOne({ where: { userId: req.auth.userID, postId: result.id } })) {
-          // Remove the user from the like array
-          likePost.destroy({where: { userId: req.auth.userID, postId: result.id }});
-          post.decrement("likes", { by: 1, transaction });
-        }
-
-        // If the user already dislike
-        if (dislikePost.findOne({ where: { userId: req.auth.userID, postId: result.id } })) {
-          // Remove the user from the dislike array
-          dislikePost.destroy({where: { userId: req.auth.userID, postId: result.id }});
-          post.decrement("dislikes", { by: 1, transaction });
-        }
-
-        // The user want to like
-        if (state == 1) {
-          likePost.create({
-            vote: true,
-            postId: result.id,
-            userId: req.auth.userID,
-          });
-          result.increment("likes", { by: 1, transaction });
-        }
-        // The user want to dislike
-        else if (state == -1) {
-          dislikePost.create({
-            vote: true,
-            postId: result.id,
-            userId: req.auth.userID,
-          });
-          result.increment("dislikes", { by: 1, transaction });
+          case 1:
+            if (likePostFind) {
+              // Edit row to set vote to 1
+              // UPDATE
+              likePost
+                .update(req.body, {
+                  where: {
+                    userId,
+                    postId,
+                  },
+                })
+                .then(function (datas) {
+                  res.json({
+                    status: 1,
+                    data: datas,
+                  });
+                })
+                .catch(next);
+            } else {
+              // Create row and set vote to 1
+              // INSERT
+              likePost.create({
+                vote: 1,
+                userId,
+                postId,
+              });
+            }
+            break;
         }
       }
+      // changeLike(req.auth.userID, result.id, like);
 
       switch (like) {
         // If it is a like
         case 1:
-          changeLike(post, 1);
           console.log("j'aime ++");
+          changeLike(req.auth.userID, result.id, 1);
           res.status(200).json({ message: "You loved this post" });
           break;
 
         // if it's nolike/nodislike
         case 0:
-          changeLike(post, 0);
           console.log("je ne fais rien");
+          changeLike(req.auth.userID, result.id, 0);
           res.status(200).json({ message: "Nothing" });
           break;
 
         // if it's a dislike
         case -1:
-          changeLike(post, -1);
           console.log("j'aime pas");
+          changeLike(req.auth.userID, result.id, 1);
           res.status(200).json({ message: "You disliked this post" });
           break;
         default:
@@ -427,8 +460,8 @@ exports.likePost = (req, res, next) => {
 
       result
         .update({ where: { id: req.params.id } })
-        .then((datas) => {
-          res.status(200).json(datas);
+        .then(async(datas) => {
+          return res.status(200).json(datas);
         })
         .catch((error) => {
           res.status(500).json({ error });
