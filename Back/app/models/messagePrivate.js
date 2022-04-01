@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const MessagePrivate = sequelize.define("messagePrivate", {
     content: {
       type: Sequelize.TEXT,
@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   MessagePrivate.associate = (models) => {
     // is linked to
     MessagePrivate.belongsTo(models.user, {

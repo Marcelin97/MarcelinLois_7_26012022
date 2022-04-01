@@ -1,11 +1,14 @@
 const {
   user,
   post,
+  comment,
   community,
   postReport,
   likePost,
   savePost,
+  follower,
 } = require("../models");
+
 // Import the filesystem module
 const fs = require("fs");
 
@@ -63,7 +66,7 @@ exports.createPost = (req, res, next) => {
     });
 };
 
-// Read one post by a specific ID
+// * Read one post by a specific ID
 exports.readPostById = (req, res, next) => {
   post
     .findOne({
@@ -81,9 +84,19 @@ exports.readPostById = (req, res, next) => {
           as: "category",
           attributes: ["id", "title", "about"],
         },
+        {
+          model: comment,
+          as: "comments",
+          attributes: ["id", "content", "likes"],
+        },
       ],
     })
     .then((result) => {
+      // TODO : Check if post exist
+      if (!result) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
       res.status(200).json({
         status: 200,
         message: "Post find with success",
@@ -91,7 +104,114 @@ exports.readPostById = (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
+      res.status(500).json({ err, error: { msg: "Couldn´t find post" } });
+    });
+};
+
+// * Read all post by community
+exports.readAllPostByCommunity = function (req, res, next) {
+  community
+    .findOne({
+      where: {
+        id: req.params.id,
+      },
+      include: [
+        {
+          model: post,
+          as: "category",
+          attributes: [
+            "id",
+            "title",
+            "imageUrl",
+            "content",
+            "likes",
+            "communityId",
+            "creatorId",
+          ],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+      limit: 6,
+    })
+    .then((result) => {
+      // TODO : Check if i find post by community
+      if (!result) {
+        return res
+          .status(404)
+          .json({ message: "Any post found in this community" });
+      }
+
+      return res.status(200).json({
+        status: 200,
+        message: "Posts find with success in this community",
+        result,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ err, error: { msg: "Couldn´t find post" } });
+    });
+};
+
+// * Read all posts by community follow
+exports.readAllPostByCommunityFollow = async (req, res, next) => {
+  follower
+    .findAll({
+      where: { userId: req.auth.userID },
+      include: [
+        {
+          model: community,
+          required: true,
+          include: {
+            model: post,
+            required: true,
+            as: "category",
+          },
+        },
+      ],
+    })
+    .then(async (result) => {
+      return res.status(200).json({
+        status: 200,
+        message: "Followed community posts are found",
+        result,
+      });
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({
+          err,
+          error: { msg: "Couldn´t find posts by followed community" },
+        });
+    });
+};
+
+// * Read all posts with more likes
+exports.manyLikes = (req, res, next) => {
+  likePost
+    .findAll({
+      where: {
+        vote: [1],
+      },
+      limit: 6,
+    })
+    .then((result) => {
+      // TODO : Check if i find post by community
+      if (!result) {
+        return res
+          .status(404)
+          .json({ message: "Any post found with lot of likes" });
+      }
+      return res.status(200).json({
+        status: 200,
+        message: "Posts find with lot of likes",
+        result,
+      });
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ err, error: { msg: "Couldn´t find post with lot of likes" } });
     });
 };
 
@@ -115,8 +235,14 @@ exports.readAllPosts = (req, res, next) => {
       limit: 6,
     })
     .then(async (result) => {
+      // TODO : Check if post exist
+      if (!result) {
+        return res.status(404).json({ message: "Posts not found" });
+      }
+
       const count = await post.count();
       // console.log(count);
+
       res.status(200).json({
         status: 200,
         message: "Posts find with success",
@@ -125,7 +251,7 @@ exports.readAllPosts = (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
+      res.status(500).json({ err, error: { msg: "Couldn´t find post" } });
     });
 };
 
@@ -138,7 +264,13 @@ exports.updatePost = (req, res, next) => {
       if (!result) {
         return res.status(404).json({ message: "Post not found" });
       }
-
+      // TODO : Check if current user is the owner of the post
+      if (result.creatorId != req.auth.userID) {
+        return res.status(403).json({
+          error:
+            "You are not the creator of this publication, you cannot modify it.",
+        });
+      }
       // TODO : gestion de l'image
       try {
         const file = req.file;
@@ -184,7 +316,6 @@ exports.updatePost = (req, res, next) => {
 // * Delete post
 exports.deletePost = (req, res, next) => {
   // TODO : Must be admin or moderator to delete a post
-
   post
     .findOne({ where: { id: req.params.id } })
     .then((result) => {
@@ -231,58 +362,116 @@ exports.deletePost = (req, res, next) => {
 };
 
 // * Like post
-exports.likeDislikePost = (req, res, next) => {
-  let vote = req.body.vote;
-  let transaction;
+// ? gestion neutre si pas like et pas dislike
+exports.likePost = async (req, res, next) => {
+  let like = req.body.vote;
+
   // TODO : Find the post to be like
   post
     .findOne({ where: { id: req.params.id } })
-    .then((post) => {
-      if (!post) {
+    .then(async (result) => {
+      if (!result) {
         return res.status(404).json({ message: "Post not exists" });
       }
-      // console.log(post)
-      // TODO : Check if the current user is in the list of liked posts
-      likePost
-        .findOne({
-          where: { userId: req.auth.userID, postId: post.id },
-        })
-        .then((result) => {
-          // TODO : If no like and If user want to like
-          if (!result && req.body.vote == true) {
-            likePost.create({
-              vote: true,
-              postId: post.id,
-              userId: req.auth.userID,
-            });
-            // ! Must be add to the post
-            // post.likes += 1;
-            post.increment("likes", { by: 1, transaction });
+      // ? Search if current user already like of dislike this post
+      const likePostFind = await likePost.findOne({
+        where: { userId: req.auth.userID, postId: result.id },
+      });
 
-            return res.status(200).json({ message: "You liked this post" });
-          }
+      function changeLike(userId, postId, state) {
+        switch (state) {
+          case -1:
+            if (likePostFind) {
+              // Edit row to set vote to -1
+              // UPDATE
+              likePost
+                .update(req.body, {
+                  where: {
+                    userId,
+                    postId,
+                  },
+                })
+                .then((datas) => {
+                  return res.status(200).json({
+                    status: 200,
+                    message: "You disliked this post",
+                    data: datas,
+                  });
+                })
+                .catch(next);
+            } else {
+              // Create row and set vote to -1
+              // INSERT
+              likePost.create({
+                vote: -1,
+                userId,
+                postId,
+              });
+            }
+            break;
 
-          // TODO : If user want to unlike
-          if (result && req.body.vote == false) {
-            likePost.destroy({
-              where: { userId: req.auth.userID, postId: post.id },
-            });
+          case 0:
+            likePost.destroy({ where: { userId, postId } });
+            return res
+              .status(200)
+              .json({ message: "you removed your like or your dislike" });
+            break;
 
-            // ! Must be delete to the post
-            // post.likes -= 1;
-            post.decrement("likes", { by: 1, transaction });
+          case 1:
+            if (likePostFind) {
+              // Edit row to set vote to 1
+              // UPDATE
+              likePost
+                .update(req.body, {
+                  where: {
+                    userId,
+                    postId,
+                  },
+                })
+                .then((datas) => {
+                  return res.status(200).json({
+                    status: 200,
+                    message: "You loved this post",
+                    data: datas,
+                  });
+                })
+                .catch(next);
+            } else {
+              // Create row and set vote to 1
+              // INSERT
+              likePost.create({
+                vote: 1,
+                userId,
+                postId,
+              });
+            }
+            break;
+        }
+      }
 
-            return res.json({
-              message: "You removed your like from the post",
-            });
-          }
+      // changeLike(req.auth.userID, result.id, like);
 
-          // ! Save the post to update likes count
-          post.save({ where: { id: req.params.id } });
-        })
-        .catch((err) => {
-          res.status(500).json({ error: err.name, message: err.message });
-        });
+      switch (like) {
+        // If it is a like
+        case 1:
+          changeLike(req.auth.userID, result.id, 1);
+          // return res.status(200).json({ message: "You loved this post" });
+          break;
+
+        // if it's nolike/nodislike
+        case 0:
+          changeLike(req.auth.userID, result.id, 0);
+          // return res.status(200).json({ message: "you removed your like or your dislike" });
+          break;
+
+        // if it's a dislike
+        case -1:
+          changeLike(req.auth.userID, result.id, -1);
+          // return res.status(200).json({ message: "You disliked this post" });
+          break;
+        default:
+          break;
+      }
     })
     .catch((err) => {
       res.status(500).json({ err, error: { msg: "Couldn´t like post" } });
@@ -317,6 +506,7 @@ exports.reportPost = async (req, res) => {
 
 // * Save post
 exports.saveUnsavePost = (req, res) => {
+  let save = req.body.save;
   // TODO : Find the post to be save
   post
     .findOne({ where: { id: req.params.id } })
@@ -332,9 +522,9 @@ exports.saveUnsavePost = (req, res) => {
         })
         .then((result) => {
           // TODO : If user don't already save the post
-          if (!result && req.body.vote == true) {
+          if (!result && save == true) {
             savePost.create({
-              vote: true,
+              save: true,
               postId: post.id,
               userId: req.auth.userID,
             });
@@ -343,7 +533,7 @@ exports.saveUnsavePost = (req, res) => {
           }
 
           // TODO : If user want to unsave
-          if (result && req.body.vote == false) {
+          if (result && save == false) {
             savePost.destroy({
               where: { userId: req.auth.userID, postId: post.id },
             });

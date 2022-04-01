@@ -1,73 +1,77 @@
 const express = require("express");
 const router = express.Router();
 
-//* Community controller
+// * Community controller
 const communityCtrl = require("../controllers/community");
 
-//* Middlewares
-const { isLoggedIn, isAdmin } = require("../middleware/auth");
+// * Middlewares
+const { isLoggedIn, isAdmin, isModerator } = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 
 //=================================>
-//* CREATE COMMUNITY
+// * CREATE COMMUNITY
 //=================================>
 router.post("/", isLoggedIn, multer, communityCtrl.create);
 
 //=================================>
-//* READ DATAS ONE COMMUNITY
+// * READ DATAS ONE COMMUNITY
 //=================================>
 router.get("/readOne/:id", isLoggedIn, communityCtrl.readOne);
 
 //=================================>
-//* READ DATAS ALL COMMUNITIES
+// * READ DATAS ALL COMMUNITIES
 //=================================>
 router.get("/readAllCommunities", isLoggedIn, communityCtrl.readAllCommunity);
 
 //=================================>
-//* UPDATE COMMUNIY
+// * UPDATE COMMUNIY
 //=================================>
 router.patch(
   "/updateCommunity/:id",
   isLoggedIn,
-  isAdmin,
+  // isModerator, // ! middleware to protect route
   multer,
   communityCtrl.updateCommunity
 );
 
 //=================================>
-//* DELETE COMMUNIY
+// * DELETE COMMUNITY
 //=================================>
 router.delete(
   "/deleteCommunity/:id",
   isLoggedIn,
-  isAdmin,
   communityCtrl.deleteCommunity
 );
 
 //=================================>
-//* FOLLOW COMMUNIY
+// * FOLLOW COMMUNITY
 //=================================>
-router.post("/follow/:id",isLoggedIn, communityCtrl.followCommunity);
+router.post("/:id/follow",isLoggedIn, communityCtrl.followCommunity);
 
 //=================================>
-//* UNFOLLOW COMMUNIY
+// * UNFOLLOW COMMUNITY
 //=================================>
-router.post("/unfollow/:id", isLoggedIn, communityCtrl.unfollowCommunity);
+router.post("/:id/unfollow", isLoggedIn, communityCtrl.unfollowCommunity);
 
 //=================================>
-//* REPORT COMMUNIY
+// * REPORT COMMUNITY
 //=================================>
-router.post("/report/:id", isLoggedIn, communityCtrl.reportCommunity);
+router.post("/:id/report", isLoggedIn, communityCtrl.reportCommunity);
 
 //=================================>
-//* ADD MODERATOR COMMUNIY
+// * ADD MODERATOR COMMUNITY
 //=================================>
-router.post("/moderator/:id", isLoggedIn, communityCtrl.addModerator);
+router.post("/:id/moderator", isLoggedIn, communityCtrl.addModerator);
 
 //=================================>
-//* DELETE MODERATOR COMMUNIY
+// * DELETE MODERATOR COMMUNITY
 //=================================>
-router.delete("/moderator/delete/:id", isLoggedIn, communityCtrl.deleteModerator);
+router.delete(
+  "/:id/moderator/delete",
+  isLoggedIn,
+  isAdmin, // ! middleware to protect route
+  communityCtrl.deleteModerator
+);
 
 module.exports = router;
 

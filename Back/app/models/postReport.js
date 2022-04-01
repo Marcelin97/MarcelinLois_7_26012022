@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const PostReport = sequelize.define("postReport", {
     content: {
       type: Sequelize.TEXT,
@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   PostReport.associate = (models) => {
     // is linked to
     PostReport.belongsTo(models.user);

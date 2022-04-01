@@ -10,13 +10,11 @@ const fs = require("fs");
 
 // * Create community
 exports.create = async (req, res, next) => {
-  // console.log(req.file);
   // TODO : Check if request contain files uploaded
   const { file } = req;
   if (!file) {
     return res.status(422).json({ error: { msg: "Icon is required" } });
   }
-  // console.log(req.auth.userID);
   community
     .create({
       ...req.body,
@@ -36,7 +34,7 @@ exports.create = async (req, res, next) => {
 };
 
 // * Read community
-exports.readOne = async (req, res) => {
+exports.readOne = async (req, res, next) => {
   try {
     const { id } = req.params;
     // console.log(id);
@@ -49,8 +47,7 @@ exports.readOne = async (req, res) => {
       }
     );
     // console.log(communityFind);
-    if (communityFind == null)
-      throw new Error("Cette communauté n'existe pas.");
+    if (communityFind == null) throw new Error("Community not found");
 
     return res.status(201).json({
       status: 201,
@@ -63,7 +60,7 @@ exports.readOne = async (req, res) => {
 };
 
 // * Read all communities active
-exports.readAllCommunity = async (req, res) => {
+exports.readAllCommunity = async (req, res, next) => {
   community
     .findAll({
       where: {
@@ -96,6 +93,12 @@ exports.updateCommunity = async (req, res, next) => {
         return res.status(404).json({ message: "Community not found" });
       }
 
+      // TODO : Check if current user is the owner of the community
+      if (result.userId != req.auth.userID) {
+        return res
+          .status(403)
+          .json({ error: "You are not the creator of this community." });
+      }
       // TODO : gestion de l'image
       try {
         const file = req.file;
@@ -122,9 +125,7 @@ exports.updateCommunity = async (req, res, next) => {
           .status(401)
           .json({ error: { msg: "Couldn´t edit image community" } });
       }
-
-      // TODO : gestion du text
-
+      
       result
         .update(req.body, { where: { id: result.id } })
         .then(() => {
@@ -145,10 +146,22 @@ exports.updateCommunity = async (req, res, next) => {
 };
 
 // * Delete Community
-exports.deleteCommunity = async (req, res) => {
+exports.deleteCommunity = async (req, res, next) => {
   community
     .findByPk(req.params.id)
     .then((result) => {
+      // TODO : Check if community exist
+      if (!result) {
+        return res.status(404).json({ message: "Community not found" });
+      }
+
+      // TODO : Check if current user is the owner of the community
+      if (result.userId != req.auth.userID) {
+        return res.status(403).json({
+          error: "You cannot delete a community that you did not create.",
+        });
+      }
+
       if (result.icon == null) {
         community
           .destroy({
@@ -187,7 +200,7 @@ exports.deleteCommunity = async (req, res) => {
 };
 
 // * Follow community
-exports.followCommunity = async (req, res) => {
+exports.followCommunity = (req, res, next) => {
   // Find the community to follow
   community
     .findByPk(req.params.id)
@@ -217,7 +230,7 @@ exports.followCommunity = async (req, res) => {
 };
 
 // * unfollow
-exports.unfollowCommunity = async (req, res) => {
+exports.unfollowCommunity = (req, res, next) => {
   // Find the community to unfollow
   community
     .findByPk(req.params.id)
@@ -247,7 +260,7 @@ exports.unfollowCommunity = async (req, res) => {
 };
 
 // * Report community
-exports.reportCommunity = async (req, res) => {
+exports.reportCommunity = (req, res, next) => {
   // Find the community to report
   community
     .findByPk(req.params.id)
@@ -272,8 +285,9 @@ exports.reportCommunity = async (req, res) => {
 };
 
 //* Add Moderator
-exports.addModerator = async (req, res) => {
-  // Find the community to follow
+// ? // Seul le propriétaire de la communauté peut accorder des autorisations de modérateur
+exports.addModerator = (req, res, next) => {
+  // Find the community to add moderator
   community
     .findByPk(req.params.id)
     .then((result) => {
@@ -283,9 +297,7 @@ exports.addModerator = async (req, res) => {
 
       // TODO : Check if the current user is the owner of this community
       if (result.userId != req.auth.userID)
-        throw new Error(
-          "Vous n'avez pas la permission de gérer les rôles de la communauté."
-        );
+        throw new Error("You do not have permission to manage community roles");
 
       // TODO : Find a user
       user
@@ -318,8 +330,8 @@ exports.addModerator = async (req, res) => {
 };
 
 //* Delete Moderator
-exports.deleteModerator = async (req, res) => {
-  // Find the community to follow
+exports.deleteModerator = (req, res, next) => {
+  // Find the community to delete moderator
   community
     .findByPk(req.params.id)
     .then((result) => {
@@ -330,7 +342,7 @@ exports.deleteModerator = async (req, res) => {
       // TODO : Check if the current user is the owner of this community
       if (result.userId != req.auth.userID)
         throw new Error(
-          "Vous n'avez pas la permission de gérer les rôles de la communauté."
+          "You do not have permission to manage community roles."
         );
 
       // TODO : Find a user

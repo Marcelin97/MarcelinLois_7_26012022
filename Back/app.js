@@ -20,7 +20,7 @@ const hateoasLinker = require("express-hateoas-links");
 const app = express();
 
 //=================================>
-//* Middleware CORS
+// * Middleware CORS
 //=================================>
 const cors = require("cors");
 app.use(
@@ -30,7 +30,7 @@ app.use(
   })
 );
 //=================================>
-//* End Middleware CORS
+// * End Middleware CORS
 //=================================>
 
 // Exportons notre variable d'application afin qu'elle puisse être importée et utilisée dans d'autres fichiers.
@@ -38,7 +38,7 @@ app.use(
 module.exports = app;
 
 //=================================>
-//* Limit payload size
+// * Limit payload size
 //=================================>
 
 // parse application/x-www-form-urlencoded
@@ -47,7 +47,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 //=================================>
-//* End Limit payload size
+// * End Limit payload size
 //=================================>
 
 // Replace standard express res.json with the new version
@@ -60,7 +60,7 @@ app.use("/api", router);
 app.use("/images/", express.static(path.join(__dirname, "images")));
 
 //=================================>
-//* Express Session Middleware
+// * Express Session Middleware
 //=================================>
 const session = require("express-session");
 
@@ -82,17 +82,17 @@ app.use(
   })
 );
 //=================================>
-//* End Express Session Middleware
+// * End Express Session Middleware
 //=================================>
 
 //=================================>
-//* x - xss - protection
-//* Set some secure headers with helmet.js
+// * x - xss - protection
+// * Set some secure headers with helmet.js
 //=================================>
 // module that helps secure your applications by setting various HTTP headers.
 const helmet = require("helmet");
 app.use(helmet());
 //=================================>
-//* End - x - xss - protection
-//* Set some secure headers with helmet.js
+// * End - x - xss - protection
+// * Set some secure headers with helmet.js
 //=================================>

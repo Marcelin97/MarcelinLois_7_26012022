@@ -1,63 +1,63 @@
 const express = require("express");
 const router = express.Router();
 
-//* User controller
+// * User controller
 const userCtrl = require("../controllers/user");
 
-//* Middlewares
-const { isLoggedIn } = require("../middleware/auth");
+// * Middlewares
+const { isLoggedIn, isAdmin } = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 const { inputValidation } = require("../middleware/inputValidation");
 
 //=================================>
-//* SIGNUP
+// * SIGNUP
 //=================================>
 router.post("/signup", multer, userCtrl.signup);
 
 //=================================>
-//* LOGIN
+// * LOGIN
 //=================================>
 router.post("/login", userCtrl.login);
 
 //=================================>
-//* REFRESH TOKEN
+// * REFRESH TOKEN
 //=================================>
 router.post("/refreshtoken", userCtrl.refreshToken);
 
 //=================================>
-//* READ DATAS CONNECTED USER
+// * READ DATAS CONNECTED USER
 //=================================>
 router.get("/read", isLoggedIn, userCtrl.readUser);
 
 //=================================>
-//* READ DATAS ONE USER
+// * READ DATAS ONE USER
 //=================================>
-router.get("/readByName", userCtrl.readByName);
+router.get("/readByName", isLoggedIn, userCtrl.readByName);
 
 //=================================>
-//* READ DATAS ALL USERS
+// * READ DATAS ALL USERS
 //=================================>
-router.get("/readAll", userCtrl.readAll);
+router.get("/readAll", isLoggedIn, userCtrl.readAll);
 
 //=================================>
-//* UPDATE
+// * UPDATE
 //=================================>
 router.patch("/update", isLoggedIn, inputValidation, multer, userCtrl.update);
 
 //=================================>
-//* DELETE
+// * DELETE
 //=================================>
 router.delete("/delete", isLoggedIn, userCtrl.delete);
 
 //=================================>
-//* EXPORT DATAS
+// * EXPORT DATAS
 //=================================>
 router.get("/export", isLoggedIn, userCtrl.exportUser);
 
 //=================================>
-//* REPORT
+// * REPORT
 //=================================>
 router.post("/report/:id", isLoggedIn, userCtrl.report);
-//? router.post("users/:id/report", auth, userCtrl.report);
+// ? router.post("users/:id/report", auth, userCtrl.report);
 
 module.exports = router;

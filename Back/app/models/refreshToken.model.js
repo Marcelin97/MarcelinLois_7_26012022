@@ -1,11 +1,10 @@
-// const config = require("../config/auth.config");
 require("dotenv").config();
 
-//* use uuid library for creating a random token
+// * use uuid library for creating a random token
 const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const RefreshToken = sequelize.define("refreshToken", {
     token: {
       type: Sequelize.STRING,
@@ -32,7 +31,7 @@ module.exports = (sequelize, Sequelize) => {
     return token.expiryDate.getTime() < new Date().getTime();
   };
 
-  //* Sequelize associations
+  // * Sequelize associations
   RefreshToken.associate = (models) => {
     RefreshToken.belongsTo(models.user, {
       foreignKey: "userId",

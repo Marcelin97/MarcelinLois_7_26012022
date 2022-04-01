@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const Post = sequelize.define("post", {
     title: {
       type: Sequelize.STRING,
@@ -34,7 +34,7 @@ module.exports = (sequelize, Sequelize) => {
         },
       },
     },
-    likes: {
+    commentsCount: {
       type: Sequelize.INTEGER,
       unique: false,
       allowNull: false,
@@ -51,7 +51,7 @@ module.exports = (sequelize, Sequelize) => {
     // },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   Post.associate = (models) => {
     // is linked to
     Post.belongsTo(models.user, {

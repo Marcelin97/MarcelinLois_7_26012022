@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const CryptoJS = require("crypto-js");
+
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
@@ -200,7 +201,6 @@ exports.refreshToken = async (req, res) => {
 
 //* Read user info
 exports.readUser = async (req, res) => {
-  console.log(req.auth);
   user
     .findOne({
       include: {

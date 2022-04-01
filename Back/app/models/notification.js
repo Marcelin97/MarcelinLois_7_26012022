@@ -1,5 +1,5 @@
 module.exports = function (sequelize, Sequelize) {
-  //* Model Definition
+  // * Model Definition
   const Notification = sequelize.define("notification", {
     userId: {
       type: Sequelize.INTEGER,
@@ -25,7 +25,7 @@ module.exports = function (sequelize, Sequelize) {
     },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   Notification.associate = (models) => {
     // is linked to
     Notification.belongsTo(models.user, {

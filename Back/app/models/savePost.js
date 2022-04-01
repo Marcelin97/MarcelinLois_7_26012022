@@ -1,14 +1,14 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const SavePost = sequelize.define("savePost", {
-    vote: {
+    save: {
       type: Sequelize.BOOLEAN,
       unique: false,
       defaultValue: false,
     },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   SavePost.associate = (models) => {
     // is linked to
     SavePost.belongsTo(models.user, {

@@ -1,11 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  //* Model Definition
+  // * Model Definition
   const Comment = sequelize.define("comment", {
-    imageUrl: {
-      type: Sequelize.STRING,
-      required: false,
-      default: "",
-    },
     content: {
       type: Sequelize.TEXT,
       unique: false,
@@ -16,9 +11,18 @@ module.exports = (sequelize, Sequelize) => {
         len: [1, 1000],
       },
     },
+    likes: {
+      type: Sequelize.INTEGER,
+      unique: false,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0,
+      },
+    },
   });
 
-  //* Sequelize associations
+  // * Sequelize associations
   Comment.associate = (models) => {
     // is linked to
     Comment.belongsTo(models.user, {
@@ -29,17 +33,14 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: "postId",
       as: "post",
     });
-
-    // boucle commentaire d'un commentaire
-    Comment.belongsTo(models.comment, {
+    // Reply a comment
+    Comment.hasMany(models.commentReplies, {
+      as: "commentReplies",
       foreignKey: "commentId",
-      as: "commentParent",
-    });
-    Comment.hasMany(models.comment, {
-      as: "reply",
+      targetKey: "id",
     });
 
-    // like a comment
+    // Like a comment
     Comment.hasMany(models.likeComment, {
       as: "likeComment",
     });
