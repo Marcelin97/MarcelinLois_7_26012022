@@ -6,7 +6,7 @@ const {
   postReport,
   likePost,
   savePost,
-  users_community,
+  follower,
 } = require("../models");
 
 // Import the filesystem module
@@ -141,7 +141,7 @@ exports.readAllPostByCommunity = function (req, res, next) {
           .json({ message: "Any post found in this community" });
       }
 
-      res.status(200).json({
+      return res.status(200).json({
         status: 200,
         message: "Posts find with success in this community",
         result,
@@ -153,24 +153,34 @@ exports.readAllPostByCommunity = function (req, res, next) {
 };
 
 // * Read all posts by community follow
-exports.readAllPostByCommunityFollow = (req, res, next) => {
-  user
-    .findOne({
-      include: {
-        all: true,
-      },
-      where: {
-        id: req.auth.userID,
-      },
+exports.readAllPostByCommunityFollow = async (req, res, next) => {
+  follower
+    .findAll({
+      where: { userId: req.auth.userID },
+      include: [
+        {
+          model: community,
+          required: true,
+          include: {
+            model: post,
+            required: true,
+            as: "category",
+          },
+        },
+      ],
     })
-    .then((result) => {
-      res.status(200).json({
+    .then(async (result) => {
+      return res.status(200).json({
         status: 200,
-        message: "community follow by you",
+        message: "Followed community posts are found",
         result,
       });
     })
-    .catch((err) => {});
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ err, error: { msg: "Couldn´t find post with lot of likes" } });
+    });
 };
 
 // * Read all posts with more likes
@@ -189,7 +199,7 @@ exports.manyLikes = (req, res, next) => {
           .status(404)
           .json({ message: "Any post found with lot of likes" });
       }
-      res.status(200).json({
+      return res.status(200).json({
         status: 200,
         message: "Posts find with lot of likes",
         result,
@@ -197,7 +207,7 @@ exports.manyLikes = (req, res, next) => {
     })
     .catch((err) => {
       res
-        .status(401)
+        .status(500)
         .json({ err, error: { msg: "Couldn´t find post with lot of likes" } });
     });
 };

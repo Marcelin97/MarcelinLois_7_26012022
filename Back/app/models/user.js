@@ -141,7 +141,10 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.savePost, {
       as: "savePosts",
     });
-    
+    // User.hasMany(models.follower, {
+    //   sourceKey: "userId",
+    // });
+  
     User.hasOne(models.refreshToken, {
       foreignKey: "userId",
       targetKey: "id",
@@ -154,7 +157,8 @@ module.exports = (sequelize, Sequelize) => {
 
     // ! One user can join one or many communities
     User.belongsToMany(models.community, {
-      through: "users_community"});
+      through: "follower",
+    });
 
     // ! One user can manage one or many communities
     User.belongsToMany(models.community, {

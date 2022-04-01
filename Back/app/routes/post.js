@@ -28,7 +28,7 @@ router.get("/readAllPostByCommunity/:id", isLoggedIn, postsCtrl.readAllPostByCom
 
 // * Find all posts by community follow
 router.get(
-  "/readAllPostByCommunityFollow/:id",
+  "/readAllPostByCommunityFollow",
   isLoggedIn,
   postsCtrl.readAllPostByCommunityFollow
 );
