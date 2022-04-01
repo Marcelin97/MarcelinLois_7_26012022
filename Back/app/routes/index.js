@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-// J'importe mon middleware pour la limite de requête
-// et je l'applique sur ma route d'authentification.
+
+// * Middlewares secure
 const rateLimiter = require("../middleware/rateLimiter");
+const slowDown = require("../middleware/speedLimiter");
 
 // * All routes
 const userRoutes = require("./user");
@@ -12,9 +13,9 @@ const commentsRoutes = require("./comment");
 
 
 // * on applique nos routes à notre router
-router.use("/auth", rateLimiter, userRoutes);
-router.use("/community", communityRoutes);
-router.use("/posts", postsRoutes);
-router.use("/comments", commentsRoutes);
+router.use("/auth", rateLimiter, slowDown, userRoutes);
+router.use("/community", rateLimiter, slowDown, communityRoutes);
+router.use("/posts", rateLimiter, slowDown, postsRoutes);
+router.use("/comments", rateLimiter, slowDown, commentsRoutes);
 
 module.exports = router;
