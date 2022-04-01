@@ -148,7 +148,7 @@ exports.readAllPostByCommunity = function (req, res, next) {
       });
     })
     .catch((err) => {
-      res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
+      res.status(500).json({ err, error: { msg: "Couldn´t find post" } });
     });
 };
 
@@ -179,7 +179,10 @@ exports.readAllPostByCommunityFollow = async (req, res, next) => {
     .catch((err) => {
       res
         .status(500)
-        .json({ err, error: { msg: "Couldn´t find post with lot of likes" } });
+        .json({
+          err,
+          error: { msg: "Couldn´t find posts by followed community" },
+        });
     });
 };
 
@@ -248,7 +251,7 @@ exports.readAllPosts = (req, res, next) => {
       });
     })
     .catch((err) => {
-      res.status(401).json({ err, error: { msg: "Couldn´t find post" } });
+      res.status(500).json({ err, error: { msg: "Couldn´t find post" } });
     });
 };
 
@@ -313,7 +316,6 @@ exports.updatePost = (req, res, next) => {
 // * Delete post
 exports.deletePost = (req, res, next) => {
   // TODO : Must be admin or moderator to delete a post
-
   post
     .findOne({ where: { id: req.params.id } })
     .then((result) => {
@@ -410,7 +412,9 @@ exports.likePost = async (req, res, next) => {
 
           case 0:
             likePost.destroy({ where: { userId, postId } });
-            return res.status(200).json({ message: "you removed your like or your dislike" });
+            return res
+              .status(200)
+              .json({ message: "you removed your like or your dislike" });
             break;
 
           case 1:
@@ -446,7 +450,7 @@ exports.likePost = async (req, res, next) => {
       }
 
       // changeLike(req.auth.userID, result.id, like);
-      
+
       switch (like) {
         // If it is a like
         case 1:
