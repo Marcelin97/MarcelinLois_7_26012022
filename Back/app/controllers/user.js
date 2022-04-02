@@ -195,7 +195,7 @@ exports.refreshToken = async (req, res) => {
       refreshToken: refreshToken.token,
     });
   } catch (err) {
-    return res.status(500).send({ message: err });
+    return res.status(500).json({ message: err });
   }
 };
 
