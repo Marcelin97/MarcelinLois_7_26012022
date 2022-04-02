@@ -32,8 +32,10 @@
     "hpp": "^0.2.3",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
     "multer": "^1.4.4",
     "mysql2": "^2.3.3",
-    "sequelize": "^6.15.0"
+    "sequelize": "^6.15.0",
+    "winston": "^3.6.0"
   }
 }

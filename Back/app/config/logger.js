@@ -1,59 +1,56 @@
-const { Sequelize } = require("sequelize");
-const fs = require("fs");
-require("dotenv").config();
+const path = require("path");
+const winston = require("winston");
 
-// Logger
-const logsPath = "./logs/MySQL.log";
-const bunyan = require("bunyan");
-const log = bunyan.createLogger({
-  name: "MySQL Driver",
-  streams: [
-    {
-      stream: process.stdout,
-      level: "info",
-    },
-    {
-      stream: process.stdout,
-      level: "debug",
-    },
-    {
-      stream: process.stderr,
+// const colors = {
+//   error: "red",
+//   warn: "yellow",
+//   info: "green",
+//   http: "magenta",
+//   debug: "white",
+// };
+
+// winston.addColors(colors);
+
+const format = winston.format.combine(
+  winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
+  winston.format.colorize({ all: true }),
+  winston.format.printf(
+    (info) => `${info.timestamp} ${info.level.toUpperCase().padEnd(4)}: ${info.message}`
+  )
+);
+
+const log = winston.createLogger({
+  transports: [
+    new winston.transports.File({
+      filename: path.join("logs", "error.log"),
       level: "error",
-    },
-    {
-      type: "rotating-file",
-      path: logsPath,
-      period: "1d", // daily rotation
-      count: 7, // keep 3 back copies
-    },
+      format,
+    }),
+    new winston.transports.File({
+      filename: path.join("logs", "info.log"),
+      level: "info",
+      format,
+    }),
+    new winston.transports.File({
+      filename: path.join("logs", "combined.log"),
+    }),
+    new winston.transports.Console({
+      level: "info",
+      format,
+    }),
+  ],
+  exceptionHandlers: [
+    // Call exceptions.handle with a transport to handle exceptions
+    new winston.transports.File({
+      filename: path.join("logs", "exceptions.log"),
+    }),
+  ],
+  rejectionHandlers: [
+    // Call rejections.handle with a transport to handle rejections
+    new winston.transports.File({
+      filename: path.join("logs", "rejections.log"),
+    }),
   ],
 });
 
-// Define sequelize config
-let host = process.env.MYSQL_HOST || "localhost";
-let database = process.env.MYSQL_DATABASE || "groupomania";
-let username = process.env.MYSQL_USERNAME || "root";
-let password = process.env.MYSQL_PASSWORD || "";
-let port = process.env.MYSQL_PORT || 3306;
-
-// Create sequelize instance and configure
-const sequelize = new Sequelize(database, username, password, {
-  host: host,
-  port: port,
-  logging: log.debug.bind(log),
-  dialect: "mysql" /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */,
-});
-
-// Make logs path if not exist
-if (!fs.existsSync(logsPath)) {
-  fs.mkdirSync(logsPath, { recursive: true });
-}
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("[MySQL] Connection has been established successfully.");
-  })
-  .catch((err) => {
-    console.error("[MySQL] Unable to connect to the database:", err);
-  });
+module.exports = log
