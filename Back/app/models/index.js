@@ -3,9 +3,13 @@ const fs = require("fs");
 const path = require("path");
 const basename = path.basename(__filename);
 const Sequelize = require("sequelize");
+const log = require("../config/logger");
+
+
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
+  logging: log.debug.bind(log),
   //   operatorsAliases: false,
   pool: {
     max: dbConfig.pool.max,

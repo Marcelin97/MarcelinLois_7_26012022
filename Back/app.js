@@ -96,3 +96,8 @@ app.use(helmet());
 // * End - x - xss - protection
 // * Set some secure headers with helmet.js
 //=================================>
+
+// Returns a 404 response for all unregistered routes
+app.all('*', (req, res) => {
+  res.status(404).json('Resource not found');
+});

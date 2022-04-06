@@ -39,7 +39,7 @@ exports.createComment = (req, res, next) => {
       });
     })
     .catch((err) => {
-      return res.status(500).send({
+      return res.status(500).json({
         message: "Failed to write a comment",
         err,
       });
@@ -77,7 +77,7 @@ exports.updateComment = (req, res, next) => {
         );
     })
     .catch((err) => {
-      res.status(500).send({
+      res.status(500).json({
         message: "Something went wrong",
         err,
       });
