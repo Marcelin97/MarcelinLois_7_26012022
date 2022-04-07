@@ -1,11 +1,24 @@
 <template>
-  <nav>
-    <!-- <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> -->
-  </nav>
-  <router-view/>
+<main>
+  <header></header>
+  <section>
+    <router-view/>
+  </section>
+  <footer></footer>
+</main>
+
 </template>
 
-<style lang="scss">
+<script>
 
+export default {
+  name: "App",
+};
+</script>
+
+<style lang="scss">
+*{
+background-color: rgb(12, 19, 31);
+}
+  
 </style>
