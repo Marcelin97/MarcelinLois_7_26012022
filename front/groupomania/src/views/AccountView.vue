@@ -19,8 +19,8 @@
         posts,...
       </p>
       <div class="actions">
-        <router-link class="nav" to="/account">Créer un compte</router-link>
-        <router-link class="nav" to="/account">Connexion</router-link>
+        <router-link class="nav btn" to="/account">Créer un compte</router-link>
+        <router-link class="nav-login btn" to="/account">Connexion</router-link>
       </div>
     </div>
   </div>
@@ -40,29 +40,29 @@
   }
 }
 .nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2rem;
-  margin-right: 2rem;
-  max-width: 200px;
-  min-width: 200px;
-  padding: 0 1.5rem;
-  border-radius: 2rem;
-  font-size: 1rem;
   color: #0c131f;
-  min-height: 3rem;
   background-color: #8de8fe;
-  transition: background 0.25s;
+  transition: background-color 0.25s;
   &:hover {
+    background-color: #32a8c5;
+  }
+}
+.nav-login {
+  color: #8de8fe;
+  border: 1px solid;
+  transition: background-color 0.25s;
+  transition: color 0.25;
+  &:hover {
+    color: black;
     background-color: #62c5de;
   }
 }
+
 .container {
   margin-top: 20vh;
   display: flex;
   flex-direction: column;
-  @media only screen and (min-width: 576px) {
+  @media only screen and (min-width: 768px) {
     flex-direction: row;
   }
 }
@@ -71,6 +71,9 @@
   @media only screen and (min-width: 576px) {
     width: 420px;
     margin-left: 90px;
+  }
+  @media only screen and (min-width: 992px) {
+    width: 600px;
   }
   h1 {
     border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
@@ -107,17 +110,14 @@
   position: absolute;
   span {
     position: inherit;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #8de8fe;
   }
-}
-
-.connect-wrap .extras span {
-  width: 30px;
-  height: 30px;
-  font-size: 16px;
-  line-height: 30px;
-  text-align: center;
-  border-radius: 50%;
-  background-color: #8de8fe;
 }
 
 .connect-wrap .extras span:nth-child(1) {
