@@ -19,14 +19,17 @@
         posts,...
       </p>
       <div class="actions">
-        <router-link class="nav btn" to="/account">Créer un compte</router-link>
-        <router-link class="nav-login btn" to="/account">Connexion</router-link>
+        <router-link class="nav btn" to="/signup">Créer un compte</router-link>
+        <router-link class="nav-login btn" to="/login">Connexion</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+export default {
+  name: "AccountView",
+};
 </script>
 
 <style lang="scss">
