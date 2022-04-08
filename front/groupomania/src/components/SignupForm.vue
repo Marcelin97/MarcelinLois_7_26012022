@@ -54,13 +54,16 @@
             class="inputCheckbox"
             type="checkbox"
             v-model="terms"
+            true-value="yes"
+            false-value="no"
             required
           />
           <span class="checkbox"></span>
         </label>
       </div>
       <div class="submit">
-        <button @click="login"
+        <button
+          @click="login"
           class="btn"
           type="submit"
           title="Créer mon compte"
@@ -78,10 +81,10 @@
 </template>
 <script>
 export default {
-  setup(){
-    let input =null;
-// let input = ref(null);
-return input
+  setup() {
+    let input = null;
+    // let input = ref(null);
+    return input;
   },
   name: "SignupForm",
   data() {
@@ -98,20 +101,18 @@ return input
       // console.log("form submitted");
       // * valid password
       this.passwordError =
-        this.password.length > 5
-          ? " "
-          : "Entre 6 et 50 caractères"
+        this.password.length > 5 ? " " : "Entre 6 et 50 caractères";
 
-          if (this.password.length > 5) {
-            console.log("email:", this.email)
-            console.log("email:", this.password)
-            console.log("email:", this.terms)
-            console.log("email:", this.username)
-          }
+      if (this.password.length > 5) {
+        console.log("email:", this.email);
+        console.log("email:", this.password);
+        console.log("email:", this.terms);
+        console.log("email:", this.username);
+      }
     },
-    login(){
-      console.warn(this.form)
-    }
+    login() {
+      console.warn(this.form);
+    },
   },
 };
 </script>
@@ -155,7 +156,7 @@ fieldset {
 }
 .wrapper {
   position: relative;
-  margin-top: 50px
+  margin-top: 50px;
 }
 input {
   width: 10 rem;
@@ -262,7 +263,7 @@ input:checked ~ .checkbox {
 }
 
 // * Submit
-.error{
+.error {
   margin-top: 10px;
   color: #fd4444;
   font-size: 0.8em;
