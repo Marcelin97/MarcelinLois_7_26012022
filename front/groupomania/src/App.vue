@@ -2,7 +2,10 @@
 <main>
   <header></header>
   <section>
-    <router-view/>
+    <transition name="fade">
+        <router-view></router-view>
+      </transition>
+    <router-/>
   </section>
   <footer></footer>
 </main>

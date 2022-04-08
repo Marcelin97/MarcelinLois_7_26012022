@@ -4,7 +4,7 @@
     <p>
       Pour créer votre compte Groupomania, merci de remplir les champs suivants:
     </p>
-    <form @submit.prevent="handleSubmit">
+    <form action="#" method="post" @submit.prevent="handleSubmit">
       <fieldset>
         <legend>Inscription</legend>
         <div>
@@ -60,7 +60,7 @@
         </label>
       </div>
       <div class="submit">
-        <button
+        <button @click="login"
           class="btn"
           type="submit"
           title="Créer mon compte"
@@ -78,6 +78,11 @@
 </template>
 <script>
 export default {
+  setup(){
+    let input =null;
+// let input = ref(null);
+return input
+  },
   name: "SignupForm",
   data() {
     return {
@@ -104,6 +109,9 @@ export default {
             console.log("email:", this.username)
           }
     },
+    login(){
+      console.warn(this.form)
+    }
   },
 };
 </script>

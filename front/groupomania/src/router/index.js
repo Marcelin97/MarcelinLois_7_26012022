@@ -3,6 +3,18 @@ import WelcomeView from '../views/WelcomeView.vue'
 
 const routes = [
   {
+    path: '/:catchAll(.*)',
+    // path: "/page-not-found",
+    // alias: '*',
+    name: 'NotFound',
+    component: () => import('../views/NotFound.vue'),
+    // component: { render: (h) => h("div", ["404! Page Not Found!"]) },
+  },
+  {
+    path: "/auth-required",
+    component: { render: (h) => h("div", ["Auth required!"]) },
+  },
+  {
     path: '/',
     name: 'home',
     component: WelcomeView
@@ -10,10 +22,7 @@ const routes = [
   {
     path: '/account',
     name: 'account',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AccountView.vue')
+    component: () => import('../views/AccountView.vue'),
   },
   {
     path: '/signup',
@@ -24,7 +33,8 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () => import('../views/LoginView.vue')
-  }
+  },
+  
 ]
 
 const router = createRouter({
@@ -32,4 +42,17 @@ const router = createRouter({
   routes
 })
 
+// * Check if user is authenticated
+const isAuthenticated = () => false;
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((route) => route.meta?.requiresAuth)) {
+    if (isAuthenticated()) {
+      next();
+    } else {
+      next("/auth-required");
+    }
+  } else {
+    next();
+  }
+});
 export default router
