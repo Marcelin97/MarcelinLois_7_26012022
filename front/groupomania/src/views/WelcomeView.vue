@@ -9,7 +9,7 @@
     </div>
     <nav>
       <!-- <router-view/> -->
-      <router-link class="nav" to="/account">Découvrir</router-link>
+      <router-link class="btn button" to="/account">Découvrir</router-link>
     </nav>
   </section>
 </template>
@@ -39,18 +39,5 @@ nav {
   display: flex;
   justify-content: flex-end;
 }
-.nav {
-  display: flex;
-  align-items: center;
-  padding: 0 1.5rem;
-  border-radius: 2rem;
-  font-size: 1rem;
-  color: #0c131f;
-  min-height: 3rem;
-  background-color: #8de8fe;
-  transition: background 0.25s;
-  &:hover {
-    background-color: #62c5de;
-  }
-}
+
 </style>

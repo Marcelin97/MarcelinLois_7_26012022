@@ -17,7 +17,6 @@
             />
             <div class="validation">Required</div>
           </div>
-          <div></div>
         </div>
 
         <div>

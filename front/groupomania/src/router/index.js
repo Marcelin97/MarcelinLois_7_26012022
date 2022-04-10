@@ -10,10 +10,10 @@ const routes = [
     component: () => import('../views/NotFound.vue'),
     // component: { render: (h) => h("div", ["404! Page Not Found!"]) },
   },
-  {
-    path: "/auth-required",
-    component: { render: (h) => h("div", ["Auth required!"]) },
-  },
+  // {
+  //   path: "/auth-required",
+  //   component: { render: (h) => h("div", ["Auth required!"]) },
+  // },
   {
     path: '/',
     name: 'home',
