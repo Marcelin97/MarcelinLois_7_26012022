@@ -1,13 +1,14 @@
 <template>
-  <div>
-    <h1>Main Board Page</h1>
-    <router-view />
-  </div>
+  <NavBar/>
 </template>
 
 <script>
+import NavBar from "@/components/Menu/NavBar.vue";
 
 export default {
   name: "WallView",
+    components: {
+    NavBar,
+  },
 };
 </script>
