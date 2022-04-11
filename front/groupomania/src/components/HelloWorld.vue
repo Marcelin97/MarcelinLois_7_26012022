@@ -21,7 +21,6 @@ h1 {
   font-weight: bolder;
   margin-bottom: 1rem;
   line-height: 1.5rem;
-  letter-spacing: 0.1rem;
   // text-transform: uppercase;
   span {
     font-size: 1.4rem;
@@ -33,7 +32,6 @@ p {
   font-size: 0.8rem;
   font-weight: lighter;
   line-height: 1.5rem;
-  letter-spacing: 0.1rem;
 }
 
 .blinker {

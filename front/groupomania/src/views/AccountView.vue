@@ -1,4 +1,7 @@
 <template>
+  <nav>
+    <GoBack />
+  </nav>
   <div class="container">
     <div class="connect-wrap">
       <div class="extras">
@@ -19,94 +22,52 @@
         posts,...
       </p>
       <div class="actions">
-        <router-link class="nav btn" to="/signup">Créer un compte</router-link>
-        <router-link class="nav-login btn" to="/login">Connexion</router-link>
+        <router-link class="nav btn button" to="/signup"
+          >Créer un compte</router-link
+        >
+        <router-link class="nav btn-login btn" to="/login"
+          >Connexion</router-link
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import GoBack from "../components/Base/GoBack.vue";
+
 export default {
+  components: {
+    GoBack,
+  },
   name: "AccountView",
 };
 </script>
 
 <style lang="scss">
-.actions {
+nav {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  @media only screen and (min-width: 576px) {
-    flex-direction: row;
-    font-size: 2rem;
-  }
-}
-.nav {
-  color: #0c131f;
-  background-color: #8de8fe;
-  transition: background-color 0.25s;
-  &:hover {
-    background-color: #32a8c5;
-  }
-}
-.nav-login {
-  color: #8de8fe;
-  border: 1px solid;
-  transition: background-color 0.25s;
-  transition: color 0.25;
-  &:hover {
-    color: black;
-    background-color: #62c5de;
-  }
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .container {
+  padding: 50px;
   margin-top: 20vh;
   display: flex;
   flex-direction: column;
   @media only screen and (min-width: 768px) {
     flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
   }
 }
 
-.login {
-  @media only screen and (min-width: 576px) {
-    width: 420px;
-    margin-left: 90px;
-  }
-  @media only screen and (min-width: 992px) {
-    width: 600px;
-  }
-  h1 {
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-    padding-bottom: 3vh;
-    font-size: 1.4rem;
-    font-weight: bolder;
-    margin: 2rem 0;
-    line-height: 2rem;
-    letter-spacing: 0.1rem;
-    @media only screen and (min-width: 576px) {
-      display: flex;
-      flex-direction: column;
-    }
-  }
-  p {
-    line-height: 1.5rem;
-    letter-spacing: 0.1rem;
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-    padding-bottom: 3vh;
-  }
-}
 .connect-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  // position: fixed;
   transition: all 0.4s ease-in-out 0s;
-  @media only screen and (min-width: 576px) {
-    margin-left: 100px;
-  }
 }
 
 .connect-wrap .extras {
@@ -146,9 +107,60 @@ export default {
 img {
   height: 80px;
   line-height: 80px;
-  animation: extra 4s forwards;
+  animation: extra 2s forwards;
   @media only screen and (min-width: 576px) {
     height: 100px;
+  }
+}
+
+.login {
+  @media only screen and (min-width: 576px) {
+    width: 420px;
+    margin-left: 90px;
+  }
+  @media only screen and (min-width: 992px) {
+    width: 600px;
+  }
+  h1 {
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    padding-bottom: 3vh;
+    font-size: 1.4rem;
+    font-weight: bolder;
+    margin: 2rem 0;
+    line-height: 2rem;
+    @media only screen and (min-width: 576px) {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  p {
+    line-height: 1.5rem;
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    padding-bottom: 3vh;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  margin: 2rem;
+  @media only screen and (min-width: 576px) {
+    flex-direction: row;
+  }
+}
+.nav {
+  margin-bottom: 2rem;
+}
+.btn-login {
+  color: #f7f7f7;
+  border: 2px solid #8de8fe;
+  background: transparent;
+  transition: color, background 0.35s;
+  &:hover {
+    background: #8de8fe;
+    color: black;
   }
 }
 
