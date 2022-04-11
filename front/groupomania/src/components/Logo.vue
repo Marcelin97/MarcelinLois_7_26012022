@@ -1,6 +1,5 @@
 <template>
   <div id="Clouds">
-    <!-- <img src="https://assets.codepen.io/1538474/astronaut.svg" class="logo" /> -->
     <img src="../assets/img/logo.svg" class="logo" alt="" />
   </div>
 </template>

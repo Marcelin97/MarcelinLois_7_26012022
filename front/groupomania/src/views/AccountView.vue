@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import GoBack from "@/components/GoBack";
+import GoBack from "../components/Base/GoBack.vue";
+
 export default {
   components: {
     GoBack,
@@ -127,7 +128,6 @@ img {
     font-weight: bolder;
     margin: 2rem 0;
     line-height: 2rem;
-    letter-spacing: 0.1rem;
     @media only screen and (min-width: 576px) {
       display: flex;
       flex-direction: column;
@@ -135,7 +135,6 @@ img {
   }
   p {
     line-height: 1.5rem;
-    letter-spacing: 0.1rem;
     border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
     padding-bottom: 3vh;
   }

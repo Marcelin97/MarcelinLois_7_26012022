@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <h1>Créer mon compte</h1>
+  <section class="container">
+    <h1>{{ msg }}</h1>
     <p>
       Pour créer votre compte Groupomania, merci de remplir les champs suivants:
     </p>
@@ -76,13 +76,15 @@
     <p>Email: {{ email }}</p>
     <p>Password: {{ password }}</p>
     <p>Terms: {{ terms }}</p>
-  </div>
+  </section>
 </template>
 <script>
 export default {
+  props: {
+    msg: String,
+  },
   setup() {
     let input = null;
-    // let input = ref(null);
     return input;
   },
   name: "SignupForm",
@@ -124,23 +126,22 @@ export default {
   h1 {
     font-size: 1.4rem;
     font-weight: bolder;
-    margin-bottom: 1rem;
+    margin: 4rem 1rem;
     line-height: 1.5rem;
-    letter-spacing: 0.1rem;
+    text-align: center;
   }
   p {
     font-size: 0.8rem;
     font-weight: lighter;
     line-height: 1.5rem;
-    letter-spacing: 0.1rem;
+    text-align: center;
   }
 }
 form {
   max-width: 420px;
-  margin: 30px auto;
+  margin: 20px auto;
   text-align: left;
-  padding: 40px;
-  border-radius: 10px;
+  padding: 20px;
 }
 legend {
   // margin-bottom: 50px;
@@ -158,12 +159,15 @@ fieldset {
   margin-top: 50px;
 }
 input {
-  width: 10 rem;
+  width: 15rem;
   height: 2.5rem;
   padding: 0 0.5rem;
   border-radius: 0.25rem;
   border: 1px solid #585858;
   color: #8de8fe;
+  @media only screen and (min-width: 768px) {
+    width: 25rem;
+  }
 }
 input:valid {
   border-color: #8de8fe;
@@ -223,13 +227,9 @@ input:invalid {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 .conditions {
-  margin-bottom: 10px;
-}
-.labelCheckbox {
-  align-self: flex-end;
+  margin-bottom: 15px;
 }
 label,
 input {
@@ -240,7 +240,6 @@ input {
   appearance: none;
   border: none;
   background: transparent;
-  position: relative;
   position: absolute;
   transform: scale(0);
 }
@@ -261,11 +260,18 @@ input:checked ~ .checkbox {
   border-left-color: transparent;
 }
 
-// * Submit
+// * error if input is invalid
 .error {
   margin-top: 10px;
   color: #fd4444;
   font-size: 0.8em;
   font-weight: bold;
+}
+
+// * Submit
+.submit {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
 }
 </style>

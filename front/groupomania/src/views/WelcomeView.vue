@@ -32,12 +32,11 @@ export default {
 .load {
   margin-bottom: 5em;
 }
-.home{
+.home {
   margin: 120px 30px;
 }
 nav {
   display: flex;
   justify-content: flex-end;
 }
-
 </style>
