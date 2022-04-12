@@ -5,22 +5,22 @@
         <div class="nav-right">
           <ul id="navbar-items">
             <li class="navbar-item no-mob">
-              <a class="navbar-item-inner" href=""
-                ><span><i class="uil uil-home-alt"></i> Home</span></a
+              <a class="navbar-item-inner" href="#"
+                ><span>Home</span></a
               >
             </li>
             <li class="navbar-item no-mob">
-              <a class="navbar-item-inner" href=""
-                ><span><i class="uil uil-comment-image"></i> Forum</span></a
+              <a class="navbar-item-inner" href="#"
+                ><span>Messsagerie</span></a
               >
             </li>
             <li class="navbar-item no-mob">
-              <a class="navbar-item-inner" href=""
-                ><span><i class="uil uil-shopping-bag"></i> Store</span></a
+              <a class="navbar-item-inner" href="#"
+                ><span>Notifications</span></a
               >
             </li>
             <li class="navbar-item">
-              <a class="navbar-item-inner" href=""
+              <a class="navbar-item-inner" href="#"
                 ><span
                   ><font-awesome-icon
                     class="icon"
@@ -51,53 +51,33 @@
             </a>
             <a href="#">
               <font-awesome-icon class="icon" :icon="['fas', 'book-open']" />
-              Latest News
+              News
             </a>
             <a href="#">
               <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Explore
+              Communauté
             </a>
             <a href="#">
               <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Files
+              Posts
             </a>
             <a href="#">
               <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Galery
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Events
+              Utilisateurs
             </a>
           </div>
         </div>
 
         <div class="side-wrapper">
-          <div class="side-title">YOUR FAVOURITE</div>
+          <div class="side-title">Groupomania</div>
           <div class="side-menu">
             <a href="#">
               <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Foresto
+              Hot
             </a>
             <a href="#">
               <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Birds
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Nature
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Animals
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Motobike
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Dance
+              Top Likes
             </a>
           </div>
         </div>
@@ -117,6 +97,7 @@ export default {
     display: flex;
     flex-direction: column;
 }
+
 #navbar {
   top: 0;
   width: 100%;
@@ -232,7 +213,7 @@ export default {
 }
 .MenuIcon::before,
 .MenuIcon::after {
-  background: red;
+  background: #8de8fe;
   display: block;
   content: "";
   position: absolute;
