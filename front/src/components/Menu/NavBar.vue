@@ -1,11 +1,74 @@
 <template>
-  <div>
+  <div class="container-header">
+
+    <!-- Menu left -->
+    <div class="MenuContainer">
+      <input class="HiddenCheckbox" id="menu" type="checkbox" name="menu" />
+      <label class="MenuIcon" for="menu"></label>
+
+      <h2 class="MenuHeader">Groupomania</h2>
+
+      <nav class="menu">
+
+        <div class="side-wrapper">
+          <div class="side-title">MENU</div>
+          <div class="side-menu">
+            <a href="#">
+              <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
+              Home
+            </a>
+            <a href="#">
+              <font-awesome-icon class="icon" :icon="['fas', 'people-group']" />
+              Communauté
+            </a>
+            <a href="#">
+              <font-awesome-icon class="icon-left" :icon="['fas', 'pen']" />
+              Posts
+            </a>
+            <a href="#">
+              <font-awesome-icon class="icon-left" :icon="['fas', 'users']" />
+              Utilisateurs
+            </a>
+          </div>
+        </div>
+
+    <div class="side-wrapper">
+      <div class="side-title">YOUR FAVOURITE</div>
+      <div class="side-menu">
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-trend-up']" />
+          Top
+        </a>
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'heart']" />
+          Like
+        </a>
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'clock']" />
+          Recent
+        </a>
+
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+      </nav>
+    </div>
+    <!-- Menu left -->
+
     <!-- Header navigation -->
-    <div class="container-header">
+    <div class="container-nav">
       <nav class="nav-header">
         <input checked id="home" type="radio" name="nav" />
         <input id="find" type="radio" name="nav" />
         <input id="notification" type="radio" name="nav" />
+        <input id="messagerie" type="radio" name="nav" />
 
         <label class="home" for="home">
           <font-awesome-icon
@@ -27,114 +90,27 @@
             class="icon notification"
             :icon="['fas', 'bell']"
           />
-          <span class="text">Notification</span>
+          <router-link class="text" to="#">Notification</router-link>
+        </label>
+        <div class="indicator"></div>
+
+        <label class="messagerie" for="messagerie">
+          <font-awesome-icon
+            class="icon messagerie"
+            :icon="['fas', 'message']"
+          />
+          <router-link class="text" to="#">Chat</router-link>
         </label>
         <div class="indicator"></div>
       </nav>
     </div>
     <!-- Header navigation -->
 
-    <!-- Menu left -->
-    <div class="MenuContainer">
-      <input class="HiddenCheckbox" id="menu" type="checkbox" name="menu" />
-      <label class="MenuIcon" for="menu"></label>
-
-      <h2 class="MenuHeader">Groupomania</h2>
-
-      <nav class="menu">
-
-        <div class="side-wrapper">
-          <div class="side-title">MENU</div>
-          <div class="side-menu">
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
-              Home
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'book-open']" />
-              News
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Communauté
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
-              Posts
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
-              Utilisateurs
-            </a>
-          </div>
-        </div>
-
-        <!-- <div class="side-wrapper">
-          <div class="side-title">MENU</div>
-          <div class="side-menu">
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
-              Home
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'book-open']" />
-              News
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
-              Communauté
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
-              Posts
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
-              Utilisateurs
-            </a>
-          </div>
-        </div> -->
-
-    <div class="side-wrapper">
-      <div class="side-title">YOUR FAVOURITE</div>
-      <div class="side-menu">
-        <a href="#">
-          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
-          Foresto
-        </a>
-        <a href="#">
-          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
-          Birds
-        </a>
-        <a href="#">
-          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
-          Nature
-        </a>
-        <a href="#">
-          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
-          Animals
-        </a>
-        <a href="#">
-          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
-          Motobike
-        </a>
-        <a href="#">
-          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
-          Dance
-        </a>
-      </div>
-    </div>
 
 
 
 
 
-
-
-
-      </nav>
-    </div>
-    <!-- Menu left -->
   </div>
 </template>
 
@@ -144,19 +120,31 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .container-header {
   margin-top: 10px;
   height: auto;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  justify-content: space-between;
+  @media only screen and (min-width: 768px) {
+    // display: flex;
+    flex-direction: row;
+  }
+}
+
+.container-nav{
+  display: flex;
+  justify-content: center;
 }
 .nav-header {
   position: relative;
   display: flex;
-  width: 240px;
+  width: 280px;
   height: 70px;
-  margin-right: 50px;
+  @media only screen and (min-width: 360px) {
+    margin-right: 50px;
+  }
 }
 
 .indicator {
@@ -182,6 +170,7 @@ label {
   place-items: center;
   flex: 1 1 auto;
   cursor: pointer;
+  width: auto;
 }
 
 .icon,
@@ -207,13 +196,16 @@ label {
 
 input:nth-child(1):checked ~ label.home .icon,
 input:nth-child(2):checked ~ label.find .icon,
-input:nth-child(3):checked ~ label.notification .icon {
+input:nth-child(3):checked ~ label.notification .icon,
+input:nth-child(4):checked ~ label.messagerie .icon
+ {
   opacity: 0;
 }
 
 input:nth-child(1):checked ~ label.home .text,
 input:nth-child(2):checked ~ label.find .text,
-input:nth-child(3):checked ~ label.notification .text {
+input:nth-child(3):checked ~ label.notification .text,
+input:nth-child(4):checked ~ label.messagerie .text {
   opacity: 1;
   color: #45c2f8;
 }
@@ -223,24 +215,26 @@ input:nth-child(1):checked ~ .indicator {
 }
 
 input:nth-child(2):checked ~ .indicator {
-  transform: translateX(80px);
+  transform: translateX(70px);
 }
 
 input:nth-child(3):checked ~ .indicator {
-  transform: translateX(160px);
+  transform: translateX(130px);
 }
 
+input:nth-child(4):checked ~ .indicator {
+  transform: translateX(210px);
+}
 /* Menu left */
 .MenuContainer {
   display: inline-block;
   margin: 20px;
-
-  /* width: 260px;
+  width: 260px;
  display: flex;
  flex-direction: column;
  transition: 0.3s;
  overflow: auto;
- flex-shrink: 0; */
+ flex-shrink: 0;
 }
 
 .HiddenCheckbox {
@@ -309,8 +303,6 @@ input:nth-child(3):checked ~ .indicator {
  color: #fff;
  font-weight: 600;
  text-align: center;
- /* height: 68px; */
- /* line-height: 68px; */
  letter-spacing: 4px;
  position: sticky;
  top: 0;
@@ -322,9 +314,12 @@ input:nth-child(3):checked ~ .indicator {
   bottom: 0;
   left: -90%;
   position: absolute;
-  top: 70px;
+  top: 150px;
   width: 30%;
   transition: left 0.4s;
+  @media only screen and (min-width: 768px) {
+    top: 50px;
+  }
 }
 
 .side-wrapper {
@@ -361,5 +356,6 @@ input:nth-child(3):checked ~ .indicator {
 .side-menu a:not(:last-child) {
   margin-bottom: 20px;
 }
+
 
 </style>
