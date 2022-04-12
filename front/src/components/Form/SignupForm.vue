@@ -46,8 +46,10 @@
           <div v-if="passwordError" class="error">{{ passwordError }}</div>
         </div>
       </fieldset>
+      
+      <!-- Terms -->
       <div class="terms">
-        <div class="conditions">Accept terms and conditions</div>
+        <div class="conditions">I accept the terms and conditions.</div>
         <label class="labelCheckbox">
           <input
             class="inputCheckbox"
@@ -60,6 +62,8 @@
           <span class="checkbox"></span>
         </label>
       </div>
+      <!-- Terms -->
+
       <div class="submit">
         <button
           @click="login"

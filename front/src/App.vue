@@ -1,12 +1,15 @@
 <template>
   <main>
     <header></header>
-    <section>
-      <transition name="fade">
-        <router-view></router-view>
-      </transition>
-      <router- />
-    </section>
+    <main>
+      <router-view v-slot="{ Component, route }">
+        <transition name="fade" mode="out-in">
+          <div :key="route.name">
+            <component :is="Component"></component>
+          </div>
+        </transition>
+      </router-view>
+    </main>
     <footer></footer>
   </main>
 </template>

@@ -1,14 +1,17 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
+
+import NotFound from "../views/NotFound.vue";
 import WelcomeView from "../views/WelcomeView.vue";
+import AccountView from "../views/AccountView.vue";
+import SignupView from "../views/SignupView.vue";
+import LoginView from "../views/LoginView.vue";
+import WallView from "../views/WallView.vue";
 
 const routes = [
   {
     path: "/:catchAll(.*)",
-    // path: "/page-not-found",
-    // alias: '*',
     name: "NotFound",
-    component: () => import("../views/NotFound.vue"),
-    // component: { render: (h) => h("div", ["404! Page Not Found!"]) },
+    component: NotFound,
   },
   // {
   //   path: "/auth-required",
@@ -22,27 +25,27 @@ const routes = [
   {
     path: "/account",
     name: "account",
-    component: () => import("../views/AccountView.vue"),
+    component: AccountView,
   },
   {
     path: "/signup",
     name: "signup",
-    component: () => import("../views/SignupView.vue"),
-  },
-  {
-    path: "/wall",
-    name: "wall",
-    component: () => import("../views/WallView.vue"),
+    component: SignupView,
   },
   {
     path: "/login",
     name: "login",
-    component: () => import("../views/LoginView.vue"),
+    component: LoginView,
+  },
+  {
+    path: "/wall",
+    name: "wall",
+    component: WallView,
   },
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     // * Scroll Behavior savedPosition
