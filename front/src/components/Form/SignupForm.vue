@@ -9,6 +9,7 @@
         <legend>Inscription</legend>
         <div>
           <div class="wrapper">
+            <label for="">
             <input
               type="text"
               placeholder="Nom d'utilisateur"
@@ -16,11 +17,13 @@
               v-model="username"
             />
             <div class="validation">Required</div>
+            </label>
           </div>
         </div>
 
         <div>
           <div class="wrapper">
+            <label for="">
             <input
               type="email"
               required
@@ -28,12 +31,14 @@
               placeholder="Entrer votre e-mail"
             />
             <div class="validation">Required</div>
+            </label>
           </div>
           <div></div>
         </div>
 
         <div>
           <div class="wrapper">
+            <label for="">
             <input
               type="password"
               required
@@ -41,6 +46,7 @@
               placeholder="Entrer votre mot de passe"
             />
             <div class="validation">Required</div>
+            </label>
           </div>
 
           <div v-if="passwordError" class="error">{{ passwordError }}</div>

@@ -1,56 +1,57 @@
 <template>
   <div>
+    <!-- Header navigation -->
     <div class="container-header">
-      <nav id="navbar">
-        <div class="nav-right">
-          <ul id="navbar-items">
-            <li class="navbar-item no-mob">
-              <a class="navbar-item-inner" href="#"
-                ><span>Home</span></a
-              >
-            </li>
-            <li class="navbar-item no-mob">
-              <a class="navbar-item-inner" href="#"
-                ><span>Messsagerie</span></a
-              >
-            </li>
-            <li class="navbar-item no-mob">
-              <a class="navbar-item-inner" href="#"
-                ><span>Notifications</span></a
-              >
-            </li>
-            <li class="navbar-item">
-              <a class="navbar-item-inner" href="#"
-                ><span
-                  ><font-awesome-icon
-                    class="icon"
-                    :icon="['fas', 'user']" /></span
-              ></a>
-            </li>
-          </ul>
-        </div>
+      <nav class="nav-header">
+        <input checked id="home" type="radio" name="nav" />
+        <input id="find" type="radio" name="nav" />
+        <input id="notification" type="radio" name="nav" />
+
+        <label class="home" for="home">
+          <font-awesome-icon
+            class="icon home uil uil-estate"
+            :icon="['fas', 'home']"
+          />
+          <router-link class="text" to="/">Home</router-link>
+        </label>
+        <div class="indicator"></div>
+
+        <label class="find" for="find">
+          <font-awesome-icon class="icon find" :icon="['fas', 'user']" />
+          <router-link class="text" to="/profil">Compte</router-link>
+        </label>
+        <div class="indicator"></div>
+
+        <label class="notification" for="notification">
+          <font-awesome-icon
+            class="icon notification"
+            :icon="['fas', 'bell']"
+          />
+          <span class="text">Notification</span>
+        </label>
+        <div class="indicator"></div>
       </nav>
     </div>
+    <!-- Header navigation -->
+
+    <!-- Menu left -->
     <div class="MenuContainer">
       <input class="HiddenCheckbox" id="menu" type="checkbox" name="menu" />
       <label class="MenuIcon" for="menu"></label>
+
       <h2 class="MenuHeader">Groupomania</h2>
 
-      <nav class="Menu">
-        <!-- <ul class="Menu-list">
-      <li class="Menu-item"><a class="Menu-link" href="https://codepen.io/rthor" target="_blank">Visit Profile</a></li>
-      <li class="Menu-item"><a class="Menu-link" href="http://rthor.is" target="_blank">Read Blog</a></li>
-      <li class="Menu-item"><a class="Menu-link" href="https://github.com/rthor" target="_blank">Checkout Code</a></li>
-    </ul> -->
+      <nav class="menu">
+
         <div class="side-wrapper">
           <div class="side-title">MENU</div>
           <div class="side-menu">
             <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'home']" />
+              <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
               Home
             </a>
             <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'book-open']" />
+              <font-awesome-icon class="icon-left" :icon="['fas', 'book-open']" />
               News
             </a>
             <a href="#">
@@ -58,31 +59,82 @@
               Communauté
             </a>
             <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
+              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
               Posts
             </a>
             <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
+              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
               Utilisateurs
             </a>
           </div>
         </div>
 
-        <div class="side-wrapper">
-          <div class="side-title">Groupomania</div>
+        <!-- <div class="side-wrapper">
+          <div class="side-title">MENU</div>
           <div class="side-menu">
             <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Hot
+              <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
+              Home
             </a>
             <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'arrow-left']" />
-              Top Likes
+              <font-awesome-icon class="icon-left" :icon="['fas', 'book-open']" />
+              News
+            </a>
+            <a href="#">
+              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
+              Communauté
+            </a>
+            <a href="#">
+              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
+              Posts
+            </a>
+            <a href="#">
+              <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-left']" />
+              Utilisateurs
             </a>
           </div>
-        </div>
+        </div> -->
+
+    <div class="side-wrapper">
+      <div class="side-title">YOUR FAVOURITE</div>
+      <div class="side-menu">
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
+          Foresto
+        </a>
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
+          Birds
+        </a>
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
+          Nature
+        </a>
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
+          Animals
+        </a>
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
+          Motobike
+        </a>
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
+          Dance
+        </a>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
       </nav>
     </div>
+    <!-- Menu left -->
   </div>
 </template>
 
@@ -93,103 +145,126 @@ export default {
 </script>
 
 <style>
-.container-header{
-    display: flex;
-    flex-direction: column;
-}
-
-#navbar {
-  top: 0;
-  width: 100%;
-  height: 5rem;
-  /* background-color: var(--bc); */
-  /* display: grid;
-  grid-template-columns: 1fr 30% 35% 1fr; */
-  position: fixed;
-  /* z-index: 500; */
-}
-
-.nav-right {
-  height: 100%;
-  grid-column: 3;
+.container-header {
+  margin-top: 10px;
+  height: auto;
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+}
+.nav-header {
+  position: relative;
+  display: flex;
+  width: 240px;
+  height: 70px;
+  margin-right: 50px;
 }
 
-/* Navbar Items */
-#navbar-items {
-  padding: 0;
-  list-style-type: none;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+.indicator {
+  position: absolute;
+  bottom: 3px;
+  left: 30px;
+  margin-left: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #8de8fe;
+  transition: all 1s;
 }
-.navbar-items {
-  padding: 0;
-  margin: 0.5em 0 2em 0;
-  list-style-type: none;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+
+input {
+  position: absolute;
+  transform: scale(0);
 }
-.no-desk {
-  display: none;
-}
-.navbar-item {
-  margin: 0 0.75em;
-  line-height: 0;
-  color: var(--white);
-  font-size: 1.22rem;
-  font-weight: 300;
+
+label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 1 1 auto;
   cursor: pointer;
 }
-.navbar-item-inner {
-  margin: 0;
-  text-decoration: none;
-  color: var(--white);
-  transition: color 0.3s;
+
+.icon,
+.text {
+  color: #ccc;
+  transition: all 0.15s;
 }
-.navbar-item-inner:hover {
-  color: var(--primary);
+
+.icon {
+  font-size: 22px;
 }
-.navbar-item-inner::after {
-  border-bottom: 2px solid var(--primary);
-  content: "";
-  display: block;
-  position: relative;
-  left: 0;
-  top: 6px;
-  transition: width 0.3s;
-  width: 0;
+
+.text {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
 }
-.navbar-item-inner:hover::after {
-  width: 102%;
+
+input:nth-child(1):checked ~ label.home .icon,
+input:nth-child(2):checked ~ label.find .icon,
+input:nth-child(3):checked ~ label.notification .icon {
+  opacity: 0;
+}
+
+input:nth-child(1):checked ~ label.home .text,
+input:nth-child(2):checked ~ label.find .text,
+input:nth-child(3):checked ~ label.notification .text {
+  opacity: 1;
+  color: #45c2f8;
+}
+
+input:nth-child(1):checked ~ .indicator {
+  transform: translateX(0);
+}
+
+input:nth-child(2):checked ~ .indicator {
+  transform: translateX(80px);
+}
+
+input:nth-child(3):checked ~ .indicator {
+  transform: translateX(160px);
+}
+
+/* Menu left */
+.MenuContainer {
+  display: inline-block;
+  margin: 20px;
+
+  /* width: 260px;
+ display: flex;
+ flex-direction: column;
+ transition: 0.3s;
+ overflow: auto;
+ flex-shrink: 0; */
 }
 
 .HiddenCheckbox {
   display: none;
 }
 
-.MenuContainer {
-  display: inline-block;
-  margin: 20px;
+.HiddenCheckbox:checked ~ .MenuHeader {
+  opacity: 1;
+  transform: none;
 }
 
-.MenuHeader {
-  color: #999;
-  /* display: inline-block; */
-  float: left;
-  font-weight: 100;
-  line-height: 30px;
-  margin: 0 0 0 15px;
-  opacity: 0;
-  position: relative;
-  transform: translate3d(0, -15px, 0);
-  transition: transform 0.6s, opacity 0.5s;
-  z-index: 2;
+.HiddenCheckbox:checked ~ .MenuIcon::before {
+  box-shadow: transparent 0 0 0;
+  transform: rotate(45deg) translate3d(6px, -3px, 0);
+}
+.HiddenCheckbox:checked ~ .MenuIcon::after {
+  transform: rotate(-45deg) translate3d(6px, 3px, 0);
 }
 
+.HiddenCheckbox:checked ~ .menu {
+  left: 0%;
+}
+
+/* hamburger menu */
 .MenuIcon {
   cursor: pointer;
   display: block;
@@ -220,46 +295,46 @@ export default {
   transition: box-shadow 0.2s linear, transform 0.4s 0.2s;
 }
 
-/* // * Hamburger changement detat */
-.HiddenCheckbox:checked ~ .MenuHeader {
-  opacity: 1;
-  transform: none;
+/* Nom de l'entreprise à coté du menu */
+.MenuHeader {
+  float: left;
+  line-height: 30px;
+  margin: 0 0 0 15px;
+  opacity: 0;
+  position: relative;
+  transform: translate3d(0, -15px, 0);
+  transition: transform 0.6s, opacity 0.5s;
+  z-index: 2;
+ font-size: 15px;
+ color: #fff;
+ font-weight: 600;
+ text-align: center;
+ /* height: 68px; */
+ /* line-height: 68px; */
+ letter-spacing: 4px;
+ position: sticky;
+ top: 0;
 }
 
-.HiddenCheckbox:checked ~ .MenuIcon::before {
-  box-shadow: transparent 0 0 0;
-  transform: rotate(45deg) translate3d(6px, -3px, 0);
-}
-.HiddenCheckbox:checked ~ .MenuIcon::after {
-  transform: rotate(-45deg) translate3d(6px, 3px, 0);
-}
-
-/* // * Rend le menu visible */
-.HiddenCheckbox:checked ~ .Menu {
-  left: 0;
-}
-
-/* // * list menu */
-.Menu {
-  /* background: yellow; */
+.menu {
+  display: flex;
+  flex-direction: column;
   bottom: 0;
   left: -90%;
   position: absolute;
   top: 70px;
-  width: 50%;
+  width: 30%;
   transition: left 0.4s;
 }
 
-.side-title {
-  font-family: "DM Sans", sans-serif;
-  color: #5c5e6e;
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 20px;
+.side-wrapper {
+  padding-top: 70px;
+  padding-left: 30px;
 }
 
-.side-wrapper {
-  padding: 30px;
+.side-title {
+  font-size: 15px;
+  margin-bottom: 20px;
 }
 
 .side-menu {
@@ -268,15 +343,17 @@ export default {
   font-size: 15px;
   white-space: nowrap;
 }
-.side-menu svg {
-  margin-right: 16px;
-  width: 16px;
-}
+
 .side-menu a {
   text-decoration: none;
   color: #9c9cab;
   display: flex;
   align-items: center;
+}
+
+.icon-left{
+  margin-right: 16px;
+  width: 16px;
 }
 .side-menu a:hover {
   color: #fff;
@@ -284,5 +361,5 @@ export default {
 .side-menu a:not(:last-child) {
   margin-bottom: 20px;
 }
-/* // * list menu */
+
 </style>
