@@ -1,15 +1,15 @@
 <template>
     <section>
         <h2>Stories</h2>
-        <StoryCard/>
+        <PostCard/>
     </section>
 </template>
 <script>
-import StoryCard from "./StoryCard.vue";
+import PostCard from "./PostCard.vue";
 
 export default {
   components: {
-    StoryCard,
+    PostCard,
   },
 };
 </script>

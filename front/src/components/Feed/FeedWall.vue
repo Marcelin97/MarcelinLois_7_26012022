@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import PostsWall from "./PostsWall.vue";
+import PostsWall from "../Posts/PostsWall.vue";
 import InputBox from "./InputBox.vue";
 import StoriesWall from "./StoriesWall.vue";
 

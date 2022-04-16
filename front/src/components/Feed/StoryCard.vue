@@ -1,5 +1,5 @@
 <template>
-    <h3>Les derniers posts</h3>
+    <h3>Les dernières communautés</h3>
 <!-- CONTAINER OF CARDS DRAGS HORIZONTAL -->
     <div class="container-cards">
       <div>
@@ -14,7 +14,7 @@
             </div>
             <br />
             <p>
-              <strong>Skrillex</strong>
+              <strong>Communauté 1</strong>
             </p>
           </div>
           <div class="card">
@@ -27,7 +27,7 @@
             </div>
             <br />
             <p>
-              <strong>Post Malone</strong>
+              <strong>Communauté 2</strong>
             </p>
           </div>
           <div class="card">
@@ -40,7 +40,7 @@
             </div>
             <br />
             <p>
-              <strong>Bebe Rexha</strong>
+              <strong>Communauté 3</strong>
             </p>
           </div>
           <div class="card">
@@ -53,7 +53,7 @@
             </div>
             <br />
             <p>
-              <strong>Rihana</strong>
+              <strong>Communauté 4</strong>
             </p>
           </div>
 
@@ -67,7 +67,7 @@
             </div>
             <br />
             <p>
-              <strong>The Weeknd</strong>
+              <strong>Communauté 5</strong>
             </p>
           </div>
 
@@ -81,7 +81,7 @@
             </div>
             <br />
             <p>
-              <strong>Drake</strong>
+              <strong>Communauté 6</strong>
             </p>
           </div>
 
@@ -95,24 +95,30 @@
             </div>
             <br />
             <p>
-              <strong>Bad Bunny</strong>
+              <strong>Communauté 7</strong>
             </p>
           </div>
         </div>
       </div>
     </div>
 </template>
+
 <style lang="scss" scoped>
+h3{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
 .cards {
     z-index: 1;
+    margin: 20px;
   display: flex;
   background-color: transparent;
   max-width: 100%;
   padding: 1em;
-  cursor: grab;
-//   overflow-y: hidden;
-//   overflow: hidden;
 }
+
 .card {
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -120,6 +126,7 @@
   padding: 10px;
   flex: 1 0 10em;
 }
+
 .img-card-drag {
   height: 160px;
   width: 160px;
@@ -135,21 +142,25 @@
   transition: 1s;
 }
 .scroll-container::-webkit-scrollbar {
-  width: 1px;
+  width: 18px;
+  cursor: pointer;
 }
 /* Track */
 .scroll-container::-webkit-scrollbar-track {
-  background: #191a1f;
+  background: rgb(12, 19, 31);
 }
 
+ /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 18px;
+  }
 /* Handle */
 .scroll-container::-webkit-scrollbar-thumb {
-  background: red;
+  background: #8de8fe;
   border-radius: 10px;
   outline: none;
   transition: all 0.3s ease-out;
-  -webkit-appearance: none;
-  width: 18px;
+  // -webkit-appearance: none;
 }
 .scroll-container::-webkit-scrollbar-thumb::hover {
   transform: rotate(45deg)
