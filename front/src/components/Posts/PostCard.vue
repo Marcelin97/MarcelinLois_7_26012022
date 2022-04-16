@@ -1,116 +1,117 @@
 <template>
-<section>
-<div class="container">
-  <div class="card">
-    <h2>Post 1</h2>
-    <font-awesome-icon class="icon common fas fa-arrow-right" :icon="['fas', 'arrow-right']" />
-    <p>a lonely trip.</p>
-    <div class="pic"></div>
-    <ul>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-    </ul>
-    <div class="icons">
-        <font-awesome-icon class="icon common" :icon="['fas', 'thumbs-up']" />
-        <font-awesome-icon class="icon common" :icon="['fas', 'thumbs-down']" />
-        <font-awesome-icon class="icon common" :icon="['fas', 'bookmark']" />
-    </div>
-    <button>
-    </button>
-  </div>
-    <div class="card card2">
-    <h2>Post 2</h2>
-    <font-awesome-icon class="icon common fas fa-arrow-right" :icon="['fas', 'arrow-right']" />
-    <p>a lonely trip.</p>
-    <div class="pic"></div>
-    <ul>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-    </ul>
-    <div class="icons">
-                <font-awesome-icon class="icon common" :icon="['fas', 'thumbs-up']" />
-                <font-awesome-icon class="icon common" :icon="['fas', 'thumbs-down']" />
-                <font-awesome-icon class="icon common" :icon="['fas', 'bookmark']" />
-    </div>
-    <button>
-    </button>
-  </div>
-</div>
+  <section>
+    <div class="container">
+      <div class="card">
+        <h2>Post 1</h2>
+        <font-awesome-icon
+          class="icon fas fa-arrow-right"
+          :icon="['fas', 'arrow-right']"
+        />
+        <h3>Community id</h3>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic suscipit soluta nobis laudantium, autem eum dolor adipisci tempora odit ratione vero assumenda nisi magni cupiditate cum. Pariatur, aperiam sapiente.</p>
+        <div class="pic"></div>
+        <div class="icons">
+          <font-awesome-icon class="icon icon-1" :icon="['fas', 'thumbs-down']" />
+          <font-awesome-icon
+            class="icon icon-2"
+            :icon="['fas', 'heart']"
+          />
+          <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
+          <font-awesome-icon class="icon icon-4" :icon="['fas', 'bookmark']" />
+        </div>
+        <div class="author">
+            <h4>author</h4>
+            <img src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80" alt="" class="profile-cover">
+        </div>
 
-<a href="https://dribbble.com/YancyMin" class="dr-url" target="_blank"><img class="dr" src="https://cdn.dribbble.com/assets/logo-footer-hd-a05db77841b4b27c0bf23ec1378e97c988190dfe7d26e32e1faea7269f9e001b.png" alt=""></a>
-</section>
+        <button></button>
+
+      </div>
+
+      <div class="card card2">
+        <h2>Post 2</h2>
+        <font-awesome-icon
+          class="icon fas fa-arrow-right"
+          :icon="['fas', 'arrow-right']"
+        />
+        <h3>Community id</h3>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic suscipit soluta nobis laudantium, autem eum dolor adipisci tempora odit ratione vero assumenda nisi magni cupiditate cum. Pariatur, aperiam sapiente.</p>
+          <div class="pic"></div>
+        <!-- </div> -->
+        <div class="icons">
+          <font-awesome-icon class="icon icon-1" :icon="['fas', 'thumbs-down']" />
+          <font-awesome-icon
+            class="icon icon-2"
+            :icon="['fas', 'heart']"
+          />
+          <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
+          <font-awesome-icon class="icon icon-4" :icon="['fas', 'bookmark']" />
+        </div>
+
+        <div class="author">
+            <h4>author</h4>
+            <img src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80" alt="" class="profile-cover">
+        </div>
+
+        <button></button>
+
+      </div>
+    </div>
+  </section>
 </template>
 
 <style lang="scss" scoped>
-$bg-color: #E6E5E1;
-$shdow-gray: #d3d3d5;
-$orange: #DA4D1D;
-$blue: #2b26c3;
+// like or dislike
+
+
+
 $img-url: "https://images.unsplash.com/photo-1525543907410-b2562b6796d6?ixlib=rb-0.3.5&s=9ff8e5e718a6a40cbd0e1471235912f4&auto=format&fit=crop&w=3452&q=80";
 $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
 
-.common {
-  opacity: 0;
-  font-size: 18px;
-  color: #fff;
-  will-change: transform;
-  -webkit-transform: scale(0.1);
-  transform: scale(0.1);
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease;
+h3{
+    margin-bottom: 0.5rem;
+    width:100%;
+    font-size:1.075rem;
 }
-.icon{
-    background: transparent;
-}
+.author {
+    display: flex;
+    flex-direction: column;
+    justify-content:flex-start;
+    align-items: center;
+    width:70px;
+    @media only screen and (min-width: 576px) {
+      width:100px;
+    }
+    h4{
+        background-color: transparent;
+        z-index: 100;
+        position: absolute;
+        bottom: 0;
+        font-size: 0.8rem;
+        pointer-events: none;
+        }
+    .profile-cover{
+        margin-bottom: 0.5rem;
+        z-index: 100;
+        position: absolute;
+        bottom: 1rem;
+        border-radius:50%;
+        width:34px;
+        height: 34px;
+        @media only screen and (min-width: 576px) {
+      width:64px;
+        height: 64px;
+    }
+    }
 
-h2{
-  pointer-events:none;
 }
-
+    .pic-author{
+        position: absolute;
+        z-index: 100;
+        height:30px;
+        width: 30px;
+    }
 .container {
-    background-color: #E6E5E1;
   width: 100%;
   height: 100%;
   display: flex;
@@ -120,134 +121,97 @@ h2{
 
   .card {
     position: relative;
-    width: 500px;
-    height: 200px;
-    background-color: #fff;
+    width: 300px;
+    height: 300px;
     overflow: hidden;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
+    @media only screen and (min-width: 576px) {
+      width: 530px;
+    }
 
-    &:before {
-      content: "";
-      z-index: 99;
-      position: absolute;
-      top: -10px;
-      left: 32px;
-      display: block;
-      width: 16px;
-      height: 16px;
-      border-radius: 16px;
-      background-color: $bg-color;
-    }
-    &:after {
-      content: "";
-      z-index: 99;
-      position: absolute;
-      bottom: -10px;
-      left: 32px;
-      display: block;
-      width: 16px;
-      height: 16px;
-      border-radius: 16px;
-      background-color: $bg-color;
-    }
-    ul {
-      z-index: 99;
-      position: absolute;
-      left: 39px;
-      top: 5px;
-      list-style-type: none;
-      li {
-        width: 2px;
-        height: 2px;
-        border-radius: 2px;
-        margin: 6px 0;
-        background-color: $bg-color;
-      }
-    }
     h2 {
-        background-color: transparent;
-      z-index: 99;
+      background-color: transparent;
+      z-index: 100;
       position: absolute;
       bottom: 0;
-      right: 130px;
-      font-size: 60px;
-      font-weight: 700;
-      color: #fff;
+      right: 6rem;
+      font-size: 1.5rem;
+      pointer-events: none;
+      @media only screen and (min-width: 576px) {
+        right: 10rem;
+        }
     }
 
     .fa-arrow-right {
-                background-color: transparent;
+      background-color: transparent;
       z-index: 100;
       position: absolute;
-      right: 75px;
+      right: 35px;
       bottom: 25px;
       font-size: 40px;
       cursor: pointer;
     }
     p {
-                background-color: transparent;
+      display: flex;
+      height: 100px;
+      align-items: center;
+      background-color: transparent;
       z-index: 99;
-      position: absolute;
-      top: 20px;
-      right: 70px;
-      color: #333;
       opacity: 0.7;
-      font-size: 12px;
-      letter-spacing: 1px;
-      writing-mode: vertical-lr;
-      -webkit-transition: all 0.2s ease;
+      font-size: 0.7rem;
       transition: all 0.2s ease;
+      @media only screen and (min-width: 576px) {
+        position: absolute;
+        right: 0px;
+        height: 75%;
+        writing-mode: vertical-rl;
+      }
     }
     .pic {
-      z-index: 100;
-      width: 400px;
+      width: 300px;
       height: 200px;
+      border-radius: 20px 4px;
       background-image: url($img-url);
       background-size: 100% 100%;
       filter: grayscale(100%);
+      @media only screen and (min-width: 576px) {
+        width: 400px;
+        height: 300px;
+      }
     }
 
     .icons {
-                background-color: transparent;
-      position: absolute;
-      left: 60px;
-      top: 0;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -ms-flex-pack: distribute;
-      justify-content: space-around;
-      -webkit-box-align: center;
-      -ms-flex-align: center;
-      align-items: center;
-      width: 180px;
-      height: 64px;
-      border-radius: 80px;
+        width: 180px;
+        height: 64px;
+        left: 60px;
+        top: 7rem;
+        background-color: transparent;
+        position: absolute;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        @media only screen and (min-width: 576px) {
+        top: 0.5rem;
+        }
     }
 
-    .social i:nth-of-type(1) {
-      -webkit-transition-delay: 0.4s;
+    .icon-1 {
+      transition-delay: 0.7s;
+    }
+
+    .icon-2 {
+      transition-delay: 0.6s;
+    }
+
+    .icon-3 {
+      transition-delay: 0.5s;
+    }
+    .icon-4 {
       transition-delay: 0.4s;
     }
 
-    .social i:nth-of-type(2) {
-      -webkit-transition-delay: 0.3s;
-      transition-delay: 0.3s;
-    }
-
-    .social i:nth-of-type(3) {
-      -webkit-transition-delay: 0.2s;
-      transition-delay: 0.2s;
-    }
-
-    .social i:nth-of-type(4) {
-      -webkit-transition-delay: 0.1s;
-      transition-delay: 0.1s;
-    }
-
-    &:hover .common {
+    &:hover .icon{
       opacity: 1;
-      -webkit-transform: scale(1);
       transform: scale(1);
     }
 
@@ -257,48 +221,46 @@ h2{
       bottom: 14px;
       width: 30px;
       height: 30px;
-      background-color: $orange;
+      background-color: red;
       border: none;
       border-radius: 30px;
       cursor: pointer;
-      outline:none;
+      outline: none;
       transition: all 0.3s ease;
       mix-blend-mode: hard-light;
-
-      common {
-        font-size: 3rem;
-      }
     }
 
     &:hover button {
-      transform: scale(16.5);
+      transform: scale(4.2);
+      @media only screen and (min-width: 576px) {
+        transform: scale(16.5);
+      }
     }
 
-    &:hover p {
-      color: #fff;
-    }
-    
     &:hover .pic {
       filter: grayscale(0);
-      
     }
   }
-  
+  //   card 2
   .card2 {
     .pic {
       background-image: url($img-url2);
     }
     button {
-      background-color: $blue;
+      background-color: blue;
     }
   }
 }
 
-.dr {
-position: absolute;
-  bottom: 16px; 
-  right: 16px;
-  width:100px;
+// common to several icon
+.icon {
+  background: transparent;
+    opacity: 0;
+  font-size: 18px;
+  color: #fff;
+  will-change: transform;
+  transform: scale(0.1);
+  transition: all 0.2s ease;
 }
- 
+
 </style>

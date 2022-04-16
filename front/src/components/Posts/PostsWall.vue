@@ -1,6 +1,6 @@
 <template>
     <section>
-        <h2>Stories</h2>
+        <h2>Posts</h2>
         <PostCard/>
     </section>
 </template>
