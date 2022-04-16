@@ -18,7 +18,7 @@
               Home
             </a>
             <a href="#">
-              <font-awesome-icon class="icon" :icon="['fas', 'people-group']" />
+              <font-awesome-icon class="icon-left" :icon="['fas', 'people-group']" />
               Communauté
             </a>
             <a href="#">
@@ -87,10 +87,10 @@
 
         <label class="notification" for="notification">
           <font-awesome-icon
-            class="icon notification"
+            class="icon notification bell"
             :icon="['fas', 'bell']"
           />
-          <router-link class="text" to="#">Notification</router-link>
+          <router-link class="text" to="#">Alerte</router-link>
         </label>
         <div class="indicator"></div>
 
@@ -121,6 +121,41 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// Animation bell ring
+.bell{
+animation-name: bell-ring;
+  animation-duration: 1.5s;
+  animation-delay: 2s;
+  animation-iteration-count: infinite;
+}
+@keyframes bell-ring {
+  0% {
+    transform: rotate(-8deg);
+  }
+  8% {
+    transform: rotate(8deg);
+  }
+  16% {
+    transform: rotate(-8deg);
+  }
+  24% {
+    transform: rotate(8deg);
+  }
+  32% {
+    transform: rotate(-8deg);
+  }
+  40% {
+    transform: rotate(8deg);
+  }
+  48% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+// End Animation bell ring
+
 .container-header {
   margin-top: 10px;
   height: auto;
@@ -227,6 +262,7 @@ input:nth-child(4):checked ~ .indicator {
 }
 /* Menu left */
 .MenuContainer {
+  z-index: 9999;
   display: inline-block;
   margin: 20px;
   width: 260px;
@@ -314,7 +350,8 @@ input:nth-child(4):checked ~ .indicator {
   bottom: 0;
   left: -90%;
   position: absolute;
-  top: 150px;
+  top: 180px;
+  margin-top: 20px;
   width: 30%;
   transition: left 0.4s;
   @media only screen and (min-width: 768px) {
@@ -323,8 +360,9 @@ input:nth-child(4):checked ~ .indicator {
 }
 
 .side-wrapper {
-  padding-top: 70px;
+  padding-top: 40px;
   padding-left: 30px;
+  width: 320px;
 }
 
 .side-title {
@@ -343,11 +381,12 @@ input:nth-child(4):checked ~ .indicator {
   text-decoration: none;
   color: #9c9cab;
   display: flex;
+  flex-direction: row;
   align-items: center;
 }
 
 .icon-left{
-  margin-right: 16px;
+  margin-right: 26px;
   width: 16px;
 }
 .side-menu a:hover {
