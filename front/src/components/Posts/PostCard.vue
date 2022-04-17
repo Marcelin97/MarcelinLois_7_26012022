@@ -3,44 +3,74 @@
     <div class="container">
       <div class="card">
         <h2>Post 1</h2>
-        <font-awesome-icon
-          class="icon fas fa-arrow-right"
-          :icon="['fas', 'arrow-right']"
-        />
         <h3>Community id</h3>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic suscipit soluta nobis laudantium, autem eum dolor adipisci tempora odit ratione vero assumenda nisi magni cupiditate cum. Pariatur, aperiam sapiente.</p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic
+          suscipit soluta nobis laudantium, autem eum dolor adipisci tempora
+          odit ratione vero assumenda nisi magni cupiditate cum. Pariatur,
+          aperiam sapiente.
+        </p>
         <div class="pic"></div>
         <div class="icons">
-          <font-awesome-icon class="icon icon-1" :icon="['fas', 'thumbs-down']" />
           <font-awesome-icon
+            v-on:click="like()"
+            counter
+            value="1"
+            position="top-right"
+            class="icon icon-1"
+            :icon="['fas', 'thumbs-down']"
+          />{{ love }}
+          <font-awesome-icon
+            v-on:click="Dislike()"
+            counter
+            value="1"
+            position="top-right"
             class="icon icon-2"
             :icon="['fas', 'heart']"
-          />
+          />{{ dislike }}
           <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
           <font-awesome-icon class="icon icon-4" :icon="['fas', 'bookmark']" />
         </div>
         <div class="author">
-            <h4>author</h4>
-            <img src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80" alt="" class="profile-cover">
+          <h4>author</h4>
+          <img
+            src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
+            alt=""
+            class="profile-cover"
+          />
         </div>
 
-        <button></button>
-
+        <router-link to="/post/postId"> <button></button></router-link>
       </div>
 
       <div class="card card2">
         <h2>Post 2</h2>
+        <h3>Community id</h3>
         <font-awesome-icon
           class="icon fas fa-arrow-right"
           :icon="['fas', 'arrow-right']"
         />
-        <h3>Community id</h3>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic suscipit soluta nobis laudantium, autem eum dolor adipisci tempora odit ratione vero assumenda nisi magni cupiditate cum. Pariatur, aperiam sapiente.</p>
-          <div class="pic"></div>
-        <!-- </div> -->
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic
+          suscipit soluta nobis laudantium, autem eum dolor adipisci tempora
+          odit ratione vero assumenda nisi magni cupiditate cum. Pariatur,
+          aperiam sapiente.
+        </p>
+        <div class="pic"></div>
         <div class="icons">
-          <font-awesome-icon class="icon icon-1" :icon="['fas', 'thumbs-down']" />
           <font-awesome-icon
+            v-on:click="like()"
+            counter
+            value="1"
+            position="top-right"
+            class="icon icon-1"
+            :icon="['fas', 'thumbs-down']"
+          />
+          <font-awesome-icon
+            v-on:click="Dislike()"
+            counter
+            value="1"
+            position="top-right"
             class="icon icon-2"
             :icon="['fas', 'heart']"
           />
@@ -49,68 +79,94 @@
         </div>
 
         <div class="author">
-            <h4>author</h4>
-            <img src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80" alt="" class="profile-cover">
+          <h4>author</h4>
+          <img
+            src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
+            alt=""
+            class="profile-cover"
+          />
         </div>
-
-        <button></button>
-
+        <router-link to="/post/postId"> <button></button></router-link>
       </div>
     </div>
   </section>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      love: "",
+      dislike: "",
+    };
+  },
+  methods: {
+    like() {
+      this.love++;
+      if (this.dislike != 0) this.dislike--;
+    },
+    Dislike() {
+      this.dislike++;
+      if (this.love != 0) this.love--;
+    },
+  },
+};
+</script>
 <style lang="scss" scoped>
 // like or dislike
-
-
+.icon-1 i,
+.icon-1 svg {
+  fill: red;
+  width: 16px;
+  stroke-width: 100%;
+  stroke: red;
+}
 
 $img-url: "https://images.unsplash.com/photo-1525543907410-b2562b6796d6?ixlib=rb-0.3.5&s=9ff8e5e718a6a40cbd0e1471235912f4&auto=format&fit=crop&w=3452&q=80";
 $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
 
-h3{
-    margin-bottom: 0.5rem;
-    width:100%;
-    font-size:1.075rem;
+h3 {
+  margin-bottom: 0.5rem;
+  width: 100%;
+  font-size: 1.075rem;
 }
 .author {
-    display: flex;
-    flex-direction: column;
-    justify-content:flex-start;
-    align-items: center;
-    width:70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 70px;
+  @media only screen and (min-width: 576px) {
+    width: 100px;
+  }
+  h4 {
+    background-color: transparent;
+    z-index: 100;
+    position: absolute;
+    bottom: 0;
+    font-size: 0.8rem;
+    pointer-events: none;
+  }
+  .profile-cover {
+    margin-bottom: 0.5rem;
+    z-index: 100;
+    position: absolute;
+    bottom: 1rem;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
     @media only screen and (min-width: 576px) {
-      width:100px;
+      width: 64px;
+      height: 64px;
     }
-    h4{
-        background-color: transparent;
-        z-index: 100;
-        position: absolute;
-        bottom: 0;
-        font-size: 0.8rem;
-        pointer-events: none;
-        }
-    .profile-cover{
-        margin-bottom: 0.5rem;
-        z-index: 100;
-        position: absolute;
-        bottom: 1rem;
-        border-radius:50%;
-        width:34px;
-        height: 34px;
-        @media only screen and (min-width: 576px) {
-      width:64px;
-        height: 64px;
-    }
-    }
-
+  }
 }
-    .pic-author{
-        position: absolute;
-        z-index: 100;
-        height:30px;
-        width: 30px;
-    }
+.pic-author {
+  position: absolute;
+  z-index: 100;
+  height: 30px;
+  width: 30px;
+}
 .container {
   width: 100%;
   height: 100%;
@@ -139,7 +195,7 @@ h3{
       pointer-events: none;
       @media only screen and (min-width: 576px) {
         right: 10rem;
-        }
+      }
     }
 
     .fa-arrow-right {
@@ -181,18 +237,18 @@ h3{
     }
 
     .icons {
-        width: 180px;
-        height: 64px;
-        left: 60px;
-        top: 7rem;
-        background-color: transparent;
-        position: absolute;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        @media only screen and (min-width: 576px) {
+      width: 180px;
+      height: 64px;
+      left: 60px;
+      top: 7rem;
+      background-color: transparent;
+      position: absolute;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      @media only screen and (min-width: 576px) {
         top: 0.5rem;
-        }
+      }
     }
 
     .icon-1 {
@@ -210,7 +266,7 @@ h3{
       transition-delay: 0.4s;
     }
 
-    &:hover .icon{
+    &:hover .icon {
       opacity: 1;
       transform: scale(1);
     }
@@ -255,12 +311,10 @@ h3{
 // common to several icon
 .icon {
   background: transparent;
-    opacity: 0;
+  opacity: 0;
   font-size: 18px;
-  color: #fff;
   will-change: transform;
   transform: scale(0.1);
   transition: all 0.2s ease;
 }
-
 </style>
