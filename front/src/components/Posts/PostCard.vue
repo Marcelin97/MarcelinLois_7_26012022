@@ -4,6 +4,10 @@
       <div class="card">
         <h2>Post 1</h2>
         <h3>Community id</h3>
+        <font-awesome-icon
+          class="icon fas fa-arrow-right"
+          :icon="['fas', 'arrow-right']"
+        />
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic
           suscipit soluta nobis laudantium, autem eum dolor adipisci tempora
@@ -40,7 +44,7 @@
           />
         </div>
 
-        <router-link to="/post/postId"> <button></button></router-link>
+        <router-link to="/post/postId"><button></button></router-link>
       </div>
 
       <div class="card card2">
@@ -86,7 +90,7 @@
             class="profile-cover"
           />
         </div>
-        <router-link to="/post/postId"> <button></button></router-link>
+        <router-link to="/post/postId"><button></button></router-link>
       </div>
     </div>
   </section>
@@ -113,14 +117,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-// like or dislike
-.icon-1 i,
-.icon-1 svg {
-  fill: red;
-  width: 16px;
-  stroke-width: 100%;
-  stroke: red;
-}
 
 $img-url: "https://images.unsplash.com/photo-1525543907410-b2562b6796d6?ixlib=rb-0.3.5&s=9ff8e5e718a6a40cbd0e1471235912f4&auto=format&fit=crop&w=3452&q=80";
 $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
@@ -166,6 +162,7 @@ h3 {
   z-index: 100;
   height: 30px;
   width: 30px;
+  object-fit: cover;
 }
 .container {
   width: 100%;
@@ -180,7 +177,7 @@ h3 {
     width: 300px;
     height: 300px;
     overflow: hidden;
-    margin-bottom: 5px;
+    margin-top: 20px;
     @media only screen and (min-width: 576px) {
       width: 530px;
     }
@@ -224,6 +221,7 @@ h3 {
       }
     }
     .pic {
+      object-fit: cover;
       width: 300px;
       height: 200px;
       border-radius: 20px 4px;

@@ -20,7 +20,7 @@ button {
   width: 10rem;
   height: 4rem;
   padding-left: 3.4rem;
-  border-radius: 1rem;
+  border-radius:0.8rem;
   border: none;
   background: #ffffff;
   cursor: pointer;
@@ -34,15 +34,14 @@ button {
   transform: translate(-3.5rem, -50%);
   width: 300px;
   height: 300px;
-  background: #8f44fd;
+  background: #08708a;
   transition: 0.3s all;
 }
 
 .icon {
-    background:transparent;
-    stroke:black;
-    stroke-width: 4px;
-    fill: red;
+  background: transparent;
+  stroke: black;
+  stroke-width: 16px;
   position: absolute;
   top: 50%;
   left: 0.5rem;
@@ -54,6 +53,7 @@ button {
 
 .content {
   font-size: 1rem;
+  font-weight: 700;
   background: transparent;
   color: black;
 }
@@ -65,6 +65,5 @@ button:hover .background {
 
 button:hover .icon {
   transform: translate(0, -50%);
-  color: #ffffff;
 }
 </style>

@@ -40,8 +40,8 @@ button {
   align-items:center;
   width: 4rem;
   height: 4rem;
-  border-radius: 10px;
-  border: 0;
+  border-radius:0.8rem;
+  border: none;
   background: #08708a;
   cursor: pointer;
 }

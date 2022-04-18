@@ -1,11 +1,13 @@
 <template>
   <section>
-      <!-- Dropdown button -->
+    <!-- Publication -->
+    <div class="container">
+              <!-- Dropdown button -->
     <div class="wrapper">
       <input type="checkbox" id="input" />
-      <label for="input" class="button">
+      <label for="input" class="button-dropdown">
         <span class="text"> Paramètre </span>
-        <span class="icon"></span>
+        <span class="icon-dropdown"></span>
       </label>
       <div class="menu">
         <ul>
@@ -15,9 +17,6 @@
       </div>
     </div>
     <!-- Dropdown button -->
-
-    <!-- Publication -->
-    <div class="container">
       <div class="card">
         <h2>Post 1</h2>
         <h3>Community id</h3>
@@ -67,16 +66,14 @@
             <h4>author</h4>
           </div>
         </div>
-        <!-- Buttons -->
+      </div>
+              <!-- Buttons -->
         <div class="buttons">
-          <button class="btn">
-            <router-link to="post/:id/update">update</router-link>
-          </button>
+            <router-link class="btn" to="post/:id/update">update</router-link>
           <router-link to=""><FollowBtn/></router-link>
           <router-link to="post/:id/delete"><DeleteBtn /></router-link>
         </div>
         <!-- Buttons -->
-      </div>
     </div>
     <!-- Publication -->
   </section>
@@ -110,23 +107,154 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+// Dropdown button
+.wrapper{
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 7rem;
+}
+
+.button-dropdown{
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    gap: 24px;
+    height: 80px;
+    width:230px;
+    padding: 0 30px;
+    border-radius: 10px;
+    color: #f7f7f7;
+    background: #322d3a;
+}
+
+.text{
+    font-size: 19px;
+        background: #322d3a;
+}
+
+.icon-dropdown{
+    position: relative;
+    width: 20px;
+    height: 20px;
+    background: #322d3a;
+
+}
+
+.icon-dropdown::before{
+    top: 6px;
+}
+.icon-dropdown::after{
+    top: 5px;
+}
+.icon-dropdown::before,
+.icon-dropdown::after{
+    content: " ";
+    position: absolute;
+    left: 11px;
+    width:3px;
+    height: 10px;
+    border-radius: 1px;
+    background: #fff;
+    transition: all 0.3s;
+}
+
+.icon-dropdown::before{
+    transform: translate(-5px, 0) rotate(-45deg);
+}
+
+.icon-dropdown::after{
+    transform: translate(0, 0) rotate(45deg);
+}
+
+input{
+    position: absolute;
+    transform: scale(0);
+}
+.menu{
+    overflow: hidden;
+    position: absolute;
+    z-index: 1;
+    top: 70px;
+    left: 0;
+    width:100%;
+    ul{
+        width: 100%;
+        margin: 0;
+        padding: 24px 0 0;
+        border-radius: 0 0 10px 10px;
+        transform: translateY(-100%);
+        list-style: none;
+        transition: all 0.3s;
+            li{
+        display: flex;
+        align-items: center;
+        width: inherit;
+        padding: 0 10px;
+    }
+    }
+
+}
+
+.menu li:not(:last-child){
+    margin-bottom: 6px;
+}
+
+.menu li > a {
+    display: flex;
+    align-items: center;
+    width: inherit;
+    height:44px;
+    padding : 0 20px;
+    border-radius: 8px;
+    font-size:17px;
+    color: #f7f7f7;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+
+.menu li > a:hover{
+    background : #312b3a;
+}
+
+input:checked ~ .menu ul{
+    transform : translateY(0);
+}
+
+input:checked ~ .button-dropdown{
+    background: #4461fd;
+}
+
+input:checked ~ .button-dropdown .icon-dropdown::before{
+    transform : translate(-3px, 0) rotate(-45deg) scaleY(2);
+}
+
+input:checked ~ .button-dropdown .icon-dropdown::after{
+    transform : translate(-3px, 0) rotate(45deg) scaleY(2);
+}
+
 // buttons
 .buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+    display:flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 $img-url: "https://images.unsplash.com/photo-1525543907410-b2562b6796d6?ixlib=rb-0.3.5&s=9ff8e5e718a6a40cbd0e1471235912f4&auto=format&fit=crop&w=3452&q=80";
 
 .container {
   //   width: 240px;
-  //   height: auto;
+    // height: auto;
   display: flex;
   justify-content: center;
-  align-items: center;
+//   align-items: center;
   flex-direction: column;
   margin: 25px 25px;
+  width: auto;
+  
 }
 .card {
   // overflow: hidden;
