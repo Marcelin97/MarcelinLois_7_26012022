@@ -1,5 +1,22 @@
 <template>
   <section>
+      <!-- Dropdown button -->
+    <div class="wrapper">
+      <input type="checkbox" id="input" />
+      <label for="input" class="button">
+        <span class="text"> Paramètre </span>
+        <span class="icon"></span>
+      </label>
+      <div class="menu">
+        <ul>
+          <li><a href="#">Signaler</a></li>
+          <li><a href="#">S'abonner</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- Dropdown button -->
+
+    <!-- Publication -->
     <div class="container">
       <div class="card">
         <h2>Post 1</h2>
@@ -50,23 +67,29 @@
             <h4>author</h4>
           </div>
         </div>
+        <!-- Buttons -->
         <div class="buttons">
           <button class="btn">
-            <router-link to="/:id/update">update</router-link>
+            <router-link to="post/:id/update">update</router-link>
           </button>
-          <router-link to="/:id/delete"><DeleteBtn /></router-link>
+          <router-link to=""><FollowBtn/></router-link>
+          <router-link to="post/:id/delete"><DeleteBtn /></router-link>
         </div>
+        <!-- Buttons -->
       </div>
     </div>
+    <!-- Publication -->
   </section>
 </template>
 
 <script>
 import DeleteBtn from "@/components/Base/DeleteBtn.vue";
+import FollowBtn from "@/components/Base/FollowBtn.vue";
 
 export default {
   components: {
     DeleteBtn,
+    FollowBtn
   },
   data() {
     return {
@@ -91,7 +114,7 @@ export default {
 .buttons {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 $img-url: "https://images.unsplash.com/photo-1525543907410-b2562b6796d6?ixlib=rb-0.3.5&s=9ff8e5e718a6a40cbd0e1471235912f4&auto=format&fit=crop&w=3452&q=80";

@@ -1,4 +1,5 @@
 <template>
+<div class="animation-btn">
   <button>
     <span class="paper-wrapper">
       <span class="paper"></span>
@@ -14,6 +15,7 @@
       <span class="filler"></span>
     </span>
   </button>
+  </div>
 </template>
 
 <script>
@@ -21,15 +23,26 @@
 
 <style lang="scss" scoped>
 // delete button
+.animation-btn :hover{
+.paper,
+.shredded {
+    background: #8de8fe;
+  animation: move 2.25s linear infinite;
+}
+.filler {
+  animation: fill 4.5s infinite;
+}
+}
 button {
   position: relative;
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  width: 4rem;
+  height: 4rem;
   border-radius: 10px;
   border: 0;
-  background: #8f44fd;
+  background: #08708a;
   cursor: pointer;
 }
 
@@ -91,9 +104,9 @@ button {
 .paper,
 .shredded {
   display: block;
-  background: #ffffff;
-  height: 20px;
-  animation: move 2.25s linear infinite;
+  background: transparent;
+  height: 10px;
+  // animation: move 2.25s linear infinite;
 }
 
 .paper {
@@ -101,7 +114,7 @@ button {
 }
 
 .shredded {
-  margin-top: -40px;
+  margin-top: -30px;
   width: 2px;
 }
 
@@ -152,7 +165,7 @@ button {
   margin-left: -32px;
   width: 64px;
   height: 120%;
-  background: #ffffff;
-  animation: fill 4.5s infinite;
+  background: #8de8fe;
+  // animation: fill 4.5s infinite;
 }
 </style>

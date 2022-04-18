@@ -15,7 +15,7 @@ library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch();
 
-library.add(fab);
+library.add(fas);
 
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
