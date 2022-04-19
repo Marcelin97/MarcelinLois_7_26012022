@@ -41,7 +41,7 @@ button {
 .icon {
   background: transparent;
   stroke: black;
-  stroke-width: 16px;
+  stroke-width: 8px;
   position: absolute;
   top: 50%;
   left: 0.5rem;
@@ -53,7 +53,6 @@ button {
 
 .content {
   font-size: 1rem;
-  font-weight: 700;
   background: transparent;
   color: black;
 }
