@@ -193,7 +193,7 @@ input:invalid ~ .validation,
 input:invalid {
   opacity: 1;
   transform: translateY(0);
-  animation: shake 0.1635s 0s 3;
+  animation: shake 0.1635s;
 }
 .validation {
   position: absolute;
@@ -220,7 +220,6 @@ input:invalid {
   background: inherit;
 }
 @keyframes shake {
-  0%,
   100% {
     transform: translateX(0);
   }

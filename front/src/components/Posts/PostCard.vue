@@ -22,7 +22,7 @@
             value="1"
             position="top-right"
             class="icon icon-1"
-            :icon="['fas', 'thumbs-down']"
+            :icon="['fas', 'thumbs-up']"
           />{{ love }}
           <font-awesome-icon
             v-on:click="Dislike()"
@@ -30,7 +30,7 @@
             value="1"
             position="top-right"
             class="icon icon-2"
-            :icon="['fas', 'heart']"
+            :icon="['fas', 'thumbs-down']"
           />{{ dislike }}
           <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
           <font-awesome-icon class="icon icon-4" :icon="['fas', 'bookmark']" />
@@ -68,7 +68,7 @@
             value="1"
             position="top-right"
             class="icon icon-1"
-            :icon="['fas', 'thumbs-down']"
+            :icon="['fas', 'thumbs-up']"
           />
           <font-awesome-icon
             v-on:click="Dislike()"
@@ -76,7 +76,7 @@
             value="1"
             position="top-right"
             class="icon icon-2"
-            :icon="['fas', 'heart']"
+            :icon="['fas', 'thumbs-down']"
           />
           <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
           <font-awesome-icon class="icon icon-4" :icon="['fas', 'bookmark']" />
@@ -91,6 +91,9 @@
           />
         </div>
         <router-link to="/post/postId"><button></button></router-link>
+
+  <!-- commentaire -->
+
       </div>
     </div>
   </section>

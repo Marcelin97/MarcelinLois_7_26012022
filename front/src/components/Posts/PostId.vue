@@ -51,7 +51,7 @@
               class="icon icon-2"
               :icon="['fas', 'heart']"
             />{{ dislike }}
-            <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
+          <router-link to="/post/postId/comment"><font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" /></router-link>
             <font-awesome-icon
               class="icon icon-4"
               :icon="['fas', 'bookmark']"

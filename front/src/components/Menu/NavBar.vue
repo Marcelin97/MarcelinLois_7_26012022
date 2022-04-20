@@ -17,27 +17,15 @@
               <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
               Home
             </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'people-group']" />
-              Communauté
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'pen']" />
-              Posts
-            </a>
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'users']" />
-              Utilisateurs
-            </a>
           </div>
         </div>
 
     <div class="side-wrapper">
-      <div class="side-title">YOUR FAVOURITE</div>
+      <div class="side-title">Filtres</div>
       <div class="side-menu">
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-trend-up']" />
-          Top
+          Top des communautés que je suis
         </a>
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'heart']" />
@@ -50,7 +38,24 @@
 
       </div>
     </div>
+    <div class="side-wrapper">
+      <div class="side-title">Discover</div>
+      <div class="side-menu">
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-trend-up']" />
+          Top des communautés que je suis
+        </a>
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'heart']" />
+          Like
+        </a>
+        <a href="#">
+          <font-awesome-icon class="icon-left" :icon="['fas', 'clock']" />
+          Recent
+        </a>
 
+      </div>
+    </div>
 
 
 
