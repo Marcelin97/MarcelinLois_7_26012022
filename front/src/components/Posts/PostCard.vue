@@ -1,9 +1,34 @@
 <template>
+
   <section>
+
     <div class="container">
+
+      <div>
+
+              <!-- Dropdown button -->
+      <div class="wrapper">
+        <input type="checkbox" id="input" />
+        <label for="input" class="button-dropdown">
+    <div class="menu__item--meatball">
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="circle"></div>
+    </div>
+
+        </label>
+        <div class="menu">
+          <ul>
+            <li><a href="#">Signaler</a></li>
+            <li><a href="#">S'abonner</a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- Dropdown button -->
+
       <div class="card">
         <h2>Post 1</h2>
-        <h3>Community id</h3>
+        <h3>Community</h3>
         <font-awesome-icon
           class="icon fas fa-arrow-right"
           :icon="['fas', 'arrow-right']"
@@ -46,56 +71,13 @@
 
         <router-link to="/post/postId"><button></button></router-link>
       </div>
+</div>
 
-      <div class="card card2">
-        <h2>Post 2</h2>
-        <h3>Community id</h3>
-        <font-awesome-icon
-          class="icon fas fa-arrow-right"
-          :icon="['fas', 'arrow-right']"
-        />
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic
-          suscipit soluta nobis laudantium, autem eum dolor adipisci tempora
-          odit ratione vero assumenda nisi magni cupiditate cum. Pariatur,
-          aperiam sapiente.
-        </p>
-        <div class="pic"></div>
-        <div class="icons">
-          <font-awesome-icon
-            v-on:click="like()"
-            counter
-            value="1"
-            position="top-right"
-            class="icon icon-1"
-            :icon="['fas', 'thumbs-up']"
-          />
-          <font-awesome-icon
-            v-on:click="Dislike()"
-            counter
-            value="1"
-            position="top-right"
-            class="icon icon-2"
-            :icon="['fas', 'thumbs-down']"
-          />
-          <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
-          <font-awesome-icon class="icon icon-4" :icon="['fas', 'bookmark']" />
-        </div>
+<!-- comments -->
 
-        <div class="author">
-          <h4>author</h4>
-          <img
-            src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
-            alt=""
-            class="profile-cover"
-          />
-        </div>
-        <router-link to="/post/postId"><button></button></router-link>
-
-  <!-- commentaire -->
-
-      </div>
+<!-- comments -->
     </div>
+
   </section>
 </template>
 
@@ -120,6 +102,100 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+
+// meatball buttons
+.menu__item--meatball {
+  display: flex;
+  flex-direction: row;
+  justify-content:flex-end;
+  background: transparent;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  &:hover,
+  &:focus {
+    transform: rotate(45deg);
+  }
+}
+
+.circle {
+  width: 6px;
+  height: 6px;
+  margin: 3px;
+  background: #08708a;
+  border-radius: 50%;
+}
+// end meatball button
+
+// Dropdown button
+.wrapper {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button-dropdown {
+  position: relative;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+}
+
+input {
+  position: absolute;
+  transform: scale(0);
+}
+
+.menu {
+  overflow: hidden;
+  position: absolute;
+  z-index: 999;
+  background: transparent;
+  border-radius: 8px;
+  margin-top: 25px;
+  ul {
+    width: 100%;
+    margin: 0;
+    transform: translateY(-100%);
+    list-style: none;
+    transition: all 0.3s;
+    background: #08708a;
+    li {
+      display: flex;
+      align-items: center;
+      width: inherit;
+      padding: 0 10px;
+      background: #08708a;
+    }
+  }
+}
+
+.menu li:not(:last-child) {
+  margin-bottom: 6px;
+}
+
+.menu li > a {
+  display: flex;
+  align-items: center;
+  width: inherit;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-size: 17px;
+  color: #f7f7f7;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+input:checked ~ .menu ul {
+  transform: translateY(0);
+}
+
+input:checked ~ .menu ul li a{
+  background: #08708a
+}
+// End Dropdown button
 
 $img-url: "https://images.unsplash.com/photo-1525543907410-b2562b6796d6?ixlib=rb-0.3.5&s=9ff8e5e718a6a40cbd0e1471235912f4&auto=format&fit=crop&w=3452&q=80";
 $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
@@ -209,6 +285,7 @@ h3 {
     }
     p {
       display: flex;
+      position: absolute;
       height: 100px;
       align-items: center;
       background-color: transparent;
@@ -218,9 +295,9 @@ h3 {
       transition: all 0.2s ease;
       @media only screen and (min-width: 576px) {
         position: absolute;
-        right: 0px;
-        height: 75%;
-        writing-mode: vertical-rl;
+        // right: 0px;
+        // height: 75%;
+        // writing-mode: vertical-rl;
       }
     }
     .pic {
