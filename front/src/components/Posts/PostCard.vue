@@ -1,83 +1,126 @@
 <template>
-
   <section>
-
     <div class="container">
-
       <div>
-
-              <!-- Dropdown button -->
-      <div class="wrapper">
-        <input type="checkbox" id="input" />
-        <label for="input" class="button-dropdown">
-    <div class="menu__item--meatball">
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-    </div>
-
-        </label>
-        <div class="menu">
-          <ul>
-            <li><a href="#">Signaler</a></li>
-            <li><a href="#">S'abonner</a></li>
-          </ul>
+        <!-- Dropdown button -->
+        <div class="wrapper">
+          <input type="checkbox" id="input" />
+          <label for="input" class="button-dropdown">
+            <div class="menu__item--meatball">
+              <div class="circle"></div>
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+          </label>
+          <div class="menu">
+            <ul>
+              <li><a href="#">Signaler</a></li>
+              <li><a href="#">S'abonner</a></li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <!-- Dropdown button -->
+        <!-- Dropdown button -->
 
-      <div class="card">
-        <h2>Post 1</h2>
-        <h3>Community</h3>
-        <font-awesome-icon
-          class="icon fas fa-arrow-right"
-          :icon="['fas', 'arrow-right']"
-        />
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic
-          suscipit soluta nobis laudantium, autem eum dolor adipisci tempora
-          odit ratione vero assumenda nisi magni cupiditate cum. Pariatur,
-          aperiam sapiente.
-        </p>
-        <div class="pic"></div>
-        <div class="icons">
+        <div class="card">
+          <h2>Post 1</h2>
+          <h3>Community</h3>
           <font-awesome-icon
-            v-on:click="like()"
-            counter
-            value="1"
-            position="top-right"
-            class="icon icon-1"
-            :icon="['fas', 'thumbs-up']"
-          />{{ love }}
-          <font-awesome-icon
-            v-on:click="Dislike()"
-            counter
-            value="1"
-            position="top-right"
-            class="icon icon-2"
-            :icon="['fas', 'thumbs-down']"
-          />{{ dislike }}
-          <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
-          <font-awesome-icon class="icon icon-4" :icon="['fas', 'bookmark']" />
-        </div>
-        <div class="author">
-          <h4>author</h4>
-          <img
-            src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
-            alt=""
-            class="profile-cover"
+            class="icon fas fa-arrow-right"
+            :icon="['fas', 'arrow-right']"
           />
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic
+            suscipit soluta nobis laudantium, autem eum dolor adipisci tempora
+            odit ratione vero assumenda nisi magni cupiditate cum. Pariatur,
+            aperiam sapiente.
+          </p>
+          <div class="pic"></div>
+          <div class="icons">
+            <font-awesome-icon
+              v-on:click="like()"
+              counter
+              value="1"
+              position="top-right"
+              class="icon icon-1"
+              :icon="['fas', 'thumbs-up']"
+            />{{ love }}
+            <font-awesome-icon
+              v-on:click="Dislike()"
+              counter
+              value="1"
+              position="top-right"
+              class="icon icon-2"
+              :icon="['fas', 'thumbs-down']"
+            />{{ dislike }}
+            <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
+            <font-awesome-icon
+              class="icon icon-4"
+              :icon="['fas', 'bookmark']"
+            />
+          </div>
+          <div class="author">
+            <h4>author</h4>
+            <img
+              src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
+              alt=""
+              class="profile-cover"
+            />
+          </div>
+
+          <router-link to="/post/postId"><button></button></router-link>
         </div>
+        <!-- comments -->
+        <div class="container-fluid">
+          <p>
+            {{ message }}
+          </p>
+          <div>
+            <ul>
+              <li
+                v-bind:title="message"
+                v-for="comment in comments"
+                :key="comment.id"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'thumbs-up']"
+                  @click="upvote"
+                />
 
-        <router-link to="/post/postId"><button></button></router-link>
+                <span class="label label-primary">{{ votes }}</span>
+                <font-awesome-icon
+                  :icon="['fas', 'thumbs-down']"
+                  @click="downvote"
+                />
+                <!-- <img :src="comment.authorImg" class="post-img" /> -->
+                <small>{{ comment.author }}</small>
+                <p>{{ comment.content }}</p>
+              </li>
+            </ul>
+
+            <!-- write a new comment -->
+            <label for="writeComment"></label>
+            <input
+              type="text"
+              id="writeComment"
+              v-model="newComment"
+              @keyup.enter="submitComment"
+            />
+            <!-- BTN submit new comment -->
+            <span class="input-group-btn">
+              <!-- <button class="btn" type="button" @click="postComment">Submit</button> -->
+              <button
+                class="btn btn-primary"
+                type="button"
+                @click="postComment"
+              >
+                Submit
+              </button>
+            </span>
+          </div>
+        </div>
+        <!-- comments -->
       </div>
-</div>
-
-<!-- comments -->
-
-<!-- comments -->
     </div>
-
   </section>
 </template>
 
@@ -85,8 +128,22 @@
 export default {
   data() {
     return {
+      message: "Commentaires",
+      comments: [
+        {
+          // id: 0,
+          content: "Un premier commentaire",
+          author: "Drake",
+        },
+        {
+          // id: 1,
+          content: "Un commentaire",
+          author: "Pharell Williams",
+        },
+      ],
       love: "",
       dislike: "",
+      newComment: "",
     };
   },
   methods: {
@@ -98,16 +155,29 @@ export default {
       this.dislike++;
       if (this.love != 0) this.love--;
     },
+    postComment: function () {
+      this.comments.push({
+        content: this.newComment,
+        author: "me",
+      });
+      this.newComment = "";
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
-
+// comment
+.comment {
+  display: flex;
+  justify-content: center;
+  background-color: red;
+  color: black;
+}
 // meatball buttons
 .menu__item--meatball {
   display: flex;
   flex-direction: row;
-  justify-content:flex-end;
+  justify-content: flex-end;
   background: transparent;
   cursor: pointer;
   transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -142,7 +212,7 @@ export default {
   border-radius: 10px;
 }
 
-input {
+#input {
   position: absolute;
   transform: scale(0);
 }
@@ -188,12 +258,12 @@ input {
   transition: all 0.25s;
 }
 
-input:checked ~ .menu ul {
+#input:checked ~ .menu ul {
   transform: translateY(0);
 }
 
-input:checked ~ .menu ul li a{
-  background: #08708a
+#input:checked ~ .menu ul li a {
+  background: #08708a;
 }
 // End Dropdown button
 
