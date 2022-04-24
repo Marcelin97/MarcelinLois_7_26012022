@@ -44,7 +44,7 @@
               position="top-right"
               class="icon icon-1"
               :icon="['fas', 'thumbs-up']"
-            />{{ love }}
+            />{{ loveCount }}
             <font-awesome-icon
               v-on:click="Dislike()"
               counter
@@ -52,8 +52,7 @@
               position="top-right"
               class="icon icon-2"
               :icon="['fas', 'thumbs-down']"
-            />{{ dislike }}
-            <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
+            />{{ dislikeCount }}
             <font-awesome-icon
               class="icon icon-4"
               :icon="['fas', 'bookmark']"
@@ -78,6 +77,7 @@
         <!-- comments -->
         <div class="container-comments">
           <div class="comments-header">
+            <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
             <p>
               {{ message }}
             </p>
@@ -100,28 +100,34 @@
                 v-for="comment in comments"
                 :key="comment.id"
                 :comment="comment"
+                :user="user"
               >
                 <font-awesome-icon
+                  :class="{ active: likedComment }"
                   v-on:click="upvote()"
                   counter
                   value="1"
                   :icon="['fas', 'thumbs-up']"
                 />
-                {{ loveComment }}
+                <span>{{ loveCommentCount }}</span>
+
                 <font-awesome-icon
+                  :class="{ active: dislikedComment }"
                   v-on:click="downvote()"
                   counter
                   value="1"
                   :icon="['fas', 'thumbs-down']"
-                />{{ dislikeComment }}
+                />
+                <span>{{ dislikeCommentCount }}</span>
 
                 <div class="comment-text">
                   <!-- <img :src="comment.authorImg" class="post-img" /> -->
-                  <small>{{ comment.author.name }}</small>
+                  <p>{{ comment.author.name }}</p>
                   <small>{{ comment.created_at }}</small>
                   <p>{{ comment.content }}</p>
+                  <!-- <button v-if="editable">Edit</button> -->
                 </div>
-                <!-- <button v-if="editable">Edit</button> -->
+                
               </li>
             </ul>
 
@@ -131,7 +137,7 @@
               placeholder="Ajouter un commentaire..."
               type="text"
               maxlength="250"
-              required
+              required="true"
               id="writeComment"
               v-model="newComment"
               @keyup.enter="submitComment"
@@ -169,11 +175,15 @@ export default {
   data() {
     return {
       message: "Commentaires",
-      love: "",
-      dislike: "",
+      loveCount: 0,
+      liked: false,
+      dislikeCount: 0,
+      disliked: false,
       newComment: "",
-      loveComment: "",
-      dislikeComment: "",
+      loveCommentCount: 0,
+      likedComment: false,
+      dislikeCommentCount: 0,
+      dislikeComment: false,
       //Some info about the current user
       current_user: {
         avatar: "http://via.placeholder.com/100x100/a74848",
@@ -181,8 +191,9 @@ export default {
       },
       comments: [
         {
-          id: 0,
+          id: 1,
           content: "Un premier commentaire",
+          edited: false,
           created_at: new Date().toLocaleString(),
           // author: "Drake",
           author: {
@@ -191,8 +202,9 @@ export default {
           },
         },
         {
-          id: 1,
+          id: 2,
           content: "J'aime ce post",
+          edited: false,
           created_at: new Date().toLocaleString(),
           // author: "Pharell Williams",
           author: {
@@ -205,28 +217,38 @@ export default {
   },
   methods: {
     like() {
-      this.love++;
-      if (this.dislike != 0) this.dislike--;
+      // this.love++;
+      // if (this.dislike != 0) this.dislike--;
+      this.liked = !this.liked && !this.disliked;
+      this.liked ? this.loveCount++ : this.loveCount--;
     },
     Dislike() {
-      this.dislike++;
-      if (this.love != 0) this.love--;
+      // this.dislike++;
+      // if (this.love != 0) this.love--;
+      this.disliked = !this.disliked && !this.liked;
+      this.disliked ? this.dislikeCount++ : this.dislikeCount--;
     },
     postComment: function () {
       this.comments.push({
         content: this.newComment,
-        author: "me",
+        created_at: new Date().toLocaleString(),
+        author: {
+          id: this.user.id,
+          name: this.user.name,
+        },
         votes: 0,
       });
       this.newComment = "";
     },
     upvote() {
-      this.loveComment++;
-      if ((this.dislikeComment = !this.dislikeComment)) this.dislikeComment--;
+      this.likedComment = !this.likedComment && !0;
+      this.likedComment ? this.loveCommentCount++ : this.loveCommentCount--;
     },
     downvote() {
-      this.dislikeComment++;
-      if ((this.loveComment = !this.loveComment)) this.loveComment--;
+      this.dislikedComment = !this.dislikedComment;
+      this.dislikedComment
+        ? this.dislikeCommentCount++
+        : this.dislikeCommentCount--;
     },
   },
   computed: {
@@ -290,21 +312,18 @@ export default {
   display: flex;
   flex-direction: row;
   margin-top: 1rem;
-}
-
-.number-votes {
-  background-color: #8de8fe;
-  color: black;
-  width: 18px;
-  height: 18px;
-  line-height: 18px;
-  margin: 0 0.2rem;
+  padding: 1rem;
+  background: #292929;
+  // border:2px solid #292929;
+  // border-bottom: 10px dashed #292929;
+  padding: 20px;
 }
 
 .comment-text {
   flex-direction: column;
   margin-left: 0.8rem;
 }
+
 // meatball buttons
 .menu__item--meatball {
   display: flex;
