@@ -21,6 +21,7 @@
         </div>
         <!-- Dropdown button -->
 
+        <!-- Post -->
         <div class="card">
           <h2>Post 1</h2>
           <h3>Community</h3>
@@ -58,56 +59,85 @@
               :icon="['fas', 'bookmark']"
             />
           </div>
+
+          <!-- author of the post -->
           <div class="author">
             <h4>author</h4>
             <img
               src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
               alt=""
               class="profile-cover"
+              loading="lazy"
             />
           </div>
 
-          <router-link to="/post/postId"><button></button></router-link>
+          <!-- view profil of the author -->
+          <button></button>
         </div>
+
         <!-- comments -->
-        <div class="container-fluid">
-          <p>
-            {{ message }}
-          </p>
+        <div class="container-comments">
+          <div class="comments-header">
+            <p>
+              {{ message }}
+            </p>
+
+            <!-- typing indicator -->
+            <div class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <!-- typing indicator -->
+          </div>
+
+          <!-- comments -->
           <div>
-            <ul>
+            <ul class="comment-wrapper">
               <li
+                class="comment"
                 v-bind:title="message"
                 v-for="comment in comments"
                 :key="comment.id"
+                :comment="comment"
               >
                 <font-awesome-icon
+                  v-on:click="upvote()"
+                  counter
+                  value="1"
                   :icon="['fas', 'thumbs-up']"
-                  @click="upvote"
                 />
-
-                <span class="label label-primary">{{ votes }}</span>
+                {{ loveComment }}
                 <font-awesome-icon
+                  v-on:click="downvote()"
+                  counter
+                  value="1"
                   :icon="['fas', 'thumbs-down']"
-                  @click="downvote"
-                />
-                <!-- <img :src="comment.authorImg" class="post-img" /> -->
-                <small>{{ comment.author }}</small>
-                <p>{{ comment.content }}</p>
+                />{{ dislikeComment }}
+
+                <div class="comment-text">
+                  <!-- <img :src="comment.authorImg" class="post-img" /> -->
+                  <small>{{ comment.author.name }}</small>
+                  <small>{{ comment.created_at }}</small>
+                  <p>{{ comment.content }}</p>
+                </div>
+                <!-- <button v-if="editable">Edit</button> -->
               </li>
             </ul>
 
             <!-- write a new comment -->
             <label for="writeComment"></label>
             <input
+              placeholder="Ajouter un commentaire..."
               type="text"
+              maxlength="250"
+              required
               id="writeComment"
               v-model="newComment"
               @keyup.enter="submitComment"
             />
             <!-- BTN submit new comment -->
             <span class="input-group-btn">
-              <!-- <button class="btn" type="button" @click="postComment">Submit</button> -->
               <button
                 class="btn btn-primary"
                 type="button"
@@ -126,24 +156,51 @@
 
 <script>
 export default {
+  props: {
+    user: {
+      required: true,
+      type: Object,
+    },
+    comment: {
+      required: true,
+      type: Object,
+    },
+  },
   data() {
     return {
       message: "Commentaires",
-      comments: [
-        {
-          // id: 0,
-          content: "Un premier commentaire",
-          author: "Drake",
-        },
-        {
-          // id: 1,
-          content: "Un commentaire",
-          author: "Pharell Williams",
-        },
-      ],
       love: "",
       dislike: "",
       newComment: "",
+      loveComment: "",
+      dislikeComment: "",
+      //Some info about the current user
+      current_user: {
+        avatar: "http://via.placeholder.com/100x100/a74848",
+        user: "exampler",
+      },
+      comments: [
+        {
+          id: 0,
+          content: "Un premier commentaire",
+          created_at: new Date().toLocaleString(),
+          // author: "Drake",
+          author: {
+            id: 1,
+            name: "Nick Basile",
+          },
+        },
+        {
+          id: 1,
+          content: "J'aime ce post",
+          created_at: new Date().toLocaleString(),
+          // author: "Pharell Williams",
+          author: {
+            id: 1,
+            name: "Drake",
+          },
+        },
+      ],
     };
   },
   methods: {
@@ -159,19 +216,94 @@ export default {
       this.comments.push({
         content: this.newComment,
         author: "me",
+        votes: 0,
       });
       this.newComment = "";
+    },
+    upvote() {
+      this.loveComment++;
+      if ((this.dislikeComment = !this.dislikeComment)) this.dislikeComment--;
+    },
+    downvote() {
+      this.dislikeComment++;
+      if ((this.loveComment = !this.loveComment)) this.loveComment--;
+    },
+  },
+  computed: {
+    // a computed property to check if the current user can edit this comment.
+    editable() {
+      return this.user.id === this.comment.author.id;
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 // comment
+.container-comments {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: 1rem;
+  position: absolute;
+}
+
+.comments-header {
+  display: flex;
+  flex-direction: row;
+}
+// typing indicator
+.typing-indicator {
+  width: auto;
+  margin-left: 0.2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  span {
+    height: 4px;
+    width: 4px;
+    margin: 0 1px;
+    background-color: #08708a;
+    // display: block;
+    border-radius: 50%;
+    opacity: 0.4;
+    @for $i from 1 through 3 {
+      &:nth-of-type(#{$i}) {
+        animation: 1s blink infinite ($i * 0.3333s);
+      }
+    }
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 1;
+  }
+}
+
+.comment-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
 .comment {
   display: flex;
-  justify-content: center;
-  background-color: red;
+  flex-direction: row;
+  margin-top: 1rem;
+}
+
+.number-votes {
+  background-color: #8de8fe;
   color: black;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  margin: 0 0.2rem;
+}
+
+.comment-text {
+  flex-direction: column;
+  margin-left: 0.8rem;
 }
 // meatball buttons
 .menu__item--meatball {
@@ -271,7 +403,6 @@ $img-url: "https://images.unsplash.com/photo-1525543907410-b2562b6796d6?ixlib=rb
 $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
 
 h3 {
-  margin-bottom: 0.5rem;
   width: 100%;
   font-size: 1.075rem;
 }
@@ -298,11 +429,11 @@ h3 {
     position: absolute;
     bottom: 1rem;
     border-radius: 50%;
-    width: 34px;
-    height: 34px;
+    width: 24px;
+    height: 24px;
     @media only screen and (min-width: 576px) {
-      width: 64px;
-      height: 64px;
+      width: 34px;
+      height: 34px;
     }
   }
 }
@@ -322,6 +453,8 @@ h3 {
   flex-direction: column;
 
   .card {
+    display: flex;
+    flex-direction: column;
     position: relative;
     width: 300px;
     height: 300px;
@@ -337,7 +470,7 @@ h3 {
       position: absolute;
       bottom: 0;
       right: 6rem;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       pointer-events: none;
       @media only screen and (min-width: 576px) {
         right: 10rem;
@@ -350,12 +483,11 @@ h3 {
       position: absolute;
       right: 35px;
       bottom: 25px;
-      font-size: 40px;
+      font-size: 20px;
       cursor: pointer;
     }
     p {
       display: flex;
-      position: absolute;
       height: 100px;
       align-items: center;
       background-color: transparent;
@@ -365,7 +497,9 @@ h3 {
       transition: all 0.2s ease;
       @media only screen and (min-width: 576px) {
         position: absolute;
-        // right: 0px;
+        width: 125px;
+        right: 35px;
+        top: 54px;
         // height: 75%;
         // writing-mode: vertical-rl;
       }
@@ -443,15 +577,6 @@ h3 {
 
     &:hover .pic {
       filter: grayscale(0);
-    }
-  }
-  //   card 2
-  .card2 {
-    .pic {
-      background-image: url($img-url2);
-    }
-    button {
-      background-color: blue;
     }
   }
 }

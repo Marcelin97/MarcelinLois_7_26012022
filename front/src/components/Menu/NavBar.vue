@@ -25,7 +25,7 @@
       <div class="side-menu">
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-trend-up']" />
-          Top des communautés que je suis
+          Top communautés follow
         </a>
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'heart']" />
@@ -43,7 +43,7 @@
       <div class="side-menu">
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-trend-up']" />
-          Top des communautés que je suis
+          Top communautés unfollow
         </a>
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'heart']" />
