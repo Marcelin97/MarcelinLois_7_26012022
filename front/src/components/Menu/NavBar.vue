@@ -110,12 +110,6 @@
       </nav>
     </div>
     <!-- Header navigation -->
-
-
-
-
-
-
   </div>
 </template>
 
@@ -353,7 +347,7 @@ input:nth-child(4):checked ~ .indicator {
   display: flex;
   flex-direction: column;
   bottom: 0;
-  left: -90%;
+  left: -100%;
   position: absolute;
   top: 180px;
   margin-top: 20px;

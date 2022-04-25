@@ -77,7 +77,10 @@
         <!-- comments structure -->
         <div class="container-comments">
           <div class="comments-header">
-            <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
+            <font-awesome-icon
+              class="icon-comment"
+              :icon="['fas', 'comment']"
+            />
             <p>
               {{ message }}
             </p>
@@ -92,7 +95,7 @@
           </div>
 
           <!-- comments -->
-          <div>
+          <div class="comment-list">
             <ul class="comment-wrapper">
               <li
                 class="comment"
@@ -101,9 +104,11 @@
                 :key="comment.id"
                 :comment="comment"
                 :user="user"
+                @comment-updated="updateComment($event)"
+                @comment-deleted="deleteComment($event)"
               >
                 <font-awesome-icon
-                class="comment-icon-plus"
+                  class="comment-icon-plus"
                   :class="{ active: likedComment }"
                   v-on:click="upvote()"
                   counter
@@ -113,7 +118,7 @@
                 <span>{{ loveCommentCount }}</span>
 
                 <font-awesome-icon
-                class="comment-icon-minus"
+                  class="comment-icon-minus"
                   :class="{ active: dislikedComment }"
                   v-on:click="downvote()"
                   counter
@@ -122,36 +127,49 @@
                 />
                 <span>{{ dislikeCommentCount }}</span>
 
-                <div v-show="state === 'default'">
+                <!-- Comment items -->
+                <div class="comment-item" v-show="state === 'default'">
                   <div class="comment-text">
                     <p>{{ comment.body }}</p>
                     <button v-if="editable" @click="state = 'editing'">
                       Edit
                     </button>
                   </div>
-                  <div>
+                  <div class="holes-lower"></div>
+                  <div class="comment-author">
                     <p>
                       {{ comment.author.name }} <span>&bull;</span
                       >{{ comment.created_at }}
                     </p>
                   </div>
                 </div>
-                <div v-show="state === 'editing'">
+                <div class="editing" v-show="state === 'editing'">
                   <div>
                     <h3>Update Comment</h3>
                   </div>
-                  <textarea
-                    v-model="data.body"
-                    placeholder="Update comment"
-                    class="border"
-                  >
-                  </textarea>
-                  <div>
-                    <button @click="saveEdit">Update</button>
-                    <button @click="resetEdit">Cancel</button>
-                    <button @click="deleteComment">Delete</button>
+                  <div class="wrapper-update">
+                    <input
+                      v-model="data.body"
+                      type="text"
+                      maxlength="250"
+                      required="true"
+                      id="updateComment"
+                    />
+                    <label class="placeholder" for="updateComment">Update your comment</label>
                   </div>
+
+                  <!-- btn comment -->
+                  <div class="btn-editing">
+                    <button class="btn-edit btn-update" @click="saveEdit">Update</button>
+                    <button class="btn-edit btn-cancel" @click="resetEdit">
+                      Cancel
+                    </button>
+                    <!-- <button @click="deleteComment">Delete</button> -->
+                    <DeleteBtn class="btn-edit-delete" @click="deleteComment" />
+                  </div>
+                  <!-- btn comment -->
                 </div>
+                <!-- Comment items -->
               </li>
             </ul>
 
@@ -163,7 +181,7 @@
               maxlength="250"
               required="true"
               id="writeComment"
-              v-model="newComment"
+              v-model="data.body"
               @keyup.enter="submitComment"
             />
             <!-- BTN submit new comment -->
@@ -171,7 +189,7 @@
               <button
                 class="btn btn-primary"
                 type="button"
-                @click="postComment"
+                @click="saveComment"
               >
                 Submit
               </button>
@@ -187,13 +205,17 @@
 
 <script>
 // import comment from "./CommentItem";
+import DeleteBtn from "@/components/Base/DeleteBtn.vue";
 
 export default {
+  components: {
+    DeleteBtn,
+  },
   props: {
-    user: {
-      required: true,
-      type: Object,
-    },
+    // user: {
+    //   required: true,
+    //   type: Object,
+    // },
     comment: {
       required: true,
       type: Object,
@@ -203,6 +225,7 @@ export default {
     return {
       state: "editing",
       data: {
+        edit: false,
         body: this.comments,
       },
       message: "Commentaires",
@@ -215,11 +238,10 @@ export default {
       dislikeCommentCount: 0,
       dislikeComment: false,
       newComment: "",
-      current_user: {
+      user: {
         id: 3,
-        user: "example",
+        name: "example",
       },
-
       comments: [
         {
           id: 1,
@@ -243,6 +265,11 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    editable() {
+      return this.user.id === this.comments.id;
+    },
   },
   methods: {
     like() {
@@ -286,7 +313,7 @@ export default {
     saveEdit() {
       this.state = "default";
       this.$emit("comment-updated", {
-        // 'id': this.comment.id,
+        id: this.comment.id,
         body: this.data.body,
       });
     },
@@ -310,8 +337,8 @@ export default {
         edited: false,
         created_at: new Date().toLocaleString(),
         author: {
-          id: this.current_user.id,
-          name: this.current_user.name,
+          id: this.user.id,
+          name: this.user.name,
         },
       };
       this.comments.push(newComment);
@@ -321,33 +348,40 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-// comment
+// comment structure
 .container-comments {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   margin-top: 1rem;
-  position: absolute;
+  // position: absolute;
 }
 
 .comments-header {
   display: flex;
   flex-direction: row;
+  padding: 0.3rem;
+  p {
+    font-weight: bold;
+  }
 }
+
+.icon-comment {
+  margin-right: 0.3rem;
+}
+
 // typing indicator
 .typing-indicator {
   width: auto;
-  margin-left: 0.2rem;
+  margin-left: 0.3rem;
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
   align-items: flex-end;
   span {
     height: 4px;
     width: 4px;
     margin: 0 1px;
-    background-color: #08708a;
-    // display: block;
+    background-color: #8de8fe;
     border-radius: 50%;
     opacity: 0.4;
     @for $i from 1 through 3 {
@@ -364,27 +398,156 @@ export default {
   }
 }
 
-.comment-wrapper {
+// comments
+.comment-list {
   display: flex;
   flex-direction: column;
+}
+.comment-wrapper {
+  flex-direction: column;
+  justify-content: center;
   width: 300px;
+  @media only screen and (min-width: 576px) {
+    width: 530px;
+  }
 }
 .comment {
   display: flex;
   flex-direction: row;
   margin-top: 1rem;
-  padding: 1rem;
-  background: #292929;
-  // border:2px solid #292929;
-  // border-bottom: 10px dashed #292929;
-  padding: 20px;
+  padding: 0.3rem;
+  border-bottom: 1px solid #8de8fe;
 }
-.comment-icon-plus, .comment-icon-minus > span {
-    background: #292929;
+
+.comment-icon-plus,
+.comment-icon-minus {
+  margin: 0 0.3rem;
+}
+
+// v-show="state === 'default'"
+.comment-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 0.8rem;
 }
 .comment-text {
   flex-direction: column;
-  margin-left: 0.8rem;
+  font-size: 0.8rem;
+}
+
+.holes-lower {
+  position: relative;
+  margin: 0.3rem;
+  // border: 1px dashed #8de8fe;
+  border-bottom: 1px dashed #292929;
+}
+
+.comment-author {
+  font-size: 0.5rem;
+}
+
+// v-show="state === 'editing'"
+.editing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  h3 {
+    margin-bottom: 0.8rem;
+  }
+}
+
+.wrapper-update{
+  position: relative;
+  height: 56px;
+  width: 200px;
+  border-radius: 0.5rem;
+  border: 1px solid #292929;
+  background: transparent;
+  margin-bottom: 0.5rem;
+  margin-top: 0.8rem;
+  input{
+    position: relative;
+    width: 200px;
+    height: 56px;
+    background : transparent;
+    border: none;
+    font-weight: 700;
+    text-indent: 0.75rem;
+    color: rgba(#fff, 0.875);
+    &:focus{
+      outline: none;
+    }
+    &:focus ~ label,
+    &:valid ~ label
+    {
+      top: -20px;
+      background: rgb(12, 19, 31);
+      // transform: translate(0.625rem, -10px) scale(0.5);
+    }
+  }
+  .placeholder{
+    color: rgba(white, 0.875);
+    position: absolute;
+    z-index: 0;
+    top: 5px;
+    left: 5px;
+    padding: 0 0.25rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    transform: translate(0.5rem, 15px);
+    transform-origin: 0% 0%;
+    background: transparent;
+    pointer-events: none;
+    transition: 300ms ease all;
+  }
+}
+
+.btn-editing {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+    @media only screen and (min-width: 576px) {
+    flex-direction: row;
+  }
+}
+
+.btn-edit-delete{
+    margin-bottom: 1.3rem;
+}
+.btn-edit {
+  color: mix(white, #424242, 70%);
+  border: none;
+  padding: 10px 20px;
+  margin-right: 1rem;
+  margin-bottom: 1.3rem;
+  width: 6rem;
+  height: 4rem;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+  &:hover {
+    color: mix(black, mix(white, #424242, 70%), 30%);
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
+  }
+  &.btn-update {
+    background: #2196F3;
+    color: mix(white, #2196F3, 70%);
+    &:hover {
+      background: darken(#2196F3, 10%);
+      color: mix(white, #2196F3, 85%);
+    }
+  }
+  &.btn-cancel {
+    background: #eee;
+    &:hover {
+      background: darken(#eee, 10%);
+      color: mix(black, mix(white, #424242, 70%), 30%);;
+    }
+  }
 }
 
 // meatball buttons
