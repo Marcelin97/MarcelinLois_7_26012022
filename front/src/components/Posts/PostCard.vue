@@ -74,7 +74,7 @@
           <button></button>
         </div>
 
-        <!-- comments -->
+        <!-- comments structure -->
         <div class="container-comments">
           <div class="comments-header">
             <font-awesome-icon class="icon icon-3" :icon="['fas', 'comment']" />
@@ -103,6 +103,7 @@
                 :user="user"
               >
                 <font-awesome-icon
+                class="comment-icon-plus"
                   :class="{ active: likedComment }"
                   v-on:click="upvote()"
                   counter
@@ -112,6 +113,7 @@
                 <span>{{ loveCommentCount }}</span>
 
                 <font-awesome-icon
+                class="comment-icon-minus"
                   :class="{ active: dislikedComment }"
                   v-on:click="downvote()"
                   counter
@@ -120,14 +122,36 @@
                 />
                 <span>{{ dislikeCommentCount }}</span>
 
-                <div class="comment-text">
-                  <!-- <img :src="comment.authorImg" class="post-img" /> -->
-                  <p>{{ comment.author.name }}</p>
-                  <small>{{ comment.created_at }}</small>
-                  <p>{{ comment.content }}</p>
-                  <!-- <button v-if="editable">Edit</button> -->
+                <div v-show="state === 'default'">
+                  <div class="comment-text">
+                    <p>{{ comment.body }}</p>
+                    <button v-if="editable" @click="state = 'editing'">
+                      Edit
+                    </button>
+                  </div>
+                  <div>
+                    <p>
+                      {{ comment.author.name }} <span>&bull;</span
+                      >{{ comment.created_at }}
+                    </p>
+                  </div>
                 </div>
-                
+                <div v-show="state === 'editing'">
+                  <div>
+                    <h3>Update Comment</h3>
+                  </div>
+                  <textarea
+                    v-model="data.body"
+                    placeholder="Update comment"
+                    class="border"
+                  >
+                  </textarea>
+                  <div>
+                    <button @click="saveEdit">Update</button>
+                    <button @click="resetEdit">Cancel</button>
+                    <button @click="deleteComment">Delete</button>
+                  </div>
+                </div>
               </li>
             </ul>
 
@@ -153,14 +177,17 @@
               </button>
             </span>
           </div>
+          <!-- comments -->
         </div>
-        <!-- comments -->
+        <!-- comments structure -->
       </div>
     </div>
   </section>
 </template>
 
 <script>
+// import comment from "./CommentItem";
+
 export default {
   props: {
     user: {
@@ -172,30 +199,33 @@ export default {
       type: Object,
     },
   },
-  data() {
+  data: function () {
     return {
+      state: "editing",
+      data: {
+        body: this.comments,
+      },
       message: "Commentaires",
       loveCount: 0,
       liked: false,
       dislikeCount: 0,
       disliked: false,
-      newComment: "",
       loveCommentCount: 0,
       likedComment: false,
       dislikeCommentCount: 0,
       dislikeComment: false,
-      //Some info about the current user
+      newComment: "",
       current_user: {
-        avatar: "http://via.placeholder.com/100x100/a74848",
-        user: "exampler",
+        id: 3,
+        user: "example",
       },
+
       comments: [
         {
           id: 1,
-          content: "Un premier commentaire",
+          body: "How's it going?",
           edited: false,
           created_at: new Date().toLocaleString(),
-          // author: "Drake",
           author: {
             id: 1,
             name: "Nick Basile",
@@ -203,13 +233,12 @@ export default {
         },
         {
           id: 2,
-          content: "J'aime ce post",
+          body: "Pretty good. Just making a painting.",
           edited: false,
           created_at: new Date().toLocaleString(),
-          // author: "Pharell Williams",
           author: {
-            id: 1,
-            name: "Drake",
+            id: 2,
+            name: "Bob Ross",
           },
         },
       ],
@@ -230,11 +259,11 @@ export default {
     },
     postComment: function () {
       this.comments.push({
-        content: this.newComment,
+        body: this.newComment,
         created_at: new Date().toLocaleString(),
         author: {
-          id: this.user.id,
-          name: this.user.name,
+          id: this.current_user.id,
+          name: this.current_user.name,
         },
         votes: 0,
       });
@@ -250,11 +279,43 @@ export default {
         ? this.dislikeCommentCount++
         : this.dislikeCommentCount--;
     },
-  },
-  computed: {
-    // a computed property to check if the current user can edit this comment.
-    editable() {
-      return this.user.id === this.comment.author.id;
+    resetEdit() {
+      this.state = "default";
+      this.data.body = this.comment.body;
+    },
+    saveEdit() {
+      this.state = "default";
+      this.$emit("comment-updated", {
+        // 'id': this.comment.id,
+        body: this.data.body,
+      });
+    },
+
+    updateComment($event) {
+      let index = this.comments.findIndex((element) => {
+        return element.id === $event.id;
+      });
+      this.comments[index].body = $event.body;
+    },
+    deleteComment($event) {
+      let index = this.comments.findIndex((element) => {
+        return element.id === $event.id;
+      });
+      this.comments.splice(index, 1);
+    },
+    saveComment() {
+      let newComment = {
+        id: this.comments[this.comments.length - 1].id + 1,
+        body: this.data.body,
+        edited: false,
+        created_at: new Date().toLocaleString(),
+        author: {
+          id: this.current_user.id,
+          name: this.current_user.name,
+        },
+      };
+      this.comments.push(newComment);
+      this.data.body = "";
     },
   },
 };
@@ -318,7 +379,9 @@ export default {
   // border-bottom: 10px dashed #292929;
   padding: 20px;
 }
-
+.comment-icon-plus, .comment-icon-minus > span {
+    background: #292929;
+}
 .comment-text {
   flex-direction: column;
   margin-left: 0.8rem;
