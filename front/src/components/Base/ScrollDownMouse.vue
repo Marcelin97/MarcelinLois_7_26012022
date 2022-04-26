@@ -7,29 +7,27 @@
 
 <script>
 export default {
-    setup() {
-        
-    },
-}
+  setup() {},
+};
 </script>
 
 <style lang="scss" scoped>
-.container-mouse{
-    display: flex;
+.container-mouse {
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+background: transparent;
 }
 p {
   margin-top: 20px;
-  letter-spacing: 12px;
-  text-indent: 12px;
-  color: #ffffff;
+  letter-spacing: 5px;
+  text-indent: -15px;
   animation: colorText 5s ease-out infinite;
 }
 
 .mouse {
-  background: #4e5559 linear-gradient(transparent 0%, transparent 50%, #ffffff 50%, #ffffff 100%);
+  background: #4e5559
+    linear-gradient(transparent 0%, transparent 50%, #ffffff 50%, #ffffff 100%);
   position: relative;
   width: 22px;
   height: 58px;
@@ -38,7 +36,8 @@ p {
   background-size: 225%;
   animation: rock 5s ease-out infinite;
 }
-.mouse:before, .mouse:after {
+.mouse:before,
+.mouse:after {
   content: "";
   position: absolute;
   top: 0;
@@ -61,8 +60,6 @@ p {
   animation: trackBallSlide 15s linear infinite;
 }
 
-
-
 @keyframes trackBallSlide {
   0% {
     opacity: 1;
@@ -76,11 +73,13 @@ p {
     opacity: 0;
     transform: scale(0.4) translateY(40px);
   }
-  15%, 19% {
+  15%,
+  19% {
     opacity: 0;
     transform: scale(0.4) translateY(-20px);
   }
-  28%, 29.99% {
+  28%,
+  29.99% {
     opacity: 1;
     transform: scale(1) translateY(-20px);
   }
@@ -96,11 +95,13 @@ p {
     opacity: 0;
     transform: scale(0.4) translateY(40px);
   }
-  45%, 49% {
+  45%,
+  49% {
     opacity: 0;
     transform: scale(0.4) translateY(-20px);
   }
-  58%, 59.99% {
+  58%,
+  59.99% {
     opacity: 1;
     transform: scale(1) translateY(-20px);
   }
@@ -116,11 +117,13 @@ p {
     opacity: 0;
     transform: scale(0.4) translateY(40px);
   }
-  75%, 79% {
+  75%,
+  79% {
     opacity: 0;
     transform: scale(0.4) translateY(-20px);
   }
-  88%, 100% {
+  88%,
+  100% {
     opacity: 1;
     transform: scale(1) translateY(-20px);
   }

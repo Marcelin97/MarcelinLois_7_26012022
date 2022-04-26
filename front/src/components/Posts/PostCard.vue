@@ -1,5 +1,11 @@
 <template>
   <section>
+
+    <div class="scroll-down-mouse">
+    <ScrollDownMouse/>
+    </div>
+                        <BlobShape/>
+
     <div class="container">
       <div>
         <!-- Dropdown button -->
@@ -221,10 +227,14 @@
 <script>
 // import comment from "./CommentItem";
 import DeleteBtn from "@/components/Base/DeleteBtn.vue";
+import ScrollDownMouse from "@/components/Base/ScrollDownMouse.vue";
+import BlobShape from "@/components/Base/BlobShape.vue";
 
 export default {
   components: {
     DeleteBtn,
+    ScrollDownMouse,
+    BlobShape,
   },
   props: {
     // user: {
@@ -364,6 +374,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.scroll-down-mouse{
+  position: sticky;
+  top: 450px;
+}
+
+.BlobShape{
+  z-index: 99999;
+}
 $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
 
 .container {
