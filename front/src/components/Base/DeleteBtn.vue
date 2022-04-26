@@ -38,11 +38,11 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 4rem;
+  width: 2rem;
   height: 4rem;
   border-radius: 0.8rem;
   border: none;
-  background: #08708a;
+  // background: #08708a;
   cursor: pointer;
 }
 

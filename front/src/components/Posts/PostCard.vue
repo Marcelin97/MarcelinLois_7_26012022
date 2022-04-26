@@ -15,7 +15,9 @@
           <div class="menu">
             <ul>
               <li><a href="#">Signaler</a></li>
-              <li><a href="#">S'abonner</a></li>
+              <!-- <li><a href="#">S'abonner</a></li> -->
+              <li><router-link to="#">Voir le profil</router-link></li>
+              
             </ul>
           </div>
         </div>
@@ -44,7 +46,7 @@
               position="top-right"
               class="icon icon-1"
               :icon="['fas', 'thumbs-up']"
-            />{{ loveCount }}
+            /> <span class="icon icon-1">{{ loveCount }}</span> 
             <font-awesome-icon
               v-on:click="Dislike()"
               counter
@@ -52,7 +54,7 @@
               position="top-right"
               class="icon icon-2"
               :icon="['fas', 'thumbs-down']"
-            />{{ dislikeCount }}
+            /> <span class="icon icon-2">{{ dislikeCount }}</span>
             <font-awesome-icon
               class="icon icon-4"
               :icon="['fas', 'bookmark']"
@@ -129,10 +131,13 @@
 
                 <!-- Comment items -->
                 <div class="comment-item" v-show="state === 'default'">
-                  <div class="comment-text">
+                  <div v-if="!edit" class="comment-text">
                     <p>{{ comment.body }}</p>
-                    <button v-if="editable" @click="state = 'editing'">
-                      Edit
+                    <button class="btn-edit-1" @click="state = 'editing'">
+                      <font-awesome-icon
+                        class="xmark"
+                        :icon="['fas', 'pencil']"
+                      />
                     </button>
                   </div>
                   <div class="holes-lower"></div>
@@ -155,14 +160,24 @@
                       required="true"
                       id="updateComment"
                     />
-                    <label class="placeholder" for="updateComment">Update your comment</label>
+                    <label class="placeholder" for="updateComment"
+                      >Update your comment</label
+                    >
                   </div>
 
                   <!-- btn comment -->
                   <div class="btn-editing">
-                    <button class="btn-edit btn-update" @click="saveEdit">Update</button>
+                    <button class="btn-edit btn-update" @click="saveEdit">
+                      <font-awesome-icon
+                        class="xmark"
+                        :icon="['fas', 'pencil']"
+                      />
+                    </button>
                     <button class="btn-edit btn-cancel" @click="resetEdit">
-                      Cancel
+                      <font-awesome-icon
+                        class="xmark"
+                        :icon="['fas', 'xmark']"
+                      />
                     </button>
                     <!-- <button @click="deleteComment">Delete</button> -->
                     <DeleteBtn class="btn-edit-delete" @click="deleteComment" />
@@ -174,26 +189,26 @@
             </ul>
 
             <!-- write a new comment -->
-            <label for="writeComment"></label>
-            <input
-              placeholder="Ajouter un commentaire..."
-              type="text"
-              maxlength="250"
-              required="true"
-              id="writeComment"
-              v-model="data.body"
-              @keyup.enter="submitComment"
-            />
-            <!-- BTN submit new comment -->
-            <span class="input-group-btn">
-              <button
-                class="btn btn-primary"
-                type="button"
-                @click="saveComment"
+            <div class="wrapper-update">
+              <input
+                type="text"
+                maxlength="250"
+                required="true"
+                id="writeComment"
+                v-model="data.body"
+                @keyup.enter="submitComment"
+              />
+              <label class="placeholder" for="writeComment"
+                >Ajouter un commentaire...</label
               >
-                Submit
+            </div>
+
+            <!-- BTN submit new comment -->
+            <div class="btn-submit">
+              <button class="btn" type="button" @click="saveComment">
+                Publier
               </button>
-            </span>
+            </div>
           </div>
           <!-- comments -->
         </div>
@@ -223,10 +238,10 @@ export default {
   },
   data: function () {
     return {
-      state: "editing",
+      state: "default",
       data: {
         edit: false,
-        body: this.comments,
+        body: this.newComment,
       },
       message: "Commentaires",
       loveCount: 0,
@@ -275,17 +290,18 @@ export default {
     like() {
       // this.love++;
       // if (this.dislike != 0) this.dislike--;
-      this.liked = !this.liked && !this.disliked;
+      this.liked = !this.liked && !0;
       this.liked ? this.loveCount++ : this.loveCount--;
     },
     Dislike() {
       // this.dislike++;
       // if (this.love != 0) this.love--;
-      this.disliked = !this.disliked && !this.liked;
+      this.disliked = !this.disliked && !0;
       this.disliked ? this.dislikeCount++ : this.dislikeCount--;
     },
     postComment: function () {
       this.comments.push({
+        edit: false,
         body: this.newComment,
         created_at: new Date().toLocaleString(),
         author: {
@@ -301,7 +317,7 @@ export default {
       this.likedComment ? this.loveCommentCount++ : this.loveCommentCount--;
     },
     downvote() {
-      this.dislikedComment = !this.dislikedComment;
+      this.dislikedComment = !this.dislikedComment && !0;
       this.dislikedComment
         ? this.dislikeCommentCount++
         : this.dislikeCommentCount--;
@@ -348,204 +364,141 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-// comment structure
-.container-comments {
+$img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
+
+.container {
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  margin-top: 1rem;
-  // position: absolute;
-}
+  align-items: center;
+  flex-direction: column;
 
-.comments-header {
-  display: flex;
-  flex-direction: row;
-  padding: 0.3rem;
-  p {
-    font-weight: bold;
-  }
-}
+  .card {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    margin-top: 20px;
+    @media only screen and (min-width: 576px) {
+      width: 530px;
+    }
 
-.icon-comment {
-  margin-right: 0.3rem;
-}
-
-// typing indicator
-.typing-indicator {
-  width: auto;
-  margin-left: 0.3rem;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  span {
-    height: 4px;
-    width: 4px;
-    margin: 0 1px;
-    background-color: #8de8fe;
-    border-radius: 50%;
-    opacity: 0.4;
-    @for $i from 1 through 3 {
-      &:nth-of-type(#{$i}) {
-        animation: 1s blink infinite ($i * 0.3333s);
+    h2 {
+      background-color: transparent;
+      z-index: 100;
+      position: absolute;
+      bottom: 0;
+      right: 6rem;
+      font-size: 1.2rem;
+      pointer-events: none;
+      @media only screen and (min-width: 576px) {
+        right: 10rem;
       }
     }
-  }
-}
 
-@keyframes blink {
-  50% {
-    opacity: 1;
-  }
-}
+    .fa-arrow-right {
+      background-color: transparent;
+      z-index: 100;
+      position: absolute;
+      right: 35px;
+      bottom: 25px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    p {
+      display: flex;
+      height: 100px;
+      align-items: center;
+      background-color: transparent;
+      z-index: 99;
+      opacity: 0.7;
+      font-size: 0.7rem;
+      transition: all 0.2s ease;
+      @media only screen and (min-width: 576px) {
+        position: absolute;
+        width: 125px;
+        right: 35px;
+        top: 54px;
+        // height: 75%;
+        // writing-mode: vertical-rl;
+      }
+    }
+    .pic {
+      object-fit: cover;
+      width: 300px;
+      height: 200px;
+      border-radius: 20px 4px;
+      background-image: url($img-url2);
+      background-size: 100% 100%;
+      filter: grayscale(100%);
+      @media only screen and (min-width: 576px) {
+        width: 400px;
+        height: 300px;
+      }
+    }
 
-// comments
-.comment-list {
-  display: flex;
-  flex-direction: column;
-}
-.comment-wrapper {
-  flex-direction: column;
-  justify-content: center;
-  width: 300px;
-  @media only screen and (min-width: 576px) {
-    width: 530px;
-  }
-}
-.comment {
-  display: flex;
-  flex-direction: row;
-  margin-top: 1rem;
-  padding: 0.3rem;
-  border-bottom: 1px solid #8de8fe;
-}
+    .icons {
+      width: 180px;
+      height: 64px;
+      left: 60px;
+      top: 7rem;
+      background-color: transparent;
+      position: absolute;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      @media only screen and (min-width: 576px) {
+        top: 0.5rem;
+      }
+    }
 
-.comment-icon-plus,
-.comment-icon-minus {
-  margin: 0 0.3rem;
-}
+    .icon-1 {
+      transition-delay: 0.7s;
+    }
 
-// v-show="state === 'default'"
-.comment-item {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 0.8rem;
-}
-.comment-text {
-  flex-direction: column;
-  font-size: 0.8rem;
-}
+    .icon-2 {
+      transition-delay: 0.6s;
+    }
 
-.holes-lower {
-  position: relative;
-  margin: 0.3rem;
-  // border: 1px dashed #8de8fe;
-  border-bottom: 1px dashed #292929;
-}
+    .icon-3 {
+      transition-delay: 0.5s;
+    }
+    .icon-4 {
+      transition-delay: 0.4s;
+    }
 
-.comment-author {
-  font-size: 0.5rem;
-}
+    &:hover .icon {
+      opacity: 1;
+      transform: scale(1);
+    }
 
-// v-show="state === 'editing'"
-.editing {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-bottom: 0.8rem;
-  h3 {
-    margin-bottom: 0.8rem;
-  }
-}
-
-.wrapper-update{
-  position: relative;
-  height: 56px;
-  width: 200px;
-  border-radius: 0.5rem;
-  border: 1px solid #292929;
-  background: transparent;
-  margin-bottom: 0.5rem;
-  margin-top: 0.8rem;
-  input{
-    position: relative;
-    width: 200px;
-    height: 56px;
-    background : transparent;
-    border: none;
-    font-weight: 700;
-    text-indent: 0.75rem;
-    color: rgba(#fff, 0.875);
-    &:focus{
+    button {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
       outline: none;
+      transition: all 0.3s ease;
+      mix-blend-mode: hard-light;
     }
-    &:focus ~ label,
-    &:valid ~ label
-    {
-      top: -20px;
-      background: rgb(12, 19, 31);
-      // transform: translate(0.625rem, -10px) scale(0.5);
-    }
-  }
-  .placeholder{
-    color: rgba(white, 0.875);
-    position: absolute;
-    z-index: 0;
-    top: 5px;
-    left: 5px;
-    padding: 0 0.25rem;
-    font-weight: 700;
-    font-size: 0.8rem;
-    transform: translate(0.5rem, 15px);
-    transform-origin: 0% 0%;
-    background: transparent;
-    pointer-events: none;
-    transition: 300ms ease all;
-  }
-}
 
-.btn-editing {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: wrap;
-    @media only screen and (min-width: 576px) {
-    flex-direction: row;
-  }
-}
-
-.btn-edit-delete{
-    margin-bottom: 1.3rem;
-}
-.btn-edit {
-  color: mix(white, #424242, 70%);
-  border: none;
-  padding: 10px 20px;
-  margin-right: 1rem;
-  margin-bottom: 1.3rem;
-  width: 6rem;
-  height: 4rem;
-  border-radius: 0.8rem;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
-  &:hover {
-    color: mix(black, mix(white, #424242, 70%), 30%);
-    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
-  }
-  &.btn-update {
-    background: #2196F3;
-    color: mix(white, #2196F3, 70%);
-    &:hover {
-      background: darken(#2196F3, 10%);
-      color: mix(white, #2196F3, 85%);
+    &:hover button {
+      transform: scale(4.2);
+      @media only screen and (min-width: 576px) {
+        transform: scale(16.5);
+      }
     }
-  }
-  &.btn-cancel {
-    background: #eee;
-    &:hover {
-      background: darken(#eee, 10%);
-      color: mix(black, mix(white, #424242, 70%), 30%);;
+
+    &:hover .pic {
+      filter: grayscale(0);
     }
   }
 }
@@ -644,9 +597,6 @@ export default {
 }
 // End Dropdown button
 
-$img-url: "https://images.unsplash.com/photo-1525543907410-b2562b6796d6?ixlib=rb-0.3.5&s=9ff8e5e718a6a40cbd0e1471235912f4&auto=format&fit=crop&w=3452&q=80";
-$img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
-
 h3 {
   width: 100%;
   font-size: 1.075rem;
@@ -689,140 +639,231 @@ h3 {
   width: 30px;
   object-fit: cover;
 }
-.container {
-  width: 100%;
-  height: 100%;
+
+// comment structure
+.container-comments {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
+  justify-content: center;
+  margin-top: 1rem;
+  // position: absolute;
+}
 
-  .card {
-    display: flex;
-    flex-direction: column;
-    position: relative;
+.comments-header {
+  display: flex;
+  flex-direction: row;
+  padding: 0.3rem;
+  p {
+    font-weight: bold;
+  }
+}
+
+.icon-comment {
+  margin-right: 0.3rem;
+}
+
+// typing indicator
+.typing-indicator {
+  width: auto;
+  margin-left: 0.3rem;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  span {
+    height: 4px;
+    width: 4px;
+    margin: 0 1px;
+    background-color: #8de8fe;
+    border-radius: 50%;
+    opacity: 0.4;
+    @for $i from 1 through 3 {
+      &:nth-of-type(#{$i}) {
+        animation: 1s blink infinite ($i * 0.3333s);
+      }
+    }
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 1;
+  }
+}
+
+// comments
+.comment-list {
+  display: flex;
+  flex-direction: column;
+}
+.comment-wrapper {
+  flex-direction: column;
+  justify-content: center;
+  width: 300px;
+  @media only screen and (min-width: 576px) {
+    width: 530px;
+  }
+}
+.comment {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+  padding: 0.3rem;
+  border-bottom: 1px solid #8de8fe;
+}
+
+.comment-icon-plus,
+.comment-icon-minus {
+  margin: 0 0.3rem;
+}
+
+// v-show="state === 'default'"
+.comment-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 0.8rem;
+}
+.comment-text {
+  flex-direction: column;
+  font-size: 0.8rem;
+  p {
+    margin-bottom: 0.2rem;
+    max-width: 8rem;
+  }
+}
+
+.btn-edit-1 {
+  border: none;
+  height: 2rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.holes-lower {
+  position: relative;
+  margin: 0.3rem;
+  // border: 1px dashed #8de8fe;
+  border-bottom: 1px dashed #292929;
+}
+
+.comment-author {
+  font-size: 0.5rem;
+}
+
+// v-show="state === 'editing'"
+.editing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  margin-left: 0.3rem;
+  h3 {
+    margin-bottom: 0.8rem;
+  }
+  @media only screen and (min-width: 576px) {
+    margin-left: 6rem;
+  }
+}
+
+.wrapper-update {
+  position: relative;
+  height: 56px;
+  width: 200px;
+  border-radius: 0.5rem;
+  border: 1px solid #292929;
+  background: transparent;
+  margin-bottom: 0.5rem;
+  margin-top: 0.8rem;
+  @media only screen and (min-width: 576px) {
     width: 300px;
-    height: 300px;
-    overflow: hidden;
-    margin-top: 20px;
-    @media only screen and (min-width: 576px) {
-      width: 530px;
-    }
-
-    h2 {
-      background-color: transparent;
-      z-index: 100;
-      position: absolute;
-      bottom: 0;
-      right: 6rem;
-      font-size: 1.2rem;
-      pointer-events: none;
-      @media only screen and (min-width: 576px) {
-        right: 10rem;
-      }
-    }
-
-    .fa-arrow-right {
-      background-color: transparent;
-      z-index: 100;
-      position: absolute;
-      right: 35px;
-      bottom: 25px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    p {
-      display: flex;
-      height: 100px;
-      align-items: center;
-      background-color: transparent;
-      z-index: 99;
-      opacity: 0.7;
-      font-size: 0.7rem;
-      transition: all 0.2s ease;
-      @media only screen and (min-width: 576px) {
-        position: absolute;
-        width: 125px;
-        right: 35px;
-        top: 54px;
-        // height: 75%;
-        // writing-mode: vertical-rl;
-      }
-    }
-    .pic {
-      object-fit: cover;
-      width: 300px;
-      height: 200px;
-      border-radius: 20px 4px;
-      background-image: url($img-url);
-      background-size: 100% 100%;
-      filter: grayscale(100%);
-      @media only screen and (min-width: 576px) {
-        width: 400px;
-        height: 300px;
-      }
-    }
-
-    .icons {
-      width: 180px;
-      height: 64px;
-      left: 60px;
-      top: 7rem;
-      background-color: transparent;
-      position: absolute;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      @media only screen and (min-width: 576px) {
-        top: 0.5rem;
-      }
-    }
-
-    .icon-1 {
-      transition-delay: 0.7s;
-    }
-
-    .icon-2 {
-      transition-delay: 0.6s;
-    }
-
-    .icon-3 {
-      transition-delay: 0.5s;
-    }
-    .icon-4 {
-      transition-delay: 0.4s;
-    }
-
-    &:hover .icon {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    button {
-      position: absolute;
-      right: 14px;
-      bottom: 14px;
-      width: 30px;
-      height: 30px;
-      background-color: red;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
+  }
+  input {
+    position: relative;
+    width: 200px;
+    height: 56px;
+    background: transparent;
+    border: none;
+    font-weight: 700;
+    text-indent: 0.75rem;
+    color: rgba(#fff, 0.875);
+    &:focus {
       outline: none;
-      transition: all 0.3s ease;
-      mix-blend-mode: hard-light;
     }
+    &:focus ~ label,
+    &:valid ~ label {
+      top: -20px;
+      background: rgb(12, 19, 31);
+      // transform: translate(0.625rem, -10px) scale(0.5);
+    }
+    @media only screen and (min-width: 576px) {
+      width: 300px;
+    }
+  }
+  .placeholder {
+    color: rgba(white, 0.875);
+    position: absolute;
+    z-index: 0;
+    top: 5px;
+    left: 5px;
+    padding: 0 0.25rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    transform: translate(0.5rem, 15px);
+    transform-origin: 0% 0%;
+    background: transparent;
+    pointer-events: none;
+    transition: 300ms ease all;
+  }
+}
 
-    &:hover button {
-      transform: scale(4.2);
-      @media only screen and (min-width: 576px) {
-        transform: scale(16.5);
-      }
-    }
+.btn-editing {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  @media only screen and (min-width: 576px) {
+    flex-direction: row;
+  }
+}
 
-    &:hover .pic {
-      filter: grayscale(0);
+.btn-edit-delete {
+  margin-bottom: 1.3rem;
+}
+.btn-edit {
+  color: mix(white, #424242, 70%);
+  border: none;
+  margin-right: 0.4rem;
+  margin-bottom: 1.3rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  &:hover {
+    color: mix(black, mix(white, #424242, 70%), 30%);
+    // box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
+  }
+  &.btn-update {
+    background: #2196f3;
+    color: mix(white, #2196f3, 70%);
+    &:hover {
+      background: darken(#2196f3, 10%);
+      color: mix(white, #2196f3, 85%);
     }
+  }
+  &.btn-cancel {
+    background: #eee;
+    &:hover {
+      background: darken(#eee, 10%);
+      color: mix(black, mix(white, #424242, 70%), 30%);
+    }
+  }
+  @media only screen and (min-width: 576px) {
+    // width: 6rem;
+    padding: 0 10px;
+    margin-right: 1.4rem;
   }
 }
 
