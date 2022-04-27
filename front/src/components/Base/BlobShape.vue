@@ -27,10 +27,11 @@ export default {
   transform-origin: 50% 50%;
 }
 .blob-animation{
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   border-radius: 70% 40% 30% 80% / 55% 45% 60% 50%;
-  background: #08708a;
+  background: linear-gradient(to top, #08708a 20%, #8de8fe 100%);;
+  
 }
 @keyframes move {
   0%   { transform: scale(1)   translate(10px, -30px); }

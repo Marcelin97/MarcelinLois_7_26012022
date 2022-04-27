@@ -1,10 +1,9 @@
 <template>
   <section>
-
     <div class="scroll-down-mouse">
-    <ScrollDownMouse/>
+      <ScrollDownMouse />
     </div>
-                        <BlobShape/>
+    <BlobShape />
 
     <div class="container">
       <div>
@@ -23,7 +22,6 @@
               <li><a href="#">Signaler</a></li>
               <!-- <li><a href="#">S'abonner</a></li> -->
               <li><router-link to="#">Voir le profil</router-link></li>
-              
             </ul>
           </div>
         </div>
@@ -52,7 +50,8 @@
               position="top-right"
               class="icon icon-1"
               :icon="['fas', 'thumbs-up']"
-            /> <span class="icon icon-1">{{ loveCount }}</span> 
+            />
+            <span class="icon icon-1">{{ loveCount }}</span>
             <font-awesome-icon
               v-on:click="Dislike()"
               counter
@@ -60,7 +59,8 @@
               position="top-right"
               class="icon icon-2"
               :icon="['fas', 'thumbs-down']"
-            /> <span class="icon icon-2">{{ dislikeCount }}</span>
+            />
+            <span class="icon icon-2">{{ dislikeCount }}</span>
             <font-awesome-icon
               class="icon icon-4"
               :icon="['fas', 'bookmark']"
@@ -374,14 +374,27 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.scroll-down-mouse{
-  position: sticky;
-  top: 450px;
+// Mouse scroll down
+  .scroll-down-mouse {
+visibility: hidden;
+background: transparent;
+    @media only screen and (min-width: 675px) {
+visibility: visible;
+    position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: none;
+  z-index: 98;
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
-.BlobShape{
+// animation background with blobShape
+BlobShape {
   z-index: 99999;
 }
+
 $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
 
 .container {
@@ -400,6 +413,7 @@ $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=r
     height: 300px;
     overflow: hidden;
     margin-top: 20px;
+    background: transparent;
     @media only screen and (min-width: 576px) {
       width: 530px;
     }
@@ -549,6 +563,7 @@ $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=r
   position: relative;
   display: flex;
   justify-content: flex-end;
+  background: transparent;
 }
 
 .button-dropdown {
@@ -618,6 +633,7 @@ $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=r
 h3 {
   width: 100%;
   font-size: 1.075rem;
+  background: transparent;
 }
 .author {
   display: flex;
@@ -664,20 +680,24 @@ h3 {
   flex-direction: column;
   justify-content: center;
   margin-top: 1rem;
-  // position: absolute;
+  background: transparent;
+  position: relative;
 }
 
 .comments-header {
   display: flex;
   flex-direction: row;
   padding: 0.3rem;
+  background: transparent;
   p {
     font-weight: bold;
+    background: transparent;
   }
 }
 
 .icon-comment {
   margin-right: 0.3rem;
+  background: transparent;
 }
 
 // typing indicator
@@ -687,6 +707,7 @@ h3 {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
+  background: transparent;
   span {
     height: 4px;
     width: 4px;
@@ -712,11 +733,14 @@ h3 {
 .comment-list {
   display: flex;
   flex-direction: column;
+  background: transparent;
 }
 .comment-wrapper {
   flex-direction: column;
   justify-content: center;
   width: 300px;
+  background: transparent;
+
   @media only screen and (min-width: 576px) {
     width: 530px;
   }
@@ -727,11 +751,16 @@ h3 {
   margin-top: 1rem;
   padding: 0.3rem;
   border-bottom: 1px solid #8de8fe;
+  background: transparent;
+  span {
+    background: transparent;
+  }
 }
 
 .comment-icon-plus,
 .comment-icon-minus {
   margin: 0 0.3rem;
+  background: transparent;
 }
 
 // v-show="state === 'default'"
@@ -740,13 +769,17 @@ h3 {
   flex-direction: column;
   justify-content: center;
   margin-left: 0.8rem;
+  background: transparent;
 }
 .comment-text {
   flex-direction: column;
   font-size: 0.8rem;
+  background: transparent;
+
   p {
     margin-bottom: 0.2rem;
     max-width: 8rem;
+    background: transparent;
   }
 }
 
@@ -755,17 +788,26 @@ h3 {
   height: 2rem;
   cursor: pointer;
   outline: none;
+  background: transparent;
 }
 
+.xmark {
+  background: transparent;
+}
 .holes-lower {
   position: relative;
   margin: 0.3rem;
   // border: 1px dashed #8de8fe;
   border-bottom: 1px dashed #292929;
+  background: transparent;
 }
 
 .comment-author {
   font-size: 0.5rem;
+  background: transparent;
+  p {
+    background: transparent;
+  }
 }
 
 // v-show="state === 'editing'"
@@ -775,8 +817,11 @@ h3 {
   justify-content: center;
   margin-bottom: 0.8rem;
   margin-left: 0.3rem;
+  background: transparent;
+
   h3 {
     margin-bottom: 0.8rem;
+    background: transparent;
   }
   @media only screen and (min-width: 576px) {
     margin-left: 6rem;
@@ -834,6 +879,9 @@ h3 {
   }
 }
 
+.btn-submit {
+  background: transparent;
+}
 .btn-editing {
   display: flex;
   flex-direction: row;

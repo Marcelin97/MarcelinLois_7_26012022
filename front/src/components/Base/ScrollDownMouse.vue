@@ -13,15 +13,12 @@ export default {
 
 <style lang="scss" scoped>
 .container-mouse {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 background: transparent;
 }
 p {
   margin-top: 20px;
-  letter-spacing: 5px;
   text-indent: -15px;
+  background: transparent;
   animation: colorText 5s ease-out infinite;
 }
 
