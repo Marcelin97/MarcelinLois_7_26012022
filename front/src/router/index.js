@@ -6,8 +6,6 @@ import AccountView from "../views/AccountView.vue";
 import SignupView from "../views/SignupView.vue";
 import LoginView from "../views/LoginView.vue";
 import WallView from "../views/WallView.vue";
-import PostId from "../views/PostView.vue";
-import PostComment from "../views/PostComment.vue"
 
 const routes = [
   {
@@ -43,16 +41,6 @@ const routes = [
     path: "/wall",
     name: "wall",
     component: WallView,
-  },
-  {
-    path: "/post/postId",
-    name: "postId",
-    component: PostId,
-  },
-  {
-    path: "/post/postId/comment",
-    name: "postComment",
-    component: PostComment,
   },
 ];
 
