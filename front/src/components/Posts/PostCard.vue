@@ -775,10 +775,9 @@ h3 {
   flex-direction: column;
   font-size: 0.8rem;
   background: transparent;
-
+  max-width: 18rem;
   p {
     margin-bottom: 0.2rem;
-    max-width: 8rem;
     background: transparent;
   }
 }
