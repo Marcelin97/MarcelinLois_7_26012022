@@ -17,7 +17,7 @@ export default {
 
 .blob {
   position: absolute;
-  top: 800px;
+  top: 1200px;
   left: 0;
   fill: #08708a;
   width: 50vmax;

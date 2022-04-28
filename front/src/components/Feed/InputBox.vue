@@ -1,30 +1,49 @@
 <template>
   <section class="form-input-box">
     <form action="" class="post-form">
+
       <!-- Post form header -->
       <div class="post-form-header">
         <div class="post-form-header-label">
           <span>Crée un Post</span>
         </div>
-        <div class="post-form-btn-close">
-          <button
-            type="button"
-            class="btn-close-edit"
-            title="Close the edit"
-            aria-label="Close the edit"
-          >
-            close
-          </button>
-        </div>
       </div>
+
       <!-- post form content -->
       <div class="post-form-content">
         <div class="post-form-top">
           <div class="post-form-file">
             <div class="post-form-file-center">
-              <label for="">
-                <input type="file" />
-              </label>
+              <div class="wrapper">
+                <div class="split">
+                  <div class="button">
+                    <font-awesome-icon class="icon" :icon="['fas', 'upload']" />
+
+                    Ajoute une image
+                  </div>
+
+                  <button class="split-button">
+                    <font-awesome-icon
+                      class="icon close btn-edit"
+                      :icon="['fas', 'xmark']"
+                    />
+                  </button>
+
+                  <div class="menu">
+                    <button class="button">
+                      <font-awesome-icon
+                        class="icon close"
+                        :icon="['fas', 'file']"
+                      />
+                      <div class="form-file">
+                        <input class="file" type="file" id="file"/>
+                        <label class="post-form-label" for="file"></label>
+                      </div>
+
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="post-form-title">
@@ -53,13 +72,24 @@
           </div>
         </div>
       </div>
+
       <!-- post form footer -->
       <div class="post-form-footer">
-        <button class="btn-form-new-post">Publier</button>
+        <button
+          title="Add a new post"
+          class="btn-form-new-post"
+          type="button"
+          aria-label="Add a new post"
+        >
+          Publier
+        </button>
       </div>
     </form>
   </section>
 </template>
+
+<script>
+</script>
 
 <style lang="scss" scoped>
 .form-input-box {
@@ -68,12 +98,18 @@
 }
 .post-form {
   width: 280px;
+      @media only screen and (min-width: 576px) {
+            width: 380px;
+      }
+            @media only screen and (min-width: 768px) {
+            width: 480px;
+      }
 }
 
 .post-form-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   margin-bottom: 1rem;
 }
 
@@ -95,14 +131,91 @@
 }
 
 .post-form-file {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   margin-bottom: 0.5rem;
 }
 
-.post-form-file-center {
+.post-form-label {
+  background: transparent;
+  border: #3d3d3d;
+  border-width: 2px;
+  display: flex;
+  flex-wrap: wrap;
 }
+
+.wrapper {
+  position: relative;
+  perspective: 1000px;
+}
+
+.split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.5rem;
+  border: 0;
+  font-size: 0.875rem;
+  background: #17181b;
+  cursor: pointer;
+}
+
+.split-button {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: inherit;
+  padding: 0;
+  border: 0;
+  font-size: 0.75rem;
+  background: #08708a;
+  color: #f7f7f7;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 12rem;
+  height: 3rem;
+  padding-left: 1rem;
+  border: 0;
+  font-family: Poppins;
+  text-align: left;
+  background: transparent;
+  outline: none;
+}
+
+.menu {
+  position: absolute;
+  z-index: 1;
+  top: 3.5rem;
+  right: 0;
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0 1rem;
+  background: #08708a;
+  opacity: 0;
+  visibility: hidden;
+  backface-visibility: hidden;
+  transform: rotate3d(1, 0, 0, -90deg);
+  transform-origin: 0% 0%;
+  transition-property: transform, opacity, visibility;
+  transition-duration: 0.35s;
+}
+.file{
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapper:hover .menu {
+  visibility: visible;
+  opacity: 1;
+  transform: rotate3d(0, 0, 0, 0);
+}
+
+.wrapper:hover .close {
+  transform: rotate(-45deg);
+}
+
 .post-form-title {
   overflow: hidden;
   background: transparent;
@@ -123,7 +236,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     //   white-space: nowrap;
-    //   flex-basis: 100%;
+      flex-basis: 100%;
     display: flex;
     flex-wrap: nowrap;
   }
@@ -154,19 +267,18 @@
       resize: none;
       display: flex;
       flex-wrap: wrap;
+      width: 100%;
     }
   }
 }
 
 .btn-form-new-post {
-  color: #fff;
-  font-family: "Montserrat", sans-serif;
-  background: lighten(#222020, 1%);
+  margin-top: 1rem;
+  background: lighten(rgb(23, 23, 23), 1%);
   border: none;
-  letter-spacing: 0.5px;
   font-size: 12px;
-  padding: 10px 10px;
-  border-radius: 50px;
+  padding: 0.6rem 0.6rem;
+  border-radius: 0.8rem;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
   box-shadow: inset -3px -3px 3px rgba(white, 0.025),
