@@ -9,28 +9,26 @@
         <legend>Inscription</legend>
         <div>
           <div class="wrapper">
-            <label for="">
-            <input
-              type="text"
-              placeholder="Nom d'utilisateur"
-              required
-              v-model="username"
-            />
-            <div class="validation">Required</div>
+            <label>
+              <input
+                type="text"
+                placeholder="Nom d'utilisateur"
+                v-model="user.username"
+              />
+              <div class="validation">Required</div>
             </label>
           </div>
         </div>
 
         <div>
           <div class="wrapper">
-            <label for="">
-            <input
-              type="email"
-              required
-              v-model="email"
-              placeholder="Entrer votre e-mail"
-            />
-            <div class="validation">Required</div>
+            <label>
+              <input
+                type="email"
+                v-model="user.email"
+                placeholder="Entrer votre e-mail"
+              />
+              <div class="validation">Required</div>
             </label>
           </div>
           <div></div>
@@ -38,21 +36,20 @@
 
         <div>
           <div class="wrapper">
-            <label for="">
-            <input
-              type="password"
-              required
-              v-model="password"
-              placeholder="Entrer votre mot de passe"
-            />
-            <div class="validation">Required</div>
+            <label>
+              <input
+                type="password"
+                v-model="user.password"
+                placeholder="Entrer votre mot de passe"
+              />
+              <div class="validation">Required</div>
             </label>
           </div>
 
           <div v-if="passwordError" class="error">{{ passwordError }}</div>
         </div>
       </fieldset>
-      
+
       <!-- Terms -->
       <div class="terms">
         <div class="conditions">I accept the terms and conditions.</div>
@@ -60,7 +57,7 @@
           <input
             class="inputCheckbox"
             type="checkbox"
-            v-model="terms"
+            v-model="user.terms"
             true-value="yes"
             false-value="no"
             required
@@ -89,6 +86,8 @@
   </section>
 </template>
 <script>
+import axios from "axios"
+
 export default {
   props: {
     msg: String,
@@ -100,10 +99,13 @@ export default {
   name: "SignupForm",
   data() {
     return {
+      user: {
       email: "",
       password: "",
       username: "",
       terms: false,
+      },
+
       passwordError: " ",
     };
   },
@@ -112,13 +114,17 @@ export default {
       // console.log("form submitted");
       // * valid password
       this.passwordError =
-        this.password.length > 5 ? " " : "Entre 6 et 50 caractères";
+        this.user.password.length > 5 ? " " : "Entre 6 et 50 caractères";
 
-      if (this.password.length > 5) {
-        console.log("email:", this.email);
-        console.log("email:", this.password);
-        console.log("email:", this.terms);
-        console.log("email:", this.username);
+      if (this.user.password.length > 5) {
+        axios
+          .post(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     },
     login() {
