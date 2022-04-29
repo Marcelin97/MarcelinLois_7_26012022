@@ -1,7 +1,6 @@
 <template>
   <section class="form-input-box">
     <form action="" class="post-form">
-
       <!-- Post form header -->
       <div class="post-form-header">
         <div class="post-form-header-label">
@@ -36,10 +35,9 @@
                         :icon="['fas', 'file']"
                       />
                       <div class="form-file">
-                        <input class="file" type="file" id="file"/>
+                        <input class="file" type="file" id="file" />
                         <label class="post-form-label" for="file"></label>
                       </div>
-
                     </button>
                   </div>
                 </div>
@@ -98,12 +96,12 @@
 }
 .post-form {
   width: 280px;
-      @media only screen and (min-width: 576px) {
-            width: 380px;
-      }
-            @media only screen and (min-width: 768px) {
-            width: 480px;
-      }
+  @media only screen and (min-width: 576px) {
+    width: 380px;
+  }
+  @media only screen and (min-width: 768px) {
+    width: 480px;
+  }
 }
 
 .post-form-header {
@@ -201,9 +199,9 @@
   transition-property: transform, opacity, visibility;
   transition-duration: 0.35s;
 }
-.file{
-    display: flex;
-    flex-direction: column;
+.file {
+  display: flex;
+  flex-direction: column;
 }
 
 .wrapper:hover .menu {
@@ -236,7 +234,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     //   white-space: nowrap;
-      flex-basis: 100%;
+    flex-basis: 100%;
     display: flex;
     flex-wrap: nowrap;
   }

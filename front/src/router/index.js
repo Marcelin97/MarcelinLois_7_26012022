@@ -6,6 +6,7 @@ import AccountView from "../views/AccountView.vue";
 import SignupView from "../views/SignupView.vue";
 import LoginView from "../views/LoginView.vue";
 import WallView from "../views/WallView.vue";
+import UserView from "../views/UserView";
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
     path: "/wall",
     name: "wall",
     component: WallView,
+  },
+  {
+    path: "/user",
+    name: "user",
+    component: UserView,
   },
 ];
 
