@@ -7,6 +7,8 @@ import SignupView from "../views/SignupView.vue";
 import LoginView from "../views/LoginView.vue";
 import WallView from "../views/WallView.vue";
 import UserView from "../views/UserView";
+import ProfileSettings from "../views/ProfileSettings";
+
 
 const routes = [
   {
@@ -47,6 +49,11 @@ const routes = [
     path: "/user",
     name: "user",
     component: UserView,
+  },
+  {
+    path: "/user/settings",
+    name: "user/settings",
+    component: ProfileSettings,
   },
 ];
 
