@@ -54,10 +54,19 @@
 <style lang="scss" scoped>
 .container {
   padding: 1rem;
-  //   background: #f2f2f2;
   display: flex;
   align-items: center;
   justify-content: center;
+  @media only screen and (min-width: 768px) {
+    align-items: center;
+    justify-content: center;
+    margin: 2rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .title {
@@ -125,38 +134,15 @@
   }
 }
 
-@media screen and (min-width: 768px) {
+@media only screen and (min-width: 768px) {
   .grid {
     display: grid;
     grid-gap: 24px;
     grid-template-columns: 1fr 1fr 1fr;
     grid-auto-rows: 1fr;
   }
-  .container {
-    align-items: center;
-    justify-content: center;
-    margin: 2rem;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    // max-width: 32rem;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-  }
 }
-@media screen and (min-width: 1024px) {
-  //   .container {
-  //     max-width: 80%;
-  //     width: 100%;
-  //   }
-
-  //   .grid {
-  //     display: grid;
-  //     grid-gap: 24px;
-  //     grid-template-columns: 1fr 1fr 1fr;
-  //     grid-auto-rows: 1fr;
-  //   }
-
+@media only screen and (min-width: 1024px) {
   .email-group {
     grid-column: 1;
     grid-row: 2;

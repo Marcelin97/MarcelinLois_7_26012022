@@ -2,7 +2,7 @@
 <div class="wrapper">
   <div class="profile-card js-profile-card">
     <div class="profile-card__img">
-      <img src="" alt="profile card">
+      <img src="https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80" alt="profile card" aria-label="Photo d'utilisateur">
     </div>
 
     <div class="profile-card__cnt js-profile-cnt">
@@ -12,12 +12,12 @@
       <div class="profile-card-inf">
         <div class="profile-card-inf__item">
           <div class="profile-card-inf__title">15</div>
-          <div class="profile-card-inf__txt">Communautés</div>
+          <div class="profile-card-inf__txt">Abonnements</div>
         </div>
 
         <div class="profile-card-inf__item">
           <div class="profile-card-inf__title">35</div>
-          <div class="profile-card-inf__txt">Posts</div>
+          <div class="profile-card-inf__txt">Publications</div>
         </div>
       </div>
 
@@ -26,6 +26,7 @@
 
       <div class="profile-card-ctr">
         <button class="profile-card__button">Message</button>
+        <button class="profile-card__button">Signaler</button>
         <button class="profile-card__button">Modifier</button>
       </div>
     </div>

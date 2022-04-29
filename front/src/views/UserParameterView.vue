@@ -1,19 +1,19 @@
 <template>
   <section>
-    <GoBack />
-    <h1>Mon compte</h1>
-    <UserProfile />
+        <GoBack />
+    <h1>Gestion du profil</h1>
+    <UserParameter />
   </section>
 </template>
 
 <script>
-import UserProfile from "@/components/Profil/UserProfile.vue";
+import UserParameter from "@/components/Profil/UserParameter.vue";
 import GoBack from "../components/Base/GoBack.vue";
 
 export default {
-  name: "UserView",
+  name: "ProfilSettings",
   components: {
-    UserProfile,
+    UserParameter,
     GoBack
   },
 };

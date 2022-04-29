@@ -1,9 +1,13 @@
 <template>
   <section>
+    <!-- scroll down -->
     <div class="scroll-down-mouse">
       <ScrollDownMouse />
     </div>
-    <BlobShape />
+    <!-- animation blob -->
+    <div>
+      <BlobShape />
+    </div>
 
     <div class="container">
       <div>
@@ -20,7 +24,6 @@
           <div class="menu">
             <ul>
               <li><a href="#">Signaler</a></li>
-              <!-- <li><a href="#">S'abonner</a></li> -->
               <li><router-link to="#">Voir le profil</router-link></li>
             </ul>
           </div>
@@ -375,16 +378,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 // Mouse scroll down
-  .scroll-down-mouse {
-visibility: hidden;
-background: transparent;
-    @media only screen and (min-width: 675px) {
-visibility: visible;
+.scroll-down-mouse {
+  visibility: hidden;
+  background: transparent;
+  @media only screen and (min-width: 675px) {
+    visibility: visible;
     position: fixed;
-  right: 20px;
-  bottom: 20px;
-  display: none;
-  z-index: 98;
+    right: 20px;
+    bottom: 20px;
+    display: none;
+    z-index: 98;
     display: flex;
     justify-content: flex-end;
   }
@@ -543,10 +546,9 @@ $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=r
   background: transparent;
   cursor: pointer;
   transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  &:hover,
-  &:focus {
-    transform: rotate(45deg);
-  }
+  // &:hover {
+  //   transform: rotate(45deg);
+  // }
 }
 
 .circle {
