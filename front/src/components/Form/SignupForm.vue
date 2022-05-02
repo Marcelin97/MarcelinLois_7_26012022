@@ -7,46 +7,132 @@
     <form action="#" method="post" @submit.prevent="handleSubmit">
       <fieldset>
         <legend>Inscription</legend>
+
+        <!-- Le prénom -->
+        <div>
+          <div class="wrapper">
+            <label>
+              <input
+                type="text"
+                placeholder="Prénom"
+                v-model.trim="v$.user.firstName.$model"
+                ref="user.firstName"
+              />
+              <div class="validation">Required</div>
+            </label>
+
+                      <!-- Error Message -->
+          <div class="input-errors" v-for="(error, index) of v$.user.firstName.$errors" :key="index">
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+
+          </div>
+        </div>
+
+        <!-- Le nom de famille -->
+        <div>
+          <div class="wrapper">
+            <label>
+              <input
+                type="text"
+                placeholder="Nom de famille"
+                v-model.trim="v$.user.lastName.$model"
+                ref="user.lastName"
+              />
+              <div class="validation">Required</div>
+            </label>
+
+                      <!-- Error Message -->
+          <div class="input-errors" v-for="(error, index) of v$.user.lastName.$errors" :key="index">
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+
+          </div>
+        </div>
+
+        <!-- La date de naissance -->
+        <div>
+          <div class="wrapper">
+            <label>
+              <input
+                type="date"
+                placeholder="Date de naissance"
+                v-model="v$.user.birthday.$model"
+                ref="user.birthday"
+              />
+              <div class="validation">Required</div>
+            </label>
+
+                  <!-- Error Message -->
+        <div class="input-errors" v-for="(error, index) of v$.user.birthday.$errors" :key="index">
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+
+          </div>
+        </div>
+
+        <!-- Le nom d'utilisateur -->
         <div>
           <div class="wrapper">
             <label>
               <input
                 type="text"
                 placeholder="Nom d'utilisateur"
-                v-model="user.username"
+                v-model.trim="v$.user.username.$model"
+                ref="user.username"
               />
               <div class="validation">Required</div>
             </label>
+
+                  <!-- Error Message -->
+        <div class="input-errors" v-for="(error, index) of v$.user.username.$errors" :key="index">
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+
           </div>
         </div>
 
+        <!-- L'email -->
         <div>
           <div class="wrapper">
             <label>
               <input
                 type="email"
-                v-model="user.email"
-                placeholder="Entrer votre e-mail"
+                placeholder="E-mail"
+                v-model.trim="v$.user.email.$model"
+                @change="v$.user.email.$touch"
+                ref="user.email"
               />
               <div class="validation">Required</div>
             </label>
-          </div>
-          <div></div>
+
+                  <!-- Error Message -->
+        <div class="input-errors" v-for="(error, index) of v$.user.email.$errors" :key="index">
+          <div class="error-msg">{{ error.$message }}</div>
         </div>
 
+          </div>
+        </div>
+
+        <!-- Le mot de passe -->
         <div>
           <div class="wrapper">
             <label>
               <input
                 type="password"
-                v-model="user.password"
-                placeholder="Entrer votre mot de passe"
+                placeholder="Mot de passe"
+                v-model="v$.user.password.$model"
+                ref="user.password"
               />
               <div class="validation">Required</div>
             </label>
-          </div>
 
-          <div v-if="passwordError" class="error">{{ passwordError }}</div>
+                  <!-- Error Message -->
+        <div class="input-errors" v-for="(error, index) of v$.user.password.$errors" :key="index">
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+
+          </div>
         </div>
       </fieldset>
 
@@ -57,13 +143,20 @@
           <input
             class="inputCheckbox"
             type="checkbox"
-            v-model="user.terms"
+            v-model="v$.user.terms.$model"
             true-value="yes"
             false-value="no"
             required
+            ref="user.terms"
           />
           <span class="checkbox"></span>
         </label>
+
+              <!-- Error Message -->
+        <div class="input-errors" v-for="(error, index) of v$.user.terms.$errors" :key="index">
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+
       </div>
       <!-- Terms -->
 
@@ -74,49 +167,97 @@
           type="submit"
           title="Créer mon compte"
           value="Créer mon compte"
+          :disabled="v$.user.$invalid"
         >
           Créer mon compte
         </button>
       </div>
     </form>
-    <p>Username: {{ username }}</p>
-    <p>Email: {{ email }}</p>
-    <p>Password: {{ password }}</p>
-    <p>Terms: {{ terms }}</p>
   </section>
 </template>
 <script>
-import axios from "axios"
+import axios from "axios";
+import useVuelidate from "@vuelidate/core";
+import {
+  required,
+  minLength,
+  email,
+  maxLength,
+  // helpers
+} from "@vuelidate/validators";
+
+export function validName(name) {
+  let validNamePattern = new RegExp("/^[a-z0-9]+$/i");
+  if (validNamePattern.test(name)) {
+    return true;
+  }
+  return false;
+}
 
 export default {
+  name: "SignupForm",
   props: {
     msg: String,
   },
   setup() {
     let input = null;
-    return input;
+    return input, { v$: useVuelidate() };
   },
-  name: "SignupForm",
+  validationConfig: {
+    $lazy: true,
+  },
   data() {
     return {
+      // v$: useVuelidate(),
       user: {
-      email: "",
-      password: "",
-      username: "",
-      terms: false,
+        firstName: "",
+        lastName: "",
+        birthday: "",
+        email: "",
+        password: "",
+        username: "",
+        terms: false,
       },
+    };
+  },
+  validations() {
+    // const alpha = helpers.regex(/^[a-zA-Z]*$/);
 
-      passwordError: " ",
+    return {
+      user: {
+        firstName: {required},
+        lastName: { required },
+        birthday: { required },
+        username: {
+          required,
+          minLength: minLength(3),
+          maxLength: maxLength(25),
+          // name_validation: {
+          //   $validator: validName,
+          //   $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+          // }
+        },
+        email: {
+          required,
+          email,
+          minLength: minLength(5),
+          maxLength: maxLength(60),
+        },
+        password: { required, minLength: minLength(8) },
+        terms: { required },
+      },
     };
   },
   methods: {
-    handleSubmit() {
-      // console.log("form submitted");
-      // * valid password
-      this.passwordError =
-        this.user.password.length > 5 ? " " : "Entre 6 et 50 caractères";
+    async handleSubmit() {
+      const isFormCorrect = await this.v$.$validate();
+      // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
+      if (!isFormCorrect) return;
+      // actually submit form
 
-      if (this.user.password.length > 5) {
+      this.v$.$validate();
+
+      if (!this.v$.$error) {
         axios
           .post(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
           .then(function (response) {
