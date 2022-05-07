@@ -18,15 +18,16 @@
                 v-model.trim="v$.user.firstName.$model"
                 ref="user.firstName"
                 @blur="v$.user.firstName.$touch"
+                :class="v$.user.firstName.$error === true ? 'error' : 'dirty'"
               />
-              <div class="validation">Required</div>
+              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.firstName.$dirty">
               <div
                 class="input-errors"
-                v-for="(error, index) of v$.user.firstName.$silentErrors"
+                v-for="(error, index) of v$.user.firstName.$errors"
                 :key="index"
               >
                 <div class="error-msg">{{ error.$message }}</div>
@@ -45,15 +46,16 @@
                 v-model.trim="v$.user.lastName.$model"
                 ref="user.lastName"
                 @blur="v$.user.lastName.$touch"
+                :class="v$.user.lastName.$error === true ? 'error' : 'dirty'"
               />
-              <div class="validation">Required</div>
+              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.lastName.$dirty">
               <div
                 class="input-errors"
-                v-for="(error, index) of v$.user.lastName.$silentErrors"
+                v-for="(error, index) of v$.user.lastName.$errors"
                 :key="index"
               >
                 <div class="error-msg">{{ error.$message }}</div>
@@ -72,15 +74,16 @@
                 v-model="v$.user.birthday.$model"
                 ref="user.birthday"
                 @blur="v$.user.birthday.$touch"
+                :class="v$.user.birthday.$error === true ? 'error' : 'dirty'"
               />
-              <div class="validation">Required</div>
+              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.birthday.$dirty">
               <div
                 class="input-errors"
-                v-for="(error, index) of v$.user.birthday.$silentErrors"
+                v-for="(error, index) of v$.user.birthday.$errors"
                 :key="index"
               >
                 <div class="error-msg">{{ error.$message }}</div>
@@ -99,15 +102,16 @@
                 v-model.trim="v$.user.username.$model"
                 ref="user.username"
                 @blur="v$.user.username.$touch"
+                :class="v$.user.username.$error === true ? 'error' : 'dirty'"
               />
-              <div class="validation">Required</div>
+              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.username.$dirty">
               <div
                 class="input-errors"
-                v-for="(error, index) of v$.user.username.$silentErrors"
+                v-for="(error, index) of v$.user.username.$errors"
                 :key="index"
               >
                 <div class="error-msg">{{ error.$message }}</div>
@@ -126,15 +130,16 @@
                 v-model.trim="v$.user.email.$model"
                 ref="user.email"
                 @blur="v$.user.email.$touch"
+                :class="v$.user.email.$error === true ? 'error' : 'dirty'"
               />
-              <div class="validation">Required</div>
+              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.email.$dirty">
               <div
                 class="input-errors"
-                v-for="(error, index) of v$.user.email.$silentErrors"
+                v-for="(error, index) of v$.user.email.$errors"
                 :key="index"
               >
                 <div class="error-msg">{{ error.$message }}</div>
@@ -153,15 +158,16 @@
                 v-model="v$.user.password.$model"
                 ref="user.password"
                 @blur="v$.user.password.$touch"
+                :class="v$.user.password.$error === true ? 'error' : 'dirty'"
               />
-              <div class="validation">Required</div>
+              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.password.$dirty">
               <div
                 class="input-errors"
-                v-for="(error, index) of v$.user.password.$silentErrors"
+                v-for="(error, index) of v$.user.password.$errors"
                 :key="index"
               >
                 <div class="error-msg">{{ error.$message }}</div>
@@ -184,6 +190,7 @@
             required
             ref="user.terms"
             @blur="v$.user.terms.$touch"
+            :class="v$.user.terms.$error === true ? 'error' : 'dirty'"
           />
           <span class="checkbox"></span>
         </label>
@@ -192,7 +199,7 @@
         <template v-if="v$.user.terms.$dirty">
           <div
             class="input-errors"
-            v-for="(error, index) of v$.user.terms.$silentErrors"
+            v-for="(error, index) of v$.user.terms.$errors"
             :key="index"
           >
             <div class="error-msg">{{ error.$message }}</div>
@@ -204,11 +211,12 @@
       <div class="submit">
         <button
           @click="login"
-          class="btn disable"
+          class="btn"
           type="submit"
           title="Créer mon compte"
           value="Créer mon compte"
           :disabled="v$.user.$invalid"
+          :class="v$.user.$invalid === true ? 'btn-disable' : 'btn'"
         >
           Créer mon compte
         </button>
@@ -227,22 +235,30 @@ import {
   // helpers
 } from "@vuelidate/validators";
 
-// export function validName(value) {
-//   let validNamePattern = new RegExp("/^[a-z0-9]+$/i");
-//   if (validNamePattern.test(value)) {
-//     return true;
-//   }
-//   return false;
+// export function isUsernameAvailable(value) {
+//   if (value === "") return true;
+//   return new Promise(() => {
+//     return axios
+//       .get(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
+//       .then((response) => {
+//         if (response.data.user.username) {
+//           return true;
+//         }
+//       })
+//       .catch((error) => {
+//         if (
+//           error.response.data.user.username[0] ==
+//           "The username has already been taken."
+//         ) {
+//           return false;
+//         }
+//         return true;
+//       });
+//   });
 // }
 
-export function isEmailAvailable(value) {
-  if (value === "") return true;
-
-  // return new Promise((resolve) => {
-  //   setTimeout(() => {
-  //     resolve(value.length > 5);
-  //   }, 500);
-  // });
+export function validName(value) {
+  return /^[a-z0-9]+$/i.test(value);
 }
 
 export function strongPassword(value) {
@@ -254,6 +270,15 @@ export function strongPassword(value) {
     // /\W|_/.test(password) && //checks for special char
     value.length >= 8
   );
+}
+
+export function checkIsValid(val, event) {
+  if (val.$error) {
+    event.target.classList.add("form__input-shake");
+    setTimeout(() => {
+      event.target.classList.remove("form__input-shake");
+    }, 600);
+  }
 }
 
 export default {
@@ -270,6 +295,7 @@ export default {
   },
   data() {
     return {
+      v$: useVuelidate(),
       user: {
         firstName: "",
         lastName: "",
@@ -293,10 +319,14 @@ export default {
           $lazy: true,
           minLength: minLength(3),
           maxLength: maxLength(25),
-          // name_validation: {
-          //   $validator: validName,
-          //   $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
-          // }
+          // username_validation: {
+          //   $validator: isUsernameAvailable,
+          //   $message: "E-mail déjà utilisé",
+          // },
+          name_validation: {
+            $validator: validName,
+            $message: "Username can only contain numbers and letters",
+          },
         },
         email: {
           required,
@@ -305,11 +335,6 @@ export default {
           email,
           minLength: minLength(5),
           maxLength: maxLength(60),
-          // email_validation: {
-          //   $validator: isEmailAvailable,
-          //   $message:
-          //     "E-mail déjà utilisé et qui doit avoir un minimum de 5 caractères.",
-          // },
         },
         password: {
           required,
@@ -337,31 +362,33 @@ export default {
     //     dirty: validation.$dirty,
     //   };
     // },
+
     async handleSubmit() {
       const isFormCorrect = await this.v$.$validate();
-      // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
-      if (!isFormCorrect) return;
-      // actually submit form
-
-      if (this.v$.$error) {
-        // 5. Focus the input with the error
-        // this.$refs[input].focus();
-
-        // 6. Break out of the loop
-        // break;
+      if (!isFormCorrect) {
+        alert("Form failed validation");
+        // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
+        return;
       } else {
-              alert("Form successfully submitted");
+        // actually submit form
+        alert("Form successfully submitted");
         axios
           .post(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
           .then(function (response) {
             console.log(response);
+            //redirect logic
+            if (response.status == "201") {
+              this.$router.push({ name: "login" });
+            }
           })
           .catch(function (error) {
             console.log(error);
           });
       }
     },
+
     login() {
+      this.v$.$touch();
       console.warn(this.form);
     },
   },
@@ -387,27 +414,31 @@ export default {
     text-align: center;
   }
 }
+
 form {
   max-width: 420px;
   margin: 20px auto;
   text-align: left;
   padding: 20px;
 }
+
 legend {
   // margin-bottom: 50px;
   line-height: 1.5rem;
   letter-spacing: 0.1rem;
   color: #8de8fe;
 }
+
 fieldset {
-  // margin-bottom: 50px;
   display: flex;
   flex-direction: column;
 }
+
 .wrapper {
   position: relative;
-  margin-top: 50px;
+  margin-top: 30px;
 }
+
 input {
   width: 15rem;
   height: 2.5rem;
@@ -420,25 +451,10 @@ input {
     width: 25rem;
   }
 }
-// input:valid {
-//   border-color: #8de8fe;
-// }
-// input:invalid {
-//   border-color: #fd4444;
-// }
-// input:invalid ~ .validation {
-//   opacity: 1;
-//   transform: translateY(0);
-// }
-// input:invalid ~ .validation,
-// input:invalid {
-//   opacity: 1;
-//   transform: translateY(0);
-//   animation: shake 0.1635s;
-// }
+
 .validation {
   position: absolute;
-  bottom: 3rem;
+  bottom: 4rem;
   display: flex;
   align-items: center;
   height: 1.5rem;
@@ -459,17 +475,6 @@ input {
   height: 4px;
   transform: rotate(45deg);
   background: inherit;
-}
-@keyframes shake {
-  100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(8px);
-  }
-  75% {
-    transform: translateX(-8px);
-  }
 }
 
 // * CheckBox
@@ -511,9 +516,11 @@ input:checked ~ .checkbox {
 }
 
 // * error if input is invalid
+
 .dirty {
-  border-color: #5a5;
-  background: #efe;
+  // border-color: #5a5;
+  // background: #efe;
+  border-color: #8de8fe;
 }
 
 .dirty:focus {
@@ -521,19 +528,49 @@ input:checked ~ .checkbox {
 }
 
 .error {
-  border-color: red;
   background: #fdd;
-  animation: shake 0.1635s;
+  border-color: #fd4444;
+  opacity: 0.7;
+  animation: shake 0.2s;
+  animation-iteration-count: 3;
 }
 
 .error:focus {
   outline-color: #f99;
 }
 
+@keyframes shake {
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(8px);
+  }
+  75% {
+    transform: translateX(-8px);
+  }
+}
+
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
+}
 // * Submit
 .submit {
   display: flex;
   justify-content: center;
   margin-top: 30px;
+}
+
+// btn disabled
+.btn-disable {
+  background-color: grey;
+}
+.btn-true {
+  background-color: initial;
 }
 </style>
