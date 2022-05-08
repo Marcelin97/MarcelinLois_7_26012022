@@ -211,6 +211,7 @@
       <div class="submit">
         <button
           @click="login"
+          :disabled="!v$.$validate"
           class="btn"
           type="submit"
           title="Créer mon compte"
@@ -218,10 +219,22 @@
         >
           Créer mon compte
         </button>
+        <div class="typo__p" v-if="submitStatus === 'OK'">
+        <h3>Merci pour votre soumission!</h3>
+        <p>
+          Inscription réussi ! Connectez-vous pour accéder à votre compte avec
+          vos identifiants.
+        </p>
+
+        </div>
+        <p class="typo__p" v-if="submitStatus === 'ERROR'">
+          Veuillez remplir le formulaire correctement.
+        </p>
       </div>
     </form>
   </section>
 </template>
+
 <script>
 import axios from "axios";
 import useVuelidate from "@vuelidate/core";
@@ -270,14 +283,14 @@ export function strongPassword(value) {
   );
 }
 
-export function checkIsValid(val, event) {
-  if (val.$error) {
-    event.target.classList.add("form__input-shake");
-    setTimeout(() => {
-      event.target.classList.remove("form__input-shake");
-    }, 600);
-  }
-}
+// export function checkIsValid(val, event) {
+//   if (val.$error) {
+//     event.target.classList.add("form__input-shake");
+//     setTimeout(() => {
+//       event.target.classList.remove("form__input-shake");
+//     }, 600);
+//   }
+// }
 
 export default {
   name: "SignupForm",
@@ -294,6 +307,7 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
+      submitStatus: null,
       user: {
         firstName: "",
         lastName: "",
@@ -354,29 +368,28 @@ export default {
     };
   },
   methods: {
-    // status(validation) {
-    //   return {
-    //     error: validation.$error,
-    //     dirty: validation.$dirty,
-    //   };
-    // },
-
     async handleSubmit() {
       const isFormCorrect = await this.v$.$validate();
       if (!isFormCorrect) {
-        alert("Form failed validation");
         // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
-        this.$nextTick(() => {	
-let domRect = document.querySelector('.error').getBoundingClientRect();
-  window.scrollTo(
-    domRect.left + document.documentElement.scrollLeft,
-    domRect.top + document.documentElement.scrollTop
-  );
-})
+        alert("Form failed validation");
+        // change de status of the message
+        this.submitStatus = "ERROR";
+        //
+        this.$nextTick(() => {
+          let domRect = document
+            .querySelector(".error")
+            .getBoundingClientRect();
+          window.scrollTo(
+            domRect.left + document.documentElement.scrollLeft,
+            domRect.top + document.documentElement.scrollTop
+          );
+        });
         // return;
       } else {
         // actually submit form
-        alert("Form successfully submitted");
+        // alert("Form successfully submitted");
+        this.submitStatus = "OK";
         axios
           .post(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
           .then((response) => {
@@ -385,7 +398,7 @@ let domRect = document.querySelector('.error').getBoundingClientRect();
               function () {
                 this.$router.push("/login");
               }.bind(this),
-              1000,
+              10000,
               this
             );
           })
@@ -570,15 +583,47 @@ input:checked ~ .checkbox {
 // * Submit
 .submit {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   margin-top: 30px;
+    flex-basis: 100%;
 }
 
 // btn disabled
-.btn-disable {
+.disable {
   background-color: grey;
 }
-.btn-true {
-  background-color: initial;
+
+.typo__p{
+display: block;
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: #282a2d;
+  h3{
+    display: flex; 
+flex-direction: column;
+justify-content: center;
+align-items: center;
+  padding: 1.5rem;
+  background: #ffdc25;
+  color: white;
+  font-size: 3rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  }
+  p{
+background: transparent;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  }
 }
 </style>
