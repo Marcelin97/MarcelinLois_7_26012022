@@ -215,8 +215,6 @@
           type="submit"
           title="Créer mon compte"
           value="Créer mon compte"
-          :disabled="v$.user.$invalid"
-          :class="v$.user.$invalid === true ? 'btn-disable' : 'btn'"
         >
           Créer mon compte
         </button>
@@ -368,21 +366,28 @@ export default {
       if (!isFormCorrect) {
         alert("Form failed validation");
         // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
-        return;
+        this.$nextTick(() => {	
+let domRect = document.querySelector('.error').getBoundingClientRect();
+  window.scrollTo(
+    domRect.left + document.documentElement.scrollLeft,
+    domRect.top + document.documentElement.scrollTop
+  );
+})
+        // return;
       } else {
         // actually submit form
         alert("Form successfully submitted");
         axios
           .post(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
-          .then((response) =>{
-           console.log(response)
-          setTimeout(
-            function () {
-              this.$router.push("/login");
-            }.bind(this),
-            1000,
-            this
-          );
+          .then((response) => {
+            console.log(response);
+            setTimeout(
+              function () {
+                this.$router.push("/login");
+              }.bind(this),
+              1000,
+              this
+            );
           })
           .catch((error) => {
             console.log(error);
