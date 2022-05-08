@@ -374,14 +374,17 @@ export default {
         alert("Form successfully submitted");
         axios
           .post(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
-          .then(function (response) {
-            console.log(response);
-            //redirect logic
-            if (response.status == "201") {
-              this.$router.push({ name: "login" });
-            }
+          .then((response) =>{
+           console.log(response)
+          setTimeout(
+            function () {
+              this.$router.push("/login");
+            }.bind(this),
+            1000,
+            this
+          );
           })
-          .catch(function (error) {
+          .catch((error) => {
             console.log(error);
           });
       }
