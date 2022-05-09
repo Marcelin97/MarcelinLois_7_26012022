@@ -3,7 +3,6 @@
     <div class="scroll-down-mouse">
       <ScrollDownMouse />
     </div>
-    <BlobShape />
 
     <div class="container">
       <div>
@@ -228,13 +227,11 @@
 // import comment from "./CommentItem";
 import DeleteBtn from "@/components/Base/DeleteBtn.vue";
 import ScrollDownMouse from "@/components/Base/ScrollDownMouse.vue";
-import BlobShape from "@/components/Base/BlobShape.vue";
 
 export default {
   components: {
     DeleteBtn,
     ScrollDownMouse,
-    BlobShape,
   },
   props: {
     // user: {
