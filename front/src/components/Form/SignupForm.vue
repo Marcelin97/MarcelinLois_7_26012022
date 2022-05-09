@@ -179,7 +179,7 @@
 
       <!-- Terms -->
       <div class="terms">
-        <div class="conditions">I accept the terms and conditions.</div>
+        <div class="conditions">J'accepte les termes et conditions.</div>
         <label class="labelCheckbox">
           <input
             class="inputCheckbox"
@@ -219,17 +219,29 @@
         >
           Créer mon compte
         </button>
-        <div class="typo__p" v-if="submitStatus === 'OK'">
-        <h3>Merci pour votre soumission!</h3>
-        <p>
-          Inscription réussi ! Connectez-vous pour accéder à votre compte avec
-          vos identifiants.
-        </p>
 
+        <!-- success modal  -->
+
+        <div class="row" v-if="submitStatus === 'OK'">
+          <div class="modalbox success">
+            <div class="modalContent">
+              <div class="icon">
+                <font-awesome-icon class="icon" :icon="['fas', 'check']" />
+              </div>
+              <h3 class="modal-header">Merci pour votre soumission!</h3>
+              <p>
+                Inscription réussi ! Connectez-vous pour accéder à votre
+                compte<br />avec vos identifiants..
+              </p>
+              <span class="change">-- Bienvenue --</span>
+            </div>
+          </div>
+          <!--/.success-->
         </div>
-        <p class="typo__p" v-if="submitStatus === 'ERROR'">
+
+        <!-- <p class="typo__p" v-if="submitStatus === 'ERROR'">
           Veuillez remplir le formulaire correctement.
-        </p>
+        </p> -->
       </div>
     </form>
   </section>
@@ -374,7 +386,8 @@ export default {
         // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
         alert("Form failed validation");
         // change de status of the message
-        this.submitStatus = "ERROR";
+        // this.submitStatus = "ERROR";
+
         //
         this.$nextTick(() => {
           let domRect = document
@@ -421,6 +434,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   h1 {
     font-size: 1.4rem;
     font-weight: bolder;
@@ -428,6 +442,7 @@ export default {
     line-height: 1.5rem;
     text-align: center;
   }
+
   p {
     font-size: 0.8rem;
     font-weight: lighter;
@@ -468,6 +483,7 @@ input {
   margin-bottom: 0.3rem;
   border: 1px solid #585858;
   color: #8de8fe;
+
   @media only screen and (min-width: 768px) {
     width: 25rem;
   }
@@ -487,6 +503,7 @@ input {
   color: #f9f9f9;
   transition: all 0.35s;
 }
+
 .validation::after {
   content: "";
   position: absolute;
@@ -504,9 +521,11 @@ input {
   display: flex;
   flex-direction: column;
 }
+
 .conditions {
   margin-bottom: 15px;
 }
+
 label,
 input {
   cursor: pointer;
@@ -564,9 +583,11 @@ input:checked ~ .checkbox {
   100% {
     transform: translateX(0);
   }
+
   25% {
     transform: translateX(8px);
   }
+
   75% {
     transform: translateX(-8px);
   }
@@ -580,6 +601,7 @@ input:checked ~ .checkbox {
   line-height: 15px;
   margin: 5px 0 0;
 }
+
 // * Submit
 .submit {
   display: flex;
@@ -587,7 +609,7 @@ input:checked ~ .checkbox {
   justify-content: center;
   align-items: center;
   margin-top: 30px;
-    flex-basis: 100%;
+  flex-basis: 100%;
 }
 
 // btn disabled
@@ -595,35 +617,69 @@ input:checked ~ .checkbox {
   background-color: grey;
 }
 
-.typo__p{
-display: block;
+// success modal
+.modalbox.success {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-radius: 2px;
+  padding: 50px 25px 15px;
   position: fixed;
-  z-index: 99999;
+  z-index: 1;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: #282a2d;
-  h3{
-    display: flex; 
-flex-direction: column;
-justify-content: center;
-align-items: center;
-  padding: 1.5rem;
-  background: #ffdc25;
-  color: white;
-  font-size: 3rem;
-  font-weight: 500;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  text-align: center;
+}
+
+.modalbox.success .icon {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  position: relative;
+  margin: 0 auto;
+  background: #4caf50;
+  height: 100px;
+  width: 100px;
+  border-radius: 25%;
+}
+
+.modalbox.success .icon span {
+  position: absolute;
+  font-size: 4em;
+  color: #fff;
+  text-align: center;
+  padding-top: 20px;
+}
+
+/* Modal Content */
+.modalContent {
+  background-color: white;
+  margin: auto;
+  box-shadow: 0px 0px 5px #0ba710;
+  padding: 20px;
+  width: auto;
+  border-top: 10px solid #4caf50;
+  border-radius: 15px;
+  overflow: auto;
+
+  .modal-header {
+    background-color: transparent;
+    color: black;
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin-top: 30px;
   }
-  p{
-background: transparent;
-  font-size: 2rem;
-  font-weight: 500;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+
+  p {
+    background-color: transparent;
+    color: black;
+    margin-top: 30px;
+  }
+
+  .change {
+    font-size: 10px;
+    margin-top: 10px;
+    color: #ccc;
+    background-color: transparent;
   }
 }
 </style>
