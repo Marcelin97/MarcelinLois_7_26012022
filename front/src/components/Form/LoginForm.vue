@@ -4,20 +4,23 @@
       <div>
         <h1>{{ msg }}</h1>
         <div class="container">
-          <form action="#">
+          <form action="#" method="post" @submit.prevent="handleSubmit">
+
             <div class="FormGroup">
               <label class="FormGroupLabel" for="">User</label>
               <div class="FormTextboxWrapper">
                 <input
                   class="FormTextbox"
                   type="text"
-                  placeholder="Nom d'utilisateur"
+                  placeholder="E-mail"
+                  v-model.trim="v$.user.email.$model"
                 />
                 <span class="FormTextboxIcon">
                   <font-awesome-icon :icon="['fas', 'user']" />
                 </span>
               </div>
             </div>
+
             <div class="FormGroup">
               <label class="FormGroupLabel" for="">Pass</label>
               <div class="FormTextboxWrapper">
@@ -25,13 +28,16 @@
                   class="FormTextbox"
                   type="password"
                   placeholder="Mot de passe"
+                  v-model.trim="v$.user.password.$model"
                 />
                 <span class="FormTextboxIcon">
                   <font-awesome-icon :icon="['fas', 'lock']" />
                 </span>
               </div>
             </div>
+
             <button class="btn button">Login</button>
+
           </form>
         </div>
       </div>
@@ -48,11 +54,29 @@
 </template>
 
 <script>
+import axios from "axios";
+
+
 export default {
   name: "LoginForm",
   props: {
     msg: String,
   },
+    data() {
+    return {
+      // v$: useVuelidate(),
+      // submitStatus: null,
+      user: {
+        email: "",
+        password: "",
+      },
+    };
+  },
+  methods: {
+    async handleSubmit(){
+      const response = await axios.post(process.env.VUE_APP_API_URL + "/api/auth/login", this.user)
+    }
+  }
 };
 </script>
 
