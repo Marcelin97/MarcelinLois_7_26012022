@@ -1,20 +1,20 @@
 <template>
-<div class="animation-btn">
-  <button>
-    <span class="paper-wrapper">
-      <span class="paper"></span>
-    </span>
+  <div class="animation-btn">
+    <button>
+      <span class="paper-wrapper">
+        <span class="paper"></span>
+      </span>
 
-    <span class="shredded-wrapper">
-      <span class="shredded"></span>
-    </span>
+      <span class="shredded-wrapper">
+        <span class="shredded"></span>
+      </span>
 
-    <span class="lid"></span>
+      <span class="lid"></span>
 
-    <span class="can">
-      <span class="filler"></span>
-    </span>
-  </button>
+      <span class="can">
+        <span class="filler"></span>
+      </span>
+    </button>
   </div>
 </template>
 
@@ -23,26 +23,26 @@
 
 <style lang="scss" scoped>
 // delete button
-.animation-btn :hover{
-.paper,
-.shredded {
+.animation-btn :hover {
+  .paper,
+  .shredded {
     background: #8de8fe;
-  animation: move 2.25s linear infinite;
-}
-.filler {
-  animation: fill 4.5s infinite;
-}
+    animation: move 2.25s linear infinite;
+  }
+  .filler {
+    animation: fill 4.5s infinite;
+  }
 }
 button {
   position: relative;
   display: flex;
   justify-content: center;
-  align-items:center;
-  width: 4rem;
+  align-items: center;
+  width: 2rem;
   height: 4rem;
-  border-radius:0.8rem;
+  border-radius: 0.8rem;
   border: none;
-  background: #08708a;
+  // background: #08708a;
   cursor: pointer;
 }
 

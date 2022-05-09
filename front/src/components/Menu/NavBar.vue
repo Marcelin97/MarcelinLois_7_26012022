@@ -25,7 +25,7 @@
       <div class="side-menu">
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-trend-up']" />
-          Top des communautés que je suis
+          Top communautés follow
         </a>
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'heart']" />
@@ -43,7 +43,7 @@
       <div class="side-menu">
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'arrow-trend-up']" />
-          Top des communautés que je suis
+          Top communautés unfollow
         </a>
         <a href="#">
           <font-awesome-icon class="icon-left" :icon="['fas', 'heart']" />
@@ -110,12 +110,6 @@
       </nav>
     </div>
     <!-- Header navigation -->
-
-
-
-
-
-
   </div>
 </template>
 
@@ -353,7 +347,7 @@ input:nth-child(4):checked ~ .indicator {
   display: flex;
   flex-direction: column;
   bottom: 0;
-  left: -90%;
+  left: -100%;
   position: absolute;
   top: 180px;
   margin-top: 20px;
