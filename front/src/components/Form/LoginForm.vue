@@ -4,8 +4,7 @@
       <div>
         <h1>{{ msg }}</h1>
         <div class="container">
-          <form action="#" method="post" @submit.prevent="handleSubmit">
-
+          <form action="#" method="post" @submit.prevent="login">
             <div class="FormGroup">
               <label class="FormGroupLabel" for="">User</label>
               <div class="FormTextboxWrapper">
@@ -13,7 +12,7 @@
                   class="FormTextbox"
                   type="text"
                   placeholder="E-mail"
-                  v-model.trim="v$.user.email.$model"
+                  v-model.trim="user.email"
                 />
                 <span class="FormTextboxIcon">
                   <font-awesome-icon :icon="['fas', 'user']" />
@@ -28,7 +27,7 @@
                   class="FormTextbox"
                   type="password"
                   placeholder="Mot de passe"
-                  v-model.trim="v$.user.password.$model"
+                  v-model.trim="user.password"
                 />
                 <span class="FormTextboxIcon">
                   <font-awesome-icon :icon="['fas', 'lock']" />
@@ -36,8 +35,9 @@
               </div>
             </div>
 
-            <button class="btn button">Login</button>
-
+            <button @click="login" class="btn button" :class="{ disable: !emptyFields }">
+              Login
+            </button>
           </form>
         </div>
       </div>
@@ -54,15 +54,12 @@
 </template>
 
 <script>
-import axios from "axios";
-
-
 export default {
   name: "LoginForm",
   props: {
     msg: String,
   },
-    data() {
+  data() {
     return {
       // v$: useVuelidate(),
       // submitStatus: null,
@@ -72,11 +69,38 @@ export default {
       },
     };
   },
+  // computed: {
+  //   loggedIn() {
+  //     return this.$store.state.auth.status.loggedIn;
+  //   },
+  // },
+  // created() {
+  //   if (this.loggedIn) {
+  //     this.$router.push("/profile");
+  //   }
+  // },
+  comuted: {
+    emptyFields: function () {
+      if (this.user.email != "" && this.user.password != "") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
   methods: {
-    async handleSubmit(){
-      const response = await axios.post(process.env.VUE_APP_API_URL + "/api/auth/login", this.user)
-    }
-  }
+    login() {
+      this.$store.dispatch("login", this.user).then(
+        () => {
+          this.$router.push("/wall");
+        },
+        (error) => {
+          error.toString();
+          console.log(error);
+        }
+      );
+    },
+  },
 };
 </script>
 
@@ -163,6 +187,13 @@ button {
 }
 .text-signup {
   margin: 2rem;
+}
+
+// btn disabled
+.disable {
+  color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: default;
 }
 </style>
 

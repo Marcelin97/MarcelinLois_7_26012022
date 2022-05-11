@@ -211,11 +211,11 @@
       <div class="submit">
         <button
           @click="login"
-          :disabled="!v$.$validate"
           class="btn"
           type="submit"
           title="Créer mon compte"
           value="Créer mon compte"
+          :class="{'disable' :!validatedFields}"
         >
           Créer mon compte
         </button>
@@ -378,6 +378,15 @@ export default {
         terms: { required, $autoDirty: true, $lazy: true },
       },
     };
+  },
+  computed: {
+    validatedFields: function (){
+      if(this.user.email != "" && this.user.firstName != "" && this.user.lastName != "" && this.user.birthday != "" && this.user.password != "" && this.user.username != "" && this.user.terms != true){
+        return true;
+      }else{
+        return false;
+      }
+    }
   },
   methods: {
     async handleSubmit() {
@@ -614,7 +623,9 @@ input:checked ~ .checkbox {
 
 // btn disabled
 .disable {
-  background-color: grey;
+      color:  rgba(255,255,255,0.3);
+      background-color: rgba(255,255,255,0.1);
+      cursor: default;
 }
 
 // success modal
