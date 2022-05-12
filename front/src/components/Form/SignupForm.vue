@@ -147,7 +147,6 @@
             </template>
           </div>
         </div>
-
         <!-- Le mot de passe -->
         <div>
           <div class="wrapper">
@@ -208,16 +207,24 @@
       </div>
       <!-- Terms -->
 
+
+        <!-- gestion erreur avec axios -->
+       <div class="form-row" v-if="mode == 'create' && status == 'error_create'">
+      Adresse mail déjà utilisée
+    </div>
+
+
       <div class="submit">
         <button
-          @click="login"
-          :disabled="!v$.$validate"
+          @click="createAccount"
           class="btn"
           type="submit"
           title="Créer mon compte"
           value="Créer mon compte"
+          :class="{ disable: !validatedFields }"
         >
-          Créer mon compte
+        <span v-if="status == 'loading'">Création en cours...</span>
+        <span v-else>Créer mon compte</span>
         </button>
 
         <!-- success modal  -->
@@ -248,7 +255,8 @@
 </template>
 
 <script>
-import axios from "axios";
+import { mapState } from "vuex";
+
 import useVuelidate from "@vuelidate/core";
 import {
   required,
@@ -318,6 +326,7 @@ export default {
   },
   data() {
     return {
+      mode: "create",
       v$: useVuelidate(),
       submitStatus: null,
       user: {
@@ -379,46 +388,51 @@ export default {
       },
     };
   },
-  methods: {
-    async handleSubmit() {
-      const isFormCorrect = await this.v$.$validate();
-      if (!isFormCorrect) {
-        // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
-        alert("Form failed validation");
-        // change de status of the message
-        // this.submitStatus = "ERROR";
-
-        //
-        this.$nextTick(() => {
-          let domRect = document
-            .querySelector(".error")
-            .getBoundingClientRect();
-          window.scrollTo(
-            domRect.left + document.documentElement.scrollLeft,
-            domRect.top + document.documentElement.scrollTop
-          );
-        });
-        // return;
+  computed: {
+    validatedFields: function () {
+      if (
+        this.user.email != "" &&
+        this.user.firstName != "" &&
+        this.user.lastName != "" &&
+        this.user.birthday != "" &&
+        this.user.password != "" &&
+        this.user.username != "" &&
+        this.user.terms != true
+      ) {
+        return true;
       } else {
-        // actually submit form
-        // alert("Form successfully submitted");
-        this.submitStatus = "OK";
-        axios
-          .post(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
-          .then((response) => {
-            console.log(response);
-            setTimeout(
-              function () {
-                this.$router.push("/login");
-              }.bind(this),
-              10000,
-              this
-            );
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        return false;
       }
+    },
+        ...mapState(["status"]),
+  },
+  methods: {
+    async createAccount() {
+      const self = this;
+      this.$store
+        .dispatch("createAccount", this.user)
+        .then(() => {
+          this.submitStatus = "OK";
+          setTimeout(
+            function () {
+              self.$router.push("/login");
+            }.bind(this),
+            2000,
+            this
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$nextTick(() => {
+            let domRect = document
+              .querySelector(".error")
+              .getBoundingClientRect();
+            window.scrollTo(
+              domRect.left + document.documentElement.scrollLeft,
+              domRect.top + document.documentElement.scrollTop
+            );
+          });
+        });
     },
 
     login() {
@@ -430,6 +444,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.form-row{
+  color: red;
+}
 .container {
   display: flex;
   flex-direction: column;
@@ -614,7 +631,14 @@ input:checked ~ .checkbox {
 
 // btn disabled
 .disable {
-  background-color: grey;
+  color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: default;
+  span{
+     color: rgba(255, 255, 255, 0.3);
+  background-color: transparent;
+  cursor: default;
+  }
 }
 
 // success modal
