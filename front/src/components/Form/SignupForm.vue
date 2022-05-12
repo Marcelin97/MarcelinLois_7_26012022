@@ -417,7 +417,7 @@ export default {
             function () {
               self.$router.push("/login");
             }.bind(this),
-            1000,
+            2000,
             this
           );
         })
@@ -634,6 +634,11 @@ input:checked ~ .checkbox {
   color: rgba(255, 255, 255, 0.3);
   background-color: rgba(255, 255, 255, 0.1);
   cursor: default;
+  span{
+     color: rgba(255, 255, 255, 0.3);
+  background-color: transparent;
+  cursor: default;
+  }
 }
 
 // success modal
