@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
+import store from "./store";
 
 
 // * Font Awesome icons
@@ -20,4 +21,5 @@ library.add(fas);
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(router)
+  .use(store)
   .mount("#app");

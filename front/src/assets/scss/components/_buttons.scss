@@ -17,10 +17,15 @@
   transition-property: box-shadow, background;
   transition-duration: 0.35s;
   max-width: 7rem;
+  span{
+    background: transparent;
+  }
 }
+
 .btn:focus {
   box-shadow: 0 0 0 2px #95d7e7;
 }
+
 .btn:hover {
   background: #95d7e7;
 }

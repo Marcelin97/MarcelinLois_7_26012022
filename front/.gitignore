@@ -1,6 +1,9 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/vuejs,visualstudiocode,phpstorm
-# Edit at https://www.toptal.com/developers/gitignore?templates=vuejs,visualstudiocode,phpstorm
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,phpstorm,dotenv,vuejs
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,phpstorm,dotenv,vuejs
+
+### dotenv ###
+.env
 
 ### PhpStorm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -131,6 +134,10 @@ fabric.properties
 .ionide
 
 # Support for Project snippet scope
+.vscode/*.code-snippets
+
+# Ignore code-workspaces
+*.code-workspace
 
 ### Vuejs ###
 # Recommended template: Node.gitignore
@@ -140,4 +147,4 @@ dist/
 npm-debug.log
 yarn-error.log
 
-# End of https://www.toptal.com/developers/gitignore/api/vuejs,visualstudiocode,phpstorm
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,phpstorm,dotenv,vuejs
