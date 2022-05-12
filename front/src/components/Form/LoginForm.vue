@@ -34,9 +34,21 @@
                 </span>
               </div>
             </div>
+            <!-- gestion erreur avec axios -->
+            <div
+              class="form-row"
+              v-if="mode == 'login' && status == 'error_login'"
+            >
+              Adresse mail et/ou mot de passe invalide
+            </div>
 
-            <button @click="login" class="btn button" :class="{ disable: !emptyFields }">
-              Login
+            <button
+              @click="login"
+              class="btn button"
+              :class="{ disable: !emptyFields }"
+            >
+              <span v-if="status == 'loading'">Connexion en cours...</span>
+              <span v-else>Connexion</span>
             </button>
           </form>
         </div>
@@ -54,6 +66,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "LoginForm",
   props: {
@@ -61,6 +75,7 @@ export default {
   },
   data() {
     return {
+      mode: 'login',
       // v$: useVuelidate(),
       // submitStatus: null,
       user: {
@@ -79,7 +94,7 @@ export default {
   //     this.$router.push("/profile");
   //   }
   // },
-  comuted: {
+  computed: {
     emptyFields: function () {
       if (this.user.email != "" && this.user.password != "") {
         return true;
@@ -87,18 +102,21 @@ export default {
         return false;
       }
     },
+    ...mapState(["status"]),
   },
   methods: {
     login() {
-      this.$store.dispatch("login", this.user).then(
-        () => {
-          this.$router.push("/wall");
-        },
-        (error) => {
-          error.toString();
-          console.log(error);
-        }
-      );
+      const self = this;
+      this.$store
+        .dispatch("login", this.user)
+        .then(() => {
+          // redirection vers profil
+          // en test sur le wall changement à faire
+          self.$router.push("/wall")
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
