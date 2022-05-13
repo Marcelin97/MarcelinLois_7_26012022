@@ -86,7 +86,7 @@
 
         <label class="find" for="find">
           <font-awesome-icon class="icon find" :icon="['fas', 'user']" />
-          <router-link class="text" to="/profil">Compte</router-link>
+          <router-link class="text" to="/user">Compte</router-link>
         </label>
         <div class="indicator"></div>
 
