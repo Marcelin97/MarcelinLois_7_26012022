@@ -110,9 +110,7 @@ export default {
       this.$store
         .dispatch("login", this.user)
         .then(() => {
-          // redirection vers profil
-          // en test sur le wall changement à faire
-          self.$router.push("/wall")
+          self.$router.push("/user")
         })
         .catch((err) => {
           console.log(err);

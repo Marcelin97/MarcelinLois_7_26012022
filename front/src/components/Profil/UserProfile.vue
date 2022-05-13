@@ -43,9 +43,19 @@
 import PostCard from "../Posts/PostCard.vue";
 
 export default {
+  name: 'User-profile',
   setup() {},
     components: {
     PostCard,
+  },
+  mounted: function () {
+    console.log(this.$store.state.user);
+    // console.log(this.$store.state.user.accessToken);
+     if (this.$store.state.user.userId == -1) {
+      this.$router.push('/');
+      return ;
+    }
+        this.$store.dispatch('getUserInfos');
   },
 };
 </script>

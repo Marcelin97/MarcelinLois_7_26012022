@@ -15,11 +15,11 @@ if (!user) {
 } else {
   try {
     user = JSON.parse(user);
-    instance.defaults.headers.common["Authorization"] = user.token;
+    instance.defaults.headers.common["Authorization"] = user.accessToken;
   } catch (ex) {
     user = {
       userId: -1,
-      token: "",
+      accessToken: "",
     };
   }
 }
@@ -31,13 +31,16 @@ const store = createStore({
         user: {
             userId: -1,
             accessToken: "",
-        }
-    // userInfos: {
-    //     nom: '',
-    //     prenom: '',
-    //     email: '',
-    //     photo: '',
-    // },
+        },
+    userInfos: {
+      firstName: '',
+      lastName: '',
+      username: '',
+      email: '',
+      birthday: '',
+      imageUrl: '',
+      isAdmin: '',
+    },
   },
   mutations: {
       setStatus: function (state, status) {
@@ -45,13 +48,14 @@ const store = createStore({
           state.submitStatus = status;
       },
       logUser: function (state, user) {
-        //   instance.defaults.headers.common['Authorization'] = user.token;
+        instance.defaults.headers.common['Authorization'] = user.accessToken;
+        console.log(user.accessToken);
         //   localStorage.setItem('user', JSON.stringify(user));
           state.user = user;
       },
-  //     userInfos: function (state, userInfos) {
-  //         state.userInfos = userInfos;
-  //     },
+      userInfos: function (state, userInfos) {
+          state.userInfos = userInfos;
+      },
   //     logout: function (state) {
   //         state.user = {
   //             userId: -1,
@@ -112,14 +116,14 @@ const store = createStore({
           })
       
     },
-    // getUserInfos: ({ commit }) => {
-    //     instance.post('/infos')
-    //         .then(function (response) {
-    //             commit('userInfos', response.data.infos);
-    //         })
-    //         .catch(function () {
-    //         });
-    // }
+    getUserInfos: ({ commit }) => {
+        instance.get('/read')
+            .then(function (response) {
+                commit('userInfos', response.data.infos);
+            })
+            .catch(function () {
+            });
+    }
   },
 });
 
