@@ -28,10 +28,7 @@ if (!user) {
 const store = createStore({
   state: {
     status: '',
-        user: {
-            userId: -1,
-            accessToken: "",
-        },
+    user: user,
     userInfos: {
       firstName: '',
       lastName: '',
@@ -48,13 +45,14 @@ const store = createStore({
           state.submitStatus = status;
       },
       logUser: function (state, user) {
-        instance.defaults.headers.common['Authorization'] = user.accessToken;
+        // instance.defaults.headers.common['Authorization'] = user.accessToken;
+        instance.defaults.headers.common["Authorization"] = `Bearer ${user.accessToken}`
         console.log(user.accessToken);
-        //   localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('user', JSON.stringify(user));
           state.user = user;
       },
-      userInfos: function (state, userInfos) {
-          state.userInfos = userInfos;
+    userInfos: function (state, userInfos) {
+        state.userInfos = userInfos;
       },
   //     logout: function (state) {
   //         state.user = {
@@ -74,7 +72,6 @@ const store = createStore({
                       commit('setStatus', '');
                       commit('logUser', response.data);
                       resolve(response)
-                      //   console.log(response);
                       // setTimeout(
                       //   function () {
                       //     this.$router.push("/login");
@@ -86,7 +83,6 @@ const store = createStore({
                   .catch((error) => {
                       commit('setStatus', 'error_login');
                       reject(error)
-                      //   console.log(error);
                   });
           })
     },
@@ -99,7 +95,6 @@ const store = createStore({
                   .then((response) => {
                       commit('setStatus', 'created');
                       resolve(response)
-                    //   console.log(response);
                       // setTimeout(
                       //   function () {
                       //     this.$router.push("/login");
@@ -111,18 +106,23 @@ const store = createStore({
                   .catch((error) => {
                       commit('setStatus', 'error_create');
                       reject(error)
-                    //   console.log(error);
                   });
           })
       
     },
     getUserInfos: ({ commit }) => {
+      // return new Promise((resolve, reject) => {
+
         instance.get('/read')
-            .then(function (response) {
-                commit('userInfos', response.data.infos);
-            })
-            .catch(function () {
-            });
+          .then(function (response) {
+            commit('userInfos', response.data);
+            // resolve(response)
+          })
+          .catch(function (error) {
+            console.log(error);
+            // reject(error)
+          });
+      // })
     }
   },
 });

@@ -33,29 +33,34 @@
       </div>
     </div>
   </div>
-<div>
-        <PostCard />
-
-</div>
+  <div>
+    <PostCard />
+  </div>
 </template>
 
 <script>
 import PostCard from "../Posts/PostCard.vue";
+import { mapState } from "vuex";
 
 export default {
-  name: 'User-profile',
+  name: "User-profile",
   setup() {},
-    components: {
+  components: {
     PostCard,
   },
   mounted: function () {
-    console.log(this.$store.state.user);
+    // console.log(this.$store.state.user.userId);
     // console.log(this.$store.state.user.accessToken);
-     if (this.$store.state.user.userId == -1) {
-      this.$router.push('/');
-      return ;
+    if (this.$store.state.user.userId == -1) {
+      this.$router.push("/");
+      return;
     }
-        this.$store.dispatch('getUserInfos');
+    this.$store.dispatch("getUserInfos");
+  },
+  computed: {
+    ...mapState({
+      user: "userInfos",
+    }),
   },
 };
 </script>
@@ -222,7 +227,7 @@ export default {
       5px 5px 5px rgba(black, 0.05);
   }
 }
-img{
+img {
   width: 100%;
   height: 100%;
 }
