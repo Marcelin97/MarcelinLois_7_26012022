@@ -1,6 +1,6 @@
 <template>
+<HeaderNavigation/>
   <section>
-    <GoBack />
     <h1>Mon compte</h1>
     <UserProfile />
   </section>
@@ -8,19 +8,22 @@
 
 <script>
 import UserProfile from "@/components/Profil/UserProfile.vue";
-import GoBack from "../components/Base/GoBack.vue";
+import HeaderNavigation from "../components/Menu/HeaderNavigation.vue";
+
 
 export default {
   name: "UserView",
   components: {
     UserProfile,
-    GoBack
+    HeaderNavigation,
   },
 };
 </script>
 
 <style lang="scss" scoped>
 h1 {
+  display: flex;
+  justify-content: center;
   margin-top: 10px;
   line-height: 35px;
   text-transform: uppercase;

@@ -15,7 +15,9 @@ if (!user) {
 } else {
   try {
     user = JSON.parse(user);
-    instance.defaults.headers.common["Authorization"] = user.accessToken;
+    instance.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${user.accessToken}`;
   } catch (ex) {
     user = {
       userId: -1,
@@ -27,103 +29,78 @@ if (!user) {
 // Create a new store instance.
 const store = createStore({
   state: {
-    status: '',
+    status: "",
     user: user,
-    userInfos: {
-      firstName: '',
-      lastName: '',
-      username: '',
-      email: '',
-      birthday: '',
-      imageUrl: '',
-      isAdmin: '',
-    },
+    userInfos: user
   },
   mutations: {
-      setStatus: function (state, status) {
-          state.status = status;
-          state.submitStatus = status;
-      },
-      logUser: function (state, user) {
-        // instance.defaults.headers.common['Authorization'] = user.accessToken;
-        instance.defaults.headers.common["Authorization"] = `Bearer ${user.accessToken}`
-        console.log(user.accessToken);
-          localStorage.setItem('user', JSON.stringify(user));
-          state.user = user;
-      },
+    setStatus: function (state, status) {
+      state.status = status;
+      state.submitStatus = status;
+    },
+    logUser: function (state, user) {
+      // instance.defaults.headers.common['Authorization'] = user.accessToken;
+      instance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${user.accessToken}`;
+      localStorage.setItem("user", JSON.stringify(user));
+      state.user = user;
+    },
     userInfos: function (state, userInfos) {
-        state.userInfos = userInfos;
-      },
-  //     logout: function (state) {
-  //         state.user = {
-  //             userId: -1,
-  //             token: '',
-  //         }
-  //         localStorage.removeItem('user');
-  //     }
+      state.userInfos = userInfos;
+    },
+    //     logout: function (state) {
+    //         state.user = {
+    //             userId: -1,
+    //             token: '',
+    //         }
+    //         localStorage.removeItem('user');
+    //     }
   },
   actions: {
-      login: ({ commit }, userInfos) => {
-          commit('setStatus', 'loading');
-          return new Promise((resolve, reject) => {
-              instance
-                  .post("/login", userInfos)
-                  .then((response) => {
-                      commit('setStatus', '');
-                      commit('logUser', response.data);
-                      resolve(response)
-                      // setTimeout(
-                      //   function () {
-                      //     this.$router.push("/login");
-                      //   }.bind(this),
-                      //   10000,
-                      //   this
-                      // );
-                  })
-                  .catch((error) => {
-                      commit('setStatus', 'error_login');
-                      reject(error)
-                  });
+    login: ({ commit }, userInfos) => {
+      commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        instance
+          .post("/login", userInfos)
+          .then((response) => {
+            commit("setStatus", "");
+            commit("logUser", response.data);
+            resolve(response);
           })
-    },
-      createAccount: ({ commit }, userInfos) => {
-          commit('setStatus', 'loading');
-          return new Promise((resolve, reject) => {
-              commit;
-              instance
-                  .post("/signup", userInfos)
-                  .then((response) => {
-                      commit('setStatus', 'created');
-                      resolve(response)
-                      // setTimeout(
-                      //   function () {
-                      //     this.$router.push("/login");
-                      //   }.bind(this),
-                      //   10000,
-                      //   this
-                      // );
-                  })
-                  .catch((error) => {
-                      commit('setStatus', 'error_create');
-                      reject(error)
-                  });
-          })
-      
-    },
-    getUserInfos: ({ commit }) => {
-      // return new Promise((resolve, reject) => {
-
-        instance.get('/read')
-          .then(function (response) {
-            commit('userInfos', response.data);
-            // resolve(response)
-          })
-          .catch(function (error) {
-            console.log(error);
-            // reject(error)
+          .catch((error) => {
+            commit("setStatus", "error_login");
+            reject(error);
           });
-      // })
-    }
+      });
+    },
+    createAccount: ({ commit }, userInfos) => {
+      commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        commit;
+        instance
+          .post("/signup", userInfos)
+          .then((response) => {
+            commit("setStatus", "created");
+            resolve(response);
+          })
+          .catch((error) => {
+            commit("setStatus", "error_create");
+            reject(error);
+          });
+      });
+    },
+    getUserInfos: async({ commit }) => {
+      await instance
+        .get("/read")
+        .then(function (response) {
+          commit("userInfos", response.data);
+          // console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
 });
 

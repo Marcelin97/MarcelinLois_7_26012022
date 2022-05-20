@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" v-if="user">
     <div class="profile-card js-profile-card">
       <div class="profile-card__img">
         <img
@@ -10,12 +10,18 @@
       </div>
 
       <div class="profile-card__cnt js-profile-cnt">
-        <div class="profile-card__name">User Groupomania</div>
-        <div class="profile-card__txt">Full Stack Developer</div>
+        <div class="profile-card__name">
+          Nom d'utilisateur: {{ user.user.username }}
+        </div>
+        <div class="profile-card__txt">Identifiant: {{ user.user.id }}</div>
+                <div class="profile-card__txt">administrateur: {{ user.user.isAdmin }}</div>
+
 
         <div class="profile-card-inf">
           <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">15</div>
+            <div class="profile-card-inf__title">
+              <!-- {{ data.author.length }} -->
+            </div>
             <div class="profile-card-inf__txt">Abonnements</div>
           </div>
 
@@ -27,7 +33,6 @@
       </div>
 
       <div class="profile-card-ctr">
-        <button class="profile-card__button">Message</button>
         <button class="profile-card__button">Signaler</button>
         <button class="profile-card__button">Modifier</button>
       </div>
@@ -55,11 +60,18 @@ export default {
       this.$router.push("/");
       return;
     }
-    this.$store.dispatch("getUserInfos");
+    this.$store
+      .dispatch("getUserInfos")
+      .then(() => {
+        console.log(",", this.user);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
   computed: {
     ...mapState({
-      user: "userInfos",
+      user: "user",
     }),
   },
 };
@@ -86,10 +98,7 @@ export default {
 
 .profile-card {
   width: 100%;
-  //   min-height: 460px;
   margin: auto;
-  //   background: #292929;
-  border-radius: 12px;
   max-width: 700px;
   position: relative;
 
@@ -172,8 +181,7 @@ export default {
     justify-content: center;
     align-items: center;
     margin-top: 40px;
-
-    @media screen and (max-width: 576px) {
+    @media screen and (max-width: 800px) {
       flex-wrap: wrap;
     }
   }
@@ -190,17 +198,12 @@ export default {
     cursor: pointer;
     transition: all 0.3s;
 
-    @media screen and (max-width: 768px) {
-      min-width: 170px;
-      margin: 15px 25px;
-    }
-
     @media screen and (max-width: 576px) {
-      min-width: inherit;
-      margin: 0;
+      // min-width: inherit;
+      margin: 1em;
       margin-bottom: 16px;
-      width: 100%;
-      max-width: 300px;
+      // width: 100%;
+      // max-width: 300px;
 
       &:last-child {
         margin-bottom: 0;
@@ -208,6 +211,7 @@ export default {
     }
   }
 }
+
 .profile-card__button {
   margin-top: 1rem;
   background: lighten(rgb(23, 23, 23), 1%);
