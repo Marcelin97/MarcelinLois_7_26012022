@@ -84,16 +84,12 @@ export default {
       },
     };
   },
-  // computed: {
-  //   loggedIn() {
-  //     return this.$store.state.auth.status.loggedIn;
-  //   },
-  // },
-  // created() {
-  //   if (this.loggedIn) {
-  //     this.$router.push("/profile");
-  //   }
-  // },
+  mounted: function () {
+    if (this.$store.state.user.userId != -1) {
+      this.$router.push('/user');
+      return ;
+    }
+  },
   computed: {
     emptyFields: function () {
       if (this.user.email != "" && this.user.password != "") {

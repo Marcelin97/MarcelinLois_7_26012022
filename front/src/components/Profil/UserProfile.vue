@@ -63,7 +63,7 @@ export default {
     this.$store
       .dispatch("getUserInfos")
       .then(() => {
-        console.log(",", this.user);
+        // console.log(",", this.user);
       })
       .catch((err) => {
         console.log(err);

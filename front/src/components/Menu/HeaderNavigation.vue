@@ -17,26 +17,24 @@
       <div class="indicator"></div>
 
       <div class="dropdown">
-          <!-- The trigger element -->
-          <!-- <button class="press"> -->
-          <label class="find" for="find">
-            <font-awesome-icon class="icon find" :icon="['fas', 'user']" />
-          </label>
-          <!-- </button> -->
+        <!-- The trigger element -->
+        <!-- <button class="press"> -->
+        <label class="find" for="find">
+          <font-awesome-icon class="icon find" :icon="['fas', 'user']" />
+        </label>
+        <!-- </button> -->
 
-          <!-- The content -->
-          <div class="dropdown__content">
-            <router-link class="dropdown-text" to="/user">Profil</router-link>
-            <router-link class="dropdown-text" to="/">Enregistré</router-link>
-            <router-link class="dropdown-text" to="/user/parameter"
-              >Paramètres</router-link
-            >
-            <hr class="line" />
-            <router-link class="dropdown-text" to="/login"
-              >Déconnexion</router-link
-            >
-          </div>
+        <!-- The content -->
+        <div class="dropdown__content">
+          <router-link class="dropdown-text" to="/user">Profil</router-link>
+          <router-link class="dropdown-text" to="/">Enregistré</router-link>
+          <router-link class="dropdown-text" to="/user/parameter"
+            >Paramètres</router-link
+          >
+          <hr class="line" />
+          <button class="dropdown-text" @click="logout">Déconnexion</button>
         </div>
+      </div>
       <div class="indicator"></div>
 
       <label class="notification" for="notification">
@@ -49,7 +47,10 @@
       <div class="indicator"></div>
 
       <label class="messagerie" for="messagerie">
-        <font-awesome-icon class="icon messagerie" :icon="['fas', 'paper-plane']" />
+        <font-awesome-icon
+          class="icon messagerie"
+          :icon="['fas', 'paper-plane']"
+        />
         <router-link class="text" to="#">Chat</router-link>
       </label>
       <div class="indicator"></div>
@@ -61,6 +62,12 @@
 <script>
 export default {
   name: "HeaderNavigation",
+  methods: {
+    logout: function () {
+      this.$store.commit("logout");
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 

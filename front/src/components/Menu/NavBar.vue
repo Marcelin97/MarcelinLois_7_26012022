@@ -95,8 +95,8 @@
               >Paramètres</router-link
             >
             <hr class="line" />
-            <router-link class="dropdown-text" to="/login"
-              >Déconnexion</router-link
+            <button class="dropdown-text" @click="logout"
+              >Déconnexion</button
             >
           </div>
         </div>
@@ -126,8 +126,15 @@
 </template>
 
 <script>
+
 export default {
   name: "NavBar",
+  methods: {
+        logout: function () {
+      this.$store.commit('logout');
+      this.$router.push('/');
+    }
+  }
 };
 </script>
 

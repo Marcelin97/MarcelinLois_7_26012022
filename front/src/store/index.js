@@ -49,13 +49,13 @@ const store = createStore({
     userInfos: function (state, userInfos) {
       state.userInfos = userInfos;
     },
-    //     logout: function (state) {
-    //         state.user = {
-    //             userId: -1,
-    //             token: '',
-    //         }
-    //         localStorage.removeItem('user');
-    //     }
+        logout: function (state) {
+            state.user = {
+                userId: -1,
+                token: '',
+            }
+            localStorage.removeItem('user');
+        }
   },
   actions: {
     login: ({ commit }, userInfos) => {
