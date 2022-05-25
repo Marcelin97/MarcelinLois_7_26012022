@@ -31,7 +31,7 @@ const store = createStore({
   state: {
     status: "",
     user: user,
-    userInfos: user
+    userInfos: user,
   },
   mutations: {
     setStatus: function (state, status) {
@@ -95,7 +95,7 @@ const store = createStore({
         .get("/read")
         .then(function (response) {
           commit("userInfos", response.data);
-          // console.log(response.data);
+          console.log(response.data);
         })
         .catch(function (error) {
           console.log(error);
