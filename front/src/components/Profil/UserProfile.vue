@@ -1,33 +1,33 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" >
     <div class="profile-card js-profile-card">
       <div class="profile-card__img">
-        <img
-          src="https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80"
-          alt="profile card"
+        <!-- <img
+          :src="user?.data.imageUrl"
+          alt="Photo d'utilisateur"
           aria-label="Photo d'utilisateur"
-        />
+        /> -->
       </div>
 
       <div class="profile-card__cnt js-profile-cnt">
         <div class="profile-card__name">
-          Nom d'utilisateur: {{ user.user.username }}
+          Nom d'utilisateur : {{ user.data?.username || "chargement des informations en cours..." }}
         </div>
-        <div class="profile-card__txt">Identifiant: {{ user.user.id }}</div>
+        <div class="profile-card__txt">Identifiant : {{ user.data?.id }}</div>
         <div class="profile-card__txt">
-          administrateur: {{ user.user.isAdmin }}
+          administrateur : {{ user.data?.isAdmin }}
         </div>
-
+        
         <div class="profile-card-inf">
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.user.data}}
+              {{ user.data?.communities.length }}
             </div>
             <div class="profile-card-inf__txt">Abonnements</div>
           </div>
 
           <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">35</div>
+            <div class="profile-card-inf__title">{{ user.data?.creator.length }}</div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
         </div>
@@ -49,28 +49,33 @@
 <script>
 import PostCard from "../Posts/PostCard.vue";
 import { mapState } from "vuex";
+import { useSkeletor } from 'vue-skeletor';
 
 export default {
   name: "User-profile",
-  setup() {},
+  setup() {
+    // In your setup function use the composable
+      const skeletor = useSkeletor();
+ 
+      // Set the shimmer config
+      skeletor.shimmer = false;
+  },
   components: {
     PostCard,
   },
-  mounted: function () {
+  async created() {
     // console.log(this.$store.state.user.userId);
     // console.log(this.$store.state.user.accessToken);
     if (this.$store.state.user.userId == -1) {
       this.$router.push("/");
       return;
     }
-    this.$store
-      .dispatch("getUserInfos")
-      .then(() => {
-        console.log(this.user.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+    await this.$store.dispatch("getUserInfos");
+      console.log(this.user.data);
+    } catch (error) {
+      console.log(error);
+    }
   },
   computed: {
     ...mapState({
@@ -185,7 +190,7 @@ export default {
     justify-content: center;
     align-items: center;
     margin-top: 40px;
-      border-radius: 0.8rem;
+    border-radius: 0.8rem;
     @media screen and (max-width: 800px) {
       flex-wrap: wrap;
     }

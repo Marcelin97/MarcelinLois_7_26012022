@@ -16,10 +16,15 @@ library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch();
 
+import VueSkeletor from 'vue-skeletor';
+
 library.add(fas);
 
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(router)
   .use(store)
+  .use(VueSkeletor, {
+    shimmer: false,
+  })
   .mount("#app");

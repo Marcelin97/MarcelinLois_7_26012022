@@ -28,9 +28,7 @@
         <div class="dropdown__content">
           <router-link class="dropdown-text" to="/user">Profil</router-link>
           <router-link class="dropdown-text" to="/">Enregistré</router-link>
-          <router-link class="dropdown-text" to="/user/parameter"
-            >Paramètres</router-link
-          >
+          <router-link class="dropdown-text" to="/user/parameter">Paramètres</router-link>
           <hr class="line" />
           <button class="dropdown-text" @click="logout">Déconnexion</button>
         </div>

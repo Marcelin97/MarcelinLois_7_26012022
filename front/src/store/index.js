@@ -95,7 +95,7 @@ const store = createStore({
         .get("/read")
         .then(function (response) {
           commit("userInfos", response.data);
-          console.log(response.data);
+          console.log(',' , response.data);
         })
         .catch(function (error) {
           console.log(error);
