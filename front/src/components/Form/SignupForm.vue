@@ -4,7 +4,7 @@
     <p>
       Pour créer votre compte Groupomania, merci de remplir les champs suivants:
     </p>
-    <form action="#" method="post" @submit.prevent="handleSubmit">
+    <form action="#" method="post" @submit.prevent="createAccount">
       <fieldset>
         <legend>Inscription</legend>
 
@@ -207,24 +207,21 @@
       </div>
       <!-- Terms -->
 
-
-        <!-- gestion erreur avec axios -->
-       <div class="form-row" v-if="mode == 'create' && status == 'error_create'">
-      Adresse mail déjà utilisée
-    </div>
-
+      <!-- gestion erreur avec axios -->
+      <div class="form-row" v-if="mode == 'create' && status == 'error_create'">
+        Adresse mail déjà utilisée
+      </div>
 
       <div class="submit">
         <button
-          @click="createAccount"
           class="btn"
           type="submit"
           title="Créer mon compte"
           value="Créer mon compte"
           :class="{ disable: !validatedFields }"
         >
-        <span v-if="status == 'loading'">Création en cours...</span>
-        <span v-else>Créer mon compte</span>
+          <span v-if="status == 'loading'">Création en cours...</span>
+          <span v-else>Créer mon compte</span>
         </button>
 
         <!-- success modal  -->
@@ -263,54 +260,16 @@ import {
   minLength,
   email,
   maxLength,
-  // helpers
+  alphaNum,
 } from "@vuelidate/validators";
-
-// export function isUsernameAvailable(value) {
-//   if (value === "") return true;
-//   return new Promise(() => {
-//     return axios
-//       .get(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
-//       .then((response) => {
-//         if (response.data.user.username) {
-//           return true;
-//         }
-//       })
-//       .catch((error) => {
-//         if (
-//           error.response.data.user.username[0] ==
-//           "The username has already been taken."
-//         ) {
-//           return false;
-//         }
-//         return true;
-//       });
-//   });
-// }
-
-export function validName(value) {
-  return /^[a-z0-9]+$/i.test(value);
-}
 
 export function strongPassword(value) {
   return (
     /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/.test(
       value
-    ) &&
-    // /[0-9]/.test(password) && //checks for 0-9
-    // /\W|_/.test(password) && //checks for special char
-    value.length >= 8
+    ) && value.length >= 8
   );
 }
-
-// export function checkIsValid(val, event) {
-//   if (val.$error) {
-//     event.target.classList.add("form__input-shake");
-//     setTimeout(() => {
-//       event.target.classList.remove("form__input-shake");
-//     }, 600);
-//   }
-// }
 
 export default {
   name: "SignupForm",
@@ -352,14 +311,7 @@ export default {
           $lazy: true,
           minLength: minLength(3),
           maxLength: maxLength(25),
-          // username_validation: {
-          //   $validator: isUsernameAvailable,
-          //   $message: "E-mail déjà utilisé",
-          // },
-          name_validation: {
-            $validator: validName,
-            $message: "Username can only contain numbers and letters",
-          },
+          alphaNum,
         },
         email: {
           required,
@@ -373,15 +325,10 @@ export default {
           required,
           $autoDirty: true,
           $lazy: true,
-          // minLength: minLength(8),
           password_validation: {
             $validator: strongPassword,
             $message:
               "Entre 8 et 16 caractères, Une minuscule au moins, Une majuscule au moins, Un chiffre au moins, Un caractère spécial au moins (@&/!$ ...)",
-            // $message: "Une minuscule au moins",
-            // $message: "Une majuscule au moins",
-            // $message: "Un chiffre au moins",
-            // $message: "Un caractère spécial au moins (@&/!$ ...)",
           },
         },
         terms: { required, $autoDirty: true, $lazy: true },
@@ -404,10 +351,12 @@ export default {
         return false;
       }
     },
-        ...mapState(["status"]),
+    ...mapState(["status"]),
   },
   methods: {
     async createAccount() {
+      const isFormCorrect = await this.v$.$validate();
+
       const self = this;
       this.$store
         .dispatch("createAccount", this.user)
@@ -422,29 +371,33 @@ export default {
           );
         })
         .catch((err) => {
-          console.log(err);
-          this.$nextTick(() => {
-            let domRect = document
-              .querySelector(".error")
-              .getBoundingClientRect();
-            window.scrollTo(
-              domRect.left + document.documentElement.scrollLeft,
-              domRect.top + document.documentElement.scrollTop
-            );
-          });
+          if (!isFormCorrect) {
+                      console.log(err);
+
+            this.$nextTick(() => {
+              let domRect = document
+                .querySelector(".error")
+                .getBoundingClientRect();
+              window.scrollTo(
+                domRect.left + document.documentElement.scrollLeft,
+                domRect.top + document.documentElement.scrollTop
+              );
+            });
+          }
+          return;
         });
     },
 
-    login() {
-      this.v$.$touch();
-      console.warn(this.form);
-    },
+    // login() {
+    //   this.v$.$touch();
+    //   console.warn(this.form);
+    // },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.form-row{
+.form-row {
   color: red;
 }
 .container {
@@ -634,10 +587,10 @@ input:checked ~ .checkbox {
   color: rgba(255, 255, 255, 0.3);
   background-color: rgba(255, 255, 255, 0.1);
   cursor: default;
-  span{
-     color: rgba(255, 255, 255, 0.3);
-  background-color: transparent;
-  cursor: default;
+  span {
+    color: rgba(255, 255, 255, 0.3);
+    background-color: transparent;
+    cursor: default;
   }
 }
 

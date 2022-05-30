@@ -67,6 +67,10 @@
 
 <script>
 import { mapState } from "vuex";
+// import useVuelidate from "@vuelidate/core";
+// import {
+//   email,
+// } from "@vuelidate/validators";
 
 export default {
   name: "LoginForm",

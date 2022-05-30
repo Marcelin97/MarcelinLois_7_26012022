@@ -17,7 +17,7 @@
         <div class="profile-card__txt">
           administrateur : {{ user.data?.isAdmin }}
         </div>
-        
+
         <div class="profile-card-inf">
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
@@ -49,17 +49,10 @@
 <script>
 import PostCard from "../Posts/PostCard.vue";
 import { mapState } from "vuex";
-import { useSkeletor } from 'vue-skeletor';
 
 export default {
   name: "User-profile",
-  setup() {
-    // In your setup function use the composable
-      const skeletor = useSkeletor();
- 
-      // Set the shimmer config
-      skeletor.shimmer = false;
-  },
+  setup() {},
   components: {
     PostCard,
   },
