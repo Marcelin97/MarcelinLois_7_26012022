@@ -1,10 +1,5 @@
 import { createStore } from "vuex";
-
-const axios = require("axios");
-
-const instance = axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
-});
+import axiosInstance from "../services/api";
 
 let user = localStorage.getItem("user");
 if (!user) {
@@ -15,9 +10,6 @@ if (!user) {
 } else {
   try {
     user = JSON.parse(user);
-    instance.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${user.accessToken}`;
   } catch (ex) {
     user = {
       userId: -1,
@@ -32,40 +24,46 @@ const store = createStore({
     status: "",
     user: user,
     userInfos: user,
+    isAuthenticated: false
   },
   mutations: {
     setStatus: function (state, status) {
       state.status = status;
       state.submitStatus = status;
     },
-    logUser: function (state, user) {
-      // instance.defaults.headers.common['Authorization'] = user.accessToken;
-      instance.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${user.accessToken}`;
-      localStorage.setItem("user", JSON.stringify(user));
+    // sets state with user information and toggles
+    // isAuthenticated from false to true
+    logUser: function (state, user) { 
       state.user = user;
+      state.isAuthenticated = true;
     },
     userInfos: function (state, userInfos) {
       state.userInfos = userInfos;
     },
-        logout: function (state) {
-            state.user = {
-                userId: -1,
-                token: '',
-            }
-            localStorage.removeItem('user');
-        }
+        // delete all auth and user information from the state
+    logout: function (state) {
+      state.user = {
+        userId: -1,
+        token: "",
+      };
+      localStorage.removeItem("user");
+      state.refreshToken = "";
+      state.accessToken = "";
+      state.isAuthenticated = false;
+    },
   },
   actions: {
-    login: ({ commit }, userInfos) => {
+    login: ({ commit }, user) => {
+
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
-        instance
-          .post("/login", userInfos)
+        axiosInstance
+          .post("/login", user)
           .then((response) => {
-            commit("setStatus", "");
+            localStorage.setItem("user", JSON.stringify(response.data));
+            console.log(response.data)
             commit("logUser", response.data);
+            // console.log(response.data);
             resolve(response);
           })
           .catch((error) => {
@@ -78,7 +76,7 @@ const store = createStore({
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         commit;
-        instance
+        axiosInstance
           .post("/signup", userInfos)
           .then((response) => {
             commit("setStatus", "created");
@@ -90,12 +88,12 @@ const store = createStore({
           });
       });
     },
-    getUserInfos: async({ commit }) => {
-      await instance
+    getUserInfos: async ({ commit }) => {
+      await axiosInstance
         .get("/read")
         .then(function (response) {
-          commit("userInfos", response.data);
-          console.log(',' , response.data);
+          commit("user", response.data);
+          // console.log(",", response.data);
         })
         .catch(function (error) {
           console.log(error);

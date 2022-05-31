@@ -18,6 +18,17 @@
                   <font-awesome-icon :icon="['fas', 'user']" />
                 </span>
               </div>
+
+              <!-- Error Message -->
+              <template v-if="v$.user.email.$dirty">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.user.email.$errors"
+                  :key="index"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </div>
 
             <div class="FormGroup">
@@ -33,13 +44,31 @@
                   <font-awesome-icon :icon="['fas', 'lock']" />
                 </span>
               </div>
+
+              <!-- Error Message -->
+              <template v-if="v$.user.password.$dirty">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.user.password.$errors"
+                  :key="index"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </div>
+
             <!-- gestion erreur avec axios -->
             <div
-              class="form-row"
+              class="form-row error-msg"
               v-if="mode == 'login' && status == 'error_login'"
             >
               Adresse mail et/ou mot de passe invalide
+            </div>
+
+            <!-- gestion erreur de l'API -->
+            <div class="typo__p" v-if="mode == 'login' && status == 'error_login'">
+              <h3 class="error-msg">Erreur de l'API</h3>
+              <p class="error-msg">{{ apiError }}</p>
             </div>
 
             <button
@@ -53,12 +82,13 @@
           </form>
         </div>
       </div>
+
       <div class="signup">
         <p class="text-signup">Pas encore inscrit ?</p>
         <div class="actions">
-          <router-link class="nav btn button" to="/signup"
-            >Créer un compte</router-link
-          >
+          <router-link class="nav btn button" to="/signup">
+            Créer un compte
+          </router-link>
         </div>
       </div>
     </div>
@@ -67,10 +97,14 @@
 
 <script>
 import { mapState } from "vuex";
-// import useVuelidate from "@vuelidate/core";
-// import {
-//   email,
-// } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import {
+  helpers,
+  required,
+  email,
+  minLength,
+  maxLength,
+} from "@vuelidate/validators";
 
 export default {
   name: "LoginForm",
@@ -79,19 +113,51 @@ export default {
   },
   data() {
     return {
-      mode: 'login',
-      // v$: useVuelidate(),
+      mode: "login",
+      v$: useVuelidate(),
       // submitStatus: null,
+      apiError: null,
       user: {
         email: "",
         password: "",
       },
     };
   },
+  validations() {
+    return {
+      user: {
+        email: {
+          required: helpers.withMessage("L'/email est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+          email: helpers.withMessage(
+            "Ceci n'est pas une adresse e-mail valable",
+            email
+          ),
+          minLength: helpers.withMessage(
+            "Ce champ doit être long d'au moins 5",
+            minLength(5)
+          ),
+          maxLength: helpers.withMessage(
+            "La longueur maximale autorisée est de 60",
+            maxLength(60)
+          ),
+        },
+        password: {
+          required: helpers.withMessage(
+            "Le mot de passe est obligatoire",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+        },
+      },
+    };
+  },
   mounted: function () {
     if (this.$store.state.user.userId != -1) {
-      this.$router.push('/user');
-      return ;
+      this.$router.push("/user");
+      return;
     }
   },
   computed: {
@@ -106,14 +172,17 @@ export default {
   },
   methods: {
     login() {
-      const self = this;
       this.$store
         .dispatch("login", this.user)
         .then(() => {
-          self.$router.push("/user")
+          this.$router.push("/user");
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((error) => {
+          this.apiError = (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
         });
     },
   },
@@ -210,6 +279,15 @@ button {
   color: rgba(255, 255, 255, 0.3);
   background-color: rgba(255, 255, 255, 0.1);
   cursor: default;
+}
+
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
 }
 </style>
 

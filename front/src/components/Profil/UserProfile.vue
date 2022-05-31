@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     ...mapState({
-      user: "userInfos",
+      user: "user",
     }),
   },
 };

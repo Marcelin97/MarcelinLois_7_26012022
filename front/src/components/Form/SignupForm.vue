@@ -4,6 +4,7 @@
     <p>
       Pour créer votre compte Groupomania, merci de remplir les champs suivants:
     </p>
+
     <form action="#" method="post" @submit.prevent="createAccount">
       <fieldset>
         <legend>Inscription</legend>
@@ -147,6 +148,7 @@
             </template>
           </div>
         </div>
+
         <!-- Le mot de passe -->
         <div>
           <div class="wrapper">
@@ -208,10 +210,21 @@
       <!-- Terms -->
 
       <!-- gestion erreur avec axios -->
-      <div class="form-row" v-if="mode == 'create' && status == 'error_create'">
-        Adresse mail déjà utilisée
+      <div
+        class="form-row"
+        v-if="mode === 'create' && status === 'error_create'"
+      >
+        Il y a une erreur dans le formulaire ou l'adresse e-mail est déjà
+        utilisée
       </div>
 
+      <!-- gestion erreur de l'API -->
+      <div class="typo__p">
+        <h3>Erreur de l'API</h3>
+        <p>{{ apiError }}</p>
+      </div>
+
+      <!-- bouton de soumission -->
       <div class="submit">
         <button
           class="btn"
@@ -241,11 +254,12 @@
             </div>
           </div>
           <!--/.success-->
-        </div>
 
-        <!-- <p class="typo__p" v-if="submitStatus === 'ERROR'">
-          Veuillez remplir le formulaire correctement.
-        </p> -->
+          <div class="typo__p" v-if="submitStatus === 'ERROR'">
+            <h3 class="modal-header">Il y a une erreur dans le formulaire</h3>
+            <p>Veuillez remplir le formulaire correctement.</p>
+          </div>
+        </div>
       </div>
     </form>
   </section>
@@ -256,6 +270,7 @@ import { mapState } from "vuex";
 
 import useVuelidate from "@vuelidate/core";
 import {
+  helpers,
   required,
   minLength,
   email,
@@ -297,16 +312,35 @@ export default {
         username: "",
         terms: false,
       },
+      apiError: null,
     };
   },
   validations() {
     return {
       user: {
-        firstName: { required, $autoDirty: true, $lazy: true },
-        lastName: { required, $autoDirty: true, $lazy: true },
-        birthday: { required, $autoDirty: true, $lazy: true },
+        firstName: {
+          required: helpers.withMessage("Le prénom est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+        },
+        lastName: {
+          required: helpers.withMessage("Le nom est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+        },
+        birthday: {
+          required: helpers.withMessage(
+            "La date d'anniversaire est obligatoire",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+        },
         username: {
-          required,
+          required: helpers.withMessage(
+            "Le nom d'utilisateur est obligatoire",
+            required
+          ),
           $autoDirty: true,
           $lazy: true,
           minLength: minLength(3),
@@ -314,7 +348,7 @@ export default {
           alphaNum,
         },
         email: {
-          required,
+          required: helpers.withMessage("L'/email est obligatoire", required),
           $autoDirty: true,
           $lazy: true,
           email,
@@ -322,7 +356,10 @@ export default {
           maxLength: maxLength(60),
         },
         password: {
-          required,
+          required: helpers.withMessage(
+            "Le mot de passe est obligatoire",
+            required
+          ),
           $autoDirty: true,
           $lazy: true,
           password_validation: {
@@ -331,7 +368,14 @@ export default {
               "Entre 8 et 16 caractères, Une minuscule au moins, Une majuscule au moins, Un chiffre au moins, Un caractère spécial au moins (@&/!$ ...)",
           },
         },
-        terms: { required, $autoDirty: true, $lazy: true },
+        terms: {
+          required: helpers.withMessage(
+            "Vous devez accepter les conditions générales pour continuer",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+        },
       },
     };
   },
@@ -355,9 +399,12 @@ export default {
   },
   methods: {
     async createAccount() {
-      const isFormCorrect = await this.v$.$validate();
+      this.v$.$touch();
+      console.warn(this.form);
 
+      const isFormCorrect = await this.v$.$validate();
       const self = this;
+
       this.$store
         .dispatch("createAccount", this.user)
         .then(() => {
@@ -370,9 +417,14 @@ export default {
             this
           );
         })
-        .catch((err) => {
+        .catch((error) => {
+          this.submitStatus = "ERROR";
           if (!isFormCorrect) {
-                      console.log(err);
+            this.apiError = (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
 
             this.$nextTick(() => {
               let domRect = document
@@ -387,11 +439,6 @@ export default {
           return;
         });
     },
-
-    // login() {
-    //   this.v$.$touch();
-    //   console.warn(this.form);
-    // },
   },
 };
 </script>
@@ -429,7 +476,6 @@ form {
 }
 
 legend {
-  // margin-bottom: 50px;
   line-height: 1.5rem;
   letter-spacing: 0.1rem;
   color: #8de8fe;
@@ -488,6 +534,7 @@ input {
 // * CheckBox
 .terms {
   margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -591,6 +638,9 @@ input:checked ~ .checkbox {
     color: rgba(255, 255, 255, 0.3);
     background-color: transparent;
     cursor: default;
+  }
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
