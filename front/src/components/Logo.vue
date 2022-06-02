@@ -16,22 +16,25 @@ export default {
   position: absolute;
   margin: auto;
   user-select: none;
+  filter: drop-shadow(0 10px 5px rgb(12, 19, 31));
+  animation: floating 3s infinite ease-in-out;
+  border-radius: 50%;
 }
 
 .logo {
   height: 10vmin;
-  animation: floating 3s infinite ease-in-out;
+  border-radius: 50%;
 }
 
 @keyframes floating {
   from {
-    transform: translateY(0px);
+    transform: translateY(-10px);
   }
   65% {
-    transform: translateY(5px);
+    transform: translateY(0);
   }
   to {
-    transform: translateY(-0px);
+    transform: translateY(-10px);
   }
 }
 </style>
