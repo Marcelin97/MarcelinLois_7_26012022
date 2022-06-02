@@ -5,7 +5,8 @@ let user = localStorage.getItem("user");
 if (!user) {
   user = {
     userId: -1,
-    token: "",
+    accessToken: "",
+    refreshToken: "",
   };
 } else {
   try {
@@ -14,6 +15,7 @@ if (!user) {
     user = {
       userId: -1,
       accessToken: "",
+      refreshToken: "",
     };
   }
 }
@@ -55,6 +57,7 @@ const store = createStore({
         axiosInstance
           .post("/login", user)
           .then(async (response) => {
+            console.log('login :', response)
             localStorage.setItem("authToken", JSON.stringify({ accessToken: response.data.accessToken, refreshToken: response.data.refreshToken }));
             await dispatch("getUserInfos")
             resolve(response);
@@ -81,7 +84,7 @@ const store = createStore({
           });
       });
     },
-    getUserInfos: async ({ commit }) => {
+    getUserInfos:({ commit }) => {
       axiosInstance
         .get("/read")
         .then((response) => {

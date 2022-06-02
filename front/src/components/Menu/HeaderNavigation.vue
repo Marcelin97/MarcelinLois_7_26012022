@@ -62,7 +62,6 @@ export default {
   name: "HeaderNavigation",
   methods: {
     logout: function () {
-    localStorage.removeItem('user');
       this.$store.commit("logout");
       this.$router.push("/");
     },

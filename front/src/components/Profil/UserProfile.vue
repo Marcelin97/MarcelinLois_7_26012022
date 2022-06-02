@@ -2,11 +2,11 @@
   <div class="wrapper" v-if="user">
     <div class="profile-card js-profile-card">
       <div class="profile-card__img">
-        <img
+        <!-- <img
           :src="user?.data.imageUrl"
           alt="Photo d'utilisateur"
           aria-label="Photo d'utilisateur"
-        />
+        /> -->
       </div>
 
       <div class="profile-card__cnt js-profile-cnt">
@@ -14,8 +14,8 @@
           Nom d'utilisateur :
           {{ user.data?.username || "chargement en cours..." }}
         </div>
-        <div class="profile-card__txt">Identifiant : {{ user?.data.id  || "chargement en cours..."  }}</div>
-        <div class="profile-card__txt">administrateur : {{ user?.data.isAdmin }}</div>
+        <!-- <div class="profile-card__txt">Identifiant : {{ user?.data.id  || "chargement en cours..."  }}</div> -->
+        <!-- <div class="profile-card__txt">administrateur : {{ user?.data.isAdmin }}</div> -->
 
         <div class="profile-card-inf">
           <div class="profile-card-inf__item">
@@ -56,9 +56,13 @@ export default {
     PostCard,
   },
   async mounted() {
+    //  if (this.$store.state.user.userId == -1 || null) {
+    //   this.$router.push('/');
+    //   return ;
+    // }
     try {
       await this.$store.dispatch("getUserInfos");
-      console.log(this.user);
+      // console.log(this.user);
     } catch (error) {
       console.log(error);
     }
