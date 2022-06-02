@@ -23,7 +23,6 @@ const store = createStore({
   state: {
     status: "",
     user: user,
-    userInfos: user,
     isAuthenticated: false
   },
   mutations: {
@@ -37,33 +36,27 @@ const store = createStore({
       state.user = user;
       state.isAuthenticated = true;
     },
-    userInfos: function (state, userInfos) {
-      state.userInfos = userInfos;
-    },
         // delete all auth and user information from the state
     logout: function (state) {
       state.user = {
         userId: -1,
         token: "",
       };
-      localStorage.removeItem("user");
+      localStorage.removeItem("authToken");
       state.refreshToken = "";
       state.accessToken = "";
       state.isAuthenticated = false;
     },
   },
   actions: {
-    login: ({ commit }, user) => {
-
+    login: ({ commit, dispatch }, user) => {
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         axiosInstance
           .post("/login", user)
-          .then((response) => {
-            localStorage.setItem("user", JSON.stringify(response.data));
-            console.log(response.data)
-            commit("logUser", response.data);
-            // console.log(response.data);
+          .then(async (response) => {
+            localStorage.setItem("authToken", JSON.stringify({ accessToken: response.data.accessToken, refreshToken: response.data.refreshToken }));
+            await dispatch("getUserInfos")
             resolve(response);
           })
           .catch((error) => {
@@ -72,12 +65,12 @@ const store = createStore({
           });
       });
     },
-    createAccount: ({ commit }, userInfos) => {
+    createAccount: ({ commit }, user) => {
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         commit;
         axiosInstance
-          .post("/signup", userInfos)
+          .post("/signup", user)
           .then((response) => {
             commit("setStatus", "created");
             resolve(response);
@@ -89,11 +82,11 @@ const store = createStore({
       });
     },
     getUserInfos: async ({ commit }) => {
-      await axiosInstance
+      axiosInstance
         .get("/read")
-        .then(function (response) {
-          commit("user", response.data);
-          // console.log(",", response.data);
+        .then((response) => {
+          commit("logUser", response.data);
+          console.log(",", response.data);
         })
         .catch(function (error) {
           console.log(error);

@@ -1,22 +1,21 @@
 <template>
-  <div class="wrapper" >
+  <div class="wrapper" v-if="user">
     <div class="profile-card js-profile-card">
       <div class="profile-card__img">
-        <!-- <img
+        <img
           :src="user?.data.imageUrl"
           alt="Photo d'utilisateur"
           aria-label="Photo d'utilisateur"
-        /> -->
+        />
       </div>
 
       <div class="profile-card__cnt js-profile-cnt">
         <div class="profile-card__name">
-          Nom d'utilisateur : {{ user.data?.username || "chargement des informations en cours..." }}
+          Nom d'utilisateur :
+          {{ user.data?.username || "chargement en cours..." }}
         </div>
-        <div class="profile-card__txt">Identifiant : {{ user.data?.id }}</div>
-        <div class="profile-card__txt">
-          administrateur : {{ user.data?.isAdmin }}
-        </div>
+        <div class="profile-card__txt">Identifiant : {{ user?.data.id  || "chargement en cours..."  }}</div>
+        <div class="profile-card__txt">administrateur : {{ user?.data.isAdmin }}</div>
 
         <div class="profile-card-inf">
           <div class="profile-card-inf__item">
@@ -56,16 +55,10 @@ export default {
   components: {
     PostCard,
   },
-  async created() {
-    // console.log(this.$store.state.user.userId);
-    // console.log(this.$store.state.user.accessToken);
-    if (this.$store.state.user.userId == -1) {
-      this.$router.push("/");
-      return;
-    }
+  async mounted() {
     try {
-    await this.$store.dispatch("getUserInfos");
-      console.log(this.user.data);
+      await this.$store.dispatch("getUserInfos");
+      console.log(this.user);
     } catch (error) {
       console.log(error);
     }
