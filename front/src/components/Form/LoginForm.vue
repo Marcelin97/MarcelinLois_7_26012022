@@ -66,7 +66,10 @@
             </div>
 
             <!-- gestion erreur de l'API -->
-            <div class="typo__p" v-if="mode == 'login' && status == 'error_login'">
+            <div
+              class="typo__p"
+              v-if="mode == 'login' && status == 'error_login'"
+            >
               <h3 class="error-msg">Erreur de l'API</h3>
               <p class="error-msg">{{ apiError }}</p>
             </div>
@@ -156,7 +159,7 @@ export default {
   },
   mounted: function () {
     if (this.$store.state.user.userId != -1) {
-      this.$router.push("/user");
+      this.$router.push("/");
       return;
     }
   },
@@ -171,19 +174,18 @@ export default {
     ...mapState(["status"]),
   },
   methods: {
-    login() {
-      this.$store
-        .dispatch("login", this.user)
-        .then(() => {
-          this.$router.push("/user");
-        })
-        .catch((error) => {
-          this.apiError = (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-        });
+    async login() {
+      try {
+        await this.$store.dispatch("login", this.user);
+        await this.$router.push("/user");
+      } catch (error) {
+        this.apiError =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+      }
     },
   },
 };

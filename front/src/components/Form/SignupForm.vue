@@ -400,10 +400,9 @@ export default {
   methods: {
     async createAccount() {
       this.v$.$touch();
-      console.warn(this.form);
+      // console.warn(this.form);
 
       const isFormCorrect = await this.v$.$validate();
-      const self = this;
 
       this.$store
         .dispatch("createAccount", this.user)
@@ -411,7 +410,7 @@ export default {
           this.submitStatus = "OK";
           setTimeout(
             function () {
-              self.$router.push("/login");
+              this.$router.push("/login");
             }.bind(this),
             2000,
             this

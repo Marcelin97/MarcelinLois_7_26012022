@@ -57,12 +57,12 @@ export default {
   },
   async mounted() {
     //  if (this.$store.state.user.userId == -1 || null) {
-    //   this.$router.push('/');
+    //   this.$router.push('/account');
     //   return ;
     // }
     try {
       await this.$store.dispatch("getUserInfos");
-      // console.log(this.user);
+      console.log(this.user);
     } catch (error) {
       console.log(error);
     }
