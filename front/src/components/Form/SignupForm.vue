@@ -4,7 +4,8 @@
     <p>
       Pour créer votre compte Groupomania, merci de remplir les champs suivants:
     </p>
-    <form action="#" method="post" @submit.prevent="handleSubmit">
+
+    <form action="#" method="post" @submit.prevent="createAccount">
       <fieldset>
         <legend>Inscription</legend>
 
@@ -147,6 +148,7 @@
             </template>
           </div>
         </div>
+
         <!-- Le mot de passe -->
         <div>
           <div class="wrapper">
@@ -207,24 +209,32 @@
       </div>
       <!-- Terms -->
 
+      <!-- gestion erreur avec axios -->
+      <div
+        class="form-row"
+        v-if="mode === 'create' && status === 'error_create'"
+      >
+        Il y a une erreur dans le formulaire ou l'adresse e-mail est déjà
+        utilisée
+      </div>
 
-        <!-- gestion erreur avec axios -->
-       <div class="form-row" v-if="mode == 'create' && status == 'error_create'">
-      Adresse mail déjà utilisée
-    </div>
+      <!-- gestion erreur de l'API -->
+      <div class="typo__p">
+        <h3>Erreur de l'API</h3>
+        <p>{{ apiError }}</p>
+      </div>
 
-
+      <!-- bouton de soumission -->
       <div class="submit">
         <button
-          @click="createAccount"
           class="btn"
           type="submit"
           title="Créer mon compte"
           value="Créer mon compte"
           :class="{ disable: !validatedFields }"
         >
-        <span v-if="status == 'loading'">Création en cours...</span>
-        <span v-else>Créer mon compte</span>
+          <span v-if="status == 'loading'">Création en cours...</span>
+          <span v-else>Créer mon compte</span>
         </button>
 
         <!-- success modal  -->
@@ -244,11 +254,12 @@
             </div>
           </div>
           <!--/.success-->
-        </div>
 
-        <!-- <p class="typo__p" v-if="submitStatus === 'ERROR'">
-          Veuillez remplir le formulaire correctement.
-        </p> -->
+          <div class="typo__p" v-if="submitStatus === 'ERROR'">
+            <h3 class="modal-header">Il y a une erreur dans le formulaire</h3>
+            <p>Veuillez remplir le formulaire correctement.</p>
+          </div>
+        </div>
       </div>
     </form>
   </section>
@@ -259,58 +270,21 @@ import { mapState } from "vuex";
 
 import useVuelidate from "@vuelidate/core";
 import {
+  helpers,
   required,
   minLength,
   email,
   maxLength,
-  // helpers
+  alphaNum,
 } from "@vuelidate/validators";
-
-// export function isUsernameAvailable(value) {
-//   if (value === "") return true;
-//   return new Promise(() => {
-//     return axios
-//       .get(process.env.VUE_APP_API_URL + "/api/auth/signup", this.user)
-//       .then((response) => {
-//         if (response.data.user.username) {
-//           return true;
-//         }
-//       })
-//       .catch((error) => {
-//         if (
-//           error.response.data.user.username[0] ==
-//           "The username has already been taken."
-//         ) {
-//           return false;
-//         }
-//         return true;
-//       });
-//   });
-// }
-
-export function validName(value) {
-  return /^[a-z0-9]+$/i.test(value);
-}
 
 export function strongPassword(value) {
   return (
     /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/.test(
       value
-    ) &&
-    // /[0-9]/.test(password) && //checks for 0-9
-    // /\W|_/.test(password) && //checks for special char
-    value.length >= 8
+    ) && value.length >= 8
   );
 }
-
-// export function checkIsValid(val, event) {
-//   if (val.$error) {
-//     event.target.classList.add("form__input-shake");
-//     setTimeout(() => {
-//       event.target.classList.remove("form__input-shake");
-//     }, 600);
-//   }
-// }
 
 export default {
   name: "SignupForm",
@@ -338,31 +312,43 @@ export default {
         username: "",
         terms: false,
       },
+      apiError: null,
     };
   },
   validations() {
     return {
       user: {
-        firstName: { required, $autoDirty: true, $lazy: true },
-        lastName: { required, $autoDirty: true, $lazy: true },
-        birthday: { required, $autoDirty: true, $lazy: true },
+        firstName: {
+          required: helpers.withMessage("Le prénom est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+        },
+        lastName: {
+          required: helpers.withMessage("Le nom est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+        },
+        birthday: {
+          required: helpers.withMessage(
+            "La date d'anniversaire est obligatoire",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+        },
         username: {
-          required,
+          required: helpers.withMessage(
+            "Le nom d'utilisateur est obligatoire",
+            required
+          ),
           $autoDirty: true,
           $lazy: true,
           minLength: minLength(3),
           maxLength: maxLength(25),
-          // username_validation: {
-          //   $validator: isUsernameAvailable,
-          //   $message: "E-mail déjà utilisé",
-          // },
-          name_validation: {
-            $validator: validName,
-            $message: "Username can only contain numbers and letters",
-          },
+          alphaNum,
         },
         email: {
-          required,
+          required: helpers.withMessage("L'/email est obligatoire", required),
           $autoDirty: true,
           $lazy: true,
           email,
@@ -370,21 +356,26 @@ export default {
           maxLength: maxLength(60),
         },
         password: {
-          required,
+          required: helpers.withMessage(
+            "Le mot de passe est obligatoire",
+            required
+          ),
           $autoDirty: true,
           $lazy: true,
-          // minLength: minLength(8),
           password_validation: {
             $validator: strongPassword,
             $message:
               "Entre 8 et 16 caractères, Une minuscule au moins, Une majuscule au moins, Un chiffre au moins, Un caractère spécial au moins (@&/!$ ...)",
-            // $message: "Une minuscule au moins",
-            // $message: "Une majuscule au moins",
-            // $message: "Un chiffre au moins",
-            // $message: "Un caractère spécial au moins (@&/!$ ...)",
           },
         },
-        terms: { required, $autoDirty: true, $lazy: true },
+        terms: {
+          required: helpers.withMessage(
+            "Vous devez accepter les conditions générales pour continuer",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+        },
       },
     };
   },
@@ -404,47 +395,55 @@ export default {
         return false;
       }
     },
-        ...mapState(["status"]),
+    ...mapState(["status"]),
   },
   methods: {
     async createAccount() {
-      const self = this;
+      this.v$.$touch();
+      // console.warn(this.form);
+
+      const isFormCorrect = await this.v$.$validate();
+
       this.$store
         .dispatch("createAccount", this.user)
         .then(() => {
           this.submitStatus = "OK";
           setTimeout(
             function () {
-              self.$router.push("/login");
+              this.$router.push("/login");
             }.bind(this),
             2000,
             this
           );
         })
-        .catch((err) => {
-          console.log(err);
-          this.$nextTick(() => {
-            let domRect = document
-              .querySelector(".error")
-              .getBoundingClientRect();
-            window.scrollTo(
-              domRect.left + document.documentElement.scrollLeft,
-              domRect.top + document.documentElement.scrollTop
-            );
-          });
-        });
-    },
+        .catch((error) => {
+          this.submitStatus = "ERROR";
+          if (!isFormCorrect) {
+            this.apiError = (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
 
-    login() {
-      this.v$.$touch();
-      console.warn(this.form);
+            this.$nextTick(() => {
+              let domRect = document
+                .querySelector(".error")
+                .getBoundingClientRect();
+              window.scrollTo(
+                domRect.left + document.documentElement.scrollLeft,
+                domRect.top + document.documentElement.scrollTop
+              );
+            });
+          }
+          return;
+        });
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.form-row{
+.form-row {
   color: red;
 }
 .container {
@@ -476,7 +475,6 @@ form {
 }
 
 legend {
-  // margin-bottom: 50px;
   line-height: 1.5rem;
   letter-spacing: 0.1rem;
   color: #8de8fe;
@@ -535,6 +533,7 @@ input {
 // * CheckBox
 .terms {
   margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -634,10 +633,13 @@ input:checked ~ .checkbox {
   color: rgba(255, 255, 255, 0.3);
   background-color: rgba(255, 255, 255, 0.1);
   cursor: default;
-  span{
-     color: rgba(255, 255, 255, 0.3);
-  background-color: transparent;
-  cursor: default;
+  span {
+    color: rgba(255, 255, 255, 0.3);
+    background-color: transparent;
+    cursor: default;
+  }
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 

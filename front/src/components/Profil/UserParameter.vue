@@ -1,54 +1,65 @@
 <template>
-  <section></section>
-  <div class="container">
-    <h1 class="title">Modifier mon profil</h1>
+  <section>
+    <div class="container">
+      <h1 class="title">Modifier mon profil</h1>
 
-    <div class="grid">
-      <div class="form-group a">
-        <label for="name">Nom</label>
-        <input id="name" type="text" />
-      </div>
+      <form class="grid">
+        <div class="form-group a">
+          <label for="name">Nom</label>
+          <input id="name" type="text" />
+        </div>
 
-      <div class="form-group b">
-        <label for="first-name">Prénom</label>
-        <input id="first-name" type="text" />
-      </div>
+        <div class="form-group b">
+          <label for="first-name">Prénom</label>
+          <input id="first-name" type="text" />
+        </div>
 
-      <div class="form-group email-group">
-        <label for="email">Email</label>
-        <input id="email" type="text" />
-      </div>
+        <div class="form-group email-group">
+          <label for="email">Email</label>
+          <input id="email" type="text" />
+        </div>
 
-      <div class="form-group phone-group">
-        <label for="phone">Téléphone (mobile)</label>
-        <input id="phone" type="text" />
-      </div>
+        <div class="form-group phone-group">
+          <label for="phone">Téléphone (mobile)</label>
+          <input id="phone" type="text" />
+        </div>
 
-      <div class="textarea-group">
-        <label for="bio">Bio</label>
-        <textarea id="bio"></textarea>
-      </div>
+        <div class="textarea-group">
+          <label for="bio">Bio</label>
+          <textarea id="bio"></textarea>
+        </div>
 
-      <div class="form-group">
-        <label for="address">Adresse</label>
-        <input id="address" type="text" />
-      </div>
+        <div class="form-group">
+          <label for="address">Adresse</label>
+          <input id="address" type="text" />
+        </div>
 
-      <div class="form-group">
-        <label for="city">Ville</label>
-        <input id="city" type="text" />
-      </div>
+        <div class="form-group">
+          <label for="city">Ville</label>
+          <input id="city" type="text" />
+        </div>
 
-      <div class="form-group">
-        <label for="zip">Code postal</label>
-        <input id="zip" type="text" />
+        <div class="form-group">
+          <label for="zip">Code postal</label>
+          <input id="zip" type="text" />
+        </div>
+      </form>
+
+      <div class="button-container">
+        <button class="button">Enregister les modifications</button>
       </div>
     </div>
-
+  </section>
+  <section>
     <div class="button-container">
-      <button class="button">Enregister les modifications</button>
+      <Button type="button" class="button" @button-click="exportDataClick"
+        >Exporter mes données</Button
+      >
+      <Button type="button" class="button" @button-click="deleteAccountClick"
+        >Supprimer mon compte</Button
+      >
     </div>
-  </div>
+  </section>
 </template>
 
 <style lang="scss" scoped>

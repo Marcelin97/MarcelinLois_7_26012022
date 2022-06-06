@@ -1,25 +1,21 @@
 import { createStore } from "vuex";
-
-const axios = require("axios");
-
-const instance = axios.create({
-  baseURL: "http://localhost:3000/api/auth/",
-});
+import axiosInstance from "../services/api";
 
 let user = localStorage.getItem("user");
 if (!user) {
   user = {
     userId: -1,
-    token: "",
+    accessToken: "",
+    refreshToken: "",
   };
 } else {
   try {
     user = JSON.parse(user);
-    instance.defaults.headers.common["Authorization"] = user.token;
   } catch (ex) {
     user = {
       userId: -1,
-      token: "",
+      accessToken: "",
+      refreshToken: "",
     };
   }
 }
@@ -27,99 +23,102 @@ if (!user) {
 // Create a new store instance.
 const store = createStore({
   state: {
-    status: '',
-        user: {
-            userId: -1,
-            accessToken: "",
-        }
-    // userInfos: {
-    //     nom: '',
-    //     prenom: '',
-    //     email: '',
-    //     photo: '',
-    // },
+    status: "",
+    user: user,
+    accessToken: "",
+    refreshToken: "",
+    isAuthenticated: false
   },
   mutations: {
-      setStatus: function (state, status) {
-          state.status = status;
-          state.submitStatus = status;
-      },
-      logUser: function (state, user) {
-        //   instance.defaults.headers.common['Authorization'] = user.token;
-        //   localStorage.setItem('user', JSON.stringify(user));
-          state.user = user;
-      },
-  //     userInfos: function (state, userInfos) {
-  //         state.userInfos = userInfos;
-  //     },
-  //     logout: function (state) {
-  //         state.user = {
-  //             userId: -1,
-  //             token: '',
-  //         }
-  //         localStorage.removeItem('user');
-  //     }
+    setStatus: function (state, status) {
+      state.status = status;
+      state.submitStatus = status;
+    },
+    // sets state with user information and toggles
+    // isAuthenticated from false to true
+    logUser: function (state, user) {
+      state.user = user;
+      state.isAuthenticated = true;
+    },
+    // delete all auth and user information from the state
+    logout: function (state) {
+      state.user = {
+        userId: -1,
+        accessToken: "",
+        refreshToken: "",
+      };
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+      state.refreshToken = "";
+      state.accessToken = "";
+      state.isAuthenticated = false;
+    },
+    refreshToken: function (state, refreshToken) {
+      state.refreshToken = refreshToken;
+      state.user = { ...state.user, refreshToken: refreshToken };
+    },
+    accessToken: function (state, accessToken) {
+      state.accessToken = accessToken;
+      state.user = { ...state.user, accessToken: accessToken };
+    }
   },
   actions: {
-      login: ({ commit }, userInfos) => {
-          commit('setStatus', 'loading');
-          return new Promise((resolve, reject) => {
-              instance
-                  .post("/login", userInfos)
-                  .then((response) => {
-                      commit('setStatus', '');
-                      commit('logUser', response.data);
-                      resolve(response)
-                      //   console.log(response);
-                      // setTimeout(
-                      //   function () {
-                      //     this.$router.push("/login");
-                      //   }.bind(this),
-                      //   10000,
-                      //   this
-                      // );
-                  })
-                  .catch((error) => {
-                      commit('setStatus', 'error_login');
-                      reject(error)
-                      //   console.log(error);
-                  });
-          })
+    refreshToken ({ commit }, accessToken){
+      const user = JSON.parse(localStorage.getItem('authToken'))
+      user.accessToken = accessToken
+      localStorage.setItem("authToken", JSON.stringify(user));
+      commit('refreshToken', accessToken);
+      console.info('Access token updated, you can ignore the previous 401 error')
     },
-      createAccount: ({ commit }, userInfos) => {
-          commit('setStatus', 'loading');
-          return new Promise((resolve, reject) => {
-              commit;
-              instance
-                  .post("/signup", userInfos)
-                  .then((response) => {
-                      commit('setStatus', 'created');
-                      resolve(response)
-                    //   console.log(response);
-                      // setTimeout(
-                      //   function () {
-                      //     this.$router.push("/login");
-                      //   }.bind(this),
-                      //   10000,
-                      //   this
-                      // );
-                  })
-                  .catch((error) => {
-                      commit('setStatus', 'error_create');
-                      reject(error)
-                    //   console.log(error);
-                  });
+    login: ({ commit, dispatch }, user) => {
+      commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        axiosInstance
+          .post("/auth/login", user)
+          .then(async (response) => {
+            console.log('login :', response)
+            localStorage.setItem("authToken", JSON.stringify({ accessToken: response.data.accessToken, refreshToken: response.data.refreshToken }));
+            // localStorage.setItem("user", JSON.stringify(response.data))
+            commit("refreshToken", response.data.refreshToken);
+            commit("accessToken", response.data.accessToken);
+            await dispatch("getUserInfos")
+            resolve(response);
           })
-      
+          .catch((error) => {
+            commit("setStatus", "error_login");
+            reject(error);
+          });
+      });
     },
-    // getUserInfos: ({ commit }) => {
-    //     instance.post('/infos')
-    //         .then(function (response) {
-    //             commit('userInfos', response.data.infos);
-    //         })
-    //         .catch(function () {
-    //         });
-    // }
+    createAccount: ({ commit }, user) => {
+      commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        commit;
+        axiosInstance
+          .post("/signup", user)
+          .then((response) => {
+            commit("setStatus", "created");
+            resolve(response);
+          })
+          .catch((error) => {
+            commit("setStatus", "error_create");
+            reject(error);
+          });
+      });
+    },
+    getUserInfos: ({ commit }) => {
+      axiosInstance
+        .get("/auth/read")
+        .then((response) => {
+          commit('setStatus', '');
+          commit("logUser", response.data );
+          // commit("refreshToken", response.data.accessToken);
+          console.log(",", response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
 });
 

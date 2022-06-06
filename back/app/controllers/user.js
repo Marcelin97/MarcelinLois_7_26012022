@@ -143,11 +143,13 @@ exports.login = (req, res) => {
       //* expose the POST API for creating new Access Token from received Refresh Token
       const refreshToken = await RefreshToken.createToken(user);
       res.status(200).json({
-        status: 200,
+        // status: 200,
         userId: user.id,
         accessToken: token,
         refreshToken: refreshToken,
-        user,
+        isAdmin: user.isAdmin,
+        email: user.email
+        // user,
       });
     })
     .catch((error) => {

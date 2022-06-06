@@ -18,6 +18,9 @@ dom.watch();
 
 library.add(fas);
 
+import setupInterceptors from './services/setupInterceptors';
+setupInterceptors(store);
+
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(router)
