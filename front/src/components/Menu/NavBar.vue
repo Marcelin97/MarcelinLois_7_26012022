@@ -15,6 +15,8 @@
               <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
               Home
             </a>
+            <router-link to="/communities"><font-awesome-icon class="icon-left" :icon="['fas', 'search']" />
+              Communautés</router-link>
           </div>
         </div>
 

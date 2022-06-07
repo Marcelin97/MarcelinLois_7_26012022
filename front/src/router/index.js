@@ -8,7 +8,7 @@ import LoginView from "../views/LoginView.vue";
 import WallView from "../views/WallView.vue";
 import UserView from "../views/UserView";
 import UserParameterView from "../views/UserParameterView";
-
+import CommunityView from "../views/CommunityView";
 
 const routes = [
   {
@@ -54,6 +54,11 @@ const routes = [
     path: "/user/parameter",
     name: "user/parameter",
     component: UserParameterView,
+  },
+  {
+    path: "/communities",
+    name: "communities",
+    component: CommunityView,
   },
 ];
 
