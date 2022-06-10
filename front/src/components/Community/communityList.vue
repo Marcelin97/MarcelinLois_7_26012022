@@ -1,156 +1,280 @@
 <template>
-  <div id="app">
-    <section>
-      <h1>{{ title }}</h1>
-      <div v-if="!beers.length" class="loading">Loading...</div>
-
-      <div :key="beer" v-for="beer in beers" class="beer-contain">
-      <!-- image de la communauté -->
-        <div class="beer-img">
-          <img :src="beer.img" height="350" />
-        </div>
-
-        <!-- information de la communauté  -->
-        <div class="beer-info">
-          <h2>{{ beer.name }}</h2>
-          <p class="bright">{{ beer.tagline }}</p>
-          <p><span class="bright">Description:</span> {{ beer.desc }}</p>
-          <p><span class="bright">Tips:</span> {{ beer.tips }}</p>
-          <h3 class="bright">Food Pairings</h3>
-
-          <ul>
-            <li :key="item" v-for="item in beer.food">
-              {{ item }}
-            </li>
-          </ul>
-          
-        </div>
-
+  <div class="banner" :key="index" v-for="(community, index) in communities">
+    <div class="banner__top">
+      <div class="banner__container">
+        <p class="banner__top-title">
+          {{ community.title }} <strong>{{ community.id }}</strong>
+        </p>
       </div>
+    </div>
 
-    </section>
+    <!-- <div
+      class="banner__bottom"
+      :style="{ backgroundImage: `url(${community.icon})` }"
+    > -->
+    <div class="banner__container">
+      <div class="banner__card">
+        <p class="banner__card-title">à Propos : {{ community.about }}</p>
+        <p class="banner__card-description">
+          Crée par l'utilisateur : {{ community.userId }}
+        </p>
+        <p class="banner__card-description">
+          Dernière mise à jour : {{ community.updatedAt }}
+        </p>
+        <div href="#" class="banner__card-button">
+          <button class="btn-follow" @click="showToast">
+            <span class="background"></span>
+            <!-- <span class="icon uil uil-instagram"></span> -->
+            <font-awesome-icon class="icon" :icon="['fas', 'hashtag']" />
+            <span class="content"> S'abonner </span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
+  <!-- </div> -->
 </template>
+
 <script>
 import axios from "axios";
+import ToastSucccess from "../Notifications/ToastSuccess.vue";
+import { useToast } from "vue-toastification";
 
 export default {
+  setup() {
+    // Get toast interface
+    const toast = useToast();
+    // Make it available inside methods
+    return { toast };
+  },
   data() {
     return {
-        title: 'Voici la liste de toutes les communautés',
+      title: "Voici la liste de toutes les communautés",
       bottom: false,
-      beers: [],
+      communities: [],
     };
   },
-  watch: {
-    bottom(newValue) {
-      if (newValue) {
-        this.addBeer();
-      }
-    },
-  },
-  created() {
-    window.addEventListener("scroll", () => {
-      this.bottom = this.bottomVisible();
-    });
-    this.addBeer();
-  },
-  methods: {
-    bottomVisible() {
-      const scrollY = window.scrollY;
-      const visible = document.documentElement.clientHeight;
-      const pageHeight = document.documentElement.scrollHeight;
-      const bottomOfPage = visible + scrollY >= pageHeight;
-      return bottomOfPage || pageHeight < visible;
-    },
-    addBeer() {
-      axios.get("https://api.punkapi.com/v2/beers/random").then((response) => {
-        let api = response.data[0];
-        let apiInfo = {
-          name: api.name,
-          desc: api.description,
-          img: api.image_url,
-          tips: api.brewers_tips,
-          tagline: api.tagline,
-          food: api.food_pairing,
-        };
-        this.beers.push(apiInfo);
-        if (this.bottomVisible()) {
-          this.addBeer();
+  mounted() {
+    axios
+      .get(process.env.VUE_APP_API_URL + "/community/readAllCommunities")
+      .then((response) => (this.communities = response.data.datas))
+      .catch((error) => {
+        if (error.response) {
+          console.error(error.response.data);
+          console.error(error.response.status);
+          console.error(error.response.headers);
+        } else if (error.request) {
+          console.error(error.request);
+        } else {
+          console.error("Error", error.message);
         }
       });
+  },
+  methods: {
+    showToast() {
+      // Render the toast and its contents
+      this.toast(
+        {
+          component: ToastSucccess,
+          listeners: {
+            myClick: () => this.toast.success("Ton profil sera mis à jour"),
+          },
+        },
+        {
+          position: "top-right",
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: false,
+          hideProgressBar: true,
+          closeButton: "button",
+          icon: true,
+          rtl: false,
+        }
+      );
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-body {
-  font-family: "Archivo Narrow", sans-serif;
-  background: #25859a;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  font-family: "Fjalla One", sans-serif;
-}
-
-h1 {
-  margin-top: 40px;
-  color: white;
-  text-align: center;
-}
-
-.loading {
-  color: white;
-  text-align: center;
-  font-size: 20px;
-}
-
-.display {
+// follow button
+button {
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
   display: flex;
-  justify-content: center;
-  align-content: center;
+  align-items: center;
+  width: 10rem;
+  height: 4rem;
+  padding-left: 3.4rem;
+  border-radius: 0.8rem;
+  border: none;
+  background: #ffffff;
+  cursor: pointer;
 }
 
-#app {
-  @extend .display;
-  flex-direction: column;
+.background {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: -230px;
+  transform: translate(-3.5rem, -50%);
+  width: 300px;
+  height: 300px;
+  background: #8de8fe;
+  transition: 0.3s all;
 }
 
-.beer-contain {
-  @extend .display;
-  width: 50%;
-  margin: 20px 24%;
-  box-shadow: 0 2px 3px 1px rgba(30, 0, 0, 0.1);
+.icon {
+  background: transparent;
+  stroke: black;
+  stroke-width: 8px;
+  position: absolute;
+  top: 50%;
+  left: 0.5rem;
+  z-index: 2;
+  transform: translate(0.75rem, -50%);
+  font-size: 2rem;
+  transition: 0.3s all;
 }
 
-.beer-img {
-  @extend .display;
-  padding: 30px;
-  background: #ff6542;
-  border: 1px solid #88498f;
-  border-right: 1px solid #f44822;
+.content {
+  font-size: 1rem;
+  background: transparent;
+  color: black;
 }
 
-.beer-info {
-  background: #564154;
-  color: white;
-  padding: 30px;
-  border: 1px solid #88498f;
-  .bright {
-    color: #fcd7cf;
-    font-family: "Contrail One", sans-serif;
+button:hover .background {
+  border-radius: 50%;
+  transform: translate(-2rem, -50%);
+}
+
+button:hover .icon {
+  transform: translate(0, -50%);
+}
+
+@keyframes appear-from-top {
+  0% {
+    opacity: 0;
+    transform: translateY(-5rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-h3 {
-  margin-bottom: 5px;
-}
+.banner {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+  &__container {
+    margin: 0 auto;
+    width: 85rem;
+    max-width: 100%;
+  }
 
-ul {
-  margin-top: 5px;
+  &__top {
+    background: #242b35;
+    color: #9ea4b9;
+    &-title {
+      position: relative;
+      padding: 0.5rem 0;
+      padding-left: 3rem;
+      font-size: 1.6rem;
+      transition: 250ms ease all;
+      &:after,
+      &:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0.25rem;
+        height: 2rem;
+        width: 2rem;
+        border-radius: 2.5rem;
+        box-shadow: inset 0 0 0 0.25rem, inset 0 4.9rem 0 0.25rem;
+      }
+      &:before {
+        bottom: -3.5rem;
+        color: #08708a;
+      }
+      strong,
+      &:before {
+        opacity: 0;
+        transform: translateY(-5rem);
+        animation: appear-from-top 750ms ease forwards;
+        animation-delay: 1s;
+      }
+      strong {
+        position: absolute;
+        top: 4.5rem;
+        left: 3rem;
+        white-space: nowrap;
+        color: #8de8fe;
+      }
+    }
+  }
+  &__bottom {
+    // background: url(https://cdn.discordapp.com/attachments/935835196538896386/936744841600172082/zyro-image.png);
+    background-size: cover;
+    background-position: 45% 0;
+    box-sizing: border-box;
+    min-height: 24rem;
+    padding-top: 5rem;
+    transition: 250ms ease all;
+  }
+  &__card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.69rem;
+    max-width: 31.25rem;
+    background: #08708a;
+    margin-left: auto;
+    border-radius: 0.5rem;
+    &-title {
+      background: transparent;
+      margin-bottom: 0.1em;
+      max-width: 20rem;
+      text-overflow: ellipsis;
+      word-wrap: break-word;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 1.5rem;
+      letter-spacing: 0.1rem;
+    }
+    &-description {
+      background: transparent;
+      max-width: 20rem;
+      margin-bottom: 1rem;
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    &-button {
+      background: transparent;
+      padding: 0.8rem 2.5rem;
+      align-self: center;
+      transition: 250ms ease all;
+    }
+  }
+  @media screen and (max-width: 48rem) {
+    &__bottom {
+      min-height: 22rem;
+      padding: 8rem 1.5rem 1.5rem;
+      background-position: 30%;
+    }
+    &__top-title {
+      margin-left: 1.5rem;
+    }
+    &__card {
+      margin: 0 auto;
+    }
+  }
 }
 </style>
