@@ -39,7 +39,7 @@ const setup = (store) => {
 
           if (user && user.refreshToken) {
             const rs = await axiosInstance.post('/auth/refreshtoken', {
-              refreshToken: JSON.parse(localStorage.getItem('authToken')).refreshToken
+              refreshToken: TokenService.getLocalRefreshToken(),
             }).catch((err) => {
               console.log(err);
               // We can't reconnect the user... just exit
@@ -57,42 +57,6 @@ const setup = (store) => {
             localStorage.removeItem('authToken')
             return Promise.reject(err)
           }
-          
-
-          // const { refreshToken } =
-          //   JSON.parse(localStorage.getItem("authToken")) || {};
-          // // const user = JSON.parse(localStorage.getItem('authToken')) || {}
-          // console.log("refreshToken :", refreshToken);
-          // /* If the user is logged and his token is expired, try to reconnect it automatically with
-          //  * the refresh token */
-          // if (refreshToken) {
-          //   try {
-          //     const response = await axiosInstance
-          //       .post("/refreshtoken", {
-          //         // refreshToken: refreshToken,
-          //         refreshToken: JSON.parse(localStorage.getItem("authToken")).refreshToken
-          //       })
-          //     console.log("response :" , response.data)
-          //     const { accessToken } = response.data;
-          //     console.log("accessToken :", accessToken);
-          //     if (accessToken) {
-          //       try {
-          //           await store.dispatch("refreshtoken", refreshToken);
-          //         // await store.dispatch("getUserInfos")
-          //         //   await Promise.resolve(axiosInstance(originalConfig));
-          //         return axiosInstance(originalConfig)
-          //       } catch (error) {
-          //         console.log(error)
-          //       }
-          //     }
-          //   } catch (error) {
-          //     // We can't reconnect the user... just exit
-          //     return Promise.resolve(false);
-          //   }
-          // } else {
-          //   localStorage.removeItem("authToken");
-          //   return Promise.reject(err);
-          // }
         }
       }
       return Promise.reject(err);

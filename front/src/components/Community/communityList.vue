@@ -36,7 +36,11 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+import axiosInstance from "../../services/api";
+import TokenService from "../../services/token.service";
+
+
 import ToastSucccess from "../Notifications/ToastSuccess.vue";
 import { useToast } from "vue-toastification";
 
@@ -55,19 +59,26 @@ export default {
     };
   },
   mounted() {
-    axios
-      .get(process.env.VUE_APP_API_URL + "/community/readAllCommunities")
-      .then((response) => (this.communities = response.data.datas))
+    const token = TokenService.getLocalAccessToken();
+    console.log("token :" , token);
+    axiosInstance
+      .get("/community/readAllCommunities", {
+        headers: {
+          Authorization: token,
+        },
+      })
+      .then((response) => (this.communities = response.data))
       .catch((error) => {
-        if (error.response) {
-          console.error(error.response.data);
-          console.error(error.response.status);
-          console.error(error.response.headers);
-        } else if (error.request) {
-          console.error(error.request);
-        } else {
-          console.error("Error", error.message);
-        }
+        console.log(error);
+        // if (error.response) {
+        //   console.error(error.response.data);
+        //   console.error(error.response.status);
+        //   console.error(error.response.headers);
+        // } else if (error.request) {
+        //   console.error(error.request);
+        // } else {
+        //   console.error("Error", error.message);
+        // }
       });
   },
   methods: {
@@ -179,8 +190,9 @@ button:hover .icon {
   }
 
   &__top {
-    background: #242b35;
+    // background: #242b35;
     color: #9ea4b9;
+    margin-bottom: 4rem;
     &-title {
       position: relative;
       padding: 0.5rem 0;

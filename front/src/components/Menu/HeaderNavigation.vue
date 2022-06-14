@@ -63,7 +63,7 @@ export default {
   methods: {
     logout: function () {
       this.$store.commit("logout");
-      this.$router.push("/");
+      this.$router.push("/login");
     },
   },
 };
