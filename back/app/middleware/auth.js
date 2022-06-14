@@ -64,6 +64,7 @@ const isLoggedIn = async (req, res, next) => {
     // sa nous retourne un tableau avec bear en premier et le token en deuxième élément
     // donc sa nous retournera uniquement le token
     const token = req.headers.authorization.split(" ")[1];
+    // console.log(token);
     // la seconde étape et de décoder le token
     // on va utiliser le package jsonwebtoken et la fonction verify
     // (on vérifie le token et on veut vérifier la clé secrete)
@@ -74,6 +75,7 @@ const isLoggedIn = async (req, res, next) => {
     const userId = decodedToken.id;
     // nous ajoutons un objet  auth  à l'objet de requête qui contient le  userId  extrait du token
     req.auth = { userID: userId };
+    // console.log(req.auth)
     // si jamais il y a un userId dans le corp de la requete on veut vérifier que cela correspond bien a celle du token
     // dans le if c'est si cela ne correspond pas
     if (req.body.userId && req.body.userId !== userId) {
@@ -81,9 +83,11 @@ const isLoggedIn = async (req, res, next) => {
       throw "User ID non valable !";
       // sinon si tout va bien on peut passer la requête au prochain middleware
     } else {
+      console.log("test")
       next();
     }
   } catch (error) {
+    console.log("error", error);
     // 401 pour une erreur d'authentification
     res.status(401).json({ error: error || "Requête non authentifiée" });
   }
