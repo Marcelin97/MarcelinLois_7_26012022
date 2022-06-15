@@ -30,7 +30,7 @@
           <router-link class="dropdown-text" to="/">Enregistré</router-link>
           <router-link class="dropdown-text" to="/user/parameter">Paramètres</router-link>
           <hr class="line" />
-          <button class="dropdown-text" @click="logout">Déconnexion</button>
+          <button class="dropdown-text logout" @click="logout">Déconnexion</button>
         </div>
       </div>
       <div class="indicator"></div>
@@ -85,20 +85,19 @@ export default {
 
   /* Position it right below the trigger element */
   left: 0;
-  padding-top: 4px;
+  // padding-top: 4px;
   position: absolute;
   top: 100%;
 
   /* It should be on the top of other elements */
-  background: rgba(var(--d87, 255, 255, 255), 1);
-  box-shadow: 0 0 5px 1px rgb(0 0 0 / 10%);
+  background: white;
   z-index: 9999;
 
   /* Size */
   height: auto;
   width: 200px;
 
-  border-radius: 6px;
+  // border-radius: 6px;
   transition: 0.5s;
   .dropdown-text {
     padding-bottom: 8px;
@@ -112,7 +111,16 @@ export default {
     color: #00376b;
     &:hover {
       background: rgb(221, 220, 220);
-      border-radius: 6px;
+      cursor: pointer;
+    }
+  }
+  .logout{
+    background:#00376b;
+    font-weight: bold;
+    border: none;
+    color: #8de8fe;
+        &:hover {
+      background: red;
     }
   }
 }
@@ -125,6 +133,7 @@ export default {
   height: 14px;
   background: #ffff;
   transform: rotate(45deg);
+  z-index: -1;
 }
 /* Show the content when hover on the container */
 .dropdown:hover .dropdown__content {
@@ -132,9 +141,9 @@ export default {
 }
 
 .line {
-  background-color: rgba(var(--b38, 219, 219, 219), 1);
+  background-color: #8de8fe;
   border: 0;
-  height: 1px;
+  height: 2px;
   margin: 0;
   width: 100%;
 }

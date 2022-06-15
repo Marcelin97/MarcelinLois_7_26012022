@@ -9,6 +9,7 @@ import WallView from "../views/WallView.vue";
 import UserView from "../views/UserView";
 import UserParameterView from "../views/UserParameterView";
 import CommunityView from "../views/CommunityView";
+import CommunityProfileView from "../views/CommunityProfilView";
 
 const routes = [
   {
@@ -60,6 +61,12 @@ const routes = [
     name: "communities",
     component: CommunityView,
   },
+  {
+    path: "/communities/profil/:id",
+    name: "communities/profil",
+    component: CommunityProfileView,
+  },
+  
 ];
 
 const router = createRouter({

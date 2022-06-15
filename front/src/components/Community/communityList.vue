@@ -8,10 +8,10 @@
       </div>
     </div>
 
-    <!-- <div
+    <div
       class="banner__bottom"
-      :style="{ backgroundImage: `url(${community.icon})` }"
-    > -->
+      v-bind:style="{ backgroundImage: `url(http://localhost:3000/ + ${community.icon})` }"
+    >
     <div class="banner__container">
       <div class="banner__card">
         <p class="banner__card-title">à Propos : {{ community.about }}</p>
@@ -32,7 +32,7 @@
       </div>
     </div>
   </div>
-  <!-- </div> -->
+  </div>
 </template>
 
 <script>
@@ -67,7 +67,7 @@ export default {
           Authorization: token,
         },
       })
-      .then((response) => (this.communities = response.data))
+      .then((response) => (this.communities = response.data.datas))
       .catch((error) => {
         console.log(error);
         // if (error.response) {
