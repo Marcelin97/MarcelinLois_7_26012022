@@ -1,7 +1,7 @@
 <template>
   <HeaderNavigation />
   <section>
-    <h1>Mon communauté</h1>
+    <h1>Ma communauté</h1>
     <CommunityProfil />
   </section>
 </template>

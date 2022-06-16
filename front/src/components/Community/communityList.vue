@@ -10,7 +10,7 @@
 
     <div
       class="banner__bottom"
-      v-bind:style="{ backgroundImage: `url(http://localhost:3000/ + ${community.icon})` }"
+      v-bind:style="{ backgroundImage : `url(${community.icon})` }"
     >
     <div class="banner__container">
       <div class="banner__card">
@@ -40,16 +40,8 @@
 import axiosInstance from "../../services/api";
 import TokenService from "../../services/token.service";
 
-
-import ToastSucccess from "../Notifications/ToastSuccess.vue";
-import { useToast } from "vue-toastification";
-
 export default {
   setup() {
-    // Get toast interface
-    const toast = useToast();
-    // Make it available inside methods
-    return { toast };
   },
   data() {
     return {
@@ -80,33 +72,6 @@ export default {
         //   console.error("Error", error.message);
         // }
       });
-  },
-  methods: {
-    showToast() {
-      // Render the toast and its contents
-      this.toast(
-        {
-          component: ToastSucccess,
-          listeners: {
-            myClick: () => this.toast.success("Ton profil sera mis à jour"),
-          },
-        },
-        {
-          position: "top-right",
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: false,
-          hideProgressBar: true,
-          closeButton: "button",
-          icon: true,
-          rtl: false,
-        }
-      );
-    },
   },
 };
 </script>

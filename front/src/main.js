@@ -2,7 +2,6 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import Toast, { POSITION } from "vue-toastification";
 
 
 // * Font Awesome icons
@@ -26,11 +25,5 @@ createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(router)
   .use(store)
-  .use(Toast, {
-    transition: "Vue-Toastification__bounce",
-    maxToasts: 20,
-    // newestOnTop: true,
-    position: POSITION.TOP_LEFT
-  })
   .mount("#app");
 
