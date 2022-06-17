@@ -27,12 +27,11 @@ const store = createStore({
     user: user,
     accessToken: "",
     refreshToken: "",
-    isAuthenticated: false
+    isAuthenticated: false,
   },
   mutations: {
     setStatus: function (state, status) {
       state.status = status;
-      state.submitStatus = status;
     },
     // sets state with user information and toggles
     // isAuthenticated from false to true
@@ -60,15 +59,17 @@ const store = createStore({
     accessToken: function (state, accessToken) {
       state.accessToken = accessToken;
       state.user = { ...state.user, accessToken: accessToken };
-    }
+    },
   },
   actions: {
-    refreshToken ({ commit }, accessToken){
-      const user = JSON.parse(localStorage.getItem('authToken'))
-      user.accessToken = accessToken
+    refreshToken({ commit }, accessToken) {
+      const user = JSON.parse(localStorage.getItem("authToken"));
+      user.accessToken = accessToken;
       localStorage.setItem("authToken", JSON.stringify(user));
-      commit('refreshToken', accessToken);
-      console.info('Access token updated, you can ignore the previous 401 error')
+      commit("refreshToken", accessToken);
+      console.info(
+        "Access token updated, you can ignore the previous 401 error"
+      );
     },
     login: ({ commit, dispatch }, user) => {
       commit("setStatus", "loading");
@@ -76,12 +77,18 @@ const store = createStore({
         axiosInstance
           .post("/auth/login", user)
           .then(async (response) => {
-            console.log('login :', response)
-            localStorage.setItem("authToken", JSON.stringify({ accessToken: response.data.accessToken, refreshToken: response.data.refreshToken }));
+            console.log("login :", response);
+            localStorage.setItem(
+              "authToken",
+              JSON.stringify({
+                accessToken: response.data.accessToken,
+                refreshToken: response.data.refreshToken,
+              })
+            );
             // localStorage.setItem("user", JSON.stringify(response.data))
             commit("refreshToken", response.data.refreshToken);
             commit("accessToken", response.data.accessToken);
-            await dispatch("getUserInfos")
+            await dispatch("getUserInfos");
             resolve(response);
           })
           .catch((error) => {
@@ -90,28 +97,12 @@ const store = createStore({
           });
       });
     },
-    createAccount: ({ commit }, user) => {
-      commit("setStatus", "loading");
-      return new Promise((resolve, reject) => {
-        commit;
-        axiosInstance
-          .post("/signup", user)
-          .then((response) => {
-            commit("setStatus", "created");
-            resolve(response);
-          })
-          .catch((error) => {
-            commit("setStatus", "error_create");
-            reject(error);
-          });
-      });
-    },
     getUserInfos: ({ commit }) => {
       axiosInstance
         .get("/auth/read")
         .then((response) => {
-          commit('setStatus', '');
-          commit("logUser", response.data );
+          commit("setStatus", "");
+          commit("logUser", response.data);
           // commit("refreshToken", response.data.accessToken);
           console.log(",", response.data);
         })

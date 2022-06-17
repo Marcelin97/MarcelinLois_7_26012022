@@ -16,7 +16,7 @@
               <input
                 type="text"
                 placeholder="Prénom"
-                v-model.trim="v$.user.firstName.$model"
+                v-model="state.user.firstName"
                 ref="user.firstName"
                 @blur="v$.user.firstName.$touch"
                 :class="v$.user.firstName.$error === true ? 'error' : 'dirty'"
@@ -44,7 +44,7 @@
               <input
                 type="text"
                 placeholder="Nom de famille"
-                v-model.trim="v$.user.lastName.$model"
+                v-model="state.user.lastName"
                 ref="user.lastName"
                 @blur="v$.user.lastName.$touch"
                 :class="v$.user.lastName.$error === true ? 'error' : 'dirty'"
@@ -72,7 +72,7 @@
               <input
                 type="date"
                 placeholder="Date de naissance"
-                v-model="v$.user.birthday.$model"
+                v-model="state.user.birthday"
                 ref="user.birthday"
                 @blur="v$.user.birthday.$touch"
                 :class="v$.user.birthday.$error === true ? 'error' : 'dirty'"
@@ -100,7 +100,7 @@
               <input
                 type="text"
                 placeholder="Nom d'utilisateur"
-                v-model.trim="v$.user.username.$model"
+                v-model="state.user.username"
                 ref="user.username"
                 @blur="v$.user.username.$touch"
                 :class="v$.user.username.$error === true ? 'error' : 'dirty'"
@@ -128,7 +128,7 @@
               <input
                 type="email"
                 placeholder="E-mail"
-                v-model.trim="v$.user.email.$model"
+                v-model="state.user.email"
                 ref="user.email"
                 @blur="v$.user.email.$touch"
                 :class="v$.user.email.$error === true ? 'error' : 'dirty'"
@@ -156,7 +156,7 @@
               <input
                 type="password"
                 placeholder="Mot de passe"
-                v-model="v$.user.password.$model"
+                v-model="state.user.password"
                 ref="user.password"
                 @blur="v$.user.password.$touch"
                 :class="v$.user.password.$error === true ? 'error' : 'dirty'"
@@ -185,10 +185,8 @@
           <input
             class="inputCheckbox"
             type="checkbox"
-            v-model="v$.user.terms.$model"
-            true-value="yes"
-            false-value="no"
-            required
+            value="false"
+            v-model="state.user.terms"
             ref="user.terms"
             @blur="v$.user.terms.$touch"
             :class="v$.user.terms.$error === true ? 'error' : 'dirty'"
@@ -219,7 +217,7 @@
       </div>
 
       <!-- gestion erreur de l'API -->
-      <div class="typo__p">
+      <div class="typo__p" v-if="submitStatus === 'ERROR'">
         <h3>Erreur de l'API</h3>
         <p>{{ apiError }}</p>
       </div>
@@ -231,15 +229,14 @@
           type="submit"
           title="Créer mon compte"
           value="Créer mon compte"
-          :class="{ disable: !validatedFields }"
         >
-          <span v-if="status == 'loading'">Création en cours...</span>
+          <span v-if="status === 'loading'">Création en cours...</span>
           <span v-else>Créer mon compte</span>
         </button>
 
         <!-- success modal  -->
 
-        <div class="row" v-if="submitStatus === 'OK'">
+        <div class="row" v-if="status === 'created'">
           <div class="modalbox success">
             <div class="modalContent">
               <div class="icon">
@@ -255,7 +252,7 @@
           </div>
           <!--/.success-->
 
-          <div class="typo__p" v-if="submitStatus === 'ERROR'">
+          <div class="typo__p" v-if="status === 'error_create'">
             <h3 class="modal-header">Il y a une erreur dans le formulaire</h3>
             <p>Veuillez remplir le formulaire correctement.</p>
           </div>
@@ -277,6 +274,8 @@ import {
   maxLength,
   alphaNum,
 } from "@vuelidate/validators";
+import { reactive, computed } from "vue";
+import axiosInstance from "../../services/api";
 
 export function strongPassword(value) {
   return (
@@ -292,17 +291,8 @@ export default {
     msg: String,
   },
   setup() {
-    let input = null;
-    return input, { v$: useVuelidate() };
-  },
-  validationConfig: {
-    $lazy: true,
-  },
-  data() {
-    return {
+    const state = reactive({
       mode: "create",
-      v$: useVuelidate(),
-      submitStatus: null,
       user: {
         firstName: "",
         lastName: "",
@@ -310,13 +300,12 @@ export default {
         email: "",
         password: "",
         username: "",
-        terms: false,
+        terms: "",
       },
-      apiError: null,
-    };
-  },
-  validations() {
-    return {
+      apiError: "",
+    });
+
+    const rules = computed(() => ({
       user: {
         firstName: {
           required: helpers.withMessage("Le prénom est obligatoire", required),
@@ -377,66 +366,67 @@ export default {
           $lazy: true,
         },
       },
-    };
+    }));
+
+    const v$ = useVuelidate(rules, state);
+
+    return { state, v$ };
+  },
+  validationConfig: {
+    $lazy: true,
   },
   computed: {
-    validatedFields: function () {
-      if (
-        this.user.email != "" &&
-        this.user.firstName != "" &&
-        this.user.lastName != "" &&
-        this.user.birthday != "" &&
-        this.user.password != "" &&
-        this.user.username != "" &&
-        this.user.terms != true
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    },
     ...mapState(["status"]),
   },
   methods: {
-    async createAccount() {
-      this.v$.$touch();
-      // console.warn(this.form);
+    createAccount() {
+      this.apiError = "";
 
-      const isFormCorrect = await this.v$.$validate();
+      this.v$.$validate(); // checks all inputs
+      if (!this.v$.$error) {
+        // if ANY fail validation
+        // alert("Form successfully submitted.");
+        this.$store.commit("setStatus", "loading");
+        axiosInstance
+          .post("/auth/signup", this.state.user)
+          .then(() => {
+            this.$store.commit("setStatus", "created");
+            setTimeout(
+              function () {
+                this.$router.push("/login");
+              }.bind(this),
+              2000,
+              this
+            );
+          })
+          .catch((error) => {
+            console.log(error.response.data.error.errors[0].message);
+            this.$store.commit("setStatus", "error_create");
+            const errorMessage = (this.apiError =
+              error.response.data.error.errors[0].message);
+            this.errorMessage = errorMessage;
 
-      this.$store
-        .dispatch("createAccount", this.user)
-        .then(() => {
-          this.submitStatus = "OK";
-          setTimeout(
-            function () {
-              this.$router.push("/login");
-            }.bind(this),
-            2000,
-            this
-          );
-        })
-        .catch((error) => {
-          this.submitStatus = "ERROR";
-          if (!isFormCorrect) {
-            this.apiError = (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-            this.$nextTick(() => {
-              let domRect = document
-                .querySelector(".error")
-                .getBoundingClientRect();
-              window.scrollTo(
-                domRect.left + document.documentElement.scrollLeft,
-                domRect.top + document.documentElement.scrollTop
-              );
+            this.$notify({
+              type: "error",
+              title: `Erreur lors de l'inscription`,
+              text: `Erreur reporté : ${errorMessage}`,
             });
-          }
-          return;
+          });
+      } else {
+        this.$notify({
+          type: "warn",
+          title: `Veuillez remplir le formulaire correctement`,
         });
+        this.$nextTick(() => {
+          let domRect = document
+            .querySelector(".error")
+            .getBoundingClientRect();
+          window.scrollTo(
+            domRect.left + document.documentElement.scrollLeft,
+            domRect.top + document.documentElement.scrollTop
+          );
+        });
+      }
     },
   },
 };

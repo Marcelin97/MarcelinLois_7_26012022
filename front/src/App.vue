@@ -9,13 +9,15 @@
           </div>
         </transition>
       </router-view>
+      <notifications
+        position="bottom right" :duration="3000" :ignoreDuplicates="true" :reverse="true" :animation-type="velocity"
+      />
     </main>
     <footer></footer>
   </main>
 </template>
 
 <script>
-
 export default {
   name: "App",
 };

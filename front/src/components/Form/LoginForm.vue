@@ -159,7 +159,7 @@ export default {
   },
   mounted: function () {
     if (this.$store.state.user.userId != -1) {
-      this.$router.push("/");
+      this.$router.push("/wall");
       return;
     }
   },

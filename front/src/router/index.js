@@ -66,7 +66,6 @@ const routes = [
     name: "communities/profil",
     component: CommunityProfileView,
   },
-  
 ];
 
 const router = createRouter({

@@ -21,9 +21,13 @@ library.add(fas);
 import setupInterceptors from './services/setupInterceptors';
 setupInterceptors(store);
 
+import Notifications from '@kyvg/vue3-notification'
+import velocity from 'velocity-animate'
+
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(router)
   .use(store)
+  .use(Notifications, { velocity })
   .mount("#app");
 
