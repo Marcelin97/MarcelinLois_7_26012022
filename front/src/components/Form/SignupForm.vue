@@ -34,6 +34,7 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+            <!-- Error Message -->
           </div>
         </div>
 
@@ -62,6 +63,7 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+            <!-- Error Message -->
           </div>
         </div>
 
@@ -90,6 +92,7 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+            <!-- Error Message -->
           </div>
         </div>
 
@@ -118,6 +121,7 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+            <!-- Error Message -->
           </div>
         </div>
 
@@ -146,6 +150,7 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+            <!-- Error Message -->
           </div>
         </div>
 
@@ -174,6 +179,7 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+            <!-- Error Message -->
           </div>
         </div>
       </fieldset>
@@ -207,20 +213,12 @@
       </div>
       <!-- Terms -->
 
-      <!-- gestion erreur avec axios -->
-      <div
-        class="form-row"
-        v-if="mode === 'create' && status === 'error_create'"
-      >
-        Il y a une erreur dans le formulaire ou l'adresse e-mail est déjà
-        utilisée
+      <!-- gestion erreur API avec axios -->
+      <div class="form-row" v-if="status === 'error_create'">
+        Il y a une erreur dans le formulaire : <br />
+        {{ apiError }}
       </div>
-
-      <!-- gestion erreur de l'API -->
-      <div class="typo__p" v-if="submitStatus === 'ERROR'">
-        <h3>Erreur de l'API</h3>
-        <p>{{ apiError }}</p>
-      </div>
+      <!-- gestion erreur API avec axios -->
 
       <!-- bouton de soumission -->
       <div class="submit">
@@ -233,9 +231,9 @@
           <span v-if="status === 'loading'">Création en cours...</span>
           <span v-else>Créer mon compte</span>
         </button>
+        <!-- bouton de soumission -->
 
         <!-- success modal  -->
-
         <div class="row" v-if="status === 'created'">
           <div class="modalbox success">
             <div class="modalContent">
@@ -250,15 +248,12 @@
               <span class="change">-- Bienvenue --</span>
             </div>
           </div>
-          <!--/.success-->
-
-          <div class="typo__p" v-if="status === 'error_create'">
-            <h3 class="modal-header">Il y a une erreur dans le formulaire</h3>
-            <p>Veuillez remplir le formulaire correctement.</p>
-          </div>
         </div>
+        <!-- success modal -->
+
       </div>
     </form>
+
   </section>
 </template>
 
@@ -391,6 +386,8 @@ export default {
           .post("/auth/signup", this.state.user)
           .then(() => {
             this.$store.commit("setStatus", "created");
+
+            // redirection sur la page de connexion
             setTimeout(
               function () {
                 this.$router.push("/login");
@@ -400,12 +397,13 @@ export default {
             );
           })
           .catch((error) => {
-            console.log(error.response.data.error.errors[0].message);
+            // console.log(error.response.data.error.errors[0].message);
             this.$store.commit("setStatus", "error_create");
             const errorMessage = (this.apiError =
               error.response.data.error.errors[0].message);
             this.errorMessage = errorMessage;
 
+            // notification d'erreur
             this.$notify({
               type: "error",
               title: `Erreur lors de l'inscription`,
@@ -413,10 +411,13 @@ export default {
             });
           });
       } else {
+        // notification d'erreur
         this.$notify({
           type: "warn",
           title: `Veuillez remplir le formulaire correctement`,
         });
+
+        // montre les erreurs à l'écran
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")

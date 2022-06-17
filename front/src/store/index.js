@@ -11,7 +11,7 @@ if (!user) {
 } else {
   try {
     user = JSON.parse(user);
-  } catch (ex) {
+  } catch (e) {
     user = {
       userId: -1,
       accessToken: "",
@@ -38,6 +38,13 @@ const store = createStore({
     logUser: function (state, user) {
       state.user = user;
       state.isAuthenticated = true;
+      localStorage.setItem(
+        "authToken",
+        JSON.stringify({
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
+        })
+      );
     },
     // delete all auth and user information from the state
     logout: function (state) {
@@ -62,41 +69,6 @@ const store = createStore({
     },
   },
   actions: {
-    refreshToken({ commit }, accessToken) {
-      const user = JSON.parse(localStorage.getItem("authToken"));
-      user.accessToken = accessToken;
-      localStorage.setItem("authToken", JSON.stringify(user));
-      commit("refreshToken", accessToken);
-      console.info(
-        "Access token updated, you can ignore the previous 401 error"
-      );
-    },
-    login: ({ commit, dispatch }, user) => {
-      commit("setStatus", "loading");
-      return new Promise((resolve, reject) => {
-        axiosInstance
-          .post("/auth/login", user)
-          .then(async (response) => {
-            console.log("login :", response);
-            localStorage.setItem(
-              "authToken",
-              JSON.stringify({
-                accessToken: response.data.accessToken,
-                refreshToken: response.data.refreshToken,
-              })
-            );
-            // localStorage.setItem("user", JSON.stringify(response.data))
-            commit("refreshToken", response.data.refreshToken);
-            commit("accessToken", response.data.accessToken);
-            await dispatch("getUserInfos");
-            resolve(response);
-          })
-          .catch((error) => {
-            commit("setStatus", "error_login");
-            reject(error);
-          });
-      });
-    },
     getUserInfos: ({ commit }) => {
       axiosInstance
         .get("/auth/read")

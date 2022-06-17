@@ -3,6 +3,7 @@
     <div>
       <div>
         <h1>{{ msg }}</h1>
+
         <div class="container">
           <form action="#" method="post" @submit.prevent="login">
             <div class="FormGroup">
@@ -12,7 +13,9 @@
                   class="FormTextbox"
                   type="text"
                   placeholder="E-mail"
-                  v-model.trim="user.email"
+                  v-model="state.user.email"
+                  @blur="v$.user.email.$touch"
+                  :class="v$.user.email.$error === true ? 'error' : 'dirty'"
                 />
                 <span class="FormTextboxIcon">
                   <font-awesome-icon :icon="['fas', 'user']" />
@@ -29,6 +32,7 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+              <!-- Error Message -->
             </div>
 
             <div class="FormGroup">
@@ -38,7 +42,9 @@
                   class="FormTextbox"
                   type="password"
                   placeholder="Mot de passe"
-                  v-model.trim="user.password"
+                  v-model="state.user.password"
+                  @blur="v$.user.password.$touch"
+                  :class="v$.user.password.$error === true ? 'error' : 'dirty'"
                 />
                 <span class="FormTextboxIcon">
                   <font-awesome-icon :icon="['fas', 'lock']" />
@@ -55,37 +61,32 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+              <!-- Error Message -->
             </div>
 
-            <!-- gestion erreur avec axios -->
-            <div
-              class="form-row error-msg"
-              v-if="mode == 'login' && status == 'error_login'"
-            >
-              Adresse mail et/ou mot de passe invalide
-            </div>
-
-            <!-- gestion erreur de l'API -->
-            <div
-              class="typo__p"
-              v-if="mode == 'login' && status == 'error_login'"
-            >
+            <!-- gestion erreur API avec axios -->
+            <div class="error-api" v-if="status == 'error_login'">
               <h3 class="error-msg">Erreur de l'API</h3>
               <p class="error-msg">{{ apiError }}</p>
             </div>
+            <!-- gestion erreur API avec axios -->
 
+            <!-- bouton de soumission -->
             <button
-              @click="login"
+              type="submit"
               class="btn button"
-              :class="{ disable: !emptyFields }"
+              title="Connexion"
+              value="Connexion"
             >
               <span v-if="status == 'loading'">Connexion en cours...</span>
               <span v-else>Connexion</span>
             </button>
+            <!-- bouton de soumission -->
           </form>
         </div>
       </div>
 
+      <!-- redirection sur la page création d'un compte -->
       <div class="signup">
         <p class="text-signup">Pas encore inscrit ?</p>
         <div class="actions">
@@ -94,6 +95,8 @@
           </router-link>
         </div>
       </div>
+      <!-- redirection sur la page création d'un compte -->
+      
     </div>
   </section>
 </template>
@@ -108,26 +111,25 @@ import {
   minLength,
   maxLength,
 } from "@vuelidate/validators";
+import { reactive, computed } from "vue";
+import axiosInstance from "../../services/api";
 
 export default {
   name: "LoginForm",
   props: {
     msg: String,
   },
-  data() {
-    return {
+  setup() {
+    const state = reactive({
       mode: "login",
-      v$: useVuelidate(),
-      // submitStatus: null,
-      apiError: null,
       user: {
         email: "",
         password: "",
       },
-    };
-  },
-  validations() {
-    return {
+      apiError: "",
+    });
+
+    const rules = computed(() => ({
       user: {
         email: {
           required: helpers.withMessage("L'/email est obligatoire", required),
@@ -155,36 +157,80 @@ export default {
           $lazy: true,
         },
       },
-    };
+    }));
+
+    const v$ = useVuelidate(rules, state);
+
+    return { state, v$ };
   },
-  mounted: function () {
-    if (this.$store.state.user.userId != -1) {
-      this.$router.push("/wall");
-      return;
-    }
+  validationConfig: {
+    $lazy: true,
   },
   computed: {
-    emptyFields: function () {
-      if (this.user.email != "" && this.user.password != "") {
-        return true;
-      } else {
-        return false;
-      }
-    },
     ...mapState(["status"]),
   },
   methods: {
-    async login() {
-      try {
-        await this.$store.dispatch("login", this.user);
-        await this.$router.push("/user");
-      } catch (error) {
-        this.apiError =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
+    login() {
+      this.apiError = "";
+
+      this.v$.$validate(); // checks all inputs
+      if (!this.v$.$error) {
+        // if ANY fail validation
+        this.$store.commit("setStatus", "loading");
+        axiosInstance
+          .post("/auth/login", this.state.user)
+          .then((response) => {
+            // notification de succès
+            this.$notify({
+              type: "success",
+              title: `Connexion réussi !`,
+              text: `Vous allez être redirigés vers votre profil.`,
+            });
+            // console.log("login :", response);
+
+            this.$store.commit("refreshToken", response.data.refreshToken);
+            this.$store.commit("accessToken", response.data.accessToken);
+            this.$store.commit("logUser", response.data);
+
+            // redirection sur la page utilisateur
+            setTimeout(
+              function () {
+                this.$router.push("/user");
+              }.bind(this),
+              2000,
+              this
+            );
+          })
+          .catch((error) => {
+            // console.log(error.response.data.message);
+            this.$store.commit("setStatus", "error_login");
+            const errorMessage = (this.apiError = error.response.data.message);
+            this.errorMessage = errorMessage;
+
+            // notification d'erreur
+            this.$notify({
+              type: "error",
+              title: `Erreur lors de la connexion`,
+              text: `Erreur reporté : ${errorMessage}`,
+            });
+          });
+      } else {
+        // notification d'erreur
+        this.$notify({
+          type: "warn",
+          title: `Veuillez vous identifié correctement`,
+        });
+
+        // montre les erreurs à l'écran
+        this.$nextTick(() => {
+          let domRect = document
+            .querySelector(".error")
+            .getBoundingClientRect();
+          window.scrollTo(
+            domRect.left + document.documentElement.scrollLeft,
+            domRect.top + document.documentElement.scrollTop
+          );
+        });
       }
     },
   },
@@ -276,20 +322,16 @@ button {
   margin: 2rem;
 }
 
-// btn disabled
-.disable {
-  color: rgba(255, 255, 255, 0.3);
-  background-color: rgba(255, 255, 255, 0.1);
-  cursor: default;
-}
-
 // error message
 .error-msg {
   color: #cc0033;
   display: inline-block;
-  font-size: 12px;
+  font-size: 0.6rem;
   line-height: 15px;
   margin: 5px 0 0;
 }
-</style>
 
+.error-api {
+  padding: 1rem;
+}
+</style>
