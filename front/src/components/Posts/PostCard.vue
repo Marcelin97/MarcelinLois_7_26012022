@@ -372,24 +372,19 @@ export default {
 </script>
 <style lang="scss" scoped>
 // Mouse scroll down
-  .scroll-down-mouse {
-visibility: hidden;
-background: transparent;
-    @media only screen and (min-width: 675px) {
-visibility: visible;
+.scroll-down-mouse {
+  visibility: hidden;
+  background: transparent;
+  @media only screen and (min-width: 675px) {
+    visibility: visible;
     position: fixed;
-  right: 20px;
-  bottom: 20px;
-  display: none;
-  z-index: 98;
+    right: 20px;
+    bottom: 20px;
+    display: none;
+    z-index: 98;
     display: flex;
     justify-content: flex-end;
   }
-}
-
-// animation background with blobShape
-BlobShape {
-  z-index: 99999;
 }
 
 $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
@@ -565,7 +560,7 @@ $img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=r
 
 .button-dropdown {
   position: relative;
-  z-index: 1000;
+  // z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -651,7 +646,7 @@ h3 {
   }
   .profile-cover {
     margin-bottom: 0.5rem;
-    z-index: 100;
+    // z-index: 100;
     position: absolute;
     bottom: 1rem;
     border-radius: 50%;

@@ -434,6 +434,7 @@ input:nth-child(4):checked ~ .indicator {
 }
 
 .menu {
+  background-color: rgb(12, 19, 31);
   display: flex;
   flex-direction: column;
   bottom: 0;
@@ -449,6 +450,7 @@ input:nth-child(4):checked ~ .indicator {
 }
 
 .side-wrapper {
+  background-color: rgb(12, 19, 31);
   padding-top: 40px;
   padding-left: 30px;
   width: 320px;

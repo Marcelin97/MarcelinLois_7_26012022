@@ -1,20 +1,23 @@
 <template>
+  <header></header>
   <main>
-    <header></header>
-    <main>
-      <router-view v-slot="{ Component, route }">
-        <transition name="fade" mode="out-in">
-          <div :key="route.name">
-            <component :is="Component"></component>
-          </div>
-        </transition>
-      </router-view>
-      <notifications
-        position="bottom right" :duration="3000" :ignoreDuplicates="true" :reverse="true" :animation-type="velocity"
-      />
-    </main>
-    <footer></footer>
+    <router-view v-slot="{ Component, route }">
+      <transition name="fade" mode="out-in">
+        <div :key="route.name">
+          <component :is="Component"></component>
+        </div>
+      </transition>
+    </router-view>
+    <notifications
+      id="notifications"
+      position="bottom right"
+      :duration="3000"
+      :ignoreDuplicates="true"
+      :reverse="true"
+      :animation-type="velocity"
+    />
   </main>
+  <footer></footer>
 </template>
 
 <script>
@@ -24,7 +27,7 @@ export default {
 </script>
 
 <style lang="scss">
-* {
+body {
   background-color: rgb(12, 19, 31);
 }
 </style>

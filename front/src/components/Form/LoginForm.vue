@@ -271,6 +271,7 @@ form {
   width: auto;
   padding: 1rem;
   border-radius: 0.5rem;
+  background-color: rgb(12, 19, 31);
 }
 .FormGroup {
   margin-bottom: 1.75rem;
@@ -293,6 +294,7 @@ form {
   border-bottom: 1px solid #c7c7c7;
   color: #606060;
   text-indent: 2rem;
+  background-color: rgb(12, 19, 31);
   &::placeholder {
     color: #a7a7a7;
   }

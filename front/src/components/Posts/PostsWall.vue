@@ -1,8 +1,8 @@
 <template>
-    <section>
-        <h2>Posts</h2>
-        <PostCard/>
-    </section>
+  <section>
+    <h2>Posts</h2>
+    <PostCard />
+  </section>
 </template>
 <script>
 import PostCard from "./PostCard.vue";
@@ -15,7 +15,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h2{
+h2 {
   font-size: 1.4rem;
   font-weight: bolder;
   margin-bottom: 1rem;

@@ -52,7 +52,7 @@ export default {
   },
   mounted() {
     const token = TokenService.getLocalAccessToken();
-    console.log("token :" , token);
+    // console.log("token :" , token);
     axiosInstance
       .get("/community/readAllCommunities", {
         headers: {

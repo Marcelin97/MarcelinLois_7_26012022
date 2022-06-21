@@ -23,6 +23,10 @@
 
 <style lang="scss" scoped>
 // delete button
+.animation-btn {
+  display: flex;
+  align-items: center;
+}
 .animation-btn :hover {
   .paper,
   .shredded {
@@ -34,6 +38,7 @@
   }
 }
 button {
+  background-color: unset;
   position: relative;
   display: flex;
   justify-content: center;
@@ -42,7 +47,6 @@ button {
   height: 4rem;
   border-radius: 0.8rem;
   border: none;
-  // background: #08708a;
   cursor: pointer;
 }
 

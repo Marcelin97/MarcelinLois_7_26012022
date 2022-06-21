@@ -250,10 +250,8 @@
           </div>
         </div>
         <!-- success modal -->
-
       </div>
     </form>
-
   </section>
 </template>
 
@@ -489,6 +487,7 @@ input {
   margin-bottom: 0.3rem;
   border: 1px solid #585858;
   color: #8de8fe;
+  background-color: rgb(12, 19, 31);
 
   @media only screen and (min-width: 768px) {
     width: 25rem;

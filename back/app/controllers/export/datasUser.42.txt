@@ -1,0 +1,13 @@
+{
+    "id": 42,
+    "firstName": "test2",
+    "lastName": "test2",
+    "username": "test2",
+    "email": "test2@test.test",
+    "password": "$2a$10$gbbMC3hKzPYTCbsd2ZzgwOmiD.uJaqG.sksGm.fpANaNG078.ny/m",
+    "birthday": "2022-06-29T00:00:00.000Z",
+    "imageUrl": null,
+    "isAdmin": false,
+    "createdAt": "2022-06-16T12:47:06.000Z",
+    "updatedAt": "2022-06-16T12:47:06.000Z"
+}

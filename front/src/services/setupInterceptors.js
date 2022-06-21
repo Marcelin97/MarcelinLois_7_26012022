@@ -23,41 +23,28 @@ const setup = (store) => {
     },
     async (err) => {
       const originalConfig = err.config;
+
       if (originalConfig.url !== "/auth/login" && err.response) {
-        // 403: Forbidden access
-        if (err.response && err.response.status === 403) {
-          TokenService.removeUser();
-          // return Promise.resolve(false)
-          return Promise.reject(err.response);
-        }
-        // 401: accessToken is probably expired, or the user isn't connected
-        if (err.response && err.response.status === 401 && !originalConfig._retry) {
+        // Access Token was expired
+        if (err.response.status === 401 && !originalConfig._retry) {
           originalConfig._retry = true;
 
-          const user = JSON.parse(localStorage.getItem('authToken')) || {}
-          console.log("user :", user)
-
-          if (user && user.refreshToken) {
-            const rs = await axiosInstance.post('/auth/refreshtoken', {
+          try {
+            const rs = await axiosInstance.post("/auth/refreshtoken", {
               refreshToken: TokenService.getLocalRefreshToken(),
-            }).catch((err) => {
-              console.log(err);
-              // We can't reconnect the user... just exit
-              return Promise.resolve(false)
-            })
+            });
 
-            const { accessToken } = rs.data
-            console.log("accessToken:" , accessToken)
+            const { accessToken } = rs.data;
 
-            if (accessToken) {
-              store.dispatch('auth/refreshToken', accessToken)
-              return axiosInstance(originalConfig)
-            }
-          } else {
-            localStorage.removeItem('authToken')
-            return Promise.reject(err)
+            store.dispatch('auth/refreshToken', accessToken);
+            TokenService.updateLocalAccessToken(accessToken);
+
+            return axiosInstance(originalConfig);
+          } catch (_error) {
+            return Promise.reject(_error);
           }
         }
+        
       }
       return Promise.reject(err);
     }

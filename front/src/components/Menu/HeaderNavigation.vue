@@ -28,9 +28,13 @@
         <div class="dropdown__content">
           <router-link class="dropdown-text" to="/user">Profil</router-link>
           <router-link class="dropdown-text" to="/">Enregistré</router-link>
-          <router-link class="dropdown-text" to="/user/parameter">Paramètres</router-link>
+          <router-link class="dropdown-text" to="/user/parameter"
+            >Paramètres</router-link
+          >
           <hr class="line" />
-          <button class="dropdown-text logout" @click="logout">Déconnexion</button>
+          <button class="dropdown-text logout" @click="logout">
+            Déconnexion
+          </button>
         </div>
       </div>
       <div class="indicator"></div>
@@ -61,9 +65,13 @@
 export default {
   name: "HeaderNavigation",
   methods: {
-    logout: function () {
-      this.$store.commit("logout");
-      this.$router.push("/login");
+    async logout() {
+      try {
+        this.$store.commit("logout");
+        this.$router.push("/login");
+      } catch (error) {
+        console.error(error.data);
+      }
     },
   },
 };
@@ -114,12 +122,12 @@ export default {
       cursor: pointer;
     }
   }
-  .logout{
-    background:#00376b;
+  .logout {
+    background: #00376b;
     font-weight: bold;
     border: none;
     color: #8de8fe;
-        &:hover {
+    &:hover {
       background: red;
     }
   }

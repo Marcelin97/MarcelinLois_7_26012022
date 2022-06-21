@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import axiosInstance from "../services/api";
+// import axiosInstance from "../services/api";
 
 let user = localStorage.getItem("user");
 if (!user) {
@@ -46,6 +46,15 @@ const store = createStore({
         })
       );
     },
+    getUserInfos: function (state, user) {
+      state.user = user;
+      localStorage.getItem(
+        "authToken",
+        JSON.stringify({
+          accessToken: user.accessToken,
+        })
+      );
+    },
     // delete all auth and user information from the state
     logout: function (state) {
       state.user = {
@@ -59,29 +68,19 @@ const store = createStore({
       state.accessToken = "";
       state.isAuthenticated = false;
     },
-    refreshToken: function (state, refreshToken) {
-      state.refreshToken = refreshToken;
-      state.user = { ...state.user, refreshToken: refreshToken };
-    },
-    accessToken: function (state, accessToken) {
-      state.accessToken = accessToken;
+    refreshToken: function (state, accessToken) {
+      state.isAuthenticated = true;
       state.user = { ...state.user, accessToken: accessToken };
     },
+    // accessToken: function (state, accessToken) {
+    //   state.accessToken = accessToken;
+    //   state.user = { ...state.user, accessToken: accessToken };
+    // },
   },
   actions: {
-    getUserInfos: ({ commit }) => {
-      axiosInstance
-        .get("/auth/read")
-        .then((response) => {
-          commit("setStatus", "");
-          commit("logUser", response.data);
-          // commit("refreshToken", response.data.accessToken);
-          console.log(",", response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
+    refreshToken({ commit }, accessToken) {
+      commit('refreshToken', accessToken);
+    }
   },
 });
 

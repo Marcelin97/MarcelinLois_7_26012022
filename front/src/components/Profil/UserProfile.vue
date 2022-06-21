@@ -2,11 +2,11 @@
   <div class="wrapper" v-if="user">
     <div class="profile-card js-profile-card">
       <div class="profile-card__img">
-        <!-- <img
-          :src="user?.data.imageUrl"
+        <img
+          :src="user.data?.imageUrl"
           alt="Photo d'utilisateur"
           aria-label="Photo d'utilisateur"
-        /> -->
+        />
       </div>
 
       <div class="profile-card__cnt js-profile-cnt">
@@ -14,8 +14,12 @@
           Nom d'utilisateur :
           {{ user.data?.username || "chargement en cours..." }}
         </div>
-        <!-- <div class="profile-card__txt">Identifiant : {{ user?.data.id  || "chargement en cours..."  }}</div> -->
-        <!-- <div class="profile-card__txt">administrateur : {{ user?.data.isAdmin }}</div> -->
+        <div class="profile-card__txt">
+          Identifiant : {{ user.data?.id || "chargement en cours..." }}
+        </div>
+        <div class="profile-card__txt">
+          administrateur : {{ user.data?.isAdmin }}
+        </div>
 
         <div class="profile-card-inf">
           <div class="profile-card-inf__item">
@@ -26,56 +30,185 @@
           </div>
 
           <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">{{ user.data?.creator.length }}</div>
+            <div class="profile-card-inf__title">
+              {{ user.data?.creator.length }}
+            </div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
         </div>
       </div>
 
       <div class="profile-card-ctr">
-        <router-link class="profile-card__button" to="/">Signaler</router-link>
+        <router-link v-if="user" class="profile-card__button" to="/"
+          >Signaler</router-link
+        >
         <router-link class="profile-card__button" to="/user/parameter"
           >Modifier</router-link
         >
       </div>
+      <div class="profile-card-ctr">
+        <button
+          type="button"
+          class="btn btn-export"
+          @click="exportDataClick"
+          text="Exporter mes données"
+        >
+          Exporter mes données
+        </button>
+        <button
+          type="button"
+          class="btn btn-delete"
+          @click="$refs.modalName.openModal()"
+          text="Supprimer mon compte"
+        >
+          Supprimer mon compte
+        </button>
+      </div>
     </div>
   </div>
+
   <div>
     <PostCard />
   </div>
+
+  <modalStructure ref="modalName">
+    <template v-slot:header>
+      <h1>Modal title</h1>
+    </template>
+
+    <template v-slot:body>
+      <p>
+        Attention, vous êtes sur le point de supprimer votre compte. Cette
+        action est irréversible. Souhaitez-vous tout de même continuer ?'
+      </p>
+    </template>
+
+    <template v-slot:footer>
+      <div class="modal__actions">
+        <button class="btn" @click="$refs.modalName.closeModal()">
+          Cancel
+        </button>
+        <deleteBtn @click="deleteAccountClick" />
+      </div>
+    </template>
+  </modalStructure>
 </template>
 
 <script>
 import PostCard from "../Posts/PostCard.vue";
+import modalStructure from "../Modal/ModalStructure.vue";
+import deleteBtn from "../Base/DeleteBtn.vue";
+
 import { mapState } from "vuex";
+import axiosInstance from "../../services/api";
+import usersApi from "../../api/users";
 
 export default {
   name: "User-profile",
   setup() {},
   components: {
     PostCard,
+    modalStructure,
+    deleteBtn,
   },
-  async mounted() {
-    //  if (this.$store.state.user.userId == -1 || null) {
-    //   this.$router.push('/account');
-    //   return ;
-    // }
-    try {
-      await this.$store.dispatch("getUserInfos");
-      console.log(this.user);
-    } catch (error) {
-      console.log(error);
-    }
+  data() {
+    return {
+      apiError: "",
+    };
+  },
+  methods: {
+    async exportDataClick() {
+      try {
+        const response = await usersApi.exportMyData();
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement("a");
+
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "file.csv");
+        document.body.appendChild(fileLink);
+
+        fileLink.click();
+      } catch (error) {
+        const errorMessage = (this.apiError = error.response);
+        this.errorMessage = errorMessage;
+        console.log("apiError", error);
+
+        // notification d'erreur
+        this.$notify({
+          duration: 2500,
+          type: "error",
+          title: `Erreur de connexion`,
+          text: `Erreur reporté : ${errorMessage}`,
+        });
+      }
+    },
+    async deleteAccountClick() {
+      if (
+        window.confirm(
+          "Attention, vous êtes sur le point de supprimer votre compte. Cette action est irréversible. Souhaitez-vous tout de même continuer ?"
+        )
+      ) {
+        try {
+          await usersApi.deleteUser();
+          await this.$store.commit("logout");
+          await this.$store.commit("setStatus", "logout");
+          await this.$router.push("/");
+        } catch (e) {
+          console.error(e.data);
+        }
+      }
+    },
   },
   computed: {
-    ...mapState({
-      user: "user",
-    }),
+    ...mapState(["user", "accessToken"]),
+  },
+  mounted() {
+    if (!this.user) {
+      this.$router.push("/login");
+    }
+    this.apiError = "";
+
+    const token = this.$store.state.accessToken;
+    console.log("token :", token);
+    axiosInstance
+      .get("/auth/read", {
+        headers: {
+          Authorization: token,
+        },
+      })
+      .then((response) => {
+        this.$store.commit("getUserInfos", response.data);
+        this.$store.commit("setStatus", "connected");
+      })
+      .catch((error) => {
+        const errorMessage = (this.apiError = error.response.data.error.name);
+        this.errorMessage = errorMessage;
+
+        // notification d'erreur
+        this.$notify({
+          duration: 2500,
+          type: "error",
+          title: `Erreur de connexion`,
+          text: `Erreur reporté : ${errorMessage}`,
+        });
+        this.$router.push("/login");
+      });
   },
 };
 </script>
 
 <style lang="scss" scoped>
+// modalStructure
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.modal__actions {
+  padding: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
 // Profil
 .wrapper {
   width: 100%;
@@ -222,5 +355,13 @@ export default {
 img {
   width: 100%;
   height: 100%;
+}
+
+.btn {
+  margin: 1rem;
+}
+
+.btn-delete:focus {
+  box-shadow: 0 0 0 2px red;
 }
 </style>
