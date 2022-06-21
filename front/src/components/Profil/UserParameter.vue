@@ -3,116 +3,313 @@
     <div class="container">
       <h1 class="title">Modifier mon profil</h1>
 
-      <form class="grid">
-        <div class="form-group a">
-          <label for="name">Nom</label>
-          <input id="name" type="text" />
-        </div>
-
-        <div class="form-group b">
+      <form @submit.prevent="updateAccount">
+        <div class="form-group">
           <label for="first-name">Prénom</label>
-          <input id="first-name" type="text" />
-        </div>
+          <input
+            id="first-name"
+            type="text"
+            v-model="state.user.firstName"
+            @blur="v$.user.firstName.$touch"
+            :class="v$.user.firstName.$error === true ? 'error' : 'dirty'"
+          />
 
-        <div class="form-group email-group">
-          <label for="email">Email</label>
-          <input id="email" type="text" />
-        </div>
-
-        <div class="form-group phone-group">
-          <label for="phone">Nouveau Mot de passe</label>
-          <input id="phone" type="text" />
-        </div>
-
-        <div class="textarea-group">
-          <label for="bio">Bio</label>
-          <textarea id="bio"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="address">Adresse</label>
-          <input id="address" type="text" />
-        </div>
-
-        <div class="form-group">
-          <label for="city">Ville</label>
-          <input id="city" type="text" />
+          <!-- Error Message -->
+          <template v-if="v$.user.firstName.$dirty">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.firstName.$errors"
+              :key="index"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+          <!-- Error Message -->
         </div>
 
         <div class="form-group">
-          <label for="zip">Code postal</label>
-          <input id="zip" type="text" />
+          <label for="last-name">Nom de famille</label>
+          <input
+            id="last-name"
+            type="text"
+            v-model="state.user.lastName"
+            @blur="v$.user.lastName.$touch"
+            :class="v$.user.lastName.$error === true ? 'error' : 'dirty'"
+          />
+
+          <!-- Error Message -->
+          <template v-if="v$.user.lastName.$dirty">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.lastName.$errors"
+              :key="index"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+          <!-- Error Message -->
+        </div>
+
+        <div class="form-group">
+          <label for="birthday">Date de naissance</label>
+          <input
+            id="birthday"
+            type="date"
+            v-model="state.user.birthday"
+            @blur="v$.user.birthday.$touch"
+            :class="v$.user.birthday.$error === true ? 'error' : 'dirty'"
+          />
+
+          <!-- Error Message -->
+          <template v-if="v$.user.birthday.$dirty">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.birthday.$errors"
+              :key="index"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+          <!-- Error Message -->
+        </div>
+
+        <div class="form-group">
+          <label for="username">Nom d'utilisateur</label>
+          <input
+            id="username"
+            type="text"
+            v-model="state.user.username"
+            @blur="v$.user.username.$touch"
+            :class="v$.user.username.$error === true ? 'error' : 'dirty'"
+          />
+
+          <!-- Error Message -->
+          <template v-if="v$.user.username.$dirty">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.username.$errors"
+              :key="index"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+          <!-- Error Message -->
+        </div>
+
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input
+            id="email"
+            type="email"
+            v-model="state.user.email"
+            @blur="v$.user.email.$touch"
+            :class="v$.user.email.$error === true ? 'error' : 'dirty'"
+          />
+
+          <!-- Error Message -->
+          <template v-if="v$.user.email.$dirty">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.email.$errors"
+              :key="index"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+          <!-- Error Message -->
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input
+            id="password"
+            type="password"
+            v-model="state.user.password"
+            @blur="v$.user.password.$touch"
+            :class="v$.user.password.$error === true ? 'error' : 'dirty'"
+          />
+
+          <!-- Error Message -->
+          <template v-if="v$.user.password.$dirty">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.password.$errors"
+              :key="index"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+          <!-- Error Message -->
+        </div>
+        <div class="button-container">
+          <button type="submit" class="button">
+            Enregister les modifications
+          </button>
         </div>
       </form>
-
-      <div class="button-container">
-        <button class="button">Enregister les modifications</button>
-      </div>
     </div>
   </section>
 </template>
 
+<script>
+import useVuelidate from "@vuelidate/core";
+import {
+  helpers,
+  required,
+  minLength,
+  email,
+  maxLength,
+  alphaNum,
+} from "@vuelidate/validators";
+import { reactive, computed } from "vue";
+
+export function strongPassword(value) {
+  return (
+    /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/.test(
+      value
+    ) && value.length >= 8
+  );
+}
+
+export default {
+  name: "UpdateForm",
+  setup() {
+    const state = reactive({
+      mode: "create",
+      user: {
+        firstName: "",
+        lastName: "",
+        birthday: "",
+        email: "",
+        password: "",
+        username: "",
+        terms: "",
+      },
+      apiError: "",
+    });
+
+    const rules = computed(() => ({
+      user: {
+        firstName: {
+          required: helpers.withMessage("Le prénom est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+        },
+        lastName: {
+          required: helpers.withMessage("Le nom est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+        },
+        birthday: {
+          required: helpers.withMessage(
+            "La date d'anniversaire est obligatoire",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+        },
+        username: {
+          required: helpers.withMessage(
+            "Le nom d'utilisateur est obligatoire",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+          minLength: minLength(3),
+          maxLength: maxLength(25),
+          alphaNum,
+        },
+        email: {
+          required: helpers.withMessage("L'/email est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+          email,
+          minLength: minLength(5),
+          maxLength: maxLength(60),
+        },
+        password: {
+          required: helpers.withMessage(
+            "Le mot de passe est obligatoire",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+          password_validation: {
+            $validator: strongPassword,
+            $message:
+              "Entre 8 et 16 caractères, Une minuscule au moins, Une majuscule au moins, Un chiffre au moins, Un caractère spécial au moins (@&/!$ ...)",
+          },
+        },
+        terms: {
+          required: helpers.withMessage(
+            "Vous devez accepter les conditions générales pour continuer",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+        },
+      },
+    }));
+
+    const v$ = useVuelidate(rules, state);
+
+    return { state, v$ };
+  },
+  validationConfig: {
+    $lazy: true,
+  },
+};
+</script>
 <style lang="scss" scoped>
 .container {
-  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   @media only screen and (min-width: 768px) {
-    align-items: center;
-    justify-content: center;
-    margin: 2rem;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    padding: 2rem;
-    display: flex;
     flex-direction: column;
   }
 }
 
 .title {
-  font-size: 24px;
-  line-height: 28px;
-  font-weight: bold;
-  color: #374151;
+  font-size: 1.4rem;
+  font-weight: bolder;
+  line-height: 1.4rem;
+  color: #8de8fe;
   padding-bottom: 11px;
   border-bottom: 1px solid #d7dbdf;
+}
+
+form {
+  padding: 20px;
 }
 
 .form-group {
   margin-top: 25px;
   display: flex;
   flex-direction: column;
-}
-
-.textarea-group label,
-.form-group label {
+  label {
   color: #374151;
-  font-size: 16px;
-  line-height: 19px;
   margin-bottom: 10px;
 }
-
-.form-group [type],
-.textarea-group textarea {
-  border: 1px solid #d2d6db;
-  border-radius: 6px;
-  padding: 15px;
-}
-.form-group [type]:hover,
-.textarea-group textarea:hover {
-  border-color: #a8afb9;
 }
 
-.textarea-group {
-  margin-top: 24px;
+input {
+  width: 15rem;
+  height: 2.5rem;
+  padding: 0 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #585858;
+  color: #8de8fe;
+  background-color: rgb(12, 19, 31);
+
+  @media only screen and (min-width: 768px) {
+    width: 25rem;
+  }
 }
 
-.textarea-group textarea {
-  resize: none;
-  width: 100%;
-  margin-top: 10px;
-  height: calc(100% - 59px);
+label,
+input {
+  cursor: pointer;
 }
 
 .button {
@@ -135,30 +332,7 @@
   }
 }
 
-@media only screen and (min-width: 768px) {
-  .grid {
-    display: grid;
-    grid-gap: 24px;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-auto-rows: 1fr;
-  }
-}
 @media only screen and (min-width: 1024px) {
-  .email-group {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .phone-group {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .textarea-group {
-    grid-column: 3;
-    grid-row: span 2;
-    margin-right: 2rem;
-  }
 
   .button-container {
     text-align: right;
@@ -167,5 +341,36 @@
   .button {
     width: auto;
   }
+}
+
+// * error if input is invalid
+
+.dirty {
+  // border-color: #5a5;
+  // background: #efe;
+  border-color: #8de8fe;
+}
+
+.dirty:focus {
+  outline-color: #8e8;
+}
+
+.error {
+  background: #fdd;
+  border-color: #fd4444;
+  opacity: 0.7;
+}
+
+.error:focus {
+  outline-color: #f99;
+}
+
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
 }
 </style>

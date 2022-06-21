@@ -21,7 +21,6 @@
                 @blur="v$.user.firstName.$touch"
                 :class="v$.user.firstName.$error === true ? 'error' : 'dirty'"
               />
-              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
@@ -50,7 +49,6 @@
                 @blur="v$.user.lastName.$touch"
                 :class="v$.user.lastName.$error === true ? 'error' : 'dirty'"
               />
-              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
@@ -79,7 +77,6 @@
                 @blur="v$.user.birthday.$touch"
                 :class="v$.user.birthday.$error === true ? 'error' : 'dirty'"
               />
-              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
@@ -108,7 +105,6 @@
                 @blur="v$.user.username.$touch"
                 :class="v$.user.username.$error === true ? 'error' : 'dirty'"
               />
-              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
@@ -137,7 +133,6 @@
                 @blur="v$.user.email.$touch"
                 :class="v$.user.email.$error === true ? 'error' : 'dirty'"
               />
-              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
@@ -166,7 +161,6 @@
                 @blur="v$.user.password.$touch"
                 :class="v$.user.password.$error === true ? 'error' : 'dirty'"
               />
-              <!-- <div class="validation">Required</div> -->
             </label>
 
             <!-- Error Message -->
@@ -444,7 +438,7 @@ export default {
     font-size: 1.4rem;
     font-weight: bolder;
     margin: 4rem 1rem;
-    line-height: 1.5rem;
+    line-height: 1.4rem;
     text-align: center;
   }
 
@@ -492,32 +486,6 @@ input {
   @media only screen and (min-width: 768px) {
     width: 25rem;
   }
-}
-
-.validation {
-  position: absolute;
-  bottom: 4rem;
-  display: flex;
-  align-items: center;
-  height: 1.5rem;
-  padding: 0 0.5rem;
-  opacity: 0;
-  transform: translateY(0.75rem);
-  border-radius: 1.5rem;
-  background: #fd4444;
-  color: #f9f9f9;
-  transition: all 0.35s;
-}
-
-.validation::after {
-  content: "";
-  position: absolute;
-  left: 15px;
-  bottom: -2px;
-  width: 4px;
-  height: 4px;
-  transform: rotate(45deg);
-  background: inherit;
 }
 
 // * CheckBox
@@ -585,6 +553,15 @@ input:checked ~ .checkbox {
   outline-color: #f99;
 }
 
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
+}
+
 @keyframes shake {
   100% {
     transform: translateX(0);
@@ -599,15 +576,6 @@ input:checked ~ .checkbox {
   }
 }
 
-// error message
-.error-msg {
-  color: #cc0033;
-  display: inline-block;
-  font-size: 12px;
-  line-height: 15px;
-  margin: 5px 0 0;
-}
-
 // * Submit
 .submit {
   display: flex;
@@ -616,21 +584,6 @@ input:checked ~ .checkbox {
   align-items: center;
   margin-top: 30px;
   flex-basis: 100%;
-}
-
-// btn disabled
-.disable {
-  color: rgba(255, 255, 255, 0.3);
-  background-color: rgba(255, 255, 255, 0.1);
-  cursor: default;
-  span {
-    color: rgba(255, 255, 255, 0.3);
-    background-color: transparent;
-    cursor: default;
-  }
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
 }
 
 // success modal

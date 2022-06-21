@@ -23,7 +23,7 @@ export default {
 
     async userReport(userId) {
         try {
-            return await api.post(`/auth/report/${userId}`)
+            return await axiosInstance.post(`/auth/report/${userId}`)
         } catch (e) {
             console.error(e.response)
             throw e.response
