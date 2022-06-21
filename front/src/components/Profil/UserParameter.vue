@@ -20,7 +20,7 @@
         </div>
 
         <div class="form-group phone-group">
-          <label for="phone">Téléphone (mobile)</label>
+          <label for="phone">Nouveau Mot de passe</label>
           <input id="phone" type="text" />
         </div>
 
@@ -48,16 +48,6 @@
       <div class="button-container">
         <button class="button">Enregister les modifications</button>
       </div>
-    </div>
-  </section>
-  <section>
-    <div class="button-container">
-      <Button type="button" class="button" @button-click="exportDataClick"
-        >Exporter mes données</Button
-      >
-      <Button type="button" class="button" @button-click="deleteAccountClick"
-        >Supprimer mon compte</Button
-      >
     </div>
   </section>
 </template>
