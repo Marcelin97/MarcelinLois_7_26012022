@@ -79,8 +79,8 @@ const store = createStore({
   },
   actions: {
     refreshToken({ commit }, accessToken) {
-      commit('refreshToken', accessToken);
-    }
+      commit("refreshToken", accessToken);
+    },
   },
 });
 

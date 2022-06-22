@@ -3,7 +3,7 @@
     <div class="container">
       <h1 class="title">Modifier mon profil</h1>
 
-      <form @submit.prevent="updateAccount">
+      <form @submit.prevent="updateAccountClick">
         <div class="form-group">
           <label for="first-name">Prénom</label>
           <input
@@ -163,6 +163,8 @@ import {
 } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
+import usersApi from "../../api/users";
+
 export function strongPassword(value) {
   return (
     /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/.test(
@@ -258,6 +260,24 @@ export default {
   validationConfig: {
     $lazy: true,
   },
+  methods: {
+    async updateAccountClick() {
+      if (
+        window.confirm(
+          "Attention, vous êtes sur le point de modifier votre compte. Souhaitez-vous tout de même continuer ?"
+        )
+      ) {
+        try {
+          await usersApi.updateAccount();
+          await this.$store.commit("logout");
+          await this.$store.commit("setStatus", "logout");
+          await this.$router.push("/");
+        } catch (e) {
+          console.error(e.data);
+        }
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -288,9 +308,9 @@ form {
   display: flex;
   flex-direction: column;
   label {
-  color: #374151;
-  margin-bottom: 10px;
-}
+    color: #374151;
+    margin-bottom: 10px;
+  }
 }
 
 input {
@@ -333,7 +353,6 @@ input {
 }
 
 @media only screen and (min-width: 1024px) {
-
   .button-container {
     text-align: right;
   }
