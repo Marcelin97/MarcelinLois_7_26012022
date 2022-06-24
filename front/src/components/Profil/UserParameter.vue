@@ -120,20 +120,20 @@
         </div>
 
         <div class="form-group">
-          <label for="password">Mot de passe</label>
+          <label for="newPassword">Mot de passe</label>
           <input
-            id="password"
+            id="newPassword"
             type="password"
-            v-model="state.user.password"
-            @blur="v$.user.password.$touch"
-            :class="v$.user.password.$error === true ? 'error' : 'dirty'"
+            v-model="state.user.newPassword"
+            @blur="v$.user.newPassword.$touch"
+            :class="v$.user.newPassword.$error === true ? 'error' : 'dirty'"
           />
 
           <!-- Error Message -->
-          <template v-if="v$.user.password.$dirty">
+          <template v-if="v$.user.newPassword.$dirty">
             <div
               class="input-errors"
-              v-for="(error, index) of v$.user.password.$errors"
+              v-for="(error, index) of v$.user.newPassword.$errors"
               :key="index"
             >
               <div class="error-msg">{{ error.$message }}</div>
@@ -141,6 +141,30 @@
           </template>
           <!-- Error Message -->
         </div>
+
+        <div class="form-group">
+          <label for="userImage">Photo de profil</label>
+          <input
+            id="userImage"
+            type="file"
+            v-on:change="onChangeFileUpload()"
+            ref="file"
+            @blur="v$.user.userImage.$touch"
+          />
+
+          <!-- Error Message -->
+          <!-- <template v-if="v$.user.userImage.$dirty">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.userImage.$errors"
+              :key="index"
+            >
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template> -->
+          <!-- Error Message -->
+        </div>
+
         <div class="button-container">
           <button type="submit" class="button">
             Enregister les modifications
@@ -183,9 +207,9 @@ export default {
         lastName: "",
         birthday: "",
         email: "",
-        password: "",
+        newPassword: "",
         username: "",
-        terms: "",
+        userImage: "",
       },
       apiError: "",
     });
@@ -229,7 +253,7 @@ export default {
           minLength: minLength(5),
           maxLength: maxLength(60),
         },
-        password: {
+        newPassword: {
           required: helpers.withMessage(
             "Le mot de passe est obligatoire",
             required
@@ -242,14 +266,6 @@ export default {
               "Entre 8 et 16 caractères, Une minuscule au moins, Une majuscule au moins, Un chiffre au moins, Un caractère spécial au moins (@&/!$ ...)",
           },
         },
-        terms: {
-          required: helpers.withMessage(
-            "Vous devez accepter les conditions générales pour continuer",
-            required
-          ),
-          $autoDirty: true,
-          $lazy: true,
-        },
       },
     }));
 
@@ -261,14 +277,30 @@ export default {
     $lazy: true,
   },
   methods: {
+    async onChangeFileUpload() {
+     this.userImage = this.$refs.file.files[0];
+    },
     async updateAccountClick() {
+      var bodyFormData = new FormData();
+      bodyFormData.append("firstName", this.firstName);
+      bodyFormData.append("lastName", this.lastName);
+      bodyFormData.append("birthday", this.birthday);
+      bodyFormData.append("email", this.email);
+      bodyFormData.append("newPassword", this.newPassword);
+      bodyFormData.append("username", this.username);
+      bodyFormData.append("imageUrl", this.userImage);
+
       if (
         window.confirm(
           "Attention, vous êtes sur le point de modifier votre compte. Souhaitez-vous tout de même continuer ?"
         )
       ) {
         try {
-          await usersApi.updateAccount();
+          await usersApi.updateAccount(bodyFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
           await this.$store.commit("logout");
           await this.$store.commit("setStatus", "logout");
           await this.$router.push("/");

@@ -66,7 +66,6 @@
 
             <!-- gestion erreur API avec axios -->
             <div class="error-api" v-if="status == 'error_login'">
-              <h3 class="error-msg">Erreur de l'API</h3>
               <p class="error-msg">{{ apiError }}</p>
             </div>
             <!-- gestion erreur API avec axios -->
@@ -96,7 +95,6 @@
         </div>
       </div>
       <!-- redirection sur la page création d'un compte -->
-      
     </div>
   </section>
 </template>
@@ -202,17 +200,28 @@ export default {
             );
           })
           .catch((error) => {
-            // console.log(error.response.data.message);
+            console.log(error.response.status);
             this.$store.commit("setStatus", "error_login");
-            const errorMessage = (this.apiError = error.response.data.message);
-            this.errorMessage = errorMessage;
-
-            // notification d'erreur
-            this.$notify({
-              type: "error",
-              title: `Erreur lors de la connexion`,
-              text: `Erreur reporté : ${errorMessage}`,
-            });
+            if (error.response.status == 404) {
+              const errorMessage = (this.apiError =
+                "Utilisateur introuvable !");
+              this.errorMessage = errorMessage;
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors de la connexion`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            } else if (error.response.status == 401) {
+              const errorMessage = (this.apiError = "Mot de passe invalide !");
+              this.errorMessage = errorMessage;
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors de la connexion`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            }
           });
       } else {
         // notification d'erreur

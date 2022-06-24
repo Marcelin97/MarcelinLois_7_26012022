@@ -1,5 +1,4 @@
 import axiosInstance from "../services/api";
-import { mapState } from "vuex";
 
 export default {
   /**
@@ -24,7 +23,7 @@ export default {
 
   async updateAccount() {
     try {
-      return await api.post("/auth/update");
+        return await axiosInstance.post("/auth/update");
     } catch (e) {
       throw e.response;
     }

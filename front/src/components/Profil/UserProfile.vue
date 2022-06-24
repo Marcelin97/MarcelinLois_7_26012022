@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper" v-if="user">
     <div class="profile-card js-profile-card">
+      <!-- Profil image -->
       <div class="profile-card__img">
         <img
           :src="user.data?.imageUrl"
@@ -9,6 +10,7 @@
         />
       </div>
 
+      <!-- Profil informations -->
       <div class="profile-card__cnt js-profile-cnt">
         <div class="profile-card__name">
           Nom d'utilisateur :
@@ -18,22 +20,33 @@
           Identifiant : {{ user.data?.id || "chargement en cours..." }}
         </div>
         <div class="profile-card__txt">
-          administrateur : {{ user.data?.isAdmin }}
+          administrateur : {{ user.data?.isAdmin || "chargement en cours..." }}
         </div>
 
+        <!-- Profil statistiques -->
         <div class="profile-card-inf">
+          <!-- Publications -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.data?.communities.length }}
-            </div>
-            <div class="profile-card-inf__txt">Abonnements</div>
-          </div>
-
-          <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              {{ user.data?.creator.length }}
+              {{ user.data?.creator.length || "chargement en cours..." }}
             </div>
             <div class="profile-card-inf__txt">Publications</div>
+          </div>
+
+          <!-- Commentaires -->
+          <div class="profile-card-inf__item">
+            <div class="profile-card-inf__title">
+              {{ user.data?.author.length || "chargement en cours..." }}
+            </div>
+            <div class="profile-card-inf__txt">Commentaires</div>
+          </div>
+
+          <!-- Communautés crées -->
+          <div class="profile-card-inf__item">
+            <div class="profile-card-inf__title">
+              {{ user.data?.groups.length || "chargement en cours..." }}
+            </div>
+            <div class="profile-card-inf__txt">Communautés crées</div>
           </div>
         </div>
       </div>
@@ -124,10 +137,15 @@ export default {
         var fileLink = document.createElement("a");
 
         fileLink.href = fileURL;
-        fileLink.setAttribute("download", "file.csv");
+        fileLink.setAttribute("download", "file.txt");
         document.body.appendChild(fileLink);
 
         fileLink.click();
+
+        this.$notify({
+          type: "success",
+          text: "Le téléchargement commence.",
+        });
       } catch (error) {
         const errorMessage = (this.apiError = error.response);
         this.errorMessage = errorMessage;
@@ -137,7 +155,7 @@ export default {
         this.$notify({
           duration: 2500,
           type: "error",
-          title: `Erreur de connexion`,
+          title: `Erreur lors du téléchargement des données`,
           text: `Erreur reporté : ${errorMessage}`,
         });
       }
