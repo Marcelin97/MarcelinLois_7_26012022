@@ -63,14 +63,20 @@ module.exports = (sequelize, Sequelize) => {
     });
     Post.hasMany(models.comment, {
       as: "comments",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     Post.hasMany(models.likePost, {
       as: "likePosts",
       foreignKey: "postId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     Post.hasMany(models.savePost, {
       as: "savePosts",
       foreignKey: "postId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
   };
 

@@ -401,9 +401,9 @@ exports.exportUser = async (req, res) => {
   user
     .findOne({
       include: [
-        { association: "comments" },
-        { association: "posts" },
-        { association: "moderators" },
+        { association: "author" },
+        { association: "creator" },
+        { association: "groups" },
         { association: "likePosts" },
         { association: "userReported" },
         { association: "postReport" },
@@ -415,6 +415,7 @@ exports.exportUser = async (req, res) => {
       },
     })
     .then((datas) => {
+      console.log(datas);
       var emailEncrypted = datas.email;
       datas.email = decryptEmail(emailEncrypted);
       const dataFile = path.join(

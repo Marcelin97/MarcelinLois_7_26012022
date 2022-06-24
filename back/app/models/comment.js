@@ -38,11 +38,15 @@ module.exports = (sequelize, Sequelize) => {
       as: "commentReplies",
       foreignKey: "commentId",
       targetKey: "id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
 
     // Like a comment
     Comment.hasMany(models.likeComment, {
       as: "likeComment",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
   };
 

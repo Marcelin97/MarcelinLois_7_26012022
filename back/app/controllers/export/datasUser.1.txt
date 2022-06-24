@@ -1,0 +1,54 @@
+{
+    "id": 1,
+    "firstName": null,
+    "lastName": null,
+    "username": "test",
+    "email": "test@api.com",
+    "password": "$2a$10$bN6z41YBYAFPQLDGNjGtmOg5WC/u25m/rUTkU0aecUaM56AGvS5oK",
+    "birthday": "2022-06-23T21:33:32.000Z",
+    "imageUrl": null,
+    "isAdmin": false,
+    "createdAt": "2022-06-23T21:33:32.000Z",
+    "updatedAt": "2022-06-23T21:33:32.000Z",
+    "author": [
+        {
+            "id": 1,
+            "content": "COMMENTAIRE 1",
+            "likes": 0,
+            "createdAt": "2022-06-23T21:33:58.000Z",
+            "updatedAt": "2022-06-23T21:33:58.000Z",
+            "userId": 1,
+            "postId": 1
+        }
+    ],
+    "creator": [
+        {
+            "id": 1,
+            "title": "Ceci est un nouveau post 1",
+            "imageUrl": "/images/Webp.net-compress-image_(2).jpg-1656020032895.jpg",
+            "content": "avec un peu de text",
+            "commentsCount": 1,
+            "createdAt": "2022-06-23T21:33:52.000Z",
+            "updatedAt": "2022-06-23T21:33:58.000Z",
+            "communityId": 1,
+            "creatorId": 1
+        }
+    ],
+    "groups": [
+        {
+            "id": 1,
+            "userId": 1,
+            "title": "Communauté-1",
+            "about": "test",
+            "icon": "/images/anonyme_avatar.png-1656020026392.png",
+            "isActive": true,
+            "createdAt": "2022-06-23T21:33:46.000Z",
+            "updatedAt": "2022-06-23T21:33:46.000Z"
+        }
+    ],
+    "likePosts": [],
+    "userReported": [],
+    "postReport": [],
+    "replies": [],
+    "messageToUserId": []
+}

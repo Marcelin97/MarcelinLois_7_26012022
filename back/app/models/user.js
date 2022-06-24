@@ -21,15 +21,13 @@ module.exports = (sequelize, Sequelize) => {
           args: /^[a-z0-9]+$/i,
           msg: "Username can only contain numbers and letters",
         },
-      },
-      unique: true,
-      validate: {
         notEmpty: true,
         len: {
           args: [3, 25],
           msg: "The username needs to be between 3 and 25 characteres long",
         },
       },
+      unique: true,
     },
     email: {
       type: Sequelize.STRING(),
@@ -59,9 +57,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING(64),
       allowNull: false,
       validate: {
-        notEmpty: true,
-      },
-      validate: {
         notNull: {
           args: true,
           msg: "Password is empty",
@@ -70,8 +65,6 @@ module.exports = (sequelize, Sequelize) => {
           args: true,
           msg: "Password is empty",
         },
-      },
-      validate: {
         isLongEnough: function (val) {
           if (val.length < 8) {
             throw new Error("Please choose a longer password");
@@ -101,50 +94,74 @@ module.exports = (sequelize, Sequelize) => {
   User.associate = (models) => {
     User.hasMany(models.comment, {
       as: "author",
-      foreignKey: "postId"
+      foreignKey: "postId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.post, {
       as: "creator",
-      foreignKey: "creatorId"
+      foreignKey: "creatorId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.likePost, {
       as: "likePosts",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.messagePrivate, {
       as: "messageFromUserId",
       foreignKey: "fromUserId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.messagePrivate, {
       as: "messageToUserId",
       foreignKey: "toUserId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.notification, {
       as: "notifications",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.userReport, {
       foreignKey: "userReportedId",
       as: "userReported",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.userReport, {
       foreignKey: "fromUserId",
       as: "userFrom",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.postReport, {
       as: "postReport",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.comment, {
       as: "commentParent",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.commentReplies, {
       as: "replies",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     User.hasMany(models.savePost, {
       as: "savePosts",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     // User.hasMany(models.follower, {
     //   sourceKey: "userId",
     // });
-  
+
     User.hasOne(models.refreshToken, {
       foreignKey: "userId",
       targetKey: "id",
@@ -153,7 +170,11 @@ module.exports = (sequelize, Sequelize) => {
     // * Many to Many associations
 
     // ! One user can own 0 or many communities
-    User.hasMany(models.community, { as: "communities" });
+    User.hasMany(models.community, {
+      as: "groups",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
 
     // ! One user can join one or many communities
     User.belongsToMany(models.community, {
@@ -163,6 +184,7 @@ module.exports = (sequelize, Sequelize) => {
     // ! One user can manage one or many communities
     User.belongsToMany(models.community, {
       through: "community_moderator",
+      as: "moderators",
       // foreignKey: "moderatorId", // replaces `userId`
       // otherKey: "communityId", // replaces `communityId`
     });
