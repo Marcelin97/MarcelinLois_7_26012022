@@ -3,8 +3,11 @@
   <section>
     <h1>Explore des nouveaux profil !</h1>
     <!-- output component -->
-    <div class="tiles">
+    <div class="tiles" v-if="users.length">
       <UsersList v-for="(user, index) in users" :key="index" :user="user" />
+    </div>
+    <div v-else>
+     <p class="error-msg">{{ apiError }}</p>
     </div>
   </section>
 </template>

@@ -213,6 +213,7 @@ exports.readUser = async (req, res) => {
       },
     })
     .then((data) => {
+      // console.log(data);
       var emailEncrypted = data.email;
       data.email = decryptEmail(emailEncrypted);
       res.status(200).json({
@@ -279,6 +280,7 @@ exports.readAll = (req, res) => {
 
 //* Update
 exports.update = async (req, res) => {
+  console.log("body update : " , req.body);
   // TODO : 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
   user
     .findOne({ where: { id: req.auth.userID } })
@@ -415,7 +417,7 @@ exports.exportUser = async (req, res) => {
       },
     })
     .then((datas) => {
-      console.log(datas);
+      // console.log(datas);
       var emailEncrypted = datas.email;
       datas.email = decryptEmail(emailEncrypted);
       const dataFile = path.join(

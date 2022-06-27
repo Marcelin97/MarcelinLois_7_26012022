@@ -172,8 +172,7 @@ module.exports = (sequelize, Sequelize) => {
     // ! One user can own 0 or many communities
     User.hasMany(models.community, {
       as: "groups",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      foreignKey: "userId",
     });
 
     // ! One user can join one or many communities
