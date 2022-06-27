@@ -11,10 +11,8 @@
         <div class="side-wrapper">
           <div class="side-title">MENU</div>
           <div class="side-menu">
-            <a href="#">
-              <font-awesome-icon class="icon-left" :icon="['fas', 'home']" />
-              Home
-            </a>
+            <router-link to="/explore/users"><font-awesome-icon class="icon-left" :icon="['fas', 'users']" />
+              explorateur</router-link>
             <router-link to="/communities"><font-awesome-icon class="icon-left" :icon="['fas', 'search']" />
               Communautés</router-link>
           </div>

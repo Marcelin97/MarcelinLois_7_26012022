@@ -209,7 +209,7 @@
 
       <!-- gestion erreur API avec axios -->
       <div class="form-row" v-if="status === 'error_create'">
-        Il y a une erreur dans le formulaire : <br />
+        ❌ Il y a une erreur dans le formulaire : <br />
         {{ apiError }}
       </div>
       <!-- gestion erreur API avec axios -->
@@ -234,7 +234,7 @@
               <div class="icon">
                 <font-awesome-icon class="icon" :icon="['fas', 'check']" />
               </div>
-              <h3 class="modal-header">Merci pour votre soumission!</h3>
+              <h3 class="modal-header">📝 Merci pour votre soumission!</h3>
               <p>
                 Inscription réussi ! Connectez-vous pour accéder à votre
                 compte<br />avec vos identifiants..
@@ -406,7 +406,7 @@ export default {
         // notification d'erreur
         this.$notify({
           type: "warn",
-          title: `Veuillez remplir le formulaire correctement`,
+          title: `📝 Veuillez remplir le formulaire correctement`,
         });
 
         // montre les erreurs à l'écran

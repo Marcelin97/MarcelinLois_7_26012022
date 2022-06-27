@@ -36,7 +36,6 @@
 </template>
 
 <script>
-// import axios from "axios";
 import axiosInstance from "../../services/api";
 import TokenService from "../../services/token.service";
 

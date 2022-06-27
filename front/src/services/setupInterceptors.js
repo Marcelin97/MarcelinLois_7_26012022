@@ -36,7 +36,7 @@ const setup = (store) => {
 
             const { accessToken } = rs.data;
 
-            store.dispatch("auth/refreshToken", accessToken);
+            store.dispatch('auth/refreshToken', accessToken);
             TokenService.updateLocalAccessToken(accessToken);
 
             return axiosInstance(originalConfig);
@@ -44,9 +44,11 @@ const setup = (store) => {
             return Promise.reject(_error);
           }
         }
+        
       }
       return Promise.reject(err);
     }
   );
 };
 export default setup;
+

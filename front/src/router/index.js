@@ -10,6 +10,7 @@ import UserView from "../views/UserView";
 import UserParameterView from "../views/UserParameterView";
 import CommunityView from "../views/CommunityView";
 import CommunityProfileView from "../views/CommunityProfilView";
+import UsersView from "../views/UsersView";
 
 const routes = [
   {
@@ -55,6 +56,11 @@ const routes = [
     path: "/user/parameter",
     name: "user/parameter",
     component: UserParameterView,
+  },
+  {
+    path: "/explore/users",
+    name: "users",
+    component: UsersView,
   },
   {
     path: "/communities",

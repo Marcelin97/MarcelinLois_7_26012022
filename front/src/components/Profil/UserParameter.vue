@@ -147,9 +147,9 @@
           <input
             id="userImage"
             type="file"
-            v-on:change="onChangeFileUpload()"
+            accept=".jpeg,.jpg,png"
+            @change="onChangeFileUpload"
             ref="file"
-            @blur="v$.user.userImage.$touch"
           />
 
           <!-- Error Message -->
@@ -187,7 +187,8 @@ import {
 } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
-import usersApi from "../../api/users";
+// import usersApi from "../../api/users";
+import axiosInstance from "../../services/api";
 
 export function strongPassword(value) {
   return (
@@ -201,6 +202,7 @@ export default {
   name: "UpdateForm",
   setup() {
     const state = reactive({
+      test: "",
       mode: "create",
       user: {
         firstName: "",
@@ -278,36 +280,62 @@ export default {
   },
   methods: {
     async onChangeFileUpload() {
-     this.userImage = this.$refs.file.files[0];
+      this.state.user.userImage = this.$refs.file.files[0];
     },
-    async updateAccountClick() {
+    updateAccountClick() {
+      // const config = {
+      //           headers: { 'content-type': 'multipart/form-data' }
+      // }
       var bodyFormData = new FormData();
-      bodyFormData.append("firstName", this.firstName);
-      bodyFormData.append("lastName", this.lastName);
-      bodyFormData.append("birthday", this.birthday);
-      bodyFormData.append("email", this.email);
-      bodyFormData.append("newPassword", this.newPassword);
-      bodyFormData.append("username", this.username);
-      bodyFormData.append("imageUrl", this.userImage);
-
-      if (
-        window.confirm(
-          "Attention, vous êtes sur le point de modifier votre compte. Souhaitez-vous tout de même continuer ?"
-        )
-      ) {
-        try {
-          await usersApi.updateAccount(bodyFormData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-          await this.$store.commit("logout");
-          await this.$store.commit("setStatus", "logout");
-          await this.$router.push("/");
-        } catch (e) {
-          console.error(e.data);
-        }
+      bodyFormData.append("firstName", this.state.user.firstName);
+      bodyFormData.append("lastName", this.state.user.lastName);
+      bodyFormData.append("birthday", this.state.user.birthday);
+      bodyFormData.append("email", this.state.user.email);
+      bodyFormData.append("newPassword", this.state.user.newPassword);
+      bodyFormData.append("username", this.state.user.username);
+      bodyFormData.append("image", this.state.user.userImage);
+      for (let value of bodyFormData.values()) {
+        console.log(value);
       }
+
+      axiosInstance
+        .patch("/auth/update", bodyFormData)
+        .then((result) => {
+          console.log("result: ", result);
+          (this.state.user.firstName = ""),
+            (this.state.user.lastName = ""),
+            (this.state.user.birthday = ""),
+            (this.state.user.email = ""),
+            (this.state.user.newPassword = ""),
+            (this.state.user.username = ""),
+            (this.state.user.userImage = "");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      // if (
+      //   window.confirm(
+      //     "Attention, vous êtes sur le point de modifier votre compte. Souhaitez-vous tout de même continuer ?"
+      //   )
+      // ) {
+      //   usersApi
+      //     .updateAccount(data, config)
+      //     .then(function(response) {
+      //        console.log('saved', response, data)
+      //       // this.$store.commit("logout");
+      //       // this.$store.commit("setStatus", "logout");
+      //       // this.$router.push("/");
+
+      //   //     this.$notify({
+      //   //   type: "success",
+      //   //   text: "Vos modifications sont enregistrées",
+      //   // });
+      //     })
+      //     .catch((err) => {
+      //       console.log("error: ", err);
+      //     });
+      // }
     },
   },
 };

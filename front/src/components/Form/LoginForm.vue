@@ -186,8 +186,8 @@ export default {
             });
             // console.log("login :", response);
 
-            this.$store.commit("refreshToken", response.data.refreshToken);
-            this.$store.commit("accessToken", response.data.accessToken);
+            // this.$store.commit("refreshToken", response.data.refreshToken);
+            // this.$store.commit("accessToken", response.data.accessToken);
             this.$store.commit("logUser", response.data);
 
             // redirection sur la page utilisateur
