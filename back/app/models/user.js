@@ -93,13 +93,13 @@ module.exports = (sequelize, Sequelize) => {
   // * Sequelize associations
   User.associate = (models) => {
     User.hasMany(models.comment, {
-      as: "author",
+      as: "comment",
       foreignKey: "postId",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
     User.hasMany(models.post, {
-      as: "creator",
+      as: "post",
       foreignKey: "creatorId",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",

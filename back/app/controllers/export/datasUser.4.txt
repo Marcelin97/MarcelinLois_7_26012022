@@ -1,0 +1,24 @@
+{
+    "id": 4,
+    "firstName": "Wyona",
+    "lastName": "QUANTIN",
+    "username": "Wyo",
+    "email": "wyo@mail.com",
+    "password": "$2a$10$sxTtPIh6.XFp7kM4xE7f2uBc5aeCN/l12BdJE84Q8RSw.wQXd/ide",
+    "birthday": "1996-11-03T00:00:00.000Z",
+    "imageUrl": null,
+    "isAdmin": false,
+    "createdAt": "2022-06-22T07:44:08.000Z",
+    "updatedAt": "2022-06-22T07:44:08.000Z",
+    "comment": [
+        {
+            "id": 1,
+            "content": "MON COMMENTAIRE",
+            "likes": 0,
+            "createdAt": "2022-06-22T10:10:11.000Z",
+            "updatedAt": "2022-06-22T10:10:11.000Z",
+            "userId": 4,
+            "postId": 1
+        }
+    ]
+}

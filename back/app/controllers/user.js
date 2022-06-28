@@ -113,6 +113,9 @@ exports.login = (req, res) => {
   var emailEncrypted = encrypted(req.body.email);
   user
     .findOne({
+        include: {
+            all: true,
+        },
       where: {
         email: emailEncrypted,
       },
@@ -144,11 +147,9 @@ exports.login = (req, res) => {
       const refreshToken = await RefreshToken.createToken(user);
       res.status(200).json({
         // status: 200,
-        userId: user.id,
+        user: user,
         accessToken: token,
         refreshToken: refreshToken,
-        isAdmin: user.isAdmin,
-        email: user.email
         // user,
       });
     })
@@ -403,8 +404,8 @@ exports.exportUser = async (req, res) => {
   user
     .findOne({
       include: [
-        { association: "author" },
-        { association: "creator" },
+        { association: "comment" },
+        { association: "post" },
         { association: "groups" },
         { association: "likePosts" },
         { association: "userReported" },
@@ -417,20 +418,13 @@ exports.exportUser = async (req, res) => {
       },
     })
     .then((datas) => {
-      // console.log(datas);
       var emailEncrypted = datas.email;
       datas.email = decryptEmail(emailEncrypted);
-      const dataFile = path.join(
-        __dirname,
-        "export",
-        `datasUser.${req.auth.userID}.txt`
-      );
-      const file = JSON.stringify(datas, null, 4);
-      fs.writeFileSync(dataFile, file);
-      return res.status(200).json({
-        status: 200,
-        file,
-      });
+        var text = JSON.stringify(datas,null, 2);
+        res.attachment("user-datas.txt");
+        res.type("txt");
+
+        return res.status(200).send(text);
     })
     .catch((error) =>
       res.status(500).json({
