@@ -1,19 +1,19 @@
 <template>
-    <article class="tile">
-      <div class="tile-header">
-        <img class="user-card__avatar" alt="Image utilisateur" />
-        <h3>
-          <span>{{ user.username }}</span>
-          <span>identifiant: {{ user.id }}</span>
-        </h3>
-      </div>
-      <router-link to="/TargetUser">
-        <span>Voir le profil</span>
-        <span class="icon-button">
-          <font-awesome-icon :icon="['fa', 'person-walking-arrow-right']" />
-        </span>
-      </router-link>
-    </article>
+  <article class="tile">
+    <div class="tile-header">
+      <img alt="Image utilisateur" />
+      <h3>
+        <span>{{ user.username }}</span>
+        <span>identifiant: {{ user.id }}</span>
+      </h3>
+    </div>
+    <router-link class="more" to="/TargetUser">
+      <span class="more__user">Voir le profil</span>
+      <span >
+        <font-awesome-icon class="more__icon" :icon="['fa', 'person-walking-arrow-right']" />
+      </span>
+    </router-link>
+  </article>
 </template>
 
 <script>
@@ -45,7 +45,7 @@ export default {
     background-color: #bdbbb7;
   }
   &:nth-child(4) {
-    background-color: #45C2F8;
+    background-color: #45c2f8;
   }
 
   a {
@@ -61,10 +61,10 @@ export default {
   display: flex;
   align-items: center;
   img {
-    width: 3rem;
-    height: 3rem;
+    width: 2.8rem;
+    height: 2.8rem;
     border-radius: 50%;
-    border: 0.5rem solid #2f3b49;
+    border: 0.1rem solid #2f3b49;
   }
   h3 {
     display: flex;
@@ -80,6 +80,25 @@ export default {
       color: #000000;
       font-size: 0.825em;
       font-weight: 200;
+    }
+  }
+}
+
+.more {
+  color: #000000;
+  &__user {
+color:#000000;
+  }
+  &__icon {
+    background-color: #000000;
+    opacity: 0.5;
+    padding: 0.2rem;
+    width:1.5rem;
+    height:1.5rem;
+    line-height: 1rem;
+    border-radius: 0.625rem;
+    &:hover{
+      opacity: 1;
     }
   }
 }

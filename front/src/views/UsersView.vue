@@ -1,13 +1,12 @@
 <template>
   <HeaderNavigation />
-  <section>
+  <section v-if="users.length">
     <h1>Explore des nouveaux profil !</h1>
+    <input type="text" v-model="search" placeholder="Search..." />
+
     <!-- output component -->
-    <div class="tiles" v-if="users.length">
-      <UsersList v-for="(user, index) in users" :key="index" :user="user" />
-    </div>
-    <div v-else>
-     <p class="error-msg">{{ apiError }}</p>
+    <div class="tiles">
+      <UsersList v-for="(user, index) in filteredUsers" :key="index" :user="user" :items="filteredArticles"/>
     </div>
   </section>
 </template>
@@ -29,7 +28,16 @@ export default {
       // add users array:
       users: [],
       apiError: "",
+      search: "",
     };
+  },
+  // Add computed section:
+  computed: {
+    filteredUsers() {
+      return this.users.filter((user) =>
+        user.username.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
   },
   mounted() {
     this.apiError = "";
@@ -47,16 +55,15 @@ export default {
       })
       .catch((error) => {
         if (error.response.status == 404) {
-              const errorMessage = (this.apiError =
-                "Utilisateur introuvable !");
-              this.errorMessage = errorMessage;
-              // notification d'erreur
-              this.$notify({
-                type: "error",
-                title: `Erreur lors de la connexion`,
-                text: `Erreur reporté : ${errorMessage}`,
-              });
-            }
+          const errorMessage = (this.apiError = "Utilisateur introuvable !");
+          this.errorMessage = errorMessage;
+          // notification d'erreur
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de la connexion`,
+            text: `Erreur reporté : ${errorMessage}`,
+          });
+        }
       });
   },
 };
