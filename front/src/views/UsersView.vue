@@ -1,12 +1,16 @@
 <template>
   <HeaderNavigation />
   <section v-if="users.length">
-    <h1>Explore des nouveaux profil !</h1>
-    <input type="text" v-model="search" placeholder="Search..." />
+    <h1>Explore des nouveaux profils !</h1>
+
+    <!-- search bar -->
+    <div class="search-bar">
+      <input type="text" placeholder="Search" v-model="search" />
+    </div>
 
     <!-- output component -->
     <div class="tiles">
-      <UsersList v-for="(user, index) in filteredUsers" :key="index" :user="user" :items="filteredArticles"/>
+      <UsersList v-for="(user, index) in filteredUsers" :key="index" :user="user" :items="filteredArticles" />
     </div>
   </section>
 </template>
@@ -70,12 +74,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.search-bar {
+  height: 34px;
+  display: flex;
+  width: 100%;
+
+  input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: rgb(23, 23, 23);
+    border-radius: 8px;
+    padding: 0 40px 0 16px;
+  }
+}
+
 .tiles {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   column-gap: 1rem;
   row-gap: 1rem;
   margin-top: 1.25rem;
+
   @media only screen and (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }

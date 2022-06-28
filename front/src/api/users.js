@@ -23,7 +23,7 @@ export default {
 
   async updateAccount() {
     try {
-      const response = await axiosInstance.patch("/auth/update")
+      const response = await axiosInstance.patch("/auth/update");
       return response.data;
     } catch (e) {
       throw e.response;

@@ -182,8 +182,8 @@
   outline: none;
 }
 
-.btn-fas{
-    background: transparent;
+.btn-fas {
+  background: transparent;
 }
 .menu {
   position: absolute;

@@ -1,7 +1,7 @@
 <template>
   <article class="tile">
     <div class="tile-header">
-      <img alt="Image utilisateur" />
+      <img alt="Photo" />
       <h3>
         <span>{{ user.username }}</span>
         <span>identifiant: {{ user.id }}</span>
@@ -9,8 +9,11 @@
     </div>
     <router-link class="more" to="/TargetUser">
       <span class="more__user">Voir le profil</span>
-      <span >
-        <font-awesome-icon class="more__icon" :icon="['fa', 'person-walking-arrow-right']" />
+      <span>
+        <font-awesome-icon
+          class="more__icon"
+          :icon="['fa', 'person-walking-arrow-right']"
+        />
       </span>
     </router-link>
   </article>
@@ -87,17 +90,17 @@ export default {
 .more {
   color: #000000;
   &__user {
-color:#000000;
+    color: #000000;
   }
   &__icon {
     background-color: #000000;
     opacity: 0.5;
     padding: 0.2rem;
-    width:1.5rem;
-    height:1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
     line-height: 1rem;
     border-radius: 0.625rem;
-    &:hover{
+    &:hover {
       opacity: 1;
     }
   }
