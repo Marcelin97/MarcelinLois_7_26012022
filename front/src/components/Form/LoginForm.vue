@@ -184,11 +184,8 @@ export default {
               title: `Connexion réussi !`,
               text: `Vous allez être redirigés vers votre profil.`,
             });
-            // console.log("login :", response);
-
-            // this.$store.commit("refreshToken", response.data.refreshToken);
-            // this.$store.commit("accessToken", response.data.accessToken);
             this.$store.commit("logUser", response.data);
+            this.$store.commit("setStatus", "connected");
 
             // redirection sur la page utilisateur
             setTimeout(
@@ -200,7 +197,7 @@ export default {
             );
           })
           .catch((error) => {
-            console.log(error.response.status);
+            console.log(error);
             this.$store.commit("setStatus", "error_login");
             if (error.response.status == 404) {
               const errorMessage = (this.apiError =

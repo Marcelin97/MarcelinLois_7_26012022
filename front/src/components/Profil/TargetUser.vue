@@ -1,218 +1,46 @@
 <template>
-  <div class="wrapper" v-if="user">
-    <div class="profile-card js-profile-card">
-      <!-- Profil image -->
-      <div class="profile-card__img">
-        <img
-          :src="user.data?.imageUrl"
-          alt="Photo d'utilisateur"
-          aria-label="Photo d'utilisateur"
-        />
-      </div>
-
-      <!-- Profil informations -->
-      <div class="profile-card__cnt js-profile-cnt">
-        <div class="profile-card__name">
-          Nom d'utilisateur :
-          {{ user.data?.username || "chargement en cours..." }}
-        </div>
-        <div class="profile-card__txt">
-          Identifiant : {{ user.data?.id || "chargement en cours..." }}
-        </div>
-        <div class="profile-card__txt">
-          administrateur : {{ user.data?.isAdmin }}
-        </div>
-
-        <!-- Profil statistiques -->
-        <div class="profile-card-inf">
-          <!-- Publications -->
-          <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              {{ user.data?.creator.length }}
-            </div>
-            <div class="profile-card-inf__txt">Publications</div>
-          </div>
-
-          <!-- Commentaires -->
-          <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              {{ user.data?.author.length }}
-            </div>
-            <div class="profile-card-inf__txt">Commentaires</div>
-          </div>
-
-          <!-- Communautés crées -->
-          <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              {{ user.data?.groups.length }}
-            </div>
-            <div class="profile-card-inf__txt">Communautés crées</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="profile-card-ctr">
-        <router-link v-if="user" class="profile-card__button" to="/"
-          >Signaler</router-link
-        >
-        <router-link class="profile-card__button" to="/user/parameter"
-          >Modifier</router-link
-        >
-      </div>
-      <div class="profile-card-ctr">
-        <button
-          type="button"
-          class="btn btn-export"
-          @click="exportDataClick"
-          text="Exporter mes données"
-        >
-          Exporter mes données
-        </button>
-        <button
-          type="button"
-          class="btn btn-delete"
-          @click="$refs.modalName.openModal()"
-          text="Supprimer mon compte"
-        >
-          Supprimer mon compte
-        </button>
-      </div>
-    </div>
-  </div>
-
   <div>
-    <PostCard />
+    User {{username}}
   </div>
-
-  <modalStructure ref="modalName">
-    <template v-slot:header>
-      <h1>Modal title</h1>
-    </template>
-
-    <template v-slot:body>
-      <p>
-        Attention, vous êtes sur le point de supprimer votre compte. Cette
-        action est irréversible. Souhaitez-vous tout de même continuer ?'
-      </p>
-    </template>
-
-    <template v-slot:footer>
-      <div class="modal__actions">
-        <button class="btn" @click="$refs.modalName.closeModal()">
-          Cancel
-        </button>
-        <deleteBtn @click="deleteAccountClick" />
-      </div>
-    </template>
-  </modalStructure>
 </template>
 
 <script>
-import PostCard from "../Posts/PostCard.vue";
-import modalStructure from "../Modal/ModalStructure.vue";
-import deleteBtn from "../Base/DeleteBtn.vue";
-
-import { mapState } from "vuex";
-import axiosInstance from "../../services/api";
-import usersApi from "../../api/users";
+// import PostCard from "../Posts/PostCard.vue";
+// import modalStructure from "../Modal/ModalStructure.vue";
+// import deleteBtn from "../Base/DeleteBtn.vue";
+import userApi from "../../api/users"
 
 export default {
   name: "User-profile",
   setup() {},
   components: {
-    PostCard,
-    modalStructure,
-    deleteBtn,
+    // PostCard,
+    // modalStructure,
+    // deleteBtn,
   },
   data() {
     return {
       apiError: "",
+      targetUserProfil: "",
+      user: [],
     };
   },
-  methods: {
-    async exportDataClick() {
-      try {
-        const response = await usersApi.exportMyData();
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement("a");
-
-        fileLink.href = fileURL;
-        fileLink.setAttribute("download", "file.txt");
-        document.body.appendChild(fileLink);
-
-        fileLink.click();
-
-        this.$notify({
-          type: "success",
-          text: "Le téléchargement commence.",
-        });
-      } catch (error) {
-        const errorMessage = (this.apiError = error.response);
-        this.errorMessage = errorMessage;
-        console.log("apiError", error);
-
-        // notification d'erreur
-        this.$notify({
-          duration: 2500,
-          type: "error",
-          title: `Erreur lors du téléchargement des données`,
-          text: `Erreur reporté : ${errorMessage}`,
-        });
-      }
-    },
-    async deleteAccountClick() {
-      if (
-        window.confirm(
-          "Attention, vous êtes sur le point de supprimer votre compte. Cette action est irréversible. Souhaitez-vous tout de même continuer ?"
-        )
-      ) {
-        try {
-          await usersApi.deleteUser();
-          await this.$store.commit("logout");
-          await this.$store.commit("setStatus", "logout");
-          await this.$router.push("/");
-        } catch (e) {
-          console.error(e.data);
-        }
-      }
-    },
-  },
-  computed: {
-    ...mapState(["user"]),
-  },
-  mounted() {
-    if (!this.user) {
-      this.$router.push("/login");
+  async created () {
+    this.targetUserProfil = this.$route.params.id
+    console.log("targetUserProfil", this.targetUserProfil)
+    try {
+      const response = await userApi.readTargetUser(this.targetUserProfil)
+      console.log("response targetUserProfil", response)
+      this.user = response.data
+    } catch (e) {
+      this.apiError = e.data
     }
-    this.apiError = "";
-
-    const token = this.$store.state.accessToken;
-    // console.log("token :", token);
-    axiosInstance
-      .get("/auth/read", {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then((response) => {
-        // console.log(response);
-        this.$store.commit("getUserInfos", response.data);
-        this.$store.commit("setStatus", "connected");
-      })
-      .catch((error) => {
-        const errorMessage = (this.apiError = error.response.data.error.name);
-        this.errorMessage = errorMessage;
-
-        // notification d'erreur
-        this.$notify({
-          duration: 2500,
-          type: "error",
-          title: `Erreur de connexion`,
-          text: `Erreur reporté : ${errorMessage}`,
-        });
-        this.$router.push("/login");
-      });
   },
+computed: {
+  username() {
+      return this.$route.params.id
+    },
+},
 };
 </script>
 
@@ -339,37 +167,37 @@ export default {
   }
 }
 
-.profile-card__button {
-  margin-top: 1rem;
-  background: lighten(rgb(23, 23, 23), 1%);
-  border: none;
-  border-radius: 0.8rem;
-  transition: all 0.2s ease-in-out;
-  font-weight: 700;
-  margin: 15px 35px;
-  min-width: 201px;
-  min-height: 55px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: inset -3px -3px 3px rgba(white, 0.025),
-    inset 3px 3px 5px rgba(black, 0.075), -3px -3px 5px rgba(white, 0.025),
-    3px 3px 5px rgba(black, 0.05);
-  &:hover {
-    background: darken(rgb(12, 19, 31), 1%);
-    box-shadow: inset -5px -5px 5px rgba(white, 0.01),
-      inset 5px 5px 5px rgba(black, 0.1), -5px -5px 5px rgba(white, 0.015),
-      5px 5px 5px rgba(black, 0.05);
-  }
-  @media screen and (max-width: 576px) {
-    margin: 1em;
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
+// .profile-card__button {
+//   margin-top: 1rem;
+//   background: lighten(rgb(23, 23, 23), 1%);
+//   border: none;
+//   border-radius: 0.8rem;
+//   transition: all 0.2s ease-in-out;
+//   font-weight: 700;
+//   margin: 15px 35px;
+//   min-width: 201px;
+//   min-height: 55px;
+//   text-align: center;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   cursor: pointer;
+//   box-shadow: inset -3px -3px 3px rgba(white, 0.025),
+//     inset 3px 3px 5px rgba(black, 0.075), -3px -3px 5px rgba(white, 0.025),
+//     3px 3px 5px rgba(black, 0.05);
+//   &:hover {
+//     background: darken(rgb(12, 19, 31), 1%);
+//     box-shadow: inset -5px -5px 5px rgba(white, 0.01),
+//       inset 5px 5px 5px rgba(black, 0.1), -5px -5px 5px rgba(white, 0.015),
+//       5px 5px 5px rgba(black, 0.05);
+//   }
+//   @media screen and (max-width: 576px) {
+//     margin: 1em;
+//     &:last-child {
+//       margin-bottom: 0;
+//     }
+//   }
+// }
 
 img {
   width: 100%;

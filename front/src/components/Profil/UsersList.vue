@@ -7,7 +7,11 @@
         <span>identifiant: {{ user.id }}</span>
       </h3>
     </div>
-    <router-link class="more" to="/TargetUser">
+    <router-link
+      @click="viewTargetProfil"
+      class="more"
+      :to="`/explore/users/${this.id}`"
+    >
       <span class="more__user">Voir le profil</span>
       <span>
         <font-awesome-icon
@@ -20,8 +24,47 @@
 </template>
 
 <script>
+import axiosInstance from "../../services/api";
+
 export default {
   props: ["user"],
+  data() {
+    return {
+      apiError: "",
+      id: "",
+      targetUser: [],
+    };
+  },
+  mounted() {
+    this.id = this.user.id;
+    // console.log(this.id);
+  },
+  methods: {
+    async viewTargetProfil() {
+      axiosInstance
+        .get(`auth/readByName/${this.id}`, this.state.targetUser)
+        .then((result) => {
+          console.log(this.state.targetUser)
+          // this.targetUser = result.data.data;
+          // console.log(this.targetUser);
+          this.$store.commit("readTargetUser", result.data);
+        })
+        .catch((error) => {
+          console.log(error);
+          const errorMessage = (this.apiError = error.response);
+          this.errorMessage = errorMessage;
+          console.log("apiError", error);
+
+          // notification d'erreur
+          this.$notify({
+            duration: 2500,
+            type: "error",
+            title: `Erreur lors du téléchargement des données`,
+            text: `Erreur reporté : ${errorMessage}`,
+          });
+        });
+    },
+  },
 };
 </script>
 
@@ -41,12 +84,15 @@ export default {
   &:hover {
     transform: translateY(-5px);
   }
+
   &:nth-child(2) {
     background-color: #45ffbc;
   }
+
   &:nth-child(3) {
     background-color: #bdbbb7;
   }
+
   &:nth-child(4) {
     background-color: #45c2f8;
   }
@@ -63,17 +109,20 @@ export default {
 .tile-header {
   display: flex;
   align-items: center;
+
   img {
     width: 2.8rem;
     height: 2.8rem;
     border-radius: 50%;
     border: 0.1rem solid #2f3b49;
   }
+
   h3 {
     display: flex;
     flex-direction: column;
     line-height: 1.375;
     margin-left: 0.5rem;
+
     span:first-child {
       color: #000000;
       font-weight: 600;
@@ -89,9 +138,11 @@ export default {
 
 .more {
   color: #000000;
+
   &__user {
     color: #000000;
   }
+
   &__icon {
     background-color: #000000;
     opacity: 0.5;
@@ -100,6 +151,7 @@ export default {
     height: 1.5rem;
     line-height: 1rem;
     border-radius: 0.625rem;
+
     &:hover {
       opacity: 1;
     }

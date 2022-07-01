@@ -14,21 +14,19 @@
       <div class="profile-card__cnt js-profile-cnt">
         <div class="profile-card__name">
           Nom d'utilisateur :
-          {{ user.data?.username || "chargement en cours..." }}
+          {{ user.username || "chargement en cours..." }}
         </div>
         <div class="profile-card__txt">
-          Identifiant : {{ user.data?.id || "chargement en cours..." }}
+          Identifiant : {{ user.id || "chargement en cours..." }}
         </div>
-        <div class="profile-card__txt">
-          administrateur : {{ user.data?.isAdmin }}
-        </div>
+        <div class="profile-card__txt">administrateur : {{ user.isAdmin }}</div>
 
         <!-- Profil statistiques -->
         <div class="profile-card-inf">
           <!-- Publications -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.data?.creator.length }}
+              <!--              {{ user.post.length }}-->
             </div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
@@ -36,7 +34,7 @@
           <!-- Commentaires -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.data?.author.length }}
+              <!--              {{ user.comment.length }}-->
             </div>
             <div class="profile-card-inf__txt">Commentaires</div>
           </div>
@@ -44,7 +42,7 @@
           <!-- Communautés crées -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.data?.groups.length }}
+              <!--              {{ user.groups.length }}-->
             </div>
             <div class="profile-card-inf__txt">Communautés crées</div>
           </div>
@@ -111,9 +109,6 @@
 import PostCard from "../Posts/PostCard.vue";
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
-
-import { mapState } from "vuex";
-import axiosInstance from "../../services/api";
 import usersApi from "../../api/users";
 
 export default {
@@ -127,6 +122,7 @@ export default {
   data() {
     return {
       apiError: "",
+      user: [],
     };
   },
   methods: {
@@ -169,7 +165,7 @@ export default {
         try {
           await usersApi.deleteUser();
           await this.$store.commit("logout");
-          await this.$store.commit("setStatus", "logout");
+          // await this.$store.commit("setStatus", "logout");
           await this.$router.push("/");
         } catch (e) {
           console.error(e.data);
@@ -177,41 +173,13 @@ export default {
       }
     },
   },
-  computed: {
-    ...mapState(["user"]),
-  },
   mounted() {
     if (!this.user) {
       this.$router.push("/login");
     }
-    this.apiError = "";
 
-    const token = this.$store.state.accessToken;
-    // console.log("token :", token);
-    axiosInstance
-      .get("/auth/read", {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then((response) => {
-        // console.log(response);
-        this.$store.commit("getUserInfos", response.data);
-        this.$store.commit("setStatus", "connected");
-      })
-      .catch((error) => {
-        const errorMessage = (this.apiError = error.response.data.error.name);
-        this.errorMessage = errorMessage;
-
-        // notification d'erreur
-        this.$notify({
-          duration: 2500,
-          type: "error",
-          title: `Erreur de connexion`,
-          text: `Erreur reporté : ${errorMessage}`,
-        });
-        this.$router.push("/login");
-      });
+    this.user = this.$store.state.user;
+    // console.log("connected user", this.user);
   },
 };
 </script>

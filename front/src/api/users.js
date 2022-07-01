@@ -38,4 +38,12 @@ export default {
       throw e.response;
     }
   },
+  async readTargetUser(id) {
+    try {
+      return await axiosInstance.get(`/readByName/${id}`)
+    } catch (e) {
+      console.error(e.response)
+      throw e.response
+    }
+  }
 };

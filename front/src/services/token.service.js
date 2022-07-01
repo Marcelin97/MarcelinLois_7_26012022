@@ -1,26 +1,26 @@
 class TokenService {
   getLocalRefreshToken() {
-    const user = JSON.parse(localStorage.getItem("authToken")) || {};
+    const user = JSON.parse(localStorage.getItem("vuex")) || {};
     return user?.refreshToken;
   }
   getLocalAccessToken() {
-    const user = JSON.parse(localStorage.getItem("authToken")) || {};
+    const user = JSON.parse(localStorage.getItem("vuex")) || {};
     return user?.accessToken;
   }
   updateLocalAccessToken(token) {
-    let user = JSON.parse(localStorage.getItem("authToken")) || {};
+    let user = JSON.parse(localStorage.getItem("vuex")) || {};
     user.accessToken = token;
-    localStorage.setItem("authToken", JSON.stringify(user));
+    localStorage.setItem("vuex", JSON.stringify(user));
   }
   getUser() {
-    return JSON.parse(localStorage.getItem("authToken")) || {};
+    return JSON.parse(localStorage.getItem("vuex")) || {};
   }
-  setUser(authToken) {
-    console.log(JSON.stringify(authToken));
-    localStorage.setItem("authToken", JSON.stringify(authToken));
+  setUser(vuex) {
+    console.log(JSON.stringify(vuex));
+    localStorage.setItem("vuex", JSON.stringify(vuex));
   }
   removeUser() {
-    localStorage.removeItem("authToken");
+    localStorage.removeItem("vuex");
   }
 }
 export default new TokenService();
