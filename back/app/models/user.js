@@ -93,13 +93,13 @@ module.exports = (sequelize, Sequelize) => {
   // * Sequelize associations
   User.associate = (models) => {
     User.hasMany(models.comment, {
-      as: "author",
-      foreignKey: "postId",
+      as: "comments",
+      // foreignKey: "postId",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
     User.hasMany(models.post, {
-      as: "creator",
+      as: "posts",
       foreignKey: "creatorId",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
@@ -139,15 +139,15 @@ module.exports = (sequelize, Sequelize) => {
       onUpdate: "CASCADE",
     });
     User.hasMany(models.postReport, {
-      as: "postReport",
+      as: "postReports",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
-    User.hasMany(models.comment, {
-      as: "commentParent",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
+    // User.hasMany(models.comment, {
+    //   as: "commentParents",
+    //   onDelete: "CASCADE",
+    //   onUpdate: "CASCADE",
+    // });
     User.hasMany(models.commentReplies, {
       as: "replies",
       onDelete: "CASCADE",
@@ -171,8 +171,8 @@ module.exports = (sequelize, Sequelize) => {
 
     // ! One user can own 0 or many communities
     User.hasMany(models.community, {
-      as: "groups",
-      foreignKey: "userId",
+      as: "community",
+      // foreignKey: "userId",
     });
 
     // ! One user can join one or many communities

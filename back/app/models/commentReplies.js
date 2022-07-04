@@ -18,9 +18,10 @@ module.exports = (sequelize, Sequelize) => {
     // is linked to
     CommentReplies.belongsTo(models.user, {
       foreignKey: "userId",
-      as: "author",
+      as: "users",
     });
     CommentReplies.belongsTo(models.post, {
+      as: "posts",
       foreignKey: "postId",
       targetKey: "id",
     });

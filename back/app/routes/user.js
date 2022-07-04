@@ -32,7 +32,7 @@ router.get("/read", isLoggedIn, userCtrl.readUser);
 //=================================>
 // * READ DATAS ONE USER
 //=================================>
-router.get("/readByName", isLoggedIn, userCtrl.readByName);
+router.get("/readByName/:id", isLoggedIn, userCtrl.readByName);
 
 //=================================>
 // * READ DATAS ALL USERS

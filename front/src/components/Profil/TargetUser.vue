@@ -1,6 +1,9 @@
 <template>
+  <div>User {{ username }}</div>
   <div>
-    User {{username}}
+    {{ targetUserProfil.id || "chargement en cours..."}}
+    {{targetUserProfil.username}}
+    {{targetUser}}
   </div>
 </template>
 
@@ -8,10 +11,11 @@
 // import PostCard from "../Posts/PostCard.vue";
 // import modalStructure from "../Modal/ModalStructure.vue";
 // import deleteBtn from "../Base/DeleteBtn.vue";
-import userApi from "../../api/users"
+// import userApi from "../../api/users"
 
 export default {
   name: "User-profile",
+  props: ["targetUser"],
   setup() {},
   components: {
     // PostCard,
@@ -21,26 +25,23 @@ export default {
   data() {
     return {
       apiError: "",
-      targetUserProfil: "",
-      user: [],
+      targetUserProfil: [],
     };
   },
-  async created () {
-    this.targetUserProfil = this.$route.params.id
-    console.log("targetUserProfil", this.targetUserProfil)
-    try {
-      const response = await userApi.readTargetUser(this.targetUserProfil)
-      console.log("response targetUserProfil", response)
-      this.user = response.data
-    } catch (e) {
-      this.apiError = e.data
-    }
+  async beforeMount() {
+    // if (!this.user) {
+    //   this.$router.push("/login");
+    // }
+
+    this.targetUserProfil = this.$store.state.targetUserId;
+    console.log("connected user", this.targetUserProfil);
+
   },
-computed: {
-  username() {
-      return this.$route.params.id
+  computed: {
+    username() {
+      return this.$route.params.id;
     },
-},
+  },
 };
 </script>
 

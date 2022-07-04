@@ -26,27 +26,23 @@ module.exports = (sequelize, Sequelize) => {
   Comment.associate = (models) => {
     // is linked to
     Comment.belongsTo(models.user, {
-      foreignKey: "userId",
-      as: "author",
+      // foreignKey: "userId",
+      as: "users",
     });
     Comment.belongsTo(models.post, {
-      foreignKey: "postId",
-      as: "post",
+      // foreignKey: "postId",
+      as: "posts",
     });
     // Reply a comment
     Comment.hasMany(models.commentReplies, {
       as: "commentReplies",
       foreignKey: "commentId",
       targetKey: "id",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
 
     // Like a comment
     Comment.hasMany(models.likeComment, {
-      as: "likeComment",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      as: "likeComments",
     });
   };
 

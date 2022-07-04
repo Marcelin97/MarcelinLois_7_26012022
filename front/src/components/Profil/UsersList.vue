@@ -40,14 +40,16 @@ export default {
     // console.log(this.id);
   },
   methods: {
-    async viewTargetProfil() {
+    viewTargetProfil() {
       axiosInstance
-        .get(`auth/readByName/${this.id}`, this.state.targetUser)
+        .get(`auth/readByName/${this.id}`, this.targetUser)
         .then((result) => {
-          console.log(this.state.targetUser)
-          // this.targetUser = result.data.data;
-          // console.log(this.targetUser);
-          this.$store.commit("readTargetUser", result.data);
+          // console.log(result.data.data);
+          this.targetUser = result.data.data;
+          console.log("xx", this.targetUser);
+          this.$store.commit("readTargetUser", result.data.data);
+          this.$store.dispatch('readTargetUser', result.data.data);
+
         })
         .catch((error) => {
           console.log(error);
@@ -59,7 +61,7 @@ export default {
           this.$notify({
             duration: 2500,
             type: "error",
-            title: `Erreur lors du téléchargement des données`,
+            title: `Erreur lors du chargement des données utilisateurs`,
             text: `Erreur reporté : ${errorMessage}`,
           });
         });

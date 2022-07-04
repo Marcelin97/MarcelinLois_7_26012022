@@ -38,19 +38,16 @@ module.exports = (sequelize, Sequelize) => {
   // * Sequelize associations
   Community.associate = (models) => {
     Community.hasMany(models.post, {
-      as: "category",
+      as: "posts",
       targetKey: "communityId",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
-    // Community.hasMany(models.follower, {});
 
     // * Many to Many associations
 
     // ! One community is owned by one user
     Community.belongsTo(models.user, {
-      foreignKey: "userId",
-      as: "groups",
+      // foreignKey: "userId",
+      as: "users",
     });
 
     // ! One community can be joined by 0 or many users

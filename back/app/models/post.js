@@ -55,28 +55,23 @@ module.exports = (sequelize, Sequelize) => {
   Post.associate = (models) => {
     // is linked to
     Post.belongsTo(models.user, {
-      as: "creator",
+      as: "users",
+      foreignKey: "creatorId",
     });
     Post.belongsTo(models.community, {
-      as: "category",
+      as: "community",
       foreignKey: "communityId",
     });
     Post.hasMany(models.comment, {
       as: "comments",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     Post.hasMany(models.likePost, {
       as: "likePosts",
       foreignKey: "postId",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     Post.hasMany(models.savePost, {
       as: "savePosts",
       foreignKey: "postId",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
   };
 

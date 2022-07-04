@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
     // is linked to
     SavePost.belongsTo(models.user, {
       foreignKey: "userId",
-      as: "user",
+      as: "users",
     });
     SavePost.belongsTo(models.post, {
       foreignKey: "postId",

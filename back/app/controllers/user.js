@@ -113,6 +113,9 @@ exports.login = (req, res) => {
   var emailEncrypted = encrypted(req.body.email);
   user
     .findOne({
+      include: {
+        all: true,
+      },
       where: {
         email: emailEncrypted,
       },
@@ -144,11 +147,9 @@ exports.login = (req, res) => {
       const refreshToken = await RefreshToken.createToken(user);
       res.status(200).json({
         // status: 200,
-        userId: user.id,
+        user: user,
         accessToken: token,
         refreshToken: refreshToken,
-        isAdmin: user.isAdmin,
-        email: user.email
         // user,
       });
     })
@@ -237,7 +238,7 @@ exports.readByName = async (req, res) => {
         all: true,
       },
       where: {
-        username: req.body.username,
+        id: req.params.id,
       },
     })
     .then((result) => {
@@ -280,7 +281,7 @@ exports.readAll = (req, res) => {
 
 //* Update
 exports.update = async (req, res) => {
-  console.log("body update : " , req.body);
+  console.log("body update : ", req.body);
   // TODO : 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
   user
     .findOne({ where: { id: req.auth.userID } })
@@ -403,12 +404,12 @@ exports.exportUser = async (req, res) => {
   user
     .findOne({
       include: [
-        { association: "author" },
-        { association: "creator" },
-        { association: "groups" },
+        { association: "comments" },
+        { association: "posts" },
+        { association: "community" },
         { association: "likePosts" },
         { association: "userReported" },
-        { association: "postReport" },
+        { association: "postReports" },
         { association: "replies" },
         { association: "messageToUserId" },
       ],
@@ -417,20 +418,13 @@ exports.exportUser = async (req, res) => {
       },
     })
     .then((datas) => {
-      // console.log(datas);
       var emailEncrypted = datas.email;
       datas.email = decryptEmail(emailEncrypted);
-      const dataFile = path.join(
-        __dirname,
-        "export",
-        `datasUser.${req.auth.userID}.txt`
-      );
-      const file = JSON.stringify(datas, null, 4);
-      fs.writeFileSync(dataFile, file);
-      return res.status(200).json({
-        status: 200,
-        file,
-      });
+      var text = JSON.stringify(datas, null, 2);
+      res.attachment("user-datas.txt");
+      res.type("txt");
+
+      return res.status(200).send(text);
     })
     .catch((error) =>
       res.status(500).json({
