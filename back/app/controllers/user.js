@@ -316,7 +316,7 @@ exports.update = async (req, res) => {
           // console.log(file);
           req.body.imageUrl = `/images/${req.file.filename}`;
           // console.log(req.file.filename);
-
+          
           // TODO : Delete the old image
           try {
             // Si je trouve une image à mon utilisateur

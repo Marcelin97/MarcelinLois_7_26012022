@@ -94,54 +94,38 @@ module.exports = (sequelize, Sequelize) => {
   User.associate = (models) => {
     User.hasMany(models.comment, {
       as: "comments",
-      // foreignKey: "postId",
+      foreignKey: "postId",
       onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      // onUpdate: "CASCADE",
     });
     User.hasMany(models.post, {
       as: "posts",
       foreignKey: "creatorId",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     User.hasMany(models.likePost, {
       as: "likePosts",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     User.hasMany(models.messagePrivate, {
       as: "messageFromUserId",
       foreignKey: "fromUserId",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     User.hasMany(models.messagePrivate, {
       as: "messageToUserId",
       foreignKey: "toUserId",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     User.hasMany(models.notification, {
       as: "notifications",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     User.hasMany(models.userReport, {
       foreignKey: "userReportedId",
       as: "userReported",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     User.hasMany(models.userReport, {
       foreignKey: "fromUserId",
       as: "userFrom",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     User.hasMany(models.postReport, {
       as: "postReports",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     // User.hasMany(models.comment, {
     //   as: "commentParents",
@@ -150,13 +134,9 @@ module.exports = (sequelize, Sequelize) => {
     // });
     User.hasMany(models.commentReplies, {
       as: "replies",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     User.hasMany(models.savePost, {
       as: "savePosts",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
     // User.hasMany(models.follower, {
     //   sourceKey: "userId",

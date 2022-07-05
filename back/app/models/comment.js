@@ -26,11 +26,12 @@ module.exports = (sequelize, Sequelize) => {
   Comment.associate = (models) => {
     // is linked to
     Comment.belongsTo(models.user, {
-      // foreignKey: "userId",
+      foreignKey: "userId",
       as: "users",
+      onDelete: "CASCADE",
     });
     Comment.belongsTo(models.post, {
-      // foreignKey: "postId",
+      foreignKey: "postId",
       as: "posts",
     });
     // Reply a comment

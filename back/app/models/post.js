@@ -57,6 +57,7 @@ module.exports = (sequelize, Sequelize) => {
     Post.belongsTo(models.user, {
       as: "users",
       foreignKey: "creatorId",
+      onDelete: "CASCADE",
     });
     Post.belongsTo(models.community, {
       as: "community",
