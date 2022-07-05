@@ -36,6 +36,9 @@ const store = createStore({
       state.accessToken = datas.accessToken;
       state.refreshToken = datas.refreshToken;
     },
+    updateUser: function (state, data) {
+      state.user = data.user;
+    },
     // delete all auth and user information from the state
     logout: function (state) {
       state.user = [];
