@@ -5,7 +5,7 @@
       <div class="profile-card__img">
         <img
           :src="user.imageUrl" 
-          :alt="'Avatar de ' + user.username"
+          :alt="'Avatar de ' + user.imageUrl"
           aria-label="Photo d'utilisateur"
         />
       </div>
@@ -175,11 +175,10 @@ export default {
   },
   mounted() {
     this.user = this.$store.state.user;
-    // console.log(this.user.imageUrl)
     // console.log("connected user", this.user);
-    //     if (!this.user.length === 0) {
-    //   this.$router.push("/login");
-    // }
+        if (!this.user.length === 0) {
+      this.$router.push("/login");
+    }
   },
 };
 </script>
