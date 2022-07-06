@@ -46,8 +46,9 @@ module.exports = (sequelize, Sequelize) => {
 
     // ! One community is owned by one user
     Community.belongsTo(models.user, {
-      // foreignKey: "userId",
+      foreignKey: "userId",
       as: "users",
+      onDelete: "CASCADE",
     });
 
     // ! One community can be joined by 0 or many users

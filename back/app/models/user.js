@@ -95,8 +95,6 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.comment, {
       as: "comments",
       foreignKey: "postId",
-      onDelete: "CASCADE",
-      // onUpdate: "CASCADE",
     });
     User.hasMany(models.post, {
       as: "posts",
@@ -138,10 +136,6 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.savePost, {
       as: "savePosts",
     });
-    // User.hasMany(models.follower, {
-    //   sourceKey: "userId",
-    // });
-
     User.hasOne(models.refreshToken, {
       foreignKey: "userId",
       targetKey: "id",
