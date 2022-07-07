@@ -26,7 +26,7 @@
           <!-- Publications -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              <!--              {{ user.post.length }}-->
+              {{ user.posts }}
             </div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
@@ -34,7 +34,7 @@
           <!-- Commentaires -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              <!--              {{ user.comment.length }}-->
+              {{ user.comments }}
             </div>
             <div class="profile-card-inf__txt">Commentaires</div>
           </div>
@@ -42,7 +42,7 @@
           <!-- Communautés crées -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              <!--              {{ user.groups.length }}-->
+              {{ user.community }}
             </div>
             <div class="profile-card-inf__txt">Communautés crées</div>
           </div>
@@ -50,9 +50,6 @@
       </div>
 
       <div class="profile-card-ctr">
-        <router-link v-if="user" class="profile-card__button" to="/"
-          >Signaler</router-link
-        >
         <router-link class="profile-card__button" to="/user/parameter"
           >Modifier</router-link
         >
@@ -176,7 +173,8 @@ export default {
   mounted() {
     this.user = this.$store.state.user;
     console.log("connected user", this.user.imageUrl);
-    if (!this.user) { // if user is not connected redirect to login page
+    if (!this.user) {
+      // if user is not connected redirect to login page
       this.$router.push("/login");
     }
   },

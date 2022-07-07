@@ -5,16 +5,15 @@ import createPersistedState from "vuex-persistedstate";
 // Create a new store instance.
 const store = createStore({
   plugins: [
-    createPersistedState(
-      //   {
-      //   storage: {
-      //     getItem: (key) => Cookies.get(key), // We passed in an object so that we can get the data by its key with getItem .
-      //     setItem: (key, value) => // setItem sets the data with the given key. 
-      //       Cookies.set(key, value, { expires: 3, secure: true }), // expires is the expiry time in days. secure makes sure the cookie is only set over HTTPS.
-      //     removeItem: (key) => Cookies.remove(key), // removeItem removes an item by its key.
-      //   },
-      // }
-    ),
+    createPersistedState(),
+    //   {
+    //   storage: {
+    //     getItem: (key) => Cookies.get(key), // We passed in an object so that we can get the data by its key with getItem .
+    //     setItem: (key, value) => // setItem sets the data with the given key.
+    //       Cookies.set(key, value, { expires: 3, secure: true }), // expires is the expiry time in days. secure makes sure the cookie is only set over HTTPS.
+    //     removeItem: (key) => Cookies.remove(key), // removeItem removes an item by its key.
+    //   },
+    // }
   ],
   state: {
     status: "",
@@ -25,9 +24,9 @@ const store = createStore({
     targetUserId: [],
   },
   mutations: {
-    setStatus: function (state, status) {
-      state.status = status;
-    },
+    // setStatus: function (state, status) {
+    //   state.status = status;
+    // },
     // sets state with user information and toggles
     // isAuthenticated from false to true
     signupUser: function (state, data) {
