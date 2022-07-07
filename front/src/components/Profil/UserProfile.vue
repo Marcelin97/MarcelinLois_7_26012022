@@ -4,7 +4,7 @@
       <!-- Profil image -->
       <div class="profile-card__img">
         <img
-          :src="user.imageUrl" 
+          :src="`http://localhost:3000${user.imageUrl}`"
           :alt="'Avatar de ' + user.imageUrl"
           aria-label="Photo d'utilisateur"
         />
@@ -84,7 +84,7 @@
 
   <modalStructure ref="modalName">
     <template v-slot:header>
-      <h1>Modal title</h1>
+      <h1>Supprimer mon compte</h1>
     </template>
 
     <template v-slot:body>
@@ -175,8 +175,8 @@ export default {
   },
   mounted() {
     this.user = this.$store.state.user;
-    // console.log("connected user", this.user);
-        if (!this.user.length === 0) {
+    console.log("connected user", this.user.imageUrl);
+    if (!this.user) { // if user is not connected redirect to login page
       this.$router.push("/login");
     }
   },

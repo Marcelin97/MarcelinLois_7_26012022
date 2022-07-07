@@ -21,7 +21,7 @@ const store = createStore({
     user: [],
     accessToken: "",
     refreshToken: "",
-    // isAuthenticated: false,
+    isAuthenticated: false,
     targetUserId: [],
   },
   mutations: {
@@ -30,9 +30,13 @@ const store = createStore({
     },
     // sets state with user information and toggles
     // isAuthenticated from false to true
+    signupUser: function (state, data) {
+      state.user = data;
+      state.isAuthenticated = true;
+    },
     logUser: function (state, datas) {
       state.user = datas.user;
-      // state.isAuthenticated = true;
+      state.isAuthenticated = true;
       state.accessToken = datas.accessToken;
       state.refreshToken = datas.refreshToken;
     },
@@ -48,7 +52,6 @@ const store = createStore({
       state.isAuthenticated = false;
     },
     refreshToken: function (state, accessToken) {
-      // state.isAuthenticated = true;
       state.user = { ...state.user, accessToken: accessToken };
     },
     readTargetUser: function (state, data) {

@@ -55,6 +55,12 @@ export default {
   z-index: 99999;
   overflow-x: hidden;
   overflow-y: auto;
+  background-color: rgba(rgb(0, 0, 0), 1);
+  // // opacity: 0;
+  // visibility: hidden;
+  backface-visibility: hidden;
+  transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1),
+    overflow-x 0.6s cubic-bezier(0.55, 0, 0.1, 1);
   &__backdrop {
     position: fixed;
     top: 0;

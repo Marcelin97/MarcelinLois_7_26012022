@@ -227,29 +227,29 @@
         </button>
         <!-- bouton de soumission -->
 
-        <!-- success modal  -->
-        <div class="row" v-if="status === 'created'">
-          <div class="modalbox success">
-            <div class="modalContent">
-              <div class="icon">
-                <font-awesome-icon class="icon" :icon="['fas', 'check']" />
-              </div>
-              <h3 class="modal-header">📝 Merci pour votre soumission!</h3>
-              <p>
-                Inscription réussi ! Connectez-vous pour accéder à votre
-                compte<br />avec vos identifiants..
-              </p>
-              <span class="change">-- Bienvenue --</span>
-            </div>
-          </div>
-        </div>
-        <!-- success modal -->
+        
       </div>
     </form>
+<!-- <button @click="$refs.modalName.openModal()">Open Modal</button> -->
+<!-- success modal  -->
+        <modalStructure ref="modalName">
+          <template v-slot:header>
+            <h1>📝 Merci pour votre soumission!</h1>
+          </template>
+
+          <template v-slot:body>
+            <p>
+              Inscription réussi ! Connectez-vous pour accéder à votre compte
+              avec vos identifiants..
+            </p>
+          </template>
+        </modalStructure>
+        <!-- success modal -->
   </section>
 </template>
 
 <script>
+import modalStructure from "../Modal/ModalStructure.vue";
 import { mapState } from "vuex";
 
 import useVuelidate from "@vuelidate/core";
@@ -274,6 +274,9 @@ export function strongPassword(value) {
 
 export default {
   name: "SignupForm",
+  components: {
+    modalStructure,
+  },
   props: {
     msg: String,
   },
@@ -290,6 +293,7 @@ export default {
         terms: "",
       },
       apiError: "",
+      showModal: false,
     });
 
     const rules = computed(() => ({
@@ -376,15 +380,17 @@ export default {
         this.$store.commit("setStatus", "loading");
         axiosInstance
           .post("/auth/signup", this.state.user)
-          .then(() => {
-            this.$store.commit("setStatus", "created");
-
+          .then((result) => {
+            console.log(result.data);
+            this.state.user = result.data;
+            this.$store.commit("signupUser", result.data.data);
+            this.$refs.modalName.openModal()
             // redirection sur la page de connexion
             setTimeout(
               function () {
                 this.$router.push("/login");
               }.bind(this),
-              2000,
+              3000,
               this
             );
           })

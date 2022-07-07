@@ -88,11 +88,11 @@ exports.signup = async (req, res, next) => {
       };
       user
         .create(userObject)
-        .then((createdUser) => {
+        .then((data) => {
           res.status(201).send({
             status: 200,
             message: "User created successfully",
-            createdUser,
+            data,
           });
         })
         .catch((error) => {
@@ -341,7 +341,7 @@ exports.update = async (req, res) => {
           res.status(200).json({
             message: " User updated",
             status: 200,
-            data: result,
+            user: result,
           });
         })
         .catch((error) =>

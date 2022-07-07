@@ -177,14 +177,14 @@ export default {
         this.$store.commit("setStatus", "loading");
         axiosInstance
           .post("/auth/login", this.state.user)
-          .then((response) => {
+          .then((result) => {
             // notification de succès
             this.$notify({
               type: "success",
               title: `Connexion réussi !`,
-              text: `Vous allez être redirigés vers votre profil.`,
+              text: `Vous allez être redirigé vers votre profil.`,
             });
-            this.$store.commit("logUser", response.data);
+            this.$store.commit("logUser", result.data);
             this.$store.commit("setStatus", "connected");
 
             // redirection sur la page utilisateur

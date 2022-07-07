@@ -305,7 +305,23 @@ export default {
         .then((result) => {
           console.log("result: ", result.data);
           this.$store.commit("updateUser", result.data);
-          alert("Vos modifications sont enregistrées");
+          // alert("Vos modifications sont enregistrées");
+
+          // notification de succès
+            this.$notify({
+              type: "success",
+              title: `Profil mise à jour`,
+              text: `Vous allez être redirigé vers votre profil.`,
+            });
+
+                      // redirection sur la page utilisateur
+            setTimeout(
+              function () {
+                this.$router.push("/user");
+              }.bind(this),
+              2000,
+              this
+            );
         })
         .catch((err) => {
           console.log(err);
