@@ -1,14 +1,17 @@
 <template>
   <article class="tile">
     <div class="tile-header">
-      <img alt="Photo" />
+      <img
+          :src="`http://localhost:3000${user.imageUrl}`"
+          :alt="'Avatar de ' + user.username"
+          aria-label="Photo d'utilisateur"
+        />
       <h3>
         <span>{{ user.username }}</span>
         <span>identifiant: {{ user.id }}</span>
       </h3>
     </div>
     <router-link
-      @click="viewTargetProfil"
       class="more"
       :to="`/explore/users/${this.id}`"
     >
@@ -24,48 +27,16 @@
 </template>
 
 <script>
-import axiosInstance from "../../services/api";
-
 export default {
   props: ["user"],
   data() {
     return {
-      apiError: "",
       id: "",
-      targetUser: [],
     };
   },
   mounted() {
     this.id = this.user.id;
     // console.log(this.id);
-  },
-  methods: {
-    viewTargetProfil() {
-      axiosInstance
-        .get(`auth/readByName/${this.id}`, this.targetUser)
-        .then((result) => {
-          // console.log(result.data.data);
-          this.targetUser = result.data.data;
-          console.log("xx", this.targetUser);
-          this.$store.commit("readTargetUser", result.data.data);
-          this.$store.dispatch('readTargetUser', result.data.data);
-
-        })
-        .catch((error) => {
-          console.log(error);
-          const errorMessage = (this.apiError = error.response);
-          this.errorMessage = errorMessage;
-          console.log("apiError", error);
-
-          // notification d'erreur
-          this.$notify({
-            duration: 2500,
-            type: "error",
-            title: `Erreur lors du chargement des données utilisateurs`,
-            text: `Erreur reporté : ${errorMessage}`,
-          });
-        });
-    },
   },
 };
 </script>
@@ -113,10 +84,12 @@ export default {
   align-items: center;
 
   img {
-    width: 2.8rem;
-    height: 2.8rem;
+    width: 4.8rem;
+    height: 4.8rem;
     border-radius: 50%;
     border: 0.1rem solid #2f3b49;
+    object-fit: cover;
+    object-position: 50% 40%;
   }
 
   h3 {

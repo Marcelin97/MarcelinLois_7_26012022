@@ -1,8 +1,9 @@
 <template>
   <div class="wrapper" v-if="user">
     <div class="profile-card js-profile-card">
+
       <!-- Profil image -->
-      <div class="profile-card__img">
+      <div class="profile-card__img" v-if="user.imageUrl">
         <img
           :src="`http://localhost:3000${user.imageUrl}`"
           :alt="'Avatar de ' + user.imageUrl"
@@ -26,7 +27,7 @@
           <!-- Publications -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.posts }}
+              <!-- {{ user.posts.length }} -->
             </div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
@@ -34,7 +35,7 @@
           <!-- Commentaires -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.comments }}
+              <!-- {{ user.comments.length }} -->
             </div>
             <div class="profile-card-inf__txt">Commentaires</div>
           </div>
@@ -42,17 +43,18 @@
           <!-- Communautés crées -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.community }}
+              <!-- {{ user.community.length }} -->
             </div>
             <div class="profile-card-inf__txt">Communautés crées</div>
           </div>
         </div>
       </div>
 
+      <!-- button actions -->
       <div class="profile-card-ctr">
-        <router-link class="profile-card__button" to="/user/parameter"
-          >Modifier</router-link
-        >
+        <router-link class="profile-card__button" to="/user/parameter">
+          Modifier mon profil
+        </router-link>
       </div>
       <div class="profile-card-ctr">
         <button
@@ -63,6 +65,8 @@
         >
           Exporter mes données
         </button>
+
+        <!-- button delete account -->
         <button
           type="button"
           class="btn btn-delete"
@@ -79,6 +83,7 @@
     <PostCard />
   </div>
 
+  <!-- modal delete account -->
   <modalStructure ref="modalName">
     <template v-slot:header>
       <h1>Supprimer mon compte</h1>
@@ -100,6 +105,7 @@
       </div>
     </template>
   </modalStructure>
+  
 </template>
 
 <script>
@@ -120,6 +126,9 @@ export default {
     return {
       apiError: "",
       user: [],
+      communityLength: "",
+      commentsLength: "",
+      postsLength: "",
     };
   },
   methods: {
@@ -142,7 +151,7 @@ export default {
       } catch (error) {
         const errorMessage = (this.apiError = error.response);
         this.errorMessage = errorMessage;
-        console.log("apiError", error);
+        // console.log("apiError", error);
 
         // notification d'erreur
         this.$notify({
@@ -172,9 +181,9 @@ export default {
   },
   mounted() {
     this.user = this.$store.state.user;
-    console.log("connected user", this.user.imageUrl);
+
+    // if user is not connected redirect to login page
     if (!this.user) {
-      // if user is not connected redirect to login page
       this.$router.push("/login");
     }
   },
@@ -202,7 +211,7 @@ export default {
   padding: 50px 20px;
   padding-top: 100px;
   display: flex;
-  background-image: linear-gradient(-20deg, #1c2134 0%, #14151a 100%);
+  // background-image: linear-gradient(-20deg, #1c2134 0%, #14151a 100%);
 
   @media screen and (max-width: 768px) {
     height: auto;
@@ -217,6 +226,7 @@ export default {
   max-width: 700px;
   position: relative;
   border-radius: 0.8rem;
+  box-shadow: 0px 5px 50px 0px #324e63;
 
   &__img {
     width: 150px;
@@ -228,7 +238,7 @@ export default {
     overflow: hidden;
     position: relative;
     z-index: 4;
-    box-shadow: 0px 5px 50px 0px #08708a, 0px 0px 0px 7px #08708a;
+    box-shadow: 0px 5px 50px 0px #324e63, 0px 0px 0px 5px #08708a;
 
     @media screen and (max-width: 576px) {
       width: 120px;
@@ -339,6 +349,8 @@ export default {
 img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
 }
 
 .btn {

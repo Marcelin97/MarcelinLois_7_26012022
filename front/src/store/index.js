@@ -16,7 +16,7 @@ const store = createStore({
     // }
   ],
   state: {
-    status: "",
+    // status: "",
     user: [],
     accessToken: "",
     refreshToken: "",
@@ -38,6 +38,7 @@ const store = createStore({
       state.isAuthenticated = true;
       state.accessToken = datas.accessToken;
       state.refreshToken = datas.refreshToken;
+      localStorage.clear();
     },
     updateUser: function (state, data) {
       state.user = data.user;

@@ -68,7 +68,7 @@ export default {
     async logout() {
       try {
         this.$store.commit("logout");
-        this.$store.commit("setStatus", "logout");
+        // this.$store.commit("setStatus", "logout");
         this.$router.push("/login");
       } catch (error) {
         console.error(error.data);

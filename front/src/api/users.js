@@ -40,7 +40,7 @@ export default {
   },
   async readTargetUser(id) {
     try {
-      return await axiosInstance.get(`/readByName/${id}`)
+      return await axiosInstance.get(`/auth/readByName/${id}`)
     } catch (e) {
       console.error(e.response)
       throw e.response

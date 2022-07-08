@@ -4,10 +4,9 @@
       <LogoHome />
     </div>
     <div class="home">
-      <!-- <font-awesome-icon :icon="['fas', 'user-secret']"  /> -->
       <HelloWorld msg="Bienvenue sur Groupomania" />
     </div>
-    
+
     <nav>
       <!-- <router-view/> -->
       <router-link class="btn button" to="/account">Découvrir</router-link>

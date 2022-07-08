@@ -174,7 +174,6 @@ export default {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
         // if ANY fail validation
-        this.$store.commit("setStatus", "loading");
         axiosInstance
           .post("/auth/login", this.state.user)
           .then((result) => {
@@ -185,7 +184,6 @@ export default {
               text: `Vous allez être redirigé vers votre profil.`,
             });
             this.$store.commit("logUser", result.data);
-            this.$store.commit("setStatus", "connected");
 
             // redirection sur la page utilisateur
             setTimeout(
@@ -197,8 +195,7 @@ export default {
             );
           })
           .catch((error) => {
-            console.log(error);
-            this.$store.commit("setStatus", "error_login");
+            // console.log(error);
             if (error.response.status == 404) {
               const errorMessage = (this.apiError =
                 "Utilisateur introuvable !");

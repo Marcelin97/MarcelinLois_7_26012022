@@ -1,9 +1,82 @@
 <template>
-  <div>User {{ username }}</div>
-  <div>
-    {{ targetUserProfil.id || "chargement en cours..."}}
-    {{targetUserProfil.username}}
-    {{targetUser}}
+    <div class="wrapper" v-if="this.targetUserProfil">
+    <div class="profile-card js-profile-card">
+
+      <!-- Profil image -->
+      <div class="profile-card__img" v-if="this.targetUserProfil.imageUrl">
+        <img
+          :src="`http://localhost:3000${this.targetUserProfil.imageUrl}`"
+          :alt="'Avatar de ' + this.targetUserProfil.username"
+          aria-label="Photo d'utilisateur"
+        />
+      </div>
+
+      <!-- Profil informations -->
+      <div class="profile-card__cnt js-profile-cnt">
+        <div class="profile-card__name">
+          Nom d'utilisateur :
+          {{ this.targetUserProfil.username || "chargement en cours..." }}
+        </div>
+        <div class="profile-card__txt">
+          Identifiant : {{ userTargetId }}
+        </div>
+        <div class="profile-card__txt">administrateur : {{ this.targetUserProfil.isAdmin }}</div>
+
+        <!-- Profil statistiques -->
+        <div class="profile-card-inf">
+          <!-- Publications -->
+          <div class="profile-card-inf__item">
+            <div class="profile-card-inf__title">
+              <!-- {{ user.posts.length }} -->
+            </div>
+            <div class="profile-card-inf__txt">Publications</div>
+          </div>
+
+          <!-- Commentaires -->
+          <div class="profile-card-inf__item">
+            <div class="profile-card-inf__title">
+              <!-- {{ user.comments.length }} -->
+            </div>
+            <div class="profile-card-inf__txt">Commentaires</div>
+          </div>
+
+          <!-- Communautés crées -->
+          <div class="profile-card-inf__item">
+            <div class="profile-card-inf__title">
+              <!-- {{ user.community.length }} -->
+            </div>
+            <div class="profile-card-inf__txt">Communautés crées</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- button actions -->
+      <div class="profile-card-ctr">
+        <router-link class="profile-card__button" to="/user/parameter">
+          Modifier mon profil
+        </router-link>
+      </div>
+      <div class="profile-card-ctr">
+        <button
+          type="button"
+          class="btn btn-export"
+          @click="exportDataClick"
+          text="Exporter mes données"
+        >
+          Exporter mes données
+        </button>
+
+        <!-- button delete account -->
+        <button
+          type="button"
+          class="btn btn-delete"
+          @click="$refs.modalName.openModal()"
+          text="Supprimer mon compte"
+        >
+          Supprimer mon compte
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -11,7 +84,9 @@
 // import PostCard from "../Posts/PostCard.vue";
 // import modalStructure from "../Modal/ModalStructure.vue";
 // import deleteBtn from "../Base/DeleteBtn.vue";
-// import userApi from "../../api/users"
+import userApi from "../../api/users";
+// import axiosInstance from "../../services/api";
+// import TokenService from "../../services/token.service";
 
 export default {
   name: "User-profile",
@@ -25,22 +100,33 @@ export default {
   data() {
     return {
       apiError: "",
+      userId: "",
       targetUserProfil: [],
     };
   },
-  async beforeMount() {
-    // if (!this.user) {
-    //   this.$router.push("/login");
-    // }
-
-    this.targetUserProfil = this.$store.state.targetUserId;
-    console.log("connected user", this.targetUserProfil);
-
-  },
   computed: {
-    username() {
+    userTargetId() {
       return this.$route.params.id;
     },
+  },
+  async created() {
+    this.userId = this.$route.params.id;
+    try {
+      const response = await userApi.readTargetUser(this.userId);
+      console.log(response.data.data);
+      this.targetUserProfil = response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async beforeRouteUpdate(to) {
+    this.userId = to.params.id;
+    try {
+      const response = await userApi.readTargetUser(this.userId);
+      this.user = response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
 </script>
