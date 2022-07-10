@@ -82,14 +82,54 @@
     <!-- modal report user -->
   <modalStructure ref="modalName">
     <template v-slot:header>
-      <h1>Supprimer mon compte</h1>
+      <h1>Signaler ce compte</h1>
     </template>
 
     <template v-slot:body>
-      <p>
-        Attention, vous êtes sur le point de supprimer votre compte. Cette
-        action est irréversible. Souhaitez-vous tout de même continuer ?'
-      </p>
+      <div class="container">
+          <form action="#" method="post" @submit.prevent="reportAccountClick">
+            <div class="FormGroup">
+              <label class="FormGroupLabel" for="">Pourquoi signalez-vous ce compte ?</label>
+              <div class="FormTextboxWrapper">
+                <textarea
+                cols="50"
+                rows="5"
+                required
+                  class="FormTextbox"
+                  type="text"
+                  placeholder="Explique nous les raisons de ce signalement."
+                  v-model="state.content"
+                  @blur="v$.content.$touch"
+                  :class="v$.content.$error === true ? 'error' : 'dirty'"
+                />
+              </div>
+
+              <!-- Error Message -->
+              <template v-if="v$.content.$dirty">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.content.$errors"
+                  :key="index"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <!-- Error Message -->
+            </div>
+
+            <!-- gestion erreur API avec axios -->
+            <div class="error-api" v-if="status == 'error_login'">
+              <p class="error-msg">{{ apiError }}</p>
+            </div>
+            <!-- gestion erreur API avec axios -->
+        <button type="submit"
+              class="btn button"
+              title="Signaler"
+              value="Signaler">
+          Confirmer signalement
+        </button>
+          </form>
+        </div>
     </template>
 
     <template v-slot:footer>
@@ -97,7 +137,7 @@
         <button class="btn" @click="$refs.modalName.closeModal()">
           Cancel
         </button>
-        <deleteBtn @click="deleteAccountClick" />
+
       </div>
     </template>
   </modalStructure>
@@ -107,13 +147,50 @@
 // import PostCard from "../Posts/PostCard.vue";
 import modalStructure from "../Modal/ModalStructure.vue";
 import GoBack from "../Base/GoBack.vue";
+import axiosInstance from "../../services/api";
+import TokenService from "../../services/token.service";
 import userApi from "../../api/users";
-
+import useVuelidate from "@vuelidate/core";
+import {
+  helpers,
+  // required,
+  minLength,
+  maxLength,
+} from "@vuelidate/validators";
+import { reactive, computed } from "vue";
 
 export default {
   name: "User-profile",
   props: ["targetUser"],
-  setup() {},
+   setup() {
+    const state = reactive({
+      content: "",
+      apiError: "",
+    });
+
+    const rules = computed(() => ({
+        content: {
+          // required: helpers.withMessage("L'/email est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+          minLength: helpers.withMessage(
+            "Ce champ doit être long d'au moins 5",
+            minLength(5)
+          ),
+          maxLength: helpers.withMessage(
+            "La longueur maximale autorisée est de 255",
+            maxLength(255)
+          ),
+        },
+    }));
+
+    const v$ = useVuelidate(rules, state);
+
+    return { state, v$ };
+  },
+  validationConfig: {
+    $lazy: true,
+  },
   components: {
     // PostCard,
     modalStructure,
@@ -149,6 +226,82 @@ export default {
     } catch (error) {
       console.log(error);
     }
+  },
+  methods: {
+    reportAccountClick() {
+          const token = TokenService.getLocalAccessToken();
+
+      this.v$.$validate(); // checks all inputs
+      if (!this.v$.$error) {
+        // if ANY fail validation
+        axiosInstance
+          .post(`/auth/report/${this.userId}`, this.state.content, {
+        headers: {
+          Authorization: token,
+        },
+      })
+          .then((result) => {
+            console.log(result);
+            this.state.content = result
+            console.log(this.state.content);
+            // notification de succès
+            this.$notify({
+              type: "success",
+              title: `Signalement envoyé !`,
+              text: `Vous allez être redirigé vers votre profil.`,
+            });
+
+            // redirection sur la page utilisateur
+            setTimeout(
+              function () {
+                this.$router.push("/user");
+              }.bind(this),
+              2000,
+              this
+            );
+          })
+          .catch((error) => {
+            // console.log(error);
+            if (error.response.status == 404) {
+              const errorMessage = (this.apiError =
+                "Utilisateur introuvable !");
+              this.errorMessage = errorMessage;
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors du signalement`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            } else if (error.response.status == 409) {
+              const errorMessage = (this.apiError = "Vous avez déjà signalé cet utilisateur !");
+              this.errorMessage = errorMessage;
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors du signalement`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            }
+          });
+      } else {
+        // notification d'erreur
+        this.$notify({
+          type: "warn",
+          title: `Veuillez faire un signalement complet.`,
+        });
+
+        // montre les erreurs à l'écran
+        this.$nextTick(() => {
+          let domRect = document
+            .querySelector(".error")
+            .getBoundingClientRect();
+          window.scrollTo(
+            domRect.left + document.documentElement.scrollLeft,
+            domRect.top + document.documentElement.scrollTop
+          );
+        });
+      }
+    },
   },
 };
 </script>
@@ -287,4 +440,34 @@ img {
   margin: 1rem;
 }
 
+// modal report user
+.FormTextbox {
+  width: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #c7c7c7;
+  color: #606060;
+  text-indent: 1rem;
+  background-color: rgb(12, 19, 31);
+  &::placeholder {
+    color: #a7a7a7;
+  }
+  &:focus {
+    outline: none;
+    border-color: #b44ff6;
+  }
+}
+
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 0.6rem;
+  line-height: 15px;
+  margin: 5px 0 0;
+}
+
+.error-api {
+  padding: 1rem;
+}
 </style>

@@ -65,7 +65,7 @@
             </div>
 
             <!-- gestion erreur API avec axios -->
-            <div class="error-api" v-if="status == 'error_login'">
+            <div class="error-api" v-if="error.response.status">
               <p class="error-msg">{{ apiError }}</p>
             </div>
             <!-- gestion erreur API avec axios -->
@@ -77,8 +77,8 @@
               title="Connexion"
               value="Connexion"
             >
-              <span v-if="status == 'loading'">Connexion en cours...</span>
-              <span v-else>Connexion</span>
+              <!-- <span v-if="status == 'loading'">Connexion en cours...</span> -->
+              <span>Connexion</span>
             </button>
             <!-- bouton de soumission -->
           </form>
@@ -100,7 +100,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import useVuelidate from "@vuelidate/core";
 import {
   helpers,
@@ -163,9 +162,6 @@ export default {
   },
   validationConfig: {
     $lazy: true,
-  },
-  computed: {
-    ...mapState(["status"]),
   },
   methods: {
     login() {

@@ -21,7 +21,6 @@ const store = createStore({
     accessToken: "",
     refreshToken: "",
     isAuthenticated: false,
-    targetUserId: [],
   },
   mutations: {
     // setStatus: function (state, status) {
@@ -38,7 +37,6 @@ const store = createStore({
       state.isAuthenticated = true;
       state.accessToken = datas.accessToken;
       state.refreshToken = datas.refreshToken;
-      localStorage.clear();
     },
     updateUser: function (state, data) {
       state.user = data.user;
@@ -48,25 +46,16 @@ const store = createStore({
       state.user = [];
       state.refreshToken = "";
       state.accessToken = "";
-      state.targetUserId = [];
       state.isAuthenticated = false;
+      localStorage.clear();
     },
     refreshToken: function (state, accessToken) {
       state.user = { ...state.user, accessToken: accessToken };
-    },
-    readTargetUser: function (state, data) {
-      state.targetUserId = data;
     },
   },
   actions: {
     refreshToken({ commit }, accessToken) {
       commit("refreshToken", accessToken);
-      console.info(
-        "Access token updated, you can ignore the previous 401 error"
-      );
-    },
-    readTargetUser({ commit }, data) {
-      commit("readTargetUser", data);
       console.info(
         "Access token updated, you can ignore the previous 401 error"
       );

@@ -314,7 +314,7 @@ export default {
               text: `Vous allez être redirigé vers votre profil.`,
             });
 
-                      // redirection sur la page utilisateur
+            // redirection sur la page utilisateur
             setTimeout(
               function () {
                 this.$router.push("/user");
@@ -326,29 +326,6 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-
-      // if (
-      //   window.confirm(
-      //     "Attention, vous êtes sur le point de modifier votre compte. Souhaitez-vous tout de même continuer ?"
-      //   )
-      // ) {
-      //   usersApi
-      //     .updateAccount(data, config)
-      //     .then(function(response) {
-      //        console.log('saved', response, data)
-      //       // this.$store.commit("logout");
-      //       // this.$store.commit("setStatus", "logout");
-      //       // this.$router.push("/");
-
-      //   //     this.$notify({
-      //   //   type: "success",
-      //   //   text: "Vos modifications sont enregistrées",
-      //   // });
-      //     })
-      //     .catch((err) => {
-      //       console.log("error: ", err);
-      //     });
-      // }
     },
   },
 };
