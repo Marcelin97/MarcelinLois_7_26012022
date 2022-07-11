@@ -10,7 +10,7 @@
 
     <div
       class="banner__bottom"
-      v-bind:style="{ backgroundImage : `url(${community.icon})` }"
+      v-bind:style="{ backgroundImage : `url(http://localhost:3000${community.icon})` }"
     >
     <div class="banner__container">
       <div class="banner__card">
@@ -36,12 +36,12 @@
 </template>
 
 <script>
+import InputBoxCommunityVue from "../Community/InputBoxCommunity.vue";
 import axiosInstance from "../../services/api";
 import TokenService from "../../services/token.service";
 
 export default {
-  setup() {
-  },
+  setup() {},
   data() {
     return {
       title: "Voici la liste de toutes les communautés",
@@ -147,10 +147,12 @@ button:hover .icon {
   display: flex;
   flex-direction: column;
   margin-bottom: 2rem;
+
   &__container {
     margin: 0 auto;
     width: 85rem;
     max-width: 100%;
+    position: relative;
   }
 
   &__top {
@@ -158,7 +160,7 @@ button:hover .icon {
     color: #9ea4b9;
     margin-bottom: 4rem;
     &-title {
-      position: relative;
+      position: sticky;
       padding: 0.5rem 0;
       padding-left: 3rem;
       font-size: 1.6rem;
@@ -197,20 +199,24 @@ button:hover .icon {
   &__bottom {
     // background: url(https://cdn.discordapp.com/attachments/935835196538896386/936744841600172082/zyro-image.png);
     background-size: cover;
-    background-position: 45% 0;
+    background-repeat: no-repeat;
+    background-position: 75%;
     box-sizing: border-box;
     min-height: 24rem;
-    padding-top: 5rem;
+    // padding-top: 5rem;
     transition: 250ms ease all;
+    position: relative;
   }
   &__card {
     display: flex;
     flex-direction: column;
     padding: 1rem 1.69rem;
-    max-width: 31.25rem;
-    background: #08708a;
+    max-width: 16rem;
+    // background: #08708a;
     margin-left: auto;
     border-radius: 0.5rem;
+    position: relative;
+    top: 200px;
     &-title {
       background: transparent;
       margin-bottom: 0.1em;
@@ -237,19 +243,6 @@ button:hover .icon {
       padding: 0.8rem 2.5rem;
       align-self: center;
       transition: 250ms ease all;
-    }
-  }
-  @media screen and (max-width: 48rem) {
-    &__bottom {
-      min-height: 22rem;
-      padding: 8rem 1.5rem 1.5rem;
-      background-position: 30%;
-    }
-    &__top-title {
-      margin-left: 1.5rem;
-    }
-    &__card {
-      margin: 0 auto;
     }
   }
 }

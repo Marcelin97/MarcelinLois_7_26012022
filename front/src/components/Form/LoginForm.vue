@@ -65,7 +65,7 @@
             </div>
 
             <!-- gestion erreur API avec axios -->
-            <div class="error-api" v-if="error.response.status">
+            <div class="error-api">
               <p class="error-msg">{{ apiError }}</p>
             </div>
             <!-- gestion erreur API avec axios -->

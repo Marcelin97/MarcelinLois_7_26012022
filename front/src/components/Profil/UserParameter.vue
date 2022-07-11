@@ -163,13 +163,16 @@
             </div>
           </template> -->
           <!-- Error Message -->
-        </div>
 
+        </div>
+        
+        <!-- button submit -->
         <div class="button-container">
           <button type="submit" class="button">
             Enregister les modifications
           </button>
         </div>
+
       </form>
     </div>
   </section>

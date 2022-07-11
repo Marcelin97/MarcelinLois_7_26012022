@@ -30,14 +30,14 @@ export default {
     }
   },
 
-  async userReport(userId) {
-    try {
-      return await axiosInstance.post(`/auth/report/${userId}`);
-    } catch (e) {
-      console.error(e.response);
-      throw e.response;
-    }
-  },
+  // async userReport(userId) {
+  //   try {
+  //     return await axiosInstance.post(`/auth/report/${userId}`);
+  //   } catch (e) {
+  //     console.error(e.response);
+  //     throw e.response;
+  //   }
+  // },
   async readTargetUser(id) {
     try {
       return await axiosInstance.get(`/auth/readByName/${id}`)

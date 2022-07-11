@@ -316,7 +316,7 @@ exports.update = async (req, res) => {
           // console.log(file);
           req.body.imageUrl = `/images/${req.file.filename}`;
           // console.log(req.file.filename);
-          
+
           // TODO : Delete the old image
           try {
             // Si je trouve une image à mon utilisateur
@@ -437,44 +437,47 @@ exports.exportUser = async (req, res) => {
 //* Report a user
 exports.report = (req, res) => {
   // TODO : I find the user to report
-  user.findOne({ where: { id: req.params.id } }).then((targetUser) => {
-    if (!targetUser) {
-      return res.status(404).json({ error: "Reportable user not found." });
-    }
-    // TODO : I check if a report has already been made
-    userReport
-      .count({
-        where: { userReportedId: targetUser.id, fromUserId: req.auth.userID },
-      })
-      .then((isAlreadyReported) => {
-        if (isAlreadyReported) {
-          return res
-            .status(409)
-            .json({ message: "You have already reported this user" });
-        }
+  user.findOne({ where: { id: req.params.id } })
+    .then((targetUser) => {
+      if (!targetUser) {
+        return res.status(404).json({ error: "Reportable user not found." });
+      }
+      // TODO : I check if a report has already been made
+      userReport
+        .count({
+          where: { userReportedId: targetUser.id, fromUserId: req.auth.userID },
+        })
+        .then((isAlreadyReported) => {
+          if (isAlreadyReported) {
+            return res
+              .status(409)
+              .json({ message: "You have already reported this user" });
+          }
 
-        userReport
-          .create({
-            userReportedId: targetUser.id,
-            fromUserId: req.auth.userID,
-            content: req.body.content,
-          })
-          .then(() => {
-            res.status(201).json({
-              message:
-                " User" +
-                " " +
-                targetUser.username +
-                " " +
-                "reported successfully",
-            });
-          })
-          .catch((error) =>
-            res.status(500).json({ error: error.name, message: error.message })
-          );
-      })
-      .catch((err) => {
-        return res.status(500).json({ error: err.message });
-      });
-  });
+          userReport
+            .create({
+              userReportedId: targetUser.id,
+              fromUserId: req.auth.userID,
+              content: req.body.content,
+            })
+            .then(() => {
+              res.status(201).json({
+                message:
+                  " User" +
+                  " " +
+                  targetUser.username +
+                  " " +
+                  "reported successfully",
+              });
+            })
+            .catch((error) =>
+              res.status(500).json({ error: error.name, message: error.message })
+            );
+        })
+        .catch((err) => {
+          return res.status(500).json({ error: err.message });
+        });
+    }).catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });  
 };

@@ -1,23 +1,22 @@
 <template>
   <section class="form-input-box">
-    <form action="" class="post-form">
+    <form action="#" method="post" class="community-form">
       <!-- Post form header -->
-      <div class="post-form-header">
-        <div class="post-form-header-label">
-          <span>Crée un Post</span>
+      <div class="community-form-header">
+        <div>
+          <span>Crée une communauté</span>
         </div>
       </div>
 
       <!-- post form content -->
-      <div class="post-form-content">
-        <div class="post-form-top">
-          <div class="post-form-file">
-            <div class="post-form-file-center">
+      <div class="community-form-content">
+        <div class="community-form-top">
+          <div class="community-form-file">
+            <div>
               <div class="wrapper">
                 <div class="split">
                   <div class="button">
                     <font-awesome-icon class="icon" :icon="['fas', 'upload']" />
-
                     Ajoute une image
                   </div>
 
@@ -34,9 +33,9 @@
                         class="icon close btn-fas"
                         :icon="['fas', 'file']"
                       />
-                      <div class="form-file">
+                      <div>
                         <input class="file" type="file" id="file" />
-                        <label class="post-form-label" for="file"></label>
+                        <label class="community-form-label" for="file"></label>
                       </div>
                     </button>
                   </div>
@@ -44,54 +43,56 @@
               </div>
             </div>
           </div>
-          <div class="post-form-title">
+          <div class="community-form-title">
             <textarea
               name=""
-              id="post-form-title"
+              id="community-form-title"
               cols="30"
               rows="10"
-              aria-label="Post title"
-              placeholder="Titre de votre post ici..."
+              aria-label="community title"
+              placeholder="Titre de votre communauté ici..."
             ></textarea>
           </div>
         </div>
         <div class="holes-lower"></div>
 
-        <div class="post-form-body">
-          <div class="post-form-body-text">
+        <div class="community-form-body">
+          <div class="community-form-body-text">
             <textarea
-              name=""
-              id=""
-              cols="30"
+              name="content"
+              id="content"
               rows="10"
-              aria-label="Post content"
-              placeholder="Ecrivez le contenu de votre post ici..."
+              minlength="20"
+              required
+              aria-label="à propos de votre communauté"
+              placeholder="Écrivez quelque chose à propos de votre communauté ici..."
             ></textarea>
           </div>
         </div>
       </div>
 
       <!-- post form footer -->
-      <div class="post-form-footer">
+      <div>
         <button
           title="Add a new post"
-          class="btn-form-new-post"
+          class="btn-form-new-community"
           type="submit"
           aria-label="Add a new post"
         >
-          Publier
+          Crée une communauté
         </button>
       </div>
-
     </form>
   </section>
 </template>
 
 <script>
 export default {
-  name: "InputBoxPost",
-  setup() {},
-};
+    name: "InputBoxCommunity",
+    setup() {
+        
+    },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -99,7 +100,7 @@ export default {
   display: flex;
   justify-content: center;
 }
-.post-form {
+.community-form {
   width: 280px;
   @media only screen and (min-width: 576px) {
     width: 380px;
@@ -109,7 +110,7 @@ export default {
   }
 }
 
-.post-form-header {
+.community-form-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -117,7 +118,7 @@ export default {
 }
 
 // post form contents
-.post-form-content {
+.community-form-content {
   overflow: auto;
   // height: calc(100vh - var(-56px) - var(-72px));
   display: flex;
@@ -128,16 +129,16 @@ export default {
   overflow-wrap: anywhere;
 }
 
-.post-form-top {
+.community-form-top {
   padding: 1rem 1rem;
   background: transparent;
 }
 
-.post-form-file {
+.community-form-file {
   margin-bottom: 0.5rem;
 }
 
-.post-form-label {
+.community-form-label {
   background: transparent;
   border: #3d3d3d;
   border-width: 2px;
@@ -223,7 +224,7 @@ export default {
   transform: rotate(-45deg);
 }
 
-.post-form-title {
+.community-form-title {
   overflow: hidden;
   background: transparent;
   display: flex;
@@ -255,12 +256,12 @@ export default {
   background: transparent;
 }
 
-.post-form-body {
+.community-form-body {
   padding: 1rem 1rem;
   background: transparent;
   display: flex;
   flex-direction: column;
-  .post-form-body-text {
+  .community-form-body-text {
     background: transparent;
     textarea {
       min-height: 27px;
@@ -279,7 +280,7 @@ export default {
   }
 }
 
-.btn-form-new-post {
+.btn-form-new-community {
   margin-top: 1rem;
   background: lighten(rgb(23, 23, 23), 1%);
   border: none;

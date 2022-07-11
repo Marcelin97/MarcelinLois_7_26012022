@@ -1,8 +1,7 @@
 <template>
- <GoBack />
-    <div class="wrapper" v-if="this.targetUserProfil">
+  <GoBack />
+  <div class="wrapper" v-if="this.targetUserProfil">
     <div class="profile-card js-profile-card">
-
       <!-- Profil image -->
       <div class="profile-card__img" v-if="this.targetUserProfil.imageUrl">
         <img
@@ -18,9 +17,7 @@
           Nom d'utilisateur :
           {{ this.targetUserProfil.username || "chargement en cours..." }}
         </div>
-        <div class="profile-card__txt">
-          Identifiant : {{ userTargetId }}
-        </div>
+        <div class="profile-card__txt">Identifiant : {{ userTargetId }}</div>
         <div class="profile-card__txt">
           administrateur : {{ this.targetUserProfil.isAdmin }}
         </div>
@@ -55,7 +52,6 @@
 
       <!-- button actions -->
       <div class="profile-card-ctr">
-        
         <!-- button send a message -->
         <button
           type="button"
@@ -79,7 +75,7 @@
     </div>
   </div>
 
-    <!-- modal report user -->
+  <!-- modal report user -->
   <modalStructure ref="modalName">
     <template v-slot:header>
       <h1>Signaler ce compte</h1>
@@ -87,58 +83,56 @@
 
     <template v-slot:body>
       <div class="container">
-          <form action="#" method="post" @submit.prevent="reportAccountClick">
-            <div class="FormGroup">
-              <label class="FormGroupLabel" for="">Pourquoi signalez-vous ce compte ?</label>
-              <div class="FormTextboxWrapper">
-                <textarea
+        <form action="#" method="post" @submit.prevent="reportAccountClick">
+          <div class="FormGroup">
+            <label class="FormGroupLabel" for=""
+              >Pourquoi signalez-vous ce compte ?</label
+            >
+            <div class="FormTextboxWrapper">
+              <textarea
                 cols="50"
                 rows="5"
                 required
-                  class="FormTextbox"
-                  type="text"
-                  placeholder="Explique nous les raisons de ce signalement."
-                  v-model="state.content"
-                  @blur="v$.content.$touch"
-                  :class="v$.content.$error === true ? 'error' : 'dirty'"
-                />
+                class="FormTextbox"
+                type="text"
+                placeholder="Explique nous les raisons de ce signalement."
+                v-model="state.user.content"
+                @blur="v$.user.content.$touch"
+                :class="v$.user.content.$error === true ? 'error' : 'dirty'"
+              />
+            </div>
+
+            <!-- Error Message -->
+            <template v-if="v$.user.content.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.user.content.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
               </div>
+            </template>
+            <!-- Error Message -->
+          </div>
 
-              <!-- Error Message -->
-              <template v-if="v$.content.$dirty">
-                <div
-                  class="input-errors"
-                  v-for="(error, index) of v$.content.$errors"
-                  :key="index"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <!-- Error Message -->
-            </div>
-
-            <!-- gestion erreur API avec axios -->
-            <div class="error-api" v-if="status == 'error_login'">
-              <p class="error-msg">{{ apiError }}</p>
-            </div>
-            <!-- gestion erreur API avec axios -->
-        <button type="submit"
-              class="btn button"
-              title="Signaler"
-              value="Signaler">
-          Confirmer signalement
-        </button>
-          </form>
-        </div>
+          <button
+            type="submit"
+            class="btn button"
+            title="Signaler"
+            value="Signaler"
+          >
+            Confirmer signalement
+          </button>
+        </form>
+      </div>
     </template>
 
     <template v-slot:footer>
-      <div class="modal__actions">
-        <button class="btn" @click="$refs.modalName.closeModal()">
-          Cancel
-        </button>
-
+      <!-- gestion erreur API avec axios -->
+      <div class="error-api">
+        <p class="error-msg">{{ apiError }}</p>
       </div>
+      <!-- gestion erreur API avec axios -->
     </template>
   </modalStructure>
 </template>
@@ -148,7 +142,7 @@
 import modalStructure from "../Modal/ModalStructure.vue";
 import GoBack from "../Base/GoBack.vue";
 import axiosInstance from "../../services/api";
-import TokenService from "../../services/token.service";
+// import TokenService from "../../services/token.service";
 import userApi from "../../api/users";
 import useVuelidate from "@vuelidate/core";
 import {
@@ -162,13 +156,16 @@ import { reactive, computed } from "vue";
 export default {
   name: "User-profile",
   props: ["targetUser"],
-   setup() {
+  setup() {
     const state = reactive({
-      content: "",
+      user: {
+        content: "",
+      },
       apiError: "",
     });
 
     const rules = computed(() => ({
+      user: {
         content: {
           // required: helpers.withMessage("L'/email est obligatoire", required),
           $autoDirty: true,
@@ -182,6 +179,7 @@ export default {
             maxLength(255)
           ),
         },
+      },
     }));
 
     const v$ = useVuelidate(rules, state);
@@ -194,7 +192,7 @@ export default {
   components: {
     // PostCard,
     modalStructure,
-    GoBack 
+    GoBack,
   },
   data() {
     return {
@@ -229,21 +227,12 @@ export default {
   },
   methods: {
     reportAccountClick() {
-          const token = TokenService.getLocalAccessToken();
-
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
         // if ANY fail validation
         axiosInstance
-          .post(`/auth/report/${this.userId}`, this.state.content, {
-        headers: {
-          Authorization: token,
-        },
-      })
-          .then((result) => {
-            console.log(result);
-            this.state.content = result
-            console.log(this.state.content);
+          .post(`/auth/report/${this.userId}`, this.state.user)
+          .then(() => {
             // notification de succès
             this.$notify({
               type: "success",
@@ -256,12 +245,12 @@ export default {
               function () {
                 this.$router.push("/user");
               }.bind(this),
-              2000,
+              3000,
               this
             );
           })
           .catch((error) => {
-            // console.log(error);
+            console.log(error.response.status);
             if (error.response.status == 404) {
               const errorMessage = (this.apiError =
                 "Utilisateur introuvable !");
@@ -273,7 +262,8 @@ export default {
                 text: `Erreur reporté : ${errorMessage}`,
               });
             } else if (error.response.status == 409) {
-              const errorMessage = (this.apiError = "Vous avez déjà signalé cet utilisateur !");
+              const errorMessage = (this.apiError =
+                "Vous avez déjà signalé cet utilisateur !");
               this.errorMessage = errorMessage;
               // notification d'erreur
               this.$notify({
@@ -311,7 +301,9 @@ export default {
 .overflow-hidden {
   overflow: hidden;
 }
-
+.modal {
+  background: transparent;
+}
 .modal__actions {
   padding: 2rem;
   display: flex;
