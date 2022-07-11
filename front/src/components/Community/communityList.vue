@@ -1,4 +1,7 @@
 <template>
+<div>
+  <InputBoxCommunityVue/>
+</div>
   <div class="banner" :key="index" v-for="(community, index) in communities">
     <div class="banner__top">
       <div class="banner__container">
@@ -41,6 +44,10 @@ import axiosInstance from "../../services/api";
 import TokenService from "../../services/token.service";
 
 export default {
+  name: "CommunityList",
+    components: {
+    InputBoxCommunityVue,
+  },
   setup() {},
   data() {
     return {

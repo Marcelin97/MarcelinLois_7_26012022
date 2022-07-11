@@ -107,7 +107,7 @@
           class="btn"
           type="submit"
           title="Créer mon compte"
-          value="Créer mon compte"
+          aria-label="Créer mon compte"
         >
           <span v-if="status === 'loading'">Création en cours...</span>
           <span v-else>Créer mon compte</span>

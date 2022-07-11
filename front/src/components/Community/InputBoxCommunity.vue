@@ -1,6 +1,11 @@
 <template>
   <section class="form-input-box">
-    <form action="#" method="post" class="community-form">
+    <form
+      action="#"
+      method="post"
+      @submit.prevent="createCommunityClick"
+      class="community-form"
+    >
       <!-- Post form header -->
       <div class="community-form-header">
         <div>
@@ -34,8 +39,29 @@
                         :icon="['fas', 'file']"
                       />
                       <div>
-                        <input class="file" type="file" id="file" />
+                        <input
+                          class="file"
+                          type="file"
+                          id="file"
+                          @blur="v$.community.file.$touch"
+                          :class="
+                            v$.community.file.$error === true
+                              ? 'error'
+                              : 'dirty'
+                          "
+                        />
                         <label class="community-form-label" for="file"></label>
+                        <!-- Error Message -->
+                        <template v-if="v$.community.file.$dirty">
+                          <div
+                            class="input-errors"
+                            v-for="(error, index) of v$.community.file.$errors"
+                            :key="index"
+                          >
+                            <div class="error-msg">{{ error.$message }}</div>
+                          </div>
+                        </template>
+                        <!-- Error Message -->
                       </div>
                     </button>
                   </div>
@@ -45,13 +71,31 @@
           </div>
           <div class="community-form-title">
             <textarea
-              name=""
+              v-model="state.community.title"
+              blur="v$.community.title.$touch"
+              :class="v$.community.title.$error === true ? 'error' : 'dirty'"
+              required
+              autofocus
+              minlength="3"
+              maxlength="255"
+              name="community-form-title"
               id="community-form-title"
               cols="30"
               rows="10"
-              aria-label="community title"
+              aria-label="Titre de votre communauté"
               placeholder="Titre de votre communauté ici..."
             ></textarea>
+            <!-- Error Message -->
+            <template v-if="v$.community.title.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.community.title.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
           </div>
         </div>
         <div class="holes-lower"></div>
@@ -59,14 +103,28 @@
         <div class="community-form-body">
           <div class="community-form-body-text">
             <textarea
-              name="content"
-              id="content"
+              v-model="state.community.about"
+              @blur="v$.community.about.$touch"
+              :class="v$.community.about.$error === true ? 'error' : 'dirty'"
+              name="about"
+              id="about"
               rows="10"
               minlength="20"
               required
               aria-label="à propos de votre communauté"
               placeholder="Écrivez quelque chose à propos de votre communauté ici..."
             ></textarea>
+            <!-- Error Message -->
+            <template v-if="v$.community.about.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.community.about.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
           </div>
         </div>
       </div>
@@ -74,10 +132,10 @@
       <!-- post form footer -->
       <div>
         <button
-          title="Add a new post"
+          title="Crée une communauté"
           class="btn-form-new-community"
           type="submit"
-          aria-label="Add a new post"
+          aria-label="Crée une communauté"
         >
           Crée une communauté
         </button>
@@ -87,12 +145,74 @@
 </template>
 
 <script>
+import useVuelidate from "@vuelidate/core";
+import {
+  helpers,
+  required,
+  minLength,
+  maxLength,
+  alphaNum,
+} from "@vuelidate/validators";
+import { reactive, computed } from "vue";
+import communityApi from "../../api/community"
+
 export default {
-    name: "InputBoxCommunity",
-    setup() {
-        
-    },
-}
+  name: "InputBoxCommunity",
+  setup() {
+    const state = reactive({
+      mode: "create",
+      community: {
+        title: "",
+        file: "",
+        about: "",
+      },
+      apiError: "",
+    });
+
+    const rules = computed(() => ({
+      community: {
+        title: {
+          required: helpers.withMessage(
+            "Le titre de la communauté est obligatoire",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+          minLength: minLength(3),
+          maxLength: maxLength(25),
+          alphaNum,
+        },
+        file: {
+          required: helpers.withMessage("Une image est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+        },
+        about: {
+          $autoDirty: true,
+          $lazy: true,
+        },
+      },
+    }));
+
+    const v$ = useVuelidate(rules, state);
+
+    return { state, v$ };
+  },
+  validationConfig: {
+    $lazy: true,
+  },
+  methods: {
+    async createCommunityClick(formData) {
+      try {
+        const response = await communityApi.createCommunity(formData);
+        console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
+
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
