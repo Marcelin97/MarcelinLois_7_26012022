@@ -10,9 +10,9 @@ export default {
             const response = await axiosInstance.post('/community', {
                 title: data.title,
                 about: data.about,
-                icon: data.file
+                icon: data.icon
             })
-
+            console.log(response)
             return response.data
         } catch (e) {
             console.error(e.response)

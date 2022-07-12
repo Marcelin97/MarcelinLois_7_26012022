@@ -1,7 +1,7 @@
 <template>
-<div>
-  <InputBoxCommunityVue/>
-</div>
+  <div>
+    <InputBoxCommunityVue />
+  </div>
   <div class="banner" :key="index" v-for="(community, index) in communities">
     <div class="banner__top">
       <div class="banner__container">
@@ -13,39 +13,43 @@
 
     <div
       class="banner__bottom"
-      v-bind:style="{ backgroundImage : `url(http://localhost:3000${community.icon})` }"
+      v-bind:style="{
+        backgroundImage: `url(http://localhost:3000${community.icon})`,
+      }"
     >
-    <div class="banner__container">
-      <div class="banner__card">
-        <p class="banner__card-title">à Propos : {{ community.about }}</p>
-        <p class="banner__card-description">
-          Crée par l'utilisateur : {{ community.userId }}
-        </p>
-        <p class="banner__card-description">
-          Dernière mise à jour : {{ community.updatedAt }}
-        </p>
-        <div href="#" class="banner__card-button">
-          <button class="btn-follow" @click="showToast">
-            <span class="background"></span>
-            <!-- <span class="icon uil uil-instagram"></span> -->
-            <font-awesome-icon class="icon" :icon="['fas', 'hashtag']" />
-            <span class="content"> S'abonner </span>
-          </button>
+      <div class="banner__container">
+        <div class="banner__card">
+          <div class="banner__card-top">
+            <p class="banner__card-title">à Propos : {{ community.about }}</p>
+            <p class="banner__card-description">
+              Crée par l'utilisateur : {{ community.userId }}
+            </p>
+            <p class="banner__card-description">
+              Dernière mise à jour : {{ community.updatedAt }}
+            </p>
+          </div>
+
+          <div href="#" class="banner__card-button">
+            <button class="btn-follow" @click="showToast">
+              <span class="background"></span>
+              <!-- <span class="icon uil uil-instagram"></span> -->
+              <font-awesome-icon class="icon" :icon="['fas', 'hashtag']" />
+              <span class="content"> S'abonner </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
 <script>
 import InputBoxCommunityVue from "../Community/InputBoxCommunity.vue";
 import axiosInstance from "../../services/api";
-import TokenService from "../../services/token.service";
 
 export default {
   name: "CommunityList",
-    components: {
+  components: {
     InputBoxCommunityVue,
   },
   setup() {},
@@ -57,14 +61,8 @@ export default {
     };
   },
   mounted() {
-    const token = TokenService.getLocalAccessToken();
-    // console.log("token :" , token);
     axiosInstance
-      .get("/community/readAllCommunities", {
-        headers: {
-          Authorization: token,
-        },
-      })
+      .get("/community/readAllCommunities")
       .then((response) => (this.communities = response.data.datas))
       .catch((error) => {
         console.log(error);
@@ -154,6 +152,10 @@ button:hover .icon {
   display: flex;
   flex-direction: column;
   margin-bottom: 2rem;
+  margin-bottom: 10rem;
+    @media only screen and (min-width: 300px) {
+margin-bottom: 5rem;
+}
 
   &__container {
     margin: 0 auto;
@@ -220,10 +222,21 @@ button:hover .icon {
     padding: 1rem 1.69rem;
     max-width: 16rem;
     // background: #08708a;
+    // background: darkslategrey;
+    // opacity: 0.8;
     margin-left: auto;
     border-radius: 0.5rem;
     position: relative;
-    top: 200px;
+    top: 260px;
+        @media only screen and (min-width: 300px) {
+              top: 200px;
+        }
+    &-top {
+      background: #08708a;
+      opacity: 0.8;
+      padding: 1rem;
+      border-radius: 0.8rem;
+    }
     &-title {
       background: transparent;
       margin-bottom: 0.1em;

@@ -1,8 +1,6 @@
 <template>
   <section class="form-input-box">
     <form
-      action="#"
-      method="post"
       @submit.prevent="createCommunityClick"
       class="community-form"
     >
@@ -40,28 +38,20 @@
                       />
                       <div>
                         <input
-                          class="file"
+                          accept=".jpeg,.jpg,png"
+                          @change="onChangeFileUpload"
+                          ref="image"
+                          class="image"
                           type="file"
-                          id="file"
-                          @blur="v$.community.file.$touch"
+                          id="image"
+                          @blur="v$.community.image.$touch"
                           :class="
-                            v$.community.file.$error === true
+                            v$.community.image.$error === true
                               ? 'error'
                               : 'dirty'
                           "
                         />
-                        <label class="community-form-label" for="file"></label>
-                        <!-- Error Message -->
-                        <template v-if="v$.community.file.$dirty">
-                          <div
-                            class="input-errors"
-                            v-for="(error, index) of v$.community.file.$errors"
-                            :key="index"
-                          >
-                            <div class="error-msg">{{ error.$message }}</div>
-                          </div>
-                        </template>
-                        <!-- Error Message -->
+                        <label class="community-form-label" for="image"></label>
                       </div>
                     </button>
                   </div>
@@ -75,11 +65,10 @@
               blur="v$.community.title.$touch"
               :class="v$.community.title.$error === true ? 'error' : 'dirty'"
               required
-              autofocus
               minlength="3"
               maxlength="255"
-              name="community-form-title"
-              id="community-form-title"
+              name="title"
+              id="title"
               cols="30"
               rows="10"
               aria-label="Titre de votre communauté"
@@ -146,24 +135,19 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import {
-  helpers,
-  required,
-  minLength,
-  maxLength,
-  alphaNum,
-} from "@vuelidate/validators";
+import { helpers, required, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
-import communityApi from "../../api/community"
+
+import axiosInstance from "../../services/api";
+// import communityApi from "../../api/community";
 
 export default {
   name: "InputBoxCommunity",
   setup() {
     const state = reactive({
-      mode: "create",
       community: {
         title: "",
-        file: "",
+        image: "",
         about: "",
       },
       apiError: "",
@@ -180,9 +164,8 @@ export default {
           $lazy: true,
           minLength: minLength(3),
           maxLength: maxLength(25),
-          alphaNum,
         },
-        file: {
+        image: {
           required: helpers.withMessage("Une image est obligatoire", required),
           $autoDirty: true,
           $lazy: true,
@@ -202,16 +185,81 @@ export default {
     $lazy: true,
   },
   methods: {
-    async createCommunityClick(formData) {
-      try {
-        const response = await communityApi.createCommunity(formData);
-        console.log(response)
-      } catch (error) {
-        console.log(error)
+    onChangeFileUpload() {
+      this.state.community.image = document.querySelector("#image").files[0];
+      console.log("image upload", this.state.community.image);
+    },
+    createCommunityClick() {
+      this.v$.$validate(); // checks all inputs
+      if (!this.v$.$error) {
+        var bodyFormData = new FormData();
+        bodyFormData.append("title", this.state.community.title);
+        bodyFormData.append("about", this.state.community.about);
+        bodyFormData.append("image", this.state.community.image);
+        // for (let value of bodyFormData.values()) {
+        //   console.log(value);
+        // }
+
+        axiosInstance
+          .post(
+            "/community", bodyFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then((result) => {
+            console.log(result.data);
+
+            // notification de succès
+            this.$notify({
+              type: "success",
+              title: `Profil mise à jour`,
+              text: `Vous allez être redirigé vers votre profil.`,
+            });
+
+            // force refresh page
+            setTimeout(
+              function () {
+                this.$router.go(0)
+              }.bind(this),
+              1000,
+              this
+            );
+
+            
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        // error notification
+        this.$notify({
+          type: "warn",
+          title: `📝 Veuillez remplir le formulaire correctement`,
+        });
+
+        // shows errors on screen
+        this.$nextTick(() => {
+          let domRect = document
+            .querySelector(".error")
+            .getBoundingClientRect();
+          window.scrollTo(
+            domRect.left + document.documentElement.scrollLeft,
+            domRect.top + document.documentElement.scrollTop
+          );
+        });
       }
 
-    }
-  }
+      // try {
+      //   const response = await communityApi.createCommunity(formData);
+      //   console.log(response)
+      // } catch (error) {
+      //   console.log(error)
+      // }
+    },
+  },
 };
 </script>
 
