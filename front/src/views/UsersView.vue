@@ -13,13 +13,15 @@
       <UsersList v-for="(user, index) in filteredUsers" :key="index" :user="user" :items="filteredArticles" />
     </div>
   </section>
+  <section else>
+    <h2>Il n'y a pas encore d'utilisateurs.</h2>
+  </section>
 </template>
 
 <script>
 import HeaderNavigation from "@/components/Menu/HeaderNavigation.vue";
 import UsersList from "@/components/Profil/UsersList";
 import axiosInstance from "../services/api";
-import TokenService from "../services/token.service";
 
 export default {
   name: "CommunityView",
@@ -45,14 +47,8 @@ export default {
   },
   mounted() {
     this.apiError = "";
-    const token = TokenService.getLocalAccessToken();
-    // console.log("token :" , token);
     axiosInstance
-      .get("/auth/readAll", {
-        headers: {
-          Authorization: token,
-        },
-      })
+      .get("/auth/readAll")
       .then((response) => {
         // console.log(response.data.data)
         this.users = response.data.data;

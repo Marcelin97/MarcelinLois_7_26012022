@@ -1,19 +1,20 @@
 <template>
   <HeaderNavigation />
-  <section>
-    <h1>Bienvenue sur la page des communautés</h1>
-    <CommunityList />
-  </section>
+  <h1>Bienvenue sur la page des communautés</h1>
+  <InputBoxCommunityVue />
+  <CommunityList />
 </template>
 <script>
-import CommunityList from "@/components/Community/communityList.vue";
+import CommunityList from "../components/Community/communityList.vue";
 import HeaderNavigation from "../components/Menu/HeaderNavigation.vue";
+import InputBoxCommunityVue from "../components/Community/InputBoxCommunity.vue";
 
 export default {
   name: "CommunityView",
   components: {
     CommunityList,
     HeaderNavigation,
+    InputBoxCommunityVue,
   },
 };
 </script>
