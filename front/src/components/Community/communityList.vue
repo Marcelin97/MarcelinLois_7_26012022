@@ -1,11 +1,7 @@
 <template>
-  <section>
     <div class="container">
       <div
-        class="community-card"
-        :key="index"
-        v-for="(community, index) in communities"
-      >
+        class="community-card">
         <h5 class="community-card__title">
           {{ community.title }}
         </h5>
@@ -28,7 +24,6 @@
         </div>
       </div>
     </div>
-  </section>
 </template>
 
 <script>
@@ -37,6 +32,7 @@ import axiosInstance from "../../services/api";
 export default {
   name: "CommunityList",
   setup() {},
+    props: ["community"],
   data() {
     return {
       title: "Voici la liste de toutes les communautés",

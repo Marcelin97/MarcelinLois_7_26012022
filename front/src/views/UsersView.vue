@@ -10,7 +10,12 @@
 
     <!-- output component -->
     <div class="tiles">
-      <UsersList v-for="(user, index) in filteredUsers" :key="index" :user="user" :items="filteredArticles" />
+      <UsersList
+        v-for="(user, index) in filteredUsers"
+        :key="index"
+        :user="user"
+        :items="filteredArticles"
+      />
     </div>
   </section>
   <section else>
@@ -70,6 +75,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h1 {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  line-height: 35px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.3rem;
+  font-size: 1.2rem;
+  margin-bottom: 5rem;
+  margin-right: 1rem;
+  text-align: center;
+}
+
 .search-bar {
   height: 34px;
   display: flex;
@@ -95,19 +114,5 @@ export default {
   @media only screen and (min-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
-}
-
-h1 {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-  line-height: 35px;
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 0.3rem;
-  font-size: 1.2rem;
-  margin-bottom: 5rem;
-  margin-right: 1rem;
-  text-align: center;
 }
 </style>
