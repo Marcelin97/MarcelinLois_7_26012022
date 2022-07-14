@@ -1,9 +1,6 @@
 <template>
-  <section class="form-input-box">
-    <form
-      @submit.prevent="createCommunityClick"
-      class="community-form"
-    >
+  <div class="form-input-box">
+    <form @submit.prevent="createCommunityClick" class="community-form">
       <!-- Post form header -->
       <div class="community-form-header">
         <div>
@@ -130,7 +127,7 @@
         </button>
       </div>
     </form>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -201,14 +198,11 @@ export default {
         // }
 
         axiosInstance
-          .post(
-            "/community", bodyFormData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          )
+          .post("/community", bodyFormData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((result) => {
             console.log(result.data);
 
@@ -222,13 +216,11 @@ export default {
             // force refresh page
             setTimeout(
               function () {
-                this.$router.go(0)
+                this.$router.go(0);
               }.bind(this),
               1000,
               this
             );
-
-            
           })
           .catch((err) => {
             console.log(err);
@@ -267,6 +259,7 @@ export default {
 .form-input-box {
   display: flex;
   justify-content: center;
+  margin-bottom: 2rem;
 }
 .community-form {
   width: 280px;

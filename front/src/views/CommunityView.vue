@@ -1,20 +1,31 @@
 <template>
   <HeaderNavigation />
-  <h1>Bienvenue sur la page des communautés</h1>
-  <InputBoxCommunityVue />
 
-  <!-- search bar -->
-  <div class="search-bar">
-    <input type="text" placeholder="Search" v-model="search" />
-  </div>
+  <section v-if="communities.length">
+    <h1>Explore des nouvelles communautés !</h1>
 
-  <!-- output component -->
-  <CommunityList
-    v-for="(community, index) in filteredCommunities"
-    :key="index"
-    :community="community"
-    :items="filteredArticles"
-  />
+    <!-- Input Box Communities -->
+    <InputBoxCommunityVue />
+
+    <!-- search bar -->
+    <div class="search-bar">
+      <input type="text" placeholder="Search" v-model="search" />
+    </div>
+
+    <!-- output component -->
+    <div class="list-communities">
+      <CommunityList
+        v-for="(community, index) in filteredCommunities"
+        :key="index"
+        :community="community"
+        :items="filteredArticles"
+      />
+    </div>
+  </section>
+
+  <section v-else>
+    <h2>Il n'y a pas encore de communauté.</h2>
+  </section>
 </template>
 
 <script>
@@ -22,6 +33,7 @@ import CommunityList from "../components/Community/communityList.vue";
 import HeaderNavigation from "../components/Menu/HeaderNavigation.vue";
 import InputBoxCommunityVue from "../components/Community/InputBoxCommunity.vue";
 import axiosInstance from "../services/api";
+
 export default {
   name: "CommunityView",
   components: {
@@ -31,7 +43,7 @@ export default {
   },
   data() {
     return {
-      // add users array:
+      // add communities array:
       communities: [],
       apiError: "",
       search: "",
@@ -86,6 +98,7 @@ h1 {
   display: flex;
   width: 90%;
   margin: 0 auto;
+  margin-bottom: 2rem;
 
   input {
     width: 100%;

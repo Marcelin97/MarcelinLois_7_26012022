@@ -1,5 +1,6 @@
 <template>
   <HeaderNavigation />
+
   <section v-if="users.length">
     <h1>Explore des nouveaux profils !</h1>
 
@@ -9,7 +10,7 @@
     </div>
 
     <!-- output component -->
-    <div class="tiles">
+    <div class="list_users">
       <UsersList
         v-for="(user, index) in filteredUsers"
         :key="index"
@@ -18,7 +19,8 @@
       />
     </div>
   </section>
-  <section else>
+
+  <section v-else>
     <h2>Il n'y a pas encore d'utilisateurs.</h2>
   </section>
 </template>
@@ -29,7 +31,7 @@ import UsersList from "@/components/Profil/UsersList";
 import axiosInstance from "../services/api";
 
 export default {
-  name: "CommunityView",
+  name: "UsersView",
   components: {
     UsersList,
     HeaderNavigation,
@@ -55,7 +57,6 @@ export default {
     axiosInstance
       .get("/auth/readAll")
       .then((response) => {
-        // console.log(response.data.data)
         this.users = response.data.data;
       })
       .catch((error) => {
@@ -104,7 +105,7 @@ h1 {
   }
 }
 
-.tiles {
+.list_users {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   column-gap: 1rem;

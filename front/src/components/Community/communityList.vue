@@ -56,9 +56,9 @@ export default {
 .container {
   max-width: 800px;
   margin: 0 auto;
-  border-left: solid whitesmoke 1px;
-  border-right: solid whitesmoke 1px;
-  padding: 40px 15px;
+  // border-left: solid whitesmoke 1px;
+  // border-right: solid whitesmoke 1px;
+  padding: 10px 5px;
   display: flex;
   flex-direction: column;
   justify-content: center;
