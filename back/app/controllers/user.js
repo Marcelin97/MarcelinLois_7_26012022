@@ -8,6 +8,7 @@ const CryptoJS = require("crypto-js");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
+const { log } = require("console");
 
 //=================================>
 //* ENCRYPTED EMAIL
@@ -121,13 +122,19 @@ exports.login = (req, res) => {
       },
     })
     .then(async (user) => {
+      // console.log(user.email)
+      // todo : decrypted email
+      user.email = decryptEmail(emailEncrypted);
+
       if (!user) {
         return res.status(404).json({ message: "User Not found." });
       }
+
       var passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
       );
+
       if (!passwordIsValid) {
         return res.status(401).json({
           accessToken: null,

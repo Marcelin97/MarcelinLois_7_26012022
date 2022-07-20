@@ -1,7 +1,7 @@
 <template>
   <HeaderNavigation />
 
-  <section v-if="users.length">
+  <section v-if="users.length != 0 && users.length !=''">
     <h1>Explore des nouveaux profils !</h1>
 
     <!-- search bar -->

@@ -5,16 +5,19 @@
       <!-- Profil image -->
 
       <div>
-        <div class="profile-card__img box">
-          <img v-if="user.imageUrl != '' && user.imageUrl != null"
-            :src="`http://localhost:3000${user.imageUrl}`" :alt="'Avatar de ' + user.imageUrl"
-            aria-label="Photo d'utilisateur" />
-          <img v-if="user.imageUrl === '' || user.imageUrl === null" src="../../assets/img/avataaars.png"
-            alt="Avatar par défaut" aria-label="Avatar par défaut" />
+        <div class=" profile-card__img
+          box">
+          <img v-if="user.imageUrl != '' && user.imageUrl != null" :src="`http://localhost:3000${user.imageUrl}`"
+            :alt="'Avatar de ' + user.imageUrl" aria-label="Photo d'utilisateur" />
+          <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
         </div>
-        <!-- <div class="box"> -->
+        <div v-if="this.targetUserProfil === '' || this.targetUserProfil === null" class="profile-card__img box">
+          <img v-if="this.targetUserProfil.imageUrl != '' && this.targetUserProfil.imageUrl != null"
+            :src="`http://localhost:3000${this.targetUserProfil.imageUrl}`"
+            :alt="'Avatar de ' + this.targetUserProfil.username" aria-label="Photo d'utilisateur" />
+          <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
+        </div>
         <div v-if="user.isAdmin == true" class="ribbon"><span>Admin</span></div>
-        <!-- </div> -->
       </div>
 
       <!-- Profil informations -->
@@ -57,17 +60,20 @@
 
       <!-- button actions -->
       <div class="profile-card-ctr">
+        <!-- button report user -->
+        <button vtype="button" class="btn" @click="$refs.modalName.openModal()" text="Signaler ce compte">
+          Signaler...
+        </button>
         <router-link class="btn" to="/user/parameter">
           Modifier mon profil
         </router-link>
-      </div>
-      <div class="profile-card-ctr">
         <button type="button" class="btn btn-export" @click="exportDataClick" text="Exporter mes données">
           Exporter mes données
         </button>
 
         <!-- button delete account -->
-        <button type="button" class="btn btn-delete" @click="$refs.modalName.openModal()" text="Supprimer mon compte">
+        <button type="button" class="btn btn-delete" @click="$refs.deleteAccount.openModal()"
+          text="Supprimer mon compte">
           Supprimer mon compte
         </button>
       </div>
@@ -79,7 +85,7 @@
   </div>
 
   <!-- modal delete account -->
-  <modalStructure ref="modalName">
+  <modalStructure ref="deleteAccount">
     <template v-slot:header>
       <h1>Supprimer mon compte</h1>
     </template>
@@ -107,10 +113,53 @@ import PostCard from "../Posts/PostCard.vue";
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
 import usersApi from "../../api/users";
+import axiosInstance from "../../services/api";
+import userApi from "../../api/users";
+import useVuelidate from "@vuelidate/core";
+import {
+  helpers,
+  // required,
+  minLength,
+  maxLength,
+} from "@vuelidate/validators";
+import { reactive, computed } from "vue";
 
 export default {
   name: "User-profile",
-  setup() {},
+  props: ["targetUser"],
+  setup() {
+    const state = reactive({
+      user: {
+        content: "",
+      },
+      apiError: "",
+    });
+
+    const rules = computed(() => ({
+      user: {
+        content: {
+          // required: helpers.withMessage("L'/email est obligatoire", required),
+          $autoDirty: true,
+          $lazy: true,
+          minLength: helpers.withMessage(
+            "Ce champ doit être long d'au moins 5",
+            minLength(5)
+          ),
+          maxLength: helpers.withMessage(
+            "La longueur maximale autorisée est de 255",
+            maxLength(255)
+          ),
+        },
+      },
+    }));
+
+    const v$ = useVuelidate(rules, state);
+
+    return { state, v$ };
+  },
+  validationConfig: {
+    $lazy: true,
+  },
   components: {
     PostCard,
     modalStructure,
@@ -118,12 +167,38 @@ export default {
   },
   data() {
     return {
+      userId: "",
+      targetUserProfil: [],
       apiError: "",
       user: [],
       communityLength: "",
       commentsLength: "",
       postsLength: "",
     };
+  },
+  computed: {
+    userTargetId() {
+      return this.$route.params.id;
+    },
+  },
+  async created() {
+    this.userId = this.$route.params.id;
+    try {
+      const response = await userApi.readTargetUser(this.userId);
+      console.log("utilisateur cible" , response.data.data);
+      this.targetUserProfil = response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async beforeRouteUpdate(to) {
+    this.userId = to.params.id;
+    try {
+      const response = await userApi.readTargetUser(this.userId);
+      this.user = response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
   },
   methods: {
     async exportDataClick() {
@@ -170,6 +245,72 @@ export default {
         } catch (e) {
           console.error(e.data);
         }
+      }
+    },
+    reportAccountClick() {
+      this.v$.$validate(); // checks all inputs
+      if (!this.v$.$error) {
+        // if ANY fail validation
+        axiosInstance
+          .post(`/auth/report/${this.userId}`, this.state.user)
+          .then(() => {
+            // notification de succès
+            this.$notify({
+              type: "success",
+              title: `Signalement envoyé !`,
+              text: `Vous allez être redirigé vers votre profil.`,
+            });
+
+            // redirection sur la page utilisateur
+            setTimeout(
+              function () {
+                this.$router.push("/user");
+              }.bind(this),
+              3000,
+              this
+            );
+          })
+          .catch((error) => {
+            console.log(error.response.status);
+            if (error.response.status == 404) {
+              const errorMessage = (this.apiError =
+                "Utilisateur introuvable !");
+              this.errorMessage = errorMessage;
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors du signalement`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            } else if (error.response.status == 409) {
+              const errorMessage = (this.apiError =
+                "Vous avez déjà signalé cet utilisateur !");
+              this.errorMessage = errorMessage;
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors du signalement`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            }
+          });
+      } else {
+        // notification d'erreur
+        this.$notify({
+          type: "warn",
+          title: `Veuillez faire un signalement complet.`,
+        });
+
+        // montre les erreurs à l'écran
+        this.$nextTick(() => {
+          let domRect = document
+            .querySelector(".error")
+            .getBoundingClientRect();
+          window.scrollTo(
+            domRect.left + document.documentElement.scrollLeft,
+            domRect.top + document.documentElement.scrollTop
+          );
+        });
       }
     },
   },

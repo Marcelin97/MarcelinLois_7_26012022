@@ -3,7 +3,7 @@
     <form @submit.prevent="createCommunityClick" class="community-form">
       <!-- Post form header -->
       <div class="community-form-header">
-        <div>
+        <div class="community-form-header-text">
           <span>Crée une communauté</span>
         </div>
       </div>
@@ -203,14 +203,12 @@ export default {
               "Content-Type": "multipart/form-data",
             },
           })
-          .then((result) => {
-            console.log(result.data);
-
+          .then(() => {
             // notification de succès
             this.$notify({
               type: "success",
-              title: `Profil mise à jour`,
-              text: `Vous allez être redirigé vers votre profil.`,
+              title: `Communauté crée`,
+              text: `Bravo vous venez de créer une nouvelle communauté.`,
             });
 
             // force refresh page
@@ -222,8 +220,17 @@ export default {
               this
             );
           })
-          .catch((err) => {
-            console.log(err);
+          .catch((error) => {
+            console.log(error.response);
+            const errorMessage = (this.apiError = error.response.data.error);
+            this.errorMessage = errorMessage;
+
+            // error notification
+            this.$notify({
+              type: "error",
+              title: `❌ Erreur lors de l'inscription`,
+              text: `Erreur reporté : ${errorMessage}`,
+            });
           });
       } else {
         // error notification
@@ -273,11 +280,19 @@ export default {
 
 .community-form-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 1rem;
+  div span {
+    font-size: 0.8rem;
+    font-weight: lighter;
+    text-align: center;
+    line-height: 1.5rem;
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    padding-bottom: 3vh;
+  }
 }
 
+.community-form-header-text {
+  margin: auto auto 31px;
+}
 // post form contents
 .community-form-content {
   overflow: auto;

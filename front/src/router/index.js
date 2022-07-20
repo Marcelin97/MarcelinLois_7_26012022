@@ -11,7 +11,7 @@ import UserParameterView from "../views/UserParameterView";
 import CommunityView from "../views/CommunityView";
 import CommunityProfileView from "../views/CommunityProfilView";
 import UsersView from "../views/UsersView";
-import TargetUser from "../components/Profil/TargetUser";
+// import TargetUser from "../components/Profil/TargetUser";
 
 const routes = [
   {
@@ -66,7 +66,7 @@ const routes = [
   {
     path: "/explore/users/:id",
     name: "userTarget",
-    component: TargetUser,
+    component: UserView,
     props: true,
   },
   {

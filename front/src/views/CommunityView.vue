@@ -1,8 +1,9 @@
 <template>
   <HeaderNavigation />
 
-  <section v-if="communities.length">
-    <h1>Explore des nouvelles communautés !</h1>
+  <section>
+    <h1 v-if="communities.length">Explore des nouvelles communautés !</h1>
+    <h1 v-else>Il n'y a pas encore de communauté.</h1>
 
     <!-- Input Box Communities -->
     <InputBoxCommunityVue />
@@ -21,10 +22,6 @@
         :items="filteredArticles"
       />
     </div>
-  </section>
-
-  <section v-else>
-    <h2>Il n'y a pas encore de communauté.</h2>
   </section>
 </template>
 
@@ -62,17 +59,19 @@ export default {
       .get("/community/readAllCommunities")
       .then((response) => (this.communities = response.data.datas))
       .catch((error) => {
-        console.log(error);
-        // if (error.response.status == 404) {
-        //   const errorMessage = (this.apiError = "Utilisateur introuvable !");
-        //   this.errorMessage = errorMessage;
-        //   // notification d'erreur
-        //   this.$notify({
-        //     type: "error",
-        //     title: `Erreur lors de la connexion`,
-        //     text: `Erreur reporté : ${errorMessage}`,
-        //   });
-        // }
+        // console.log(error.response.status);
+        if (error.response.status == 404) {
+          const errorMessage = (this.apiError =
+            "Il n'y pas de communauté(s) !");
+          this.errorMessage = errorMessage;
+
+          // notification d'erreur
+          this.$notify({
+            type: "warn",
+            title: `Pour information`,
+            text: `${errorMessage}`,
+          });
+        }
       });
   },
 };
@@ -80,33 +79,32 @@ export default {
 
 <style lang="scss" scoped>
 h1 {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-  line-height: 35px;
-  text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 0.3rem;
-  font-size: 1.2rem;
-  margin-bottom: 5rem;
-  margin-right: 1rem;
-  text-align: right;
+  font-size: 1.4rem;
+  line-height: 1.4rem;
+  text-align: center;
+  margin: 2rem auto;
+  border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
+  padding-bottom: 3vh;
+  max-width: 350px;
 }
 
 .search-bar {
   height: 34px;
   display: flex;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
   margin-bottom: 2rem;
 
   input {
-    width: 100%;
+    width: 60%;
     height: 100%;
     border: none;
     background-color: rgb(23, 23, 23);
     border-radius: 8px;
     padding: 0 40px 0 16px;
+    margin: 0 auto;
   }
 }
 </style>

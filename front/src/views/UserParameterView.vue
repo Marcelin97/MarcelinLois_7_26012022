@@ -23,7 +23,6 @@ export default {
 h1 {
   // margin-top: 30px;
   // text-transform: uppercase;
-  font-weight: bold;
   letter-spacing: 0.3rem;
   font-size: 1.4rem;
   font-weight: bolder;
