@@ -28,6 +28,6 @@ export default {
 
 <style lang="scss">
 body {
-  background-color: rgb(12, 19, 31);
+  background-color: #142342;
 }
 </style>

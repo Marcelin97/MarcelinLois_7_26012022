@@ -1,26 +1,31 @@
 <template>
-  <div class="wrapper" v-if="user">
+  <div class="wrapper" v-if="user.length != 0">
     <div class="profile-card js-profile-card">
 
       <!-- Profil image -->
-      <div class="profile-card__img" v-if="user.imageUrl">
-        <img
-          :src="`http://localhost:3000${user.imageUrl}`"
-          :alt="'Avatar de ' + user.imageUrl"
-          aria-label="Photo d'utilisateur"
-        />
+
+      <div>
+        <div class="profile-card__img box">
+          <img v-if="user.imageUrl != '' && user.imageUrl != null"
+            :src="`http://localhost:3000${user.imageUrl}`" :alt="'Avatar de ' + user.imageUrl"
+            aria-label="Photo d'utilisateur" />
+          <img v-if="user.imageUrl === '' || user.imageUrl === null" src="../../assets/img/avataaars.png"
+            alt="Avatar par défaut" aria-label="Avatar par défaut" />
+        </div>
+        <!-- <div class="box"> -->
+        <div v-if="user.isAdmin == true" class="ribbon"><span>Admin</span></div>
+        <!-- </div> -->
       </div>
 
       <!-- Profil informations -->
       <div class="profile-card__cnt js-profile-cnt">
-        <div class="profile-card__name">
-          Nom d'utilisateur :
-          {{ user.username || "chargement en cours..." }}
+        <div class="profile-card__name container">
+          {{ user.username }}
         </div>
-        <div class="profile-card__txt">
+        <!-- <div class="profile-card__txt">
           Identifiant : {{ user.id || "chargement en cours..." }}
-        </div>
-        <div class="profile-card__txt">administrateur : {{ user.isAdmin }}</div>
+        </div> -->
+        <!-- <div class="profile-card__txt">administrateur : {{ user.isAdmin }}</div> -->
 
         <!-- Profil statistiques -->
         <div class="profile-card-inf">
@@ -52,27 +57,17 @@
 
       <!-- button actions -->
       <div class="profile-card-ctr">
-        <router-link class="profile-card__button" to="/user/parameter">
+        <router-link class="btn" to="/user/parameter">
           Modifier mon profil
         </router-link>
       </div>
       <div class="profile-card-ctr">
-        <button
-          type="button"
-          class="btn btn-export"
-          @click="exportDataClick"
-          text="Exporter mes données"
-        >
+        <button type="button" class="btn btn-export" @click="exportDataClick" text="Exporter mes données">
           Exporter mes données
         </button>
 
         <!-- button delete account -->
-        <button
-          type="button"
-          class="btn btn-delete"
-          @click="$refs.modalName.openModal()"
-          text="Supprimer mon compte"
-        >
+        <button type="button" class="btn btn-delete" @click="$refs.modalName.openModal()" text="Supprimer mon compte">
           Supprimer mon compte
         </button>
       </div>
@@ -105,7 +100,6 @@
       </div>
     </template>
   </modalStructure>
-  
 </template>
 
 <script>
@@ -191,6 +185,86 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.box {
+  width: 200px;
+  height: 300px;
+  position: relative;
+  border: 1px solid #BBB;
+  background: #EEE;
+}
+
+.ribbon {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  z-index: 1;
+  overflow: hidden;
+  width: 75px;
+  height: 75px;
+  text-align: right;
+}
+
+.ribbon span {
+  font-size: 10px;
+  font-weight: bold;
+  color: #FFF;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 20px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  width: 100px;
+  display: block;
+  background: #79A70A;
+  background: linear-gradient(#9BC90D 0%, #79A70A 100%);
+  box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 19px;
+  right: -21px;
+}
+
+.ribbon span::before {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 100%;
+  z-index: -1;
+  border-left: 3px solid #79A70A;
+  border-right: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #79A70A;
+}
+
+.ribbon span::after {
+  content: "";
+  position: absolute;
+  right: 0px;
+  top: 100%;
+  z-index: -1;
+  border-left: 3px solid transparent;
+  border-right: 3px solid #79A70A;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid #79A70A;
+}
+.pro {
+  /* Shown at the bottom right corner */
+  top: 0;
+  position: absolute;
+  right: 0;
+  transform: translate(50%, 50%);
+
+  /* Rounded border */
+  border-radius: 0 20px 20px 0;
+  width: auto;
+
+  /* Background color */
+  color: #231E39;
+      background-color: #FEBB0B;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 3px 7px;
+}
 // modalStructure
 .overflow-hidden {
   overflow: hidden;
@@ -211,7 +285,6 @@ export default {
   padding: 50px 20px;
   padding-top: 100px;
   display: flex;
-  // background-image: linear-gradient(-20deg, #1c2134 0%, #14151a 100%);
 
   @media screen and (max-width: 768px) {
     height: auto;
@@ -226,7 +299,7 @@ export default {
   max-width: 700px;
   position: relative;
   border-radius: 0.8rem;
-  box-shadow: 0px 5px 50px 0px #324e63;
+  box-shadow: 0px 5px 50px 0px #bebdb8;
 
   &__img {
     width: 150px;
@@ -238,7 +311,7 @@ export default {
     overflow: hidden;
     position: relative;
     z-index: 4;
-    box-shadow: 0px 5px 50px 0px #324e63, 0px 0px 0px 5px #08708a;
+    box-shadow: 0px 5px 50px 0px #bebdb8, 0px 0px 0px 5px #142342;
 
     @media screen and (max-width: 576px) {
       width: 120px;
@@ -263,7 +336,7 @@ export default {
   &__txt {
     font-size: 18px;
     font-weight: 500;
-    color: #324e63;
+    color: #c7545e;
     margin-bottom: 15px;
     background: transparent;
   }
@@ -290,8 +363,7 @@ export default {
     &__title {
       font-weight: 700;
       font-size: 27px;
-      //color: #6944ff;
-      color: #324e63;
+      color: #c7545e;
       background: transparent;
     }
 
@@ -310,38 +382,6 @@ export default {
     border-radius: 0.8rem;
     @media screen and (max-width: 800px) {
       flex-wrap: wrap;
-    }
-  }
-}
-
-.profile-card__button {
-  margin-top: 1rem;
-  background: lighten(rgb(23, 23, 23), 1%);
-  border: none;
-  border-radius: 0.8rem;
-  transition: all 0.2s ease-in-out;
-  font-weight: 700;
-  margin: 15px 35px;
-  min-width: 201px;
-  min-height: 55px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: inset -3px -3px 3px rgba(white, 0.025),
-    inset 3px 3px 5px rgba(black, 0.075), -3px -3px 5px rgba(white, 0.025),
-    3px 3px 5px rgba(black, 0.05);
-  &:hover {
-    background: darken(rgb(12, 19, 31), 1%);
-    box-shadow: inset -5px -5px 5px rgba(white, 0.01),
-      inset 5px 5px 5px rgba(black, 0.1), -5px -5px 5px rgba(white, 0.015),
-      5px 5px 5px rgba(black, 0.05);
-  }
-  @media screen and (max-width: 576px) {
-    margin: 1em;
-    &:last-child {
-      margin-bottom: 0;
     }
   }
 }

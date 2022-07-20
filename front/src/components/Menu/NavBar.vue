@@ -11,10 +11,14 @@
         <div class="side-wrapper">
           <div class="side-title">MENU</div>
           <div class="side-menu">
-            <router-link to="/explore/users"><font-awesome-icon class="icon-left" :icon="['fas', 'users']" />
-              explorateur</router-link>
-            <router-link to="/communities"><font-awesome-icon class="icon-left" :icon="['fas', 'search']" />
-              Communautés</router-link>
+            <router-link to="/explore/users"
+              ><font-awesome-icon class="icon-left" :icon="['fas', 'users']" />
+              explorateur</router-link
+            >
+            <router-link to="/communities"
+              ><font-awesome-icon class="icon-left" :icon="['fas', 'search']" />
+              Communautés</router-link
+            >
           </div>
         </div>
 
@@ -95,9 +99,7 @@
               >Paramètres</router-link
             >
             <hr class="line" />
-            <button class="dropdown-text" @click="logout"
-              >Déconnexion</button
-            >
+            <button class="dropdown-text" @click="logout">Déconnexion</button>
           </div>
         </div>
         <div class="indicator"></div>
@@ -126,15 +128,14 @@
 </template>
 
 <script>
-
 export default {
   name: "NavBar",
   methods: {
-        logout: function () {
-      this.$store.commit('logout');
-      this.$router.push('/');
-    }
-  }
+    logout: function () {
+      this.$store.commit("logout");
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 
@@ -144,7 +145,6 @@ export default {
   display: grid;
   place-items: center;
   flex: 1 1 auto;
-  cursor: pointer;
   width: auto;
 }
 
@@ -160,16 +160,18 @@ export default {
 
   /* It should be on the top of other elements */
   background: rgba(var(--d87, 255, 255, 255), 1);
-  box-shadow: 0 0 5px 1px rgb(0 0 0 / 10%);
   z-index: 9999;
 
   /* Size */
   height: auto;
   width: 200px;
-
   border-radius: 6px;
   transition: 0.5s;
+
   .dropdown-text {
+    text-align: left;
+    border: none;
+    cursor: pointer;
     padding-bottom: 8px;
     padding-top: 8px;
     padding-left: 16px;
@@ -178,10 +180,9 @@ export default {
     transition: 0.5s;
     background: transparent;
     width: 100%;
-    color: #00376b;
+    color: #142342;
     &:hover {
-      background: rgb(221, 220, 220);
-      border-radius: 6px;
+      text-decoration: line-through;
     }
   }
 }
@@ -215,6 +216,7 @@ export default {
   animation-delay: 2s;
   animation-iteration-count: infinite;
 }
+
 @keyframes bell-ring {
   0% {
     transform: rotate(-8deg);
@@ -250,7 +252,6 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   @media only screen and (min-width: 768px) {
-    // display: flex;
     flex-direction: row;
   }
 }
@@ -277,7 +278,7 @@ export default {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #8de8fe;
+  background: rgb(243, 243, 244);
   transition: all 1s;
 }
 
@@ -297,7 +298,6 @@ label {
 
 .icon,
 .text {
-  color: #ccc;
   transition: all 0.15s;
 }
 
@@ -328,7 +328,6 @@ input:nth-child(2):checked ~ label.find .text,
 input:nth-child(3):checked ~ label.notification .text,
 input:nth-child(4):checked ~ label.messagerie .text {
   opacity: 1;
-  color: #45c2f8;
 }
 
 input:nth-child(1):checked ~ .indicator {
@@ -392,7 +391,7 @@ input:nth-child(4):checked ~ .indicator {
   z-index: 2;
 }
 .MenuIcon::before {
-  box-shadow: #999 0 12px 0;
+  box-shadow: rgb(243, 243, 244) 0 12px 0;
   height: 6px;
   transform-origin: left top;
   width: 30px;
@@ -405,7 +404,7 @@ input:nth-child(4):checked ~ .indicator {
 }
 .MenuIcon::before,
 .MenuIcon::after {
-  background: #8de8fe;
+  background-color: #c7545e;
   display: block;
   content: "";
   position: absolute;
@@ -423,7 +422,6 @@ input:nth-child(4):checked ~ .indicator {
   transition: transform 0.6s, opacity 0.5s;
   z-index: 2;
   font-size: 15px;
-  color: #fff;
   font-weight: 600;
   text-align: center;
   letter-spacing: 4px;
@@ -432,7 +430,6 @@ input:nth-child(4):checked ~ .indicator {
 }
 
 .menu {
-  background-color: rgb(12, 19, 31);
   display: flex;
   flex-direction: column;
   bottom: 0;
@@ -443,12 +440,12 @@ input:nth-child(4):checked ~ .indicator {
   width: 30%;
   transition: left 0.4s;
   @media only screen and (min-width: 768px) {
-    top: 50px;
+    top: 75px;
   }
 }
 
 .side-wrapper {
-  background-color: rgb(12, 19, 31);
+  background-color: #c7545e;
   padding-top: 40px;
   padding-left: 30px;
   width: 320px;
@@ -457,6 +454,7 @@ input:nth-child(4):checked ~ .indicator {
 .side-title {
   font-size: 15px;
   margin-bottom: 20px;
+  background-color: #c7545e;
 }
 
 .side-menu {
@@ -464,24 +462,34 @@ input:nth-child(4):checked ~ .indicator {
   flex-direction: column;
   font-size: 15px;
   white-space: nowrap;
+  background-color: #c7545e;
+  margin-bottom: 20px;
 }
 
 .side-menu a {
-  text-decoration: none;
-  color: #9c9cab;
+  background-color: #c7545e;
   display: flex;
   flex-direction: row;
   align-items: center;
+  &:hover {
+    text-decoration: line-through;
+    color: #142342;
+  }
 }
 
 .icon-left {
   margin-right: 26px;
   width: 16px;
 }
-.side-menu a:hover {
-  color: #fff;
-}
+
 .side-menu a:not(:last-child) {
   margin-bottom: 20px;
+}
+
+svg:not(:root).svg-inline--fa,
+svg:not(:host).svg-inline--fa {
+  overflow: visible;
+  box-sizing: content-box;
+  background-color: transparent;
 }
 </style>

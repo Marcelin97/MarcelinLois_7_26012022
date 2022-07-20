@@ -1,6 +1,6 @@
 <template>
+  <GoBack />
   <section>
-        <GoBack />
     <h1>Gestion du profil</h1>
     <UserParameter />
   </section>
@@ -14,21 +14,24 @@ export default {
   name: "ProfilSettings",
   components: {
     UserParameter,
-    GoBack
+    GoBack,
   },
 };
 </script>
 
 <style lang="scss" scoped>
 h1 {
-  margin-top: 10px;
-  line-height: 35px;
-  text-transform: uppercase;
+  // margin-top: 30px;
+  // text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 0.3rem;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  margin-right: 1rem;
-  text-align: right;
+  font-size: 1.4rem;
+  font-weight: bolder;
+  line-height: 1.4rem;
+  text-align: center;
+  margin: 2rem auto;
+  border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
+  padding-bottom: 3vh;
+  max-width: 320px;
 }
 </style>

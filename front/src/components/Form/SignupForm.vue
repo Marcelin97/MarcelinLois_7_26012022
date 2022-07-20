@@ -95,7 +95,7 @@
       </fieldset>
 
       <!-- gestion erreur API avec axios -->
-      <!-- <div class="form-row" v-if="status === 'error_create'">
+      <!-- <div class="form-row">
         ❌ Il y a une erreur dans le formulaire : <br />
         {{ apiError }}
       </div> -->
@@ -109,8 +109,9 @@
           title="Créer mon compte"
           aria-label="Créer mon compte"
         >
-          <span v-if="status === 'loading'">Création en cours...</span>
-          <span v-else>Créer mon compte</span>
+        <span v-if="!this.v$.$error">Créer mon compte</span>
+          <span v-else>Création en cours...</span>
+          
         </button>
         <!-- bouton de soumission -->
       </div>
@@ -230,9 +231,10 @@ export default {
         axiosInstance
           .post("/auth/signup", this.state.user)
           .then((result) => {
-            console.log(result.data);
+            // console.log(result.data);
             this.state.user = result.data;
-            this.$store.commit("signupUser", result.data.data);
+            // console.log(this.state.user);
+            // this.$store.commit("signupUser", result.data.data);
 
             // open success modal
             this.$refs.modalName.openModal();
@@ -285,6 +287,7 @@ export default {
 <style lang="scss" scoped>
 .form-row {
   color: red;
+  max-width: 25rem;
 }
 .container {
   display: flex;
@@ -292,25 +295,32 @@ export default {
   justify-content: center;
 
   h1 {
+    margin: 2rem 0 0;
+    font-weight: bold;
+    letter-spacing: 0.3rem;
     font-size: 1.4rem;
     font-weight: bolder;
-    margin: 4rem 1rem;
     line-height: 1.4rem;
     text-align: center;
+    // margin: 4rem 1rem;
+    border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
+    padding-bottom: 3vh;
   }
 
   p {
     font-size: 0.8rem;
     font-weight: lighter;
-    line-height: 1.5rem;
     text-align: center;
+    margin: 2rem 0;
+    line-height: 1.5rem;
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    padding-bottom: 3vh;
   }
 }
 
 form {
-  max-width: 420px;
   margin: 20px auto;
-  text-align: left;
+  text-align: center;
   padding: 20px;
 }
 
@@ -340,6 +350,10 @@ input {
   color: #8de8fe;
   background-color: rgb(12, 19, 31);
 
+  @media only screen and (min-width: 400px) {
+    width: 18rem;
+  }
+
   @media only screen and (min-width: 768px) {
     width: 25rem;
   }
@@ -348,8 +362,6 @@ input {
 // * error if input is invalid
 
 .dirty {
-  // border-color: #5a5;
-  // background: #efe;
   border-color: #8de8fe;
 }
 
@@ -394,11 +406,6 @@ input {
 
 // * Submit
 .submit {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   margin-top: 30px;
-  flex-basis: 100%;
 }
 </style>

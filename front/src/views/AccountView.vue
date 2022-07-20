@@ -68,6 +68,9 @@ nav {
   flex-direction: column;
   align-items: center;
   transition: all 0.4s ease-in-out 0s;
+  @media only screen and (min-width: 768px) {
+    margin: 0 auto;
+  }
 }
 
 .connect-wrap .extras {
@@ -80,7 +83,7 @@ nav {
     line-height: 30px;
     text-align: center;
     border-radius: 50%;
-    background-color: #8de8fe;
+    // background-color: #c7545e;
   }
 }
 
@@ -116,24 +119,32 @@ img {
 .login {
   @media only screen and (min-width: 576px) {
     width: 420px;
-    margin-left: 90px;
+    margin: 0 auto;
   }
   @media only screen and (min-width: 992px) {
     width: 600px;
   }
   h1 {
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-    padding-bottom: 3vh;
+    margin: 2rem 0;
+    font-weight: bold;
+    letter-spacing: 0.3rem;
     font-size: 1.4rem;
     font-weight: bolder;
-    margin: 2rem 0;
-    line-height: 2rem;
+    line-height: 1.4rem;
+    text-align: center;
+    // margin: 4rem 1rem;
+    border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
+    padding-bottom: 3vh;
     @media only screen and (min-width: 576px) {
       display: flex;
       flex-direction: column;
     }
   }
   p {
+    font-size: 0.8rem;
+    font-weight: lighter;
+    text-align: center;
+    margin: 2rem 0;
     line-height: 1.5rem;
     border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
     padding-bottom: 3vh;

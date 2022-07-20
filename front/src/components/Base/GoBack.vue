@@ -26,7 +26,7 @@ button {
   height: 3rem;
   width: 3rem;
   cursor: pointer;
-  background-color: rgb(12, 19, 31);
+  background-color: #142342;
   &:hover {
     .icon {
       animation: move 0.6s infinite ease-in-out;

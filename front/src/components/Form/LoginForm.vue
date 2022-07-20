@@ -249,6 +249,7 @@ section div {
     flex-direction: column;
   }
 }
+
 .container {
   width: auto;
   padding: 0.1rem;
@@ -257,28 +258,33 @@ section div {
 }
 
 h1 {
+  margin: 2rem 0;
+  font-weight: bold;
+  letter-spacing: 0.3rem;
   font-size: 1.4rem;
   font-weight: bolder;
-  margin: 4rem 1rem;
-  line-height: 1.5rem;
+  line-height: 1.4rem;
   text-align: center;
-  width: 100%;
+  // margin: 4rem 1rem;
+  border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
+  padding-bottom: 3vh;
 }
+
 form {
   display: flex;
   flex-direction: column;
   width: auto;
   padding: 1rem;
   border-radius: 0.5rem;
-  background-color: rgb(12, 19, 31);
 }
+
 .FormGroup {
   margin-bottom: 1.75rem;
 }
 
 .FormGroupLabel {
   font-size: 0.95rem;
-  color: #8de8fe;
+  color: #142342;
 }
 
 .FormTextboxWrapper {
@@ -290,16 +296,15 @@ form {
   height: 50px;
   line-height: 50px;
   border: 0;
-  border-bottom: 1px solid #c7c7c7;
-  color: #606060;
+  border-bottom: 1px solid #142342;
+  color: #142342;
   text-indent: 2rem;
-  background-color: rgb(12, 19, 31);
   &::placeholder {
-    color: #a7a7a7;
+    color: #142342;
   }
   &:focus {
     outline: none;
-    border-color: #b44ff6;
+    border-color: #c7545e;
   }
   @media only screen and (min-width: 768px) {
     width: 25rem;
@@ -319,8 +324,15 @@ button {
   display: flex;
   align-self: center;
 }
+
 .text-signup {
-  margin: 2rem;
+  font-size: 0.8rem;
+  font-weight: lighter;
+  text-align: center;
+  margin: 2rem 0;
+  line-height: 1.5rem;
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+  padding-bottom: 3vh;
 }
 
 // error message

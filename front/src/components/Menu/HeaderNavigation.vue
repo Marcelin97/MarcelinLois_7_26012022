@@ -84,7 +84,6 @@ export default {
   display: grid;
   place-items: center;
   flex: 1 1 auto;
-  cursor: pointer;
   width: auto;
 }
 
@@ -99,16 +98,19 @@ export default {
   top: 100%;
 
   /* It should be on the top of other elements */
-  background: white;
+  background: rgba(var(--d87, 255, 255, 255), 1);
   z-index: 9999;
 
   /* Size */
   height: auto;
   width: 200px;
-
-  // border-radius: 6px;
+  border-radius: 6px;
   transition: 0.5s;
+
   .dropdown-text {
+    text-align: left;
+    border: none;
+    cursor: pointer;
     padding-bottom: 8px;
     padding-top: 8px;
     padding-left: 16px;
@@ -117,20 +119,13 @@ export default {
     transition: 0.5s;
     background: transparent;
     width: 100%;
-    color: #00376b;
+    color: #142342;
     &:hover {
-      background: rgb(221, 220, 220);
-      cursor: pointer;
+      text-decoration: line-through;
     }
   }
   .logout {
-    background: #00376b;
-    font-weight: bold;
     border: none;
-    color: #8de8fe;
-    &:hover {
-      background: red;
-    }
   }
 }
 .dropdown:hover .dropdown__content::before {
@@ -150,9 +145,9 @@ export default {
 }
 
 .line {
-  background-color: #8de8fe;
+  background-color: rgba(var(--b38, 219, 219, 219), 1);
   border: 0;
-  height: 2px;
+  height: 1px;
   margin: 0;
   width: 100%;
 }
@@ -211,7 +206,7 @@ export default {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #8de8fe;
+  background: rgb(243, 243, 244);
   transition: all 1s;
 }
 
@@ -231,7 +226,6 @@ label {
 
 .icon,
 .text {
-  color: #ccc;
   transition: all 0.15s;
 }
 
@@ -262,7 +256,6 @@ input:nth-child(2):checked ~ label.find .text,
 input:nth-child(3):checked ~ label.notification .text,
 input:nth-child(4):checked ~ label.messagerie .text {
   opacity: 1;
-  color: #45c2f8;
 }
 
 input:nth-child(1):checked ~ .indicator {
