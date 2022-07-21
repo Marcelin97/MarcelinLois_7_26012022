@@ -5,13 +5,13 @@
       <!-- Profil image -->
 
       <div>
-        <div class=" profile-card__img
+        <div v-if ="user.length != 0 && this.targetUserProfil == 0" class=" profile-card__img
           box">
           <img v-if="user.imageUrl != '' && user.imageUrl != null" :src="`http://localhost:3000${user.imageUrl}`"
             :alt="'Avatar de ' + user.imageUrl" aria-label="Photo d'utilisateur" />
           <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
         </div>
-        <div v-if="this.targetUserProfil === '' || this.targetUserProfil === null" class="profile-card__img box">
+        <div v-else class="profile-card__img box">
           <img v-if="this.targetUserProfil.imageUrl != '' && this.targetUserProfil.imageUrl != null"
             :src="`http://localhost:3000${this.targetUserProfil.imageUrl}`"
             :alt="'Avatar de ' + this.targetUserProfil.username" aria-label="Photo d'utilisateur" />
