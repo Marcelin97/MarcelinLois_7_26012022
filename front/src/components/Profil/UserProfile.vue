@@ -1,57 +1,100 @@
 <template>
   <div class="wrapper" v-if="user.length != 0">
     <div class="profile-card js-profile-card">
-
       <!-- Profil image -->
 
       <div>
-        <div v-if ="user.length != 0 && this.targetUserProfil == 0" class=" profile-card__img
-          box">
-          <img v-if="user.imageUrl != '' && user.imageUrl != null" :src="`http://localhost:3000${user.imageUrl}`"
-            :alt="'Avatar de ' + user.imageUrl" aria-label="Photo d'utilisateur" />
-          <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
+        <div
+          v-if="user.length != 0 && this.targetUserProfil == 0"
+          class="profile-card__img"
+        >
+          <img
+            v-if="user.imageUrl != '' && user.imageUrl != null"
+            :src="`http://localhost:3000${user.imageUrl}`"
+            :alt="'Avatar de ' + user.imageUrl"
+            aria-label="Photo d'utilisateur"
+          />
+          <img
+            v-else
+            src="../../assets/img/avataaars.png"
+            alt="Avatar par défaut"
+            aria-label="Avatar par défaut"
+          />
         </div>
-        <div v-else class="profile-card__img box">
-          <img v-if="this.targetUserProfil.imageUrl != '' && this.targetUserProfil.imageUrl != null"
+        <div v-else class="profile-card__img">
+          <img
+            v-if="
+              this.targetUserProfil.imageUrl != '' &&
+              this.targetUserProfil.imageUrl != null
+            "
             :src="`http://localhost:3000${this.targetUserProfil.imageUrl}`"
-            :alt="'Avatar de ' + this.targetUserProfil.username" aria-label="Photo d'utilisateur" />
-          <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
+            :alt="'Avatar de ' + this.targetUserProfil.username"
+            aria-label="Photo d'utilisateur"
+          />
+          <img
+            v-else
+            src="../../assets/img/avataaars.png"
+            alt="Avatar par défaut"
+            aria-label="Avatar par défaut"
+          />
         </div>
-        <div v-if="user.isAdmin == true" class="ribbon"><span>Admin</span></div>
+        <div v-if="user.isAdmin == true" class="ribbon">
+          <span>Admin</span>
+        </div>
       </div>
 
       <!-- Profil informations -->
       <div class="profile-card__cnt js-profile-cnt">
-        <div class="profile-card__name container">
+        <div
+          v-if="user.length != 0 && this.targetUserProfil == 0"
+          class="profile-card__name"
+        >
           {{ user.username }}
         </div>
-        <!-- <div class="profile-card__txt">
-          Identifiant : {{ user.id || "chargement en cours..." }}
-        </div> -->
-        <!-- <div class="profile-card__txt">administrateur : {{ user.isAdmin }}</div> -->
+        <div v-else class="profile-card__name">
+          {{ this.targetUserProfil.username }}
+        </div>
 
         <!-- Profil statistiques -->
         <div class="profile-card-inf">
           <!-- Publications -->
           <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              <!-- {{ user.posts.length }} -->
+            <div
+              v-if="user.length != 0 && this.targetUserProfil == 0"
+              class="profile-card-inf__title"
+            >
+              {{ user.posts.length }}
+            </div>
+            <div v-else class="profile-card-inf__title">
+              {{ this.targetUserProfil.posts.length }}
             </div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
 
           <!-- Commentaires -->
           <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              <!-- {{ user.comments.length }} -->
+            <div
+              v-if="user.length != 0 && this.targetUserProfil == 0"
+              class="profile-card-inf__title"
+            >
+              {{ user.comments.length }}
+            </div>
+            <div v-else class="profile-card-inf__title">
+              {{ this.targetUserProfil.comments.length }}
             </div>
             <div class="profile-card-inf__txt">Commentaires</div>
           </div>
 
           <!-- Communautés crées -->
           <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              <!-- {{ user.community.length }} -->
+            <div
+              v-if="user.length != 0 && this.targetUserProfil == 0"
+              class="profile-card-inf__title"
+            >
+              {{ user.community.length }}
+            </div>
+            <div v-else class="profile-card-inf__title">
+              {{ this.targetUserProfil.community.length }}
             </div>
             <div class="profile-card-inf__txt">Communautés crées</div>
           </div>
@@ -61,19 +104,33 @@
       <!-- button actions -->
       <div class="profile-card-ctr">
         <!-- button report user -->
-        <button vtype="button" class="btn" @click="$refs.modalName.openModal()" text="Signaler ce compte">
+        <button
+          type="button"
+          class="btn"
+          @click="$refs.modalName.openModal()"
+          text="Signaler ce compte"
+        >
           Signaler...
         </button>
         <router-link class="btn" to="/user/parameter">
           Modifier mon profil
         </router-link>
-        <button type="button" class="btn btn-export" @click="exportDataClick" text="Exporter mes données">
+        <button
+          type="button"
+          class="btn btn-export"
+          @click="exportDataClick"
+          text="Exporter mes données"
+        >
           Exporter mes données
         </button>
 
         <!-- button delete account -->
-        <button type="button" class="btn btn-delete" @click="$refs.deleteAccount.openModal()"
-          text="Supprimer mon compte">
+        <button
+          type="button"
+          class="btn btn-delete"
+          @click="$refs.deleteAccount.openModal()"
+          text="Supprimer mon compte"
+        >
           Supprimer mon compte
         </button>
       </div>
@@ -104,6 +161,67 @@
         </button>
         <deleteBtn @click="deleteAccountClick" />
       </div>
+    </template>
+  </modalStructure>
+
+  <!-- modal report user -->
+  <modalStructure ref="modalName">
+    <template v-slot:header>
+      <h1>Signaler ce compte</h1>
+    </template>
+
+    <template v-slot:body>
+      <div class="container">
+        <form action="#" method="post" @submit.prevent="reportAccountClick">
+          <div class="FormGroup">
+            <label class="FormGroupLabel" for=""
+              >Pourquoi signalez-vous ce compte ?</label
+            >
+            <div class="FormTextboxWrapper">
+              <textarea
+                cols="50"
+                rows="5"
+                required
+                class="FormTextbox"
+                type="text"
+                placeholder="Explique nous les raisons de ce signalement."
+                v-model="state.user.content"
+                @blur="v$.user.content.$touch"
+                :class="v$.user.content.$error === true ? 'error' : 'dirty'"
+              />
+            </div>
+
+            <!-- Error Message -->
+            <template v-if="v$.user.content.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.user.content.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <button
+            type="submit"
+            class="btn button"
+            title="Signaler"
+            value="Signaler"
+          >
+            Confirmer signalement
+          </button>
+        </form>
+      </div>
+    </template>
+
+    <template v-slot:footer>
+      <!-- gestion erreur API avec axios -->
+      <div class="error-api">
+        <p class="error-msg">{{ apiError }}</p>
+      </div>
+      <!-- gestion erreur API avec axios -->
     </template>
   </modalStructure>
 </template>
@@ -185,7 +303,7 @@ export default {
     this.userId = this.$route.params.id;
     try {
       const response = await userApi.readTargetUser(this.userId);
-      console.log("utilisateur cible" , response.data.data);
+      console.log("utilisateur cible", response.data.data);
       this.targetUserProfil = response.data.data;
     } catch (error) {
       console.log(error);
@@ -198,6 +316,14 @@ export default {
       this.user = response.data.data;
     } catch (error) {
       console.log(error);
+    }
+  },
+  mounted() {
+    this.user = this.$store.state.user;
+
+    // if user is not connected redirect to login page
+    if (!this.user) {
+      this.$router.push("/login");
     }
   },
   methods: {
@@ -261,12 +387,12 @@ export default {
               text: `Vous allez être redirigé vers votre profil.`,
             });
 
-            // redirection sur la page utilisateur
+            // force refresh page
             setTimeout(
               function () {
-                this.$router.push("/user");
+                this.$router.go(0);
               }.bind(this),
-              3000,
+              1000,
               this
             );
           })
@@ -314,26 +440,10 @@ export default {
       }
     },
   },
-  mounted() {
-    this.user = this.$store.state.user;
-
-    // if user is not connected redirect to login page
-    if (!this.user) {
-      this.$router.push("/login");
-    }
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-
-.box {
-  width: 200px;
-  height: 300px;
-  position: relative;
-  border: 1px solid #BBB;
-  background: #EEE;
-}
 
 .ribbon {
   position: absolute;
@@ -349,7 +459,7 @@ export default {
 .ribbon span {
   font-size: 10px;
   font-weight: bold;
-  color: #FFF;
+  color: #fff;
   text-transform: uppercase;
   text-align: center;
   line-height: 20px;
@@ -357,8 +467,8 @@ export default {
   -webkit-transform: rotate(45deg);
   width: 100px;
   display: block;
-  background: #79A70A;
-  background: linear-gradient(#9BC90D 0%, #79A70A 100%);
+  background: #79a70a;
+  background: linear-gradient(#9bc90d 0%, #79a70a 100%);
   box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
   position: absolute;
   top: 19px;
@@ -371,10 +481,10 @@ export default {
   left: 0px;
   top: 100%;
   z-index: -1;
-  border-left: 3px solid #79A70A;
+  border-left: 3px solid #79a70a;
   border-right: 3px solid transparent;
   border-bottom: 3px solid transparent;
-  border-top: 3px solid #79A70A;
+  border-top: 3px solid #79a70a;
 }
 
 .ribbon span::after {
@@ -384,9 +494,9 @@ export default {
   top: 100%;
   z-index: -1;
   border-left: 3px solid transparent;
-  border-right: 3px solid #79A70A;
+  border-right: 3px solid #79a70a;
   border-bottom: 3px solid transparent;
-  border-top: 3px solid #79A70A;
+  border-top: 3px solid #79a70a;
 }
 .pro {
   /* Shown at the bottom right corner */
@@ -400,11 +510,11 @@ export default {
   width: auto;
 
   /* Background color */
-  color: #231E39;
-      background-color: #FEBB0B;
-      font-size: 14px;
-      font-weight: bold;
-      padding: 3px 7px;
+  color: #231e39;
+  background-color: #febb0b;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 3px 7px;
 }
 // modalStructure
 .overflow-hidden {
@@ -474,14 +584,6 @@ export default {
     background: transparent;
   }
 
-  &__txt {
-    font-size: 18px;
-    font-weight: 500;
-    color: #c7545e;
-    margin-bottom: 15px;
-    background: transparent;
-  }
-
   &-inf {
     display: flex;
     justify-content: center;
@@ -540,5 +642,38 @@ img {
 
 .btn-delete:focus {
   box-shadow: 0 0 0 2px red;
+}
+
+// modalStructure
+.overflow-hidden {
+  overflow: hidden;
+}
+.modal {
+  background: transparent;
+}
+.modal__actions {
+  padding: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+// modal report user
+.FormTextbox {
+  width: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #c7c7c7;
+  color: #606060;
+  background-color: rgb(12, 19, 31);
+
+  &::placeholder {
+    color: #a7a7a7;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #b44ff6;
+  }
 }
 </style>

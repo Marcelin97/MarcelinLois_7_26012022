@@ -16,8 +16,6 @@
 </template>
 
 <script>
-import axiosInstance from "../../services/api";
-
 export default {
   name: "CommunityList",
   setup() {},
@@ -28,14 +26,6 @@ export default {
       bottom: false,
       communities: [],
     };
-  },
-  mounted() {
-    axiosInstance
-      .get("/community/readAllCommunities")
-      .then((response) => (this.communities = response.data.datas))
-      .catch((error) => {
-        console.log(error);
-      });
   },
 };
 </script>
