@@ -11,7 +11,7 @@ import UserParameterView from "../views/UserParameterView";
 import CommunityView from "../views/CommunityView";
 import CommunityProfileView from "../views/CommunityProfilView";
 import UsersView from "../views/UsersView";
-// import TargetUser from "../components/Profil/TargetUser";
+import ProfileView from "../views/ProfileView";
 
 const routes = [
   {
@@ -51,7 +51,7 @@ const routes = [
   {
     path: "/user",
     name: "user",
-    component: UserView,
+    component: ProfileView,
   },
   {
     path: "/user/parameter",

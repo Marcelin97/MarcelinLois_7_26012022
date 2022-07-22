@@ -1,8 +1,8 @@
 <template>
-<HeaderNavigation/>
+  <HeaderNavigation />
   <section>
-    <h1>Mon compte</h1>
-    <UserProfile />
+    <h1>Le profil de...</h1>
+    <UserProfile :user="user" :key="user.id" />
   </section>
 </template>
 
@@ -10,12 +10,45 @@
 import UserProfile from "@/components/Profil/UserProfile.vue";
 import HeaderNavigation from "../components/Menu/HeaderNavigation.vue";
 
+import userApi from "../api/users";
 
 export default {
-  name: "UserView",
+  name: "User-View",
   components: {
     UserProfile,
     HeaderNavigation,
+  },
+  data() {
+    return {
+      // add user array:
+      user: [],
+      userId: "",
+      apiError: "",
+    };
+  },
+  computed: {
+    userTargetId() {
+      return this.$route.params.id;
+    },
+  },
+  async created() {
+    this.userId = this.$route.params.id;
+    try {
+      const response = await userApi.readTargetUser(this.userId);
+      console.log("utilisateur cible", response.data.data);
+      this.user = response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async beforeRouteUpdate(to) {
+    this.userId = to.params.id;
+    try {
+      const response = await userApi.readTargetUser(this.userId);
+      this.user = response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
 </script>
@@ -35,3 +68,4 @@ h1 {
   text-align: right;
 }
 </style>
+

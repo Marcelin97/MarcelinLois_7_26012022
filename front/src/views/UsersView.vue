@@ -1,7 +1,7 @@
 <template>
   <HeaderNavigation />
 
-  <section v-if="users.length != 0 && users.length !=''">
+  <section v-if="users.length != 0 && users.length != ''">
     <h1>Explore des nouveaux profils !</h1>
 
     <!-- search bar -->
@@ -21,7 +21,7 @@
   </section>
 
   <section v-else>
-    <h2>Il n'y a pas encore d'utilisateurs.</h2>
+    <h2>Il n'y a pas d'autres utilisateurs pour le moment.</h2>
   </section>
 </template>
 
@@ -53,7 +53,6 @@ export default {
     },
   },
   mounted() {
-    this.apiError = "";
     axiosInstance
       .get("/auth/readAll")
       .then((response) => {
@@ -61,7 +60,7 @@ export default {
       })
       .catch((error) => {
         if (error.response.status == 404) {
-          const errorMessage = (this.apiError = "Utilisateur introuvable !");
+          const errorMessage = (this.apiError = "Utilisateurs introuvable !");
           this.errorMessage = errorMessage;
           // notification d'erreur
           this.$notify({

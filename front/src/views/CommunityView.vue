@@ -38,14 +38,7 @@ export default {
     HeaderNavigation,
     InputBoxCommunityVue,
   },
-  data() {
-    return {
-      // add communities array:
-      communities: [],
-      apiError: "",
-      search: "",
-    };
-  },
+ 
   computed: {
     filteredCommunities() {
       return this.communities.filter((community) =>

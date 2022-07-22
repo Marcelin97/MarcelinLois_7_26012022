@@ -2,20 +2,23 @@
   <article class="tile">
     <div class="tile-header">
       <img
-          :src="`http://localhost:3000${user.imageUrl}`"
-          :alt="'Avatar de ' + user.username"
-          aria-label="Photo d'utilisateur"
-          v-if="user.imageUrl"
-        />
+        :src="`http://localhost:3000${user.imageUrl}`"
+        :alt="'Avatar de ' + user.username"
+        aria-label="Photo d'utilisateur"
+        v-if="user.imageUrl != '' || user.imageUrl != null"
+      />
+      <img
+        v-else
+        src="../../assets/img/avataaars.png"
+        alt="Avatar par défaut"
+        aria-label="Avatar par défaut"
+      />
       <h3>
         <span>{{ user.username }}</span>
         <span>identifiant: {{ user.id }}</span>
       </h3>
     </div>
-    <router-link
-      class="more"
-      :to="`/explore/users/${this.id}`"
-    >
+    <router-link class="more" :to="`/explore/users/${this.id}`">
       <span class="more__user">Voir le profil</span>
       <span>
         <font-awesome-icon

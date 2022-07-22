@@ -1,102 +1,47 @@
 <template>
-  <div class="wrapper" v-if="user.length != 0">
+  <div class="wrapper">
     <div class="profile-card js-profile-card">
       <!-- Profil image -->
       <div>
-        <div
-          v-if="user.length != 0 && this.targetUserProfil == 0"
-          class="profile-card__img"
-        >
-          <img
-            v-if="user.imageUrl != '' && user.imageUrl != null"
-            :src="`http://localhost:3000${user.imageUrl}`"
-            :alt="'Avatar de ' + user.imageUrl"
-            aria-label="Photo d'utilisateur"
-          />
-          <img
-            v-else
-            src="../../assets/img/avataaars.png"
-            alt="Avatar par défaut"
-            aria-label="Avatar par défaut"
-          />
+        <div class="profile-card__img">
+          <img v-if="user.imageUrl != '' || user.imageUrl != null" :src="`http://localhost:3000${user.imageUrl}`"
+            :alt="'Avatar de ' + user.imageUrl" aria-label="Photo d'utilisateur" />
+          <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
         </div>
-        <div v-else class="profile-card__img">
-          <img
-            v-if="
-              this.targetUserProfil.imageUrl != '' &&
-              this.targetUserProfil.imageUrl != null
-            "
-            :src="`http://localhost:3000${this.targetUserProfil.imageUrl}`"
-            :alt="'Avatar de ' + this.targetUserProfil.username"
-            aria-label="Photo d'utilisateur"
-          />
-          <img
-            v-else
-            src="../../assets/img/avataaars.png"
-            alt="Avatar par défaut"
-            aria-label="Avatar par défaut"
-          />
-        </div>
-        <div
-          v-if="user.isAdmin == true || this.targetUserProfil.isAdmin == true"
-          class="ribbon"
-        >
+
+        <div v-if="user.isAdmin == true" class="ribbon">
           <span>Admin</span>
         </div>
       </div>
 
       <!-- Profil informations -->
       <div class="profile-card__cnt js-profile-cnt">
-        <div
-          v-if="user.length != 0 && this.targetUserProfil == 0"
-          class="profile-card__name"
-        >
+        <div class="profile-card__name">
           {{ user.username }}
-        </div>
-        <div v-else class="profile-card__name">
-          {{ this.targetUserProfil.username }}
         </div>
 
         <!-- Profil statistics -->
         <div class="profile-card-inf">
           <!-- Publications -->
           <div class="profile-card-inf__item">
-            <div
-              v-if="user.length != 0 && this.targetUserProfil == 0"
-              class="profile-card-inf__title"
-            >
-              {{ user.posts.length }}
-            </div>
-            <div v-else class="profile-card-inf__title">
-              {{ this.targetUserProfil.posts.length }}
+            <div class="profile-card-inf__title">
+              <!-- {{ user.posts.length }} -->
             </div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
 
           <!-- Commentaires -->
           <div class="profile-card-inf__item">
-            <div
-              v-if="user.length != 0 && this.targetUserProfil == 0"
-              class="profile-card-inf__title"
-            >
-              {{ user.comments.length }}
-            </div>
-            <div v-else class="profile-card-inf__title">
-              {{ this.targetUserProfil.comments.length }}
+            <div class="profile-card-inf__title">
+              <!-- {{ user.comments.length }} -->
             </div>
             <div class="profile-card-inf__txt">Commentaires</div>
           </div>
 
           <!-- Communautés crées -->
           <div class="profile-card-inf__item">
-            <div
-              v-if="user.length != 0 && this.targetUserProfil == 0"
-              class="profile-card-inf__title"
-            >
-              {{ user.community.length }}
-            </div>
-            <div v-else class="profile-card-inf__title">
-              {{ this.targetUserProfil.community.length }}
+            <div class="profile-card-inf__title">
+              <!-- {{ user.community.length }} -->
             </div>
             <div class="profile-card-inf__txt">Communautés crées</div>
           </div>
@@ -105,40 +50,26 @@
 
       <!-- button actions -->
       <div class="profile-card-ctr">
-        <div v-if="user.length != 0 && this.targetUserProfil == 0">
+        <div>
           <!-- update profile -->
           <router-link class="btn" to="/user/parameter">
             Modifier mon profil
           </router-link>
 
           <!-- export data -->
-          <button
-            type="button"
-            class="btn btn-export"
-            @click="exportDataClick"
-            text="Exporter mes données"
-          >
+          <button type="button" class="btn btn-export" @click="exportDataClick" text="Exporter mes données">
             Exporter mes données
           </button>
 
           <!-- button delete account -->
-          <button
-            type="button"
-            class="btn btn-delete"
-            @click="$refs.deleteAccount.openModal()"
-            text="Supprimer mon compte"
-          >
+          <button type="button" class="btn btn-delete" @click="$refs.deleteAccount.openModal()"
+            text="Supprimer mon compte">
             Supprimer mon compte
           </button>
         </div>
-        <div v-else>
+        <div>
           <!-- button report user -->
-          <button
-            type="button"
-            class="btn"
-            @click="$refs.modalName.openModal()"
-            text="Signaler ce compte"
-          >
+          <button type="button" class="btn" @click="$refs.reportUser.openModal()" text="Signaler ce compte">
             Signaler...
           </button>
         </div>
@@ -174,7 +105,7 @@
   </modalStructure>
 
   <!-- modal report user -->
-  <modalStructure ref="modalName">
+  <modalStructure ref="reportUser">
     <template v-slot:header>
       <h1>Signaler ce compte</h1>
     </template>
@@ -183,42 +114,23 @@
       <div class="container">
         <form action="#" method="post" @submit.prevent="reportAccountClick">
           <div class="FormGroup">
-            <label class="FormGroupLabel" for=""
-              >Pourquoi signalez-vous ce compte ?</label
-            >
+            <label class="FormGroupLabel" for="">Pourquoi signalez-vous ce compte ?</label>
             <div class="FormTextboxWrapper">
-              <textarea
-                cols="50"
-                rows="5"
-                required
-                class="FormTextbox"
-                type="text"
-                placeholder="Explique nous les raisons de ce signalement."
-                v-model="state.user.content"
-                @blur="v$.user.content.$touch"
-                :class="v$.user.content.$error === true ? 'error' : 'dirty'"
-              />
+              <textarea cols="50" rows="5" required class="FormTextbox" type="text"
+                placeholder="Explique nous les raisons de ce signalement." v-model="state.user.content"
+                @blur="v$.user.content.$touch" :class="v$.user.content.$error === true ? 'error' : 'dirty'" />
             </div>
 
             <!-- Error Message -->
             <template v-if="v$.user.content.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.user.content.$errors"
-                :key="index"
-              >
+              <div class="input-errors" v-for="(error, index) of v$.user.content.$errors" :key="index">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
             <!-- Error Message -->
           </div>
 
-          <button
-            type="submit"
-            class="btn button"
-            title="Signaler"
-            value="Signaler"
-          >
+          <button type="submit" class="btn button" title="Signaler" value="Signaler">
             Confirmer signalement
           </button>
         </form>
@@ -233,224 +145,14 @@
       <!-- gestion erreur API avec axios -->
     </template>
   </modalStructure>
+
 </template>
-
 <script>
-import PostCard from "../Posts/PostCard.vue";
-import modalStructure from "../Modal/ModalStructure.vue";
-import deleteBtn from "../Base/DeleteBtn.vue";
-import usersApi from "../../api/users";
-import axiosInstance from "../../services/api";
-import userApi from "../../api/users";
-import useVuelidate from "@vuelidate/core";
-import {
-  helpers,
-  // required,
-  minLength,
-  maxLength,
-} from "@vuelidate/validators";
-import { reactive, computed } from "vue";
-
 export default {
-  name: "User-profile",
-  props: ["targetUser"],
-  setup() {
-    const state = reactive({
-      user: {
-        content: "",
-      },
-      apiError: "",
-    });
-
-    const rules = computed(() => ({
-      user: {
-        content: {
-          // required: helpers.withMessage("L'/email est obligatoire", required),
-          $autoDirty: true,
-          $lazy: true,
-          minLength: helpers.withMessage(
-            "Ce champ doit être long d'au moins 5",
-            minLength(5)
-          ),
-          maxLength: helpers.withMessage(
-            "La longueur maximale autorisée est de 255",
-            maxLength(255)
-          ),
-        },
-      },
-    }));
-
-    const v$ = useVuelidate(rules, state);
-
-    return { state, v$ };
-  },
-  validationConfig: {
-    $lazy: true,
-  },
-  components: {
-    PostCard,
-    modalStructure,
-    deleteBtn,
-  },
-  data() {
-    return {
-      userId: "",
-      targetUserProfil: [],
-      apiError: "",
-      user: [],
-      communityLength: "",
-      commentsLength: "",
-      postsLength: "",
-    };
-  },
-  computed: {
-    userTargetId() {
-      return this.$route.params.id;
-    },
-  },
-  async created() {
-    this.userId = this.$route.params.id;
-    try {
-      const response = await userApi.readTargetUser(this.userId);
-      console.log("utilisateur cible", response.data.data);
-      this.targetUserProfil = response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  async beforeRouteUpdate(to) {
-    this.userId = to.params.id;
-    try {
-      const response = await userApi.readTargetUser(this.userId);
-      this.user = response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  mounted() {
-    this.user = this.$store.state.user;
-
-    // if user is not connected redirect to login page
-    if (!this.user) {
-      this.$router.push("/login");
-    }
-  },
-  methods: {
-    async exportDataClick() {
-      try {
-        const response = await usersApi.exportMyData();
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement("a");
-
-        fileLink.href = fileURL;
-        fileLink.setAttribute("download", "file.txt");
-        document.body.appendChild(fileLink);
-
-        fileLink.click();
-
-        this.$notify({
-          type: "success",
-          text: "Le téléchargement commence.",
-        });
-      } catch (error) {
-        const errorMessage = (this.apiError = error.response);
-        this.errorMessage = errorMessage;
-        // console.log("apiError", error);
-
-        // notification d'erreur
-        this.$notify({
-          duration: 2500,
-          type: "error",
-          title: `Erreur lors du téléchargement des données`,
-          text: `Erreur reporté : ${errorMessage}`,
-        });
-      }
-    },
-    async deleteAccountClick() {
-      if (
-        window.confirm(
-          "Attention, vous êtes sur le point de supprimer votre compte. Cette action est irréversible. Souhaitez-vous tout de même continuer ?"
-        )
-      ) {
-        try {
-          await usersApi.deleteUser();
-          await this.$store.commit("logout");
-          // await this.$store.commit("setStatus", "logout");
-          await this.$router.push("/");
-        } catch (e) {
-          console.error(e.data);
-        }
-      }
-    },
-    reportAccountClick() {
-      this.v$.$validate(); // checks all inputs
-      if (!this.v$.$error) {
-        // if ANY fail validation
-        axiosInstance
-          .post(`/auth/report/${this.userId}`, this.state.user)
-          .then(() => {
-            // notification de succès
-            this.$notify({
-              type: "success",
-              title: `Signalement envoyé !`,
-              text: `Vous allez être redirigé vers votre profil.`,
-            });
-
-            // force refresh page
-            setTimeout(
-              function () {
-                this.$router.go(0);
-              }.bind(this),
-              1000,
-              this
-            );
-          })
-          .catch((error) => {
-            console.log(error.response.status);
-            if (error.response.status == 404) {
-              const errorMessage = (this.apiError =
-                "Utilisateur introuvable !");
-              this.errorMessage = errorMessage;
-              // notification d'erreur
-              this.$notify({
-                type: "error",
-                title: `Erreur lors du signalement`,
-                text: `Erreur reporté : ${errorMessage}`,
-              });
-            } else if (error.response.status == 409) {
-              const errorMessage = (this.apiError =
-                "Vous avez déjà signalé cet utilisateur !");
-              this.errorMessage = errorMessage;
-              // notification d'erreur
-              this.$notify({
-                type: "error",
-                title: `Erreur lors du signalement`,
-                text: `Erreur reporté : ${errorMessage}`,
-              });
-            }
-          });
-      } else {
-        // notification d'erreur
-        this.$notify({
-          type: "warn",
-          title: `Veuillez faire un signalement complet.`,
-        });
-
-        // montre les erreurs à l'écran
-        this.$nextTick(() => {
-          let domRect = document
-            .querySelector(".error")
-            .getBoundingClientRect();
-          window.scrollTo(
-            domRect.left + document.documentElement.scrollLeft,
-            domRect.top + document.documentElement.scrollTop
-          );
-        });
-      }
-    },
-  },
+  props: ["user"]
 };
 </script>
+
 
 <style lang="scss" scoped>
 .ribbon {
@@ -506,6 +208,7 @@ export default {
   border-bottom: 3px solid transparent;
   border-top: 3px solid #79a70a;
 }
+
 .pro {
   /* Shown at the bottom right corner */
   top: 0;
@@ -524,6 +227,7 @@ export default {
   font-weight: bold;
   padding: 3px 7px;
 }
+
 // modalStructure
 .overflow-hidden {
   overflow: hidden;
@@ -535,6 +239,7 @@ export default {
   flex-direction: row;
   justify-content: space-around;
 }
+
 // Profil
 .wrapper {
   width: 100%;
@@ -631,6 +336,7 @@ export default {
     align-items: center;
     margin-top: 40px;
     border-radius: 0.8rem;
+
     @media screen and (max-width: 800px) {
       flex-wrap: wrap;
     }
@@ -656,9 +362,11 @@ img {
 .overflow-hidden {
   overflow: hidden;
 }
+
 .modal {
   background: transparent;
 }
+
 .modal__actions {
   padding: 2rem;
   display: flex;
