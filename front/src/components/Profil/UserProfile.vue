@@ -2,7 +2,6 @@
   <div class="wrapper" v-if="user.length != 0">
     <div class="profile-card js-profile-card">
       <!-- Profil image -->
-
       <div>
         <div
           v-if="user.length != 0 && this.targetUserProfil == 0"
@@ -38,7 +37,10 @@
             aria-label="Avatar par défaut"
           />
         </div>
-        <div v-if="user.isAdmin == true" class="ribbon">
+        <div
+          v-if="user.isAdmin == true || this.targetUserProfil.isAdmin == true"
+          class="ribbon"
+        >
           <span>Admin</span>
         </div>
       </div>
@@ -55,7 +57,7 @@
           {{ this.targetUserProfil.username }}
         </div>
 
-        <!-- Profil statistiques -->
+        <!-- Profil statistics -->
         <div class="profile-card-inf">
           <!-- Publications -->
           <div class="profile-card-inf__item">
@@ -103,36 +105,43 @@
 
       <!-- button actions -->
       <div class="profile-card-ctr">
-        <!-- button report user -->
-        <button
-          type="button"
-          class="btn"
-          @click="$refs.modalName.openModal()"
-          text="Signaler ce compte"
-        >
-          Signaler...
-        </button>
-        <router-link class="btn" to="/user/parameter">
-          Modifier mon profil
-        </router-link>
-        <button
-          type="button"
-          class="btn btn-export"
-          @click="exportDataClick"
-          text="Exporter mes données"
-        >
-          Exporter mes données
-        </button>
+        <div v-if="user.length != 0 && this.targetUserProfil == 0">
+          <!-- update profile -->
+          <router-link class="btn" to="/user/parameter">
+            Modifier mon profil
+          </router-link>
 
-        <!-- button delete account -->
-        <button
-          type="button"
-          class="btn btn-delete"
-          @click="$refs.deleteAccount.openModal()"
-          text="Supprimer mon compte"
-        >
-          Supprimer mon compte
-        </button>
+          <!-- export data -->
+          <button
+            type="button"
+            class="btn btn-export"
+            @click="exportDataClick"
+            text="Exporter mes données"
+          >
+            Exporter mes données
+          </button>
+
+          <!-- button delete account -->
+          <button
+            type="button"
+            class="btn btn-delete"
+            @click="$refs.deleteAccount.openModal()"
+            text="Supprimer mon compte"
+          >
+            Supprimer mon compte
+          </button>
+        </div>
+        <div v-else>
+          <!-- button report user -->
+          <button
+            type="button"
+            class="btn"
+            @click="$refs.modalName.openModal()"
+            text="Signaler ce compte"
+          >
+            Signaler...
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -444,7 +453,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .ribbon {
   position: absolute;
   right: -5px;
