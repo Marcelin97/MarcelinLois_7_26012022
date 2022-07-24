@@ -1,8 +1,8 @@
 <template>
   <HeaderNavigation />
   <section>
-    <h1>Le profil de...</h1>
-    <UserProfile :user="user" :key="user.id" />
+    <h1>Le profil de...{{this.user.username}}</h1>
+    <UserProfile :user="user" :key="user.id" :userLoggedIn="userLoggedIn" />
   </section>
 </template>
 
@@ -24,6 +24,7 @@ export default {
       user: [],
       userId: "",
       apiError: "",
+      userLoggedIn: false,
     };
   },
   computed: {

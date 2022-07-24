@@ -50,7 +50,15 @@
 
       <!-- button actions -->
       <div class="profile-card-ctr">
-        <div>
+
+        <div v-if="userLoggedIn == false">
+          <!-- button report user -->
+          <button type="button" class="btn" @click="$refs.reportUser.openModal()" text="Signaler ce compte">
+            Signaler...
+          </button>
+        </div>
+        
+        <div v-else>
           <!-- update profile -->
           <router-link class="btn" to="/user/parameter">
             Modifier mon profil
@@ -67,12 +75,7 @@
             Supprimer mon compte
           </button>
         </div>
-        <div>
-          <!-- button report user -->
-          <button type="button" class="btn" @click="$refs.reportUser.openModal()" text="Signaler ce compte">
-            Signaler...
-          </button>
-        </div>
+
       </div>
     </div>
   </div>
@@ -148,8 +151,23 @@
 
 </template>
 <script>
+// import PostCard from "../Posts/PostCard.vue";
+// import modalStructure from "../Modal/ModalStructure.vue";
+// import deleteBtn from "../Base/DeleteBtn.vue";
+// import usersApi from "../../api/users";
+// import axiosInstance from "../../services/api";
+// import userApi from "../../api/users";
+// import useVuelidate from "@vuelidate/core";
+// import {
+//   helpers,
+//   // required,
+//   minLength,
+//   maxLength,
+// } from "@vuelidate/validators";
+// import { reactive, computed } from "vue";
+
 export default {
-  props: ["user"]
+  props: ["user", "userLoggedIn", "targetUser"]
 };
 </script>
 
