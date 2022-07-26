@@ -25,7 +25,7 @@
 
 <script>
 export default {
-  name: "ModalStrcture",
+  name: "Modal-Structure",
   data() {
     return {
       show: false,
@@ -44,7 +44,6 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
 .modal {
   position: fixed;
@@ -55,26 +54,19 @@ export default {
   z-index: 99999;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: rgba(rgb(0, 0, 0), 1);
-  // // opacity: 0;
-  // visibility: hidden;
   backface-visibility: hidden;
-  transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1),
-    overflow-x 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: overflow-x 0.6s cubic-bezier(0.55, 0, 0.1, 1);
   &__backdrop {
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, 0.3);
     z-index: 1;
   }
   &__dialog {
     position: relative;
     width: 600px;
-    background-color: #ffffff;
-    border-radius: 0.8rem;
     margin: 50px auto;
     display: flex;
     flex-direction: column;
@@ -86,8 +78,6 @@ export default {
   &__close {
     width: 30px;
     height: 30px;
-    border: none;
-    border-radius: 0.2rem;
     background-color: unset;
     cursor: pointer;
   }
@@ -104,16 +94,17 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    background-color: #08708a;
+    background-color: #4e5166;
   }
   &__footer {
-    padding: 10px 20px 20px;
+    padding: 10px 15px 15px;
     background-color: black;
   }
 }
+
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s;
+  transition: opacity 0.8s;
 }
 .fade-enter,
 .fade-leave-to {

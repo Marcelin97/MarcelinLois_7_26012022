@@ -1,5 +1,5 @@
 <template>
-<!-- The Wall view -->
+  <!-- The Wall view -->
   <div>
     <!-- NavBar + Header -->
     <NavBar />
@@ -11,22 +11,24 @@
 </template>
 
 <script>
+// @ is an alias to /src
 import NavBar from "@/components/Menu/NavBar.vue";
 import FeedWall from "@/components/Feed/FeedWall.vue";
 
 export default {
-  name: "WallView",
+  name: "Wall-View",
   components: {
     NavBar,
     FeedWall,
   },
 };
 </script>
+
 <style lang="scss" scoped>
-NavBar{
-    z-index: 999;
+NavBar {
+  z-index: 999;
 }
-FeedWall{
+FeedWall {
   z-index: 1;
 }
 </style>

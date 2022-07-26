@@ -1,11 +1,12 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" v-if="user.length != 0">
     <div class="profile-card js-profile-card">
+
       <!-- Profil image -->
       <div>
         <div class="profile-card__img">
-          <img v-if="user.imageUrl != '' || user.imageUrl != null" :src="`http://localhost:3000${user.imageUrl}`"
-            :alt="'Avatar de ' + user.imageUrl" aria-label="Photo d'utilisateur" />
+          <img v-if="user.imageUrl" :src="`http://localhost:3000${user.imageUrl}`" :alt="'Avatar de ' + user.imageUrl"
+            aria-label="Photo d'utilisateur" />
           <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
         </div>
 
@@ -25,7 +26,7 @@
           <!-- Publications -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              <!-- {{ user.posts.length }} -->
+              {{ user.posts.length }}
             </div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
@@ -33,7 +34,7 @@
           <!-- Commentaires -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              <!-- {{ user.comments.length }} -->
+              {{ user.comments.length }}
             </div>
             <div class="profile-card-inf__txt">Commentaires</div>
           </div>
@@ -41,7 +42,7 @@
           <!-- Communautés crées -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              <!-- {{ user.community.length }} -->
+              {{ user.community.length }}
             </div>
             <div class="profile-card-inf__txt">Communautés crées</div>
           </div>
@@ -51,14 +52,14 @@
       <!-- button actions -->
       <div class="profile-card-ctr">
 
-        <div v-if="userLoggedIn == false">
+        <div v-if="userLoggedIn == false" class="profile-card-ctr__actions">
           <!-- button report user -->
           <button type="button" class="btn" @click="$refs.reportUser.openModal()" text="Signaler ce compte">
             Signaler...
           </button>
         </div>
 
-        <div v-else>
+        <div v-else class="profile-card-ctr__actions">
           <!-- update profile -->
           <router-link class="btn" to="/user/parameter">
             Modifier mon profil
@@ -328,6 +329,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 // Profil
 .wrapper {
   width: 100%;
@@ -376,13 +378,15 @@ export default {
     text-align: center;
     padding: 0 20px;
     transition: all 0.3s;
-    background: transparent;
   }
 
   &__name {
-    font-weight: 700;
-    margin-bottom: 15px;
-    background: transparent;
+        line-height: 35px;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 0.3rem;
+        font-size: 1rem;
+        text-align: center;
   }
 
   &-inf {
@@ -431,6 +435,12 @@ export default {
   }
 }
 
+.profile-card-ctr__actions{
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+}
 img {
   width: 100%;
   height: 100%;

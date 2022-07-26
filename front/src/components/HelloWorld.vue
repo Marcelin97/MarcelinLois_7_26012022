@@ -24,7 +24,6 @@ h1 {
     font-weight: bolder;
     line-height: 1.4rem;
     text-align: left;
-    // margin: 4rem 1rem;
     border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
     padding-bottom: 3vh;
     max-width: 440px;

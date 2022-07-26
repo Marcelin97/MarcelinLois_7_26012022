@@ -8,6 +8,7 @@
 
 <script>
 export default {
+  name: "GoBack",
   methods: {
     goBack() {
       return this.$router.go(-1);
@@ -26,7 +27,7 @@ button {
   height: 3rem;
   width: 3rem;
   cursor: pointer;
-  background-color: #142342;
+  background-color: transparent;
   &:hover {
     .icon {
       animation: move 0.6s infinite ease-in-out;

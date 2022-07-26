@@ -1,6 +1,11 @@
 <template>
   <div id="Clouds">
-    <img src="../assets/img/logo.svg" class="logo" alt="" />
+    <img
+      src="../assets/img/logo.svg"
+      class="logo"
+      alt="Logo de l'entreprise"
+      aria-label="Logo de l'entreprise"
+    />
   </div>
 </template>
 
@@ -27,7 +32,7 @@ export default {
   from {
     transform: translateY(0px);
   }
-  65% {
+  50% {
     transform: translateY(5px);
   }
   to {

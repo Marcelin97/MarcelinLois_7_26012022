@@ -22,7 +22,7 @@
         posts,...
       </p>
       <div class="actions">
-        <router-link class="nav btn button" to="/signup"
+        <router-link class="nav btn" to="/signup"
           >Créer un compte</router-link
         >
         <router-link class="nav btn-login btn" to="/login"
@@ -34,17 +34,17 @@
 </template>
 
 <script>
-import GoBack from "../components/Base/GoBack.vue";
+import GoBack from "@/components/Base/GoBack.vue";
 
 export default {
+  name: "Account-View",
   components: {
     GoBack,
   },
-  name: "AccountView",
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 nav {
   display: flex;
   justify-content: flex-start;
@@ -83,7 +83,6 @@ nav {
     line-height: 30px;
     text-align: center;
     border-radius: 50%;
-    // background-color: #c7545e;
   }
 }
 
@@ -129,10 +128,8 @@ img {
     font-weight: bold;
     letter-spacing: 0.3rem;
     font-size: 1.4rem;
-    font-weight: bolder;
     line-height: 1.4rem;
     text-align: center;
-    // margin: 4rem 1rem;
     border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
     padding-bottom: 3vh;
     @media only screen and (min-width: 576px) {
@@ -166,15 +163,16 @@ img {
 }
 .btn-login {
   color: #f7f7f7;
-  border: 2px solid #8de8fe;
+  border: 2px solid #fd2d01;
   background: transparent;
   transition: color, background 0.35s;
   &:hover {
-    background: #8de8fe;
+    background: #ffd7d7;
     color: black;
   }
 }
 
+// animations
 @keyframes emoji-1 {
   0% {
     transform: translate(0) scale(0);

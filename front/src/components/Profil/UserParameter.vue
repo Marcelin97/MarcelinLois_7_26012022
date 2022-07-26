@@ -123,8 +123,6 @@ import {
   alphaNum,
 } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
-
-// import usersApi from "../../api/users";
 import axiosInstance from "../../services/api";
 
 export function strongPassword(value) {
@@ -136,11 +134,10 @@ export function strongPassword(value) {
 }
 
 export default {
-  name: "UpdateForm",
+  name: "Update-Profile",
   setup() {
     const state = reactive({
       test: "",
-      mode: "create",
       user: {
         firstName: "",
         lastName: "",
@@ -225,7 +222,7 @@ export default {
   methods: {
     onChangeFileUpload() {
       this.state.user.userImage = document.querySelector("#userImage").files[0];
-      console.log("image update", this.state.user.userImage);
+      // console.log("image update", this.state.user.userImage);
     },
     updateAccountClick() {
       var bodyFormData = new FormData();

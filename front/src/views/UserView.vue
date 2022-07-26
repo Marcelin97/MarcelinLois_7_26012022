@@ -3,14 +3,20 @@
   <section>
     <h1>Le profil de...{{this.user.username}}</h1>
     <UserProfile :user="user" :key="user.id" :userLoggedIn="userLoggedIn" />
+
+    <!-- gestion erreur API avec axios -->
+    <div v-if=apiErrors class="error-api">
+      <p v-for="(apiError, i) in apiErrors" :key="i" class="error-msg">{{ apiError.message }}</p>
+    </div>
+    <!-- gestion erreur API avec axios -->
+
   </section>
 </template>
 
 <script>
 import UserProfile from "@/components/Profil/UserProfile.vue";
 import HeaderNavigation from "../components/Menu/HeaderNavigation.vue";
-
-import userApi from "../api/users";
+import usersApi from "../api/users";
 
 export default {
   name: "User-View",
@@ -20,10 +26,9 @@ export default {
   },
   data() {
     return {
-      // add user array:
       user: [],
       userId: "",
-      apiError: "",
+      apiErrors: false,
       userLoggedIn: false,
     };
   },
@@ -34,9 +39,10 @@ export default {
   },
   async created() {
     this.userId = this.$route.params.id;
+
     try {
-      const response = await userApi.readTargetUser(this.userId);
-      console.log("utilisateur cible", response.data.data);
+      const response = await usersApi.readTargetUser(this.userId);
+      // console.log("utilisateur cible", response.data.data);
       this.user = response.data.data;
     } catch (error) {
       console.log(error);
@@ -45,10 +51,11 @@ export default {
   async beforeRouteUpdate(to) {
     this.userId = to.params.id;
     try {
-      const response = await userApi.readTargetUser(this.userId);
+      const response = await usersApi.readTargetUser(this.userId);
       this.user = response.data.data;
     } catch (error) {
       console.log(error);
+      this.apiErrors= error.data
     }
   },
 };
@@ -65,8 +72,7 @@ h1 {
   letter-spacing: 0.3rem;
   font-size: 1.2rem;
   margin-bottom: 1rem;
-  margin-right: 1rem;
-  text-align: right;
+  text-align: center;
 }
 </style>
 

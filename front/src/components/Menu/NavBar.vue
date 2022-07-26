@@ -129,7 +129,7 @@
 
 <script>
 export default {
-  name: "NavBar",
+  name: "Nav-Bar",
   methods: {
     logout: function () {
       this.$store.commit("logout");

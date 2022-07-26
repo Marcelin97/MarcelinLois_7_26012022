@@ -1,4 +1,4 @@
-    <template>
+<template>
   <!-- Header navigation -->
   <div class="container-nav">
     <nav class="nav-header">
@@ -14,15 +14,12 @@
         />
         <router-link class="text" to="/wall">Home</router-link>
       </label>
-      <div class="indicator"></div>
 
+      <!-- dropdown menu-->
       <div class="dropdown">
-        <!-- The trigger element -->
-        <!-- <button class="press"> -->
         <label class="find" for="find">
           <font-awesome-icon class="icon find" :icon="['fas', 'user']" />
         </label>
-        <!-- </button> -->
 
         <!-- The content -->
         <div class="dropdown__content">
@@ -37,7 +34,7 @@
           </button>
         </div>
       </div>
-      <div class="indicator"></div>
+      <!-- dropdown menu-->
 
       <label class="notification" for="notification">
         <font-awesome-icon
@@ -68,7 +65,6 @@ export default {
     async logout() {
       try {
         this.$store.commit("logout");
-        // this.$store.commit("setStatus", "logout");
         this.$router.push("/login");
       } catch (error) {
         console.error(error.data);
@@ -128,6 +124,7 @@ export default {
     border: none;
   }
 }
+
 .dropdown:hover .dropdown__content::before {
   content: "";
   position: absolute;
@@ -159,6 +156,7 @@ export default {
   animation-delay: 2s;
   animation-iteration-count: infinite;
 }
+
 @keyframes bell-ring {
   0% {
     transform: rotate(-8deg);
@@ -191,6 +189,7 @@ export default {
   display: flex;
   justify-content: center;
 }
+
 .nav-header {
   position: relative;
   display: flex;
@@ -206,7 +205,7 @@ export default {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: rgb(243, 243, 244);
+  background: #fd2d01;
   transition: all 1s;
 }
 

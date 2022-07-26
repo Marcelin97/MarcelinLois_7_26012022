@@ -44,7 +44,6 @@ h1 {
   letter-spacing: 0.3rem;
   font-size: 1.2rem;
   margin-bottom: 1rem;
-  margin-right: 1rem;
-  text-align: right;
+  text-align: center;
 }
 </style>

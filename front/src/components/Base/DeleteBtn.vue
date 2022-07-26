@@ -18,68 +18,38 @@
   </div>
 </template>
 
-<script>
-</script>
-
 <style lang="scss" scoped>
-// delete button
 .animation-btn {
   display: flex;
   align-items: center;
 }
+
 .animation-btn :hover {
   .paper,
   .shredded {
-    background: #8de8fe;
+    background: #ffd7d7;
     animation: move 2.25s linear infinite;
   }
   .filler {
     animation: fill 4.5s infinite;
   }
 }
+
 button {
-  background-color: unset;
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 2rem;
+  position: relative;
+  width: 4rem;
   height: 4rem;
   border-radius: 0.8rem;
-  border: none;
   cursor: pointer;
-}
-
-.can {
-  overflow: hidden;
-  position: relative;
-  transform: translateY(3px);
-  width: 20px;
-  height: 22px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border: 2px solid #ffffff;
-}
-
-.lid {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 22px;
-  height: 2px;
-  background: #ffffff;
-}
-
-@keyframes move {
-  0% {
-    transform: translateY(0);
-  }
-  75% {
-    transform: translateY(88px);
-  }
-  100% {
-    transform: translateY(88px);
+  color: #f7f7f7;
+  border: 2px solid #ffff;
+  background: transparent;
+  transition: color, background 0.35s;
+  &:hover {
+    border: 2px solid #fd2d01;
   }
 }
 
@@ -95,12 +65,12 @@ button {
   display: flex;
 }
 
-.paper-wrapper {
-  height: 40px;
+.paper {
+  width: 10px;
 }
 
 .shredded-wrapper {
-  top: 24px;
+  top: 20px;
   height: 20px;
   justify-content: center;
 }
@@ -111,10 +81,6 @@ button {
   background: transparent;
   height: 10px;
   // animation: move 2.25s linear infinite;
-}
-
-.paper {
-  width: 10px;
 }
 
 .shredded {
@@ -141,6 +107,50 @@ button {
   right: -4px;
 }
 
+.lid {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 25px;
+  height: 3px;
+  background: #ffffff;
+}
+
+.can {
+  overflow: hidden;
+  position: relative;
+  transform: translateY(3px);
+  width: 20px;
+  height: 22px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border: 2px solid #ffffff;
+}
+
+.filler {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -32px;
+  width: 64px;
+  height: 120%;
+  background: #fd2d01;
+  // animation: fill 4.5s infinite;
+}
+
+@keyframes move {
+  0% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(88px);
+  }
+  100% {
+    transform: translateY(88px);
+  }
+}
+
 @keyframes fill {
   0% {
     transform: translateY(0);
@@ -160,16 +170,5 @@ button {
   100% {
     transform: translateY(-100%);
   }
-}
-
-.filler {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -32px;
-  width: 64px;
-  height: 120%;
-  background: #8de8fe;
-  // animation: fill 4.5s infinite;
 }
 </style>

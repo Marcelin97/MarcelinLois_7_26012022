@@ -5,7 +5,7 @@
         :src="`http://localhost:3000${user.imageUrl}`"
         :alt="'Avatar de ' + user.username"
         aria-label="Photo d'utilisateur"
-        v-if="user.imageUrl != '' || user.imageUrl != null"
+        v-if="user.imageUrl"
       />
       <img
         v-else

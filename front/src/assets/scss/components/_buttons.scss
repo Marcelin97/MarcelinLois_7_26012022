@@ -11,7 +11,7 @@
   border-radius: 0.8rem;
   color: black;
   text-align: center;
-  background: #08708a;
+  background: #FFff;
   cursor: pointer;
   outline: none;
   transition-property: box-shadow, background;
@@ -23,9 +23,9 @@
 }
 
 .btn:focus {
-  box-shadow: 0 0 0 2px #95d7e7;
+  box-shadow: 0 0 0 2px #f16b50;
 }
 
 .btn:hover {
-  background: #95d7e7;
+  background: #FFD7D7;
 }

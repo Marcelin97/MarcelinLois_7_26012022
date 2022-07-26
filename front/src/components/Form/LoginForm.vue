@@ -65,8 +65,8 @@
             </div>
 
             <!-- gestion erreur API avec axios -->
-            <div class="error-api">
-              <p class="error-msg">{{ apiError }}</p>
+            <div v-if="this.state.apiError != ''" class="error-api">
+              <p class="error-msg">{{ this.state.apiError }}</p>
             </div>
             <!-- gestion erreur API avec axios -->
 
@@ -77,8 +77,7 @@
               title="Connexion"
               value="Connexion"
             >
-              <!-- <span v-if="status == 'loading'">Connexion en cours...</span> -->
-              <span>Connexion</span>
+              Connexion
             </button>
             <!-- bouton de soumission -->
           </form>
@@ -118,7 +117,6 @@ export default {
   },
   setup() {
     const state = reactive({
-      mode: "login",
       user: {
         email: "",
         password: "",
@@ -165,8 +163,6 @@ export default {
   },
   methods: {
     login() {
-      this.apiError = "";
-
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
         // if ANY fail validation
@@ -179,6 +175,8 @@ export default {
               title: `Connexion réussi !`,
               text: `Vous allez être redirigé vers votre profil.`,
             });
+
+            // store current_user
             this.$store.commit("logUser", result.data);
 
             // redirection sur la page utilisateur
@@ -191,11 +189,13 @@ export default {
             );
           })
           .catch((error) => {
-            // console.log(error);
+            console.log("erreur", error);
             if (error.response.status == 404) {
-              const errorMessage = (this.apiError =
+              const errorMessage = (this.state.apiError =
                 "Utilisateur introuvable !");
               this.errorMessage = errorMessage;
+
+              console.log(this.state.apiError);
               // notification d'erreur
               this.$notify({
                 type: "error",
@@ -203,7 +203,8 @@ export default {
                 text: `Erreur reporté : ${errorMessage}`,
               });
             } else if (error.response.status == 401) {
-              const errorMessage = (this.apiError = "Mot de passe invalide !");
+              const errorMessage = (this.state.apiError =
+                "Mot de passe invalide !");
               this.errorMessage = errorMessage;
               // notification d'erreur
               this.$notify({
@@ -250,13 +251,6 @@ section div {
   }
 }
 
-.container {
-  width: auto;
-  padding: 0.1rem;
-  border-radius: 0.5rem;
-  background: #ffffff;
-}
-
 h1 {
   margin: 2rem 0;
   font-weight: bold;
@@ -274,8 +268,9 @@ form {
   display: flex;
   flex-direction: column;
   width: auto;
+  border-radius: 0.8rem;
+  background: #ffffff;
   padding: 1rem;
-  border-radius: 0.5rem;
 }
 
 .FormGroup {
@@ -284,7 +279,7 @@ form {
 
 .FormGroupLabel {
   font-size: 0.95rem;
-  color: #142342;
+  color: #000000;
 }
 
 .FormTextboxWrapper {
@@ -296,15 +291,15 @@ form {
   height: 50px;
   line-height: 50px;
   border: 0;
-  border-bottom: 1px solid #142342;
-  color: #142342;
+  border-bottom: 1px solid #000000;
+  color: black;
   text-indent: 2rem;
   &::placeholder {
     color: #142342;
   }
   &:focus {
     outline: none;
-    border-color: #c7545e;
+    border-color: #4e5166;
   }
   @media only screen and (min-width: 768px) {
     width: 25rem;
@@ -320,19 +315,8 @@ form {
 }
 
 button {
-  margin-bottom: 1.75rem;
   display: flex;
   align-self: center;
-}
-
-.text-signup {
-  font-size: 0.8rem;
-  font-weight: lighter;
-  text-align: center;
-  margin: 2rem 0;
-  line-height: 1.5rem;
-  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-  padding-bottom: 3vh;
 }
 
 // error message
@@ -346,5 +330,19 @@ button {
 
 .error-api {
   padding: 1rem;
+  color: #cc0033;
+  text-align: center;
+  font-size: 12px;
+}
+
+// action signupUser
+.text-signup {
+  font-size: 0.8rem;
+  font-weight: lighter;
+  text-align: center;
+  margin: 2rem 0;
+  line-height: 1.5rem;
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+  padding-bottom: 3vh;
 }
 </style>

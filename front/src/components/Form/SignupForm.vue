@@ -5,6 +5,13 @@
       Pour créer votre compte Groupomania, merci de remplir les champs suivants:
     </p>
 
+    <!-- gestion erreur API avec axios -->
+    <div v-if="this.state.apiError != ''" class="error-api">
+      Il y a une erreur dans le formulaire <br />
+      {{ this.state.apiError }}
+    </div>
+    <!-- gestion erreur API avec axios -->
+
     <form action="#" method="post" @submit.prevent="createAccount">
       <fieldset>
         <legend>Inscription</legend>
@@ -13,23 +20,13 @@
         <div>
           <div class="wrapper">
             <label>
-              <input
-                type="text"
-                placeholder="Nom d'utilisateur"
-                v-model="state.user.username"
-                ref="user.username"
-                @blur="v$.user.username.$touch"
-                :class="v$.user.username.$error === true ? 'error' : 'dirty'"
-              />
+              <input type="text" placeholder="Nom d'utilisateur" v-model="state.user.username" ref="user.username"
+                @blur="v$.user.username.$touch" :class="v$.user.username.$error === true ? 'error' : 'dirty'" />
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.username.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.user.username.$errors"
-                :key="index"
-              >
+              <div class="input-errors" v-for="(error, index) of v$.user.username.$errors" :key="index">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -41,23 +38,13 @@
         <div>
           <div class="wrapper">
             <label>
-              <input
-                type="email"
-                placeholder="E-mail"
-                v-model="state.user.email"
-                ref="user.email"
-                @blur="v$.user.email.$touch"
-                :class="v$.user.email.$error === true ? 'error' : 'dirty'"
-              />
+              <input type="email" placeholder="E-mail" v-model="state.user.email" ref="user.email"
+                @blur="v$.user.email.$touch" :class="v$.user.email.$error === true ? 'error' : 'dirty'" />
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.email.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.user.email.$errors"
-                :key="index"
-              >
+              <div class="input-errors" v-for="(error, index) of v$.user.email.$errors" :key="index">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -69,23 +56,13 @@
         <div>
           <div class="wrapper">
             <label>
-              <input
-                type="password"
-                placeholder="Mot de passe"
-                v-model="state.user.password"
-                ref="user.password"
-                @blur="v$.user.password.$touch"
-                :class="v$.user.password.$error === true ? 'error' : 'dirty'"
-              />
+              <input type="password" placeholder="Mot de passe" v-model="state.user.password" ref="user.password"
+                @blur="v$.user.password.$touch" :class="v$.user.password.$error === true ? 'error' : 'dirty'" />
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.password.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.user.password.$errors"
-                :key="index"
-              >
+              <div class="input-errors" v-for="(error, index) of v$.user.password.$errors" :key="index">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -94,31 +71,18 @@
         </div>
       </fieldset>
 
-      <!-- gestion erreur API avec axios -->
-      <!-- <div class="form-row">
-        ❌ Il y a une erreur dans le formulaire : <br />
-        {{ apiError }}
-      </div> -->
-      <!-- gestion erreur API avec axios -->
-
       <!-- bouton de soumission -->
       <div class="submit">
-        <button
-          class="btn"
-          type="submit"
-          title="Créer mon compte"
-          aria-label="Créer mon compte"
-        >
-        <span v-if="!this.v$.$error">Créer mon compte</span>
-          <span v-else>Création en cours...</span>
-          
+        <button type="submit" title="Créer mon compte" aria-label="Créer mon compte">
+          <span class="btn" v-if="!this.v$.$error">Créer mon compte</span>
+          <span class="btn" v-else>Création en cours...</span>
         </button>
         <!-- bouton de soumission -->
       </div>
     </form>
-    <!-- <button @click="$refs.modalName.openModal()">Open Modal</button> -->
+
     <!-- success modal  -->
-    <modalStructure ref="modalName">
+    <modalStructure ref="signupUser">
       <template v-slot:header>
         <h1>📝 Merci pour votre soumission!</h1>
       </template>
@@ -222,8 +186,6 @@ export default {
   },
   methods: {
     createAccount() {
-      this.apiError = "";
-
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
         // if ANY fail validation
@@ -234,10 +196,9 @@ export default {
             // console.log(result.data);
             this.state.user = result.data;
             // console.log(this.state.user);
-            // this.$store.commit("signupUser", result.data.data);
-
+            
             // open success modal
-            this.$refs.modalName.openModal();
+            this.$refs.signupUser.openModal();
 
             // and redirect to the login page
             setTimeout(
@@ -250,14 +211,13 @@ export default {
           })
           .catch((error) => {
             // console.log(error.response.data.error.errors[0].message);
-            const errorMessage = (this.apiError =
+            const errorMessage = (this.state.apiError =
               error.response.data.error.errors[0].message);
-            this.errorMessage = errorMessage;
 
             // error notification
             this.$notify({
               type: "error",
-              title: `❌ Erreur lors de l'inscription`,
+              title: `Erreur lors de l'inscription`,
               text: `Erreur reporté : ${errorMessage}`,
             });
           });
@@ -285,9 +245,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form-row {
-  color: red;
-  max-width: 25rem;
+.error-api{
+  color: #cc0033;
+  text-align: center;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
 }
 .container {
   display: flex;
@@ -327,7 +290,7 @@ form {
 legend {
   line-height: 1.5rem;
   letter-spacing: 0.1rem;
-  color: #8de8fe;
+  color: #ffff;
 }
 
 fieldset {
@@ -346,9 +309,9 @@ input {
   padding: 0 0.5rem;
   border-radius: 0.25rem;
   margin-bottom: 0.3rem;
-  border: 1px solid #585858;
-  color: #8de8fe;
-  background-color: rgb(12, 19, 31);
+  border: none;
+  color: #ffff;
+  background-color: black;
 
   @media only screen and (min-width: 400px) {
     width: 18rem;
@@ -359,10 +322,18 @@ input {
   }
 }
 
-// * error if input is invalid
+// action buttons
+button {
+  background: inherit;
+  border: none;
+}
+.submit {
+  margin-top: 30px;
+}
 
+// * error if input is invalid
 .dirty {
-  border-color: #8de8fe;
+  outline-color: rgb(255, 255, 255);
 }
 
 .dirty:focus {
@@ -372,7 +343,6 @@ input {
 .error {
   background: #fdd;
   border-color: #fd4444;
-  opacity: 0.7;
   animation: shake 0.2s;
   animation-iteration-count: 3;
 }
@@ -402,10 +372,5 @@ input {
   75% {
     transform: translateX(-8px);
   }
-}
-
-// * Submit
-.submit {
-  margin-top: 30px;
 }
 </style>
