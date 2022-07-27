@@ -26,7 +26,7 @@
           <!-- Publications -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.posts.length }}
+              <!-- {{ user.posts.length }} -->
             </div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
@@ -34,7 +34,7 @@
           <!-- Commentaires -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.comments.length }}
+              <!-- {{ user.comments.length }} -->
             </div>
             <div class="profile-card-inf__txt">Commentaires</div>
           </div>
@@ -42,7 +42,7 @@
           <!-- Communautés crées -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.community.length }}
+              <!-- {{ user.community.length }} -->
             </div>
             <div class="profile-card-inf__txt">Communautés crées</div>
           </div>
@@ -100,7 +100,7 @@
 
     <template v-slot:footer>
       <div class="modal__actions">
-        <button class="btn" @click="$refs.modalName.closeModal()">
+        <button class="btn" text="Annuler" @click="$refs.modalName.closeModal()">
           Cancel
         </button>
         <deleteBtn @click="deleteAccountClick" />
@@ -134,7 +134,7 @@
             <!-- Error Message -->
           </div>
 
-          <button type="submit" class="btn button" title="Signaler" value="Signaler">
+          <button type="submit" class="btn button" title="Signaler" text="Signaler" value="Signaler">
             Confirmer signalement
           </button>
         </form>
@@ -329,7 +329,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 // Profil
 .wrapper {
   width: 100%;

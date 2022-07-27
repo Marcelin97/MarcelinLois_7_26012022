@@ -1,5 +1,4 @@
 <template>
-  <h3>Les dernières communautés</h3>
   <!-- CONTAINER OF CARDS DRAGS HORIZONTAL -->
   <div class="container-cards">
     <div>
@@ -104,12 +103,6 @@
 </template>
 
 <style lang="scss" scoped>
-h3 {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
 .cards {
   z-index: 1;
   margin: 20px;
@@ -147,7 +140,7 @@ h3 {
 }
 /* Track */
 .scroll-container::-webkit-scrollbar-track {
-  background: rgb(12, 19, 31);
+  background: transparent;
 }
 
 /* Chrome, Edge, and Safari */
@@ -156,7 +149,7 @@ h3 {
 }
 /* Handle */
 .scroll-container::-webkit-scrollbar-thumb {
-  background: #8de8fe;
+  background: #f16b50;
   border-radius: 10px;
   outline: none;
   transition: all 0.3s ease-out;

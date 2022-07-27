@@ -81,7 +81,6 @@
           />
           <router-link class="text" to="/wall">Home</router-link>
         </label>
-        <div class="indicator"></div>
 
         <div class="dropdown">
           <!-- The trigger element -->
@@ -102,7 +101,6 @@
             <button class="dropdown-text" @click="logout">Déconnexion</button>
           </div>
         </div>
-        <div class="indicator"></div>
 
         <label class="notification" for="notification">
           <font-awesome-icon
@@ -111,7 +109,6 @@
           />
           <router-link class="text" to="#">Alerte</router-link>
         </label>
-        <div class="indicator"></div>
 
         <label class="messagerie" for="messagerie">
           <font-awesome-icon
@@ -120,7 +117,6 @@
           />
           <router-link class="text" to="#">Chat</router-link>
         </label>
-        <div class="indicator"></div>
       </nav>
     </div>
     <!-- Header navigation -->
@@ -140,6 +136,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
+
+
+
 .dropdown {
   position: relative;
   display: grid;
@@ -270,18 +271,6 @@ export default {
   }
 }
 
-.indicator {
-  position: absolute;
-  bottom: 3px;
-  left: 30px;
-  margin-left: 8px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgb(243, 243, 244);
-  transition: all 1s;
-}
-
 input {
   position: absolute;
   transform: scale(0);
@@ -330,22 +319,6 @@ input:nth-child(4):checked ~ label.messagerie .text {
   opacity: 1;
 }
 
-input:nth-child(1):checked ~ .indicator {
-  transform: translateX(0);
-}
-
-input:nth-child(2):checked ~ .indicator {
-  transform: translateX(70px);
-}
-
-input:nth-child(3):checked ~ .indicator {
-  transform: translateX(130px);
-}
-
-input:nth-child(4):checked ~ .indicator {
-  transform: translateX(210px);
-}
-
 /* Menu left */
 .MenuContainer {
   z-index: 9999;
@@ -390,21 +363,24 @@ input:nth-child(4):checked ~ .indicator {
   width: 30px;
   z-index: 2;
 }
+
 .MenuIcon::before {
   box-shadow: rgb(243, 243, 244) 0 12px 0;
   height: 6px;
   transform-origin: left top;
   width: 30px;
 }
+
 .MenuIcon::after {
   bottom: 0;
   height: 6px;
   transform-origin: left bottom;
   width: 30px;
 }
+
 .MenuIcon::before,
 .MenuIcon::after {
-  background-color: #c7545e;
+  background-color: #f16b50;
   display: block;
   content: "";
   position: absolute;
@@ -421,7 +397,7 @@ input:nth-child(4):checked ~ .indicator {
   transform: translate3d(0, -15px, 0);
   transition: transform 0.6s, opacity 0.5s;
   z-index: 2;
-  font-size: 15px;
+  font-size: 1.4rem;
   font-weight: 600;
   text-align: center;
   letter-spacing: 4px;
@@ -433,7 +409,7 @@ input:nth-child(4):checked ~ .indicator {
   display: flex;
   flex-direction: column;
   bottom: 0;
-  left: -100%;
+  left: -250%;
   position: absolute;
   top: 180px;
   margin-top: 20px;
@@ -445,7 +421,7 @@ input:nth-child(4):checked ~ .indicator {
 }
 
 .side-wrapper {
-  background-color: #c7545e;
+  background-color: #f16b50;
   padding-top: 40px;
   padding-left: 30px;
   width: 320px;
@@ -454,7 +430,7 @@ input:nth-child(4):checked ~ .indicator {
 .side-title {
   font-size: 15px;
   margin-bottom: 20px;
-  background-color: #c7545e;
+  background-color: #f16b50;
 }
 
 .side-menu {
@@ -462,18 +438,18 @@ input:nth-child(4):checked ~ .indicator {
   flex-direction: column;
   font-size: 15px;
   white-space: nowrap;
-  background-color: #c7545e;
+  background-color: #f16b50;
   margin-bottom: 20px;
 }
 
 .side-menu a {
-  background-color: #c7545e;
+  background-color: #f16b50;
   display: flex;
   flex-direction: row;
   align-items: center;
   &:hover {
     text-decoration: line-through;
-    color: #142342;
+    // color: #142342;
   }
 }
 

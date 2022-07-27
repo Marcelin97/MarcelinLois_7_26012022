@@ -1,17 +1,28 @@
 <template>
-  <section>
-    <div class="container">
+  <section class="container">
+    <h1>{{ msg }}</h1>
+
+    <div class="container-update">
       <h2 class="title">Modifier mon profil</h2>
 
       <form @submit.prevent="updateAccountClick" enctype="multipart/form-data">
         <div class="form-group">
           <label for="first-name">Prénom</label>
-          <input id="first-name" type="text" v-model="state.user.firstName" @blur="v$.user.firstName.$touch"
-            :class="v$.user.firstName.$error === true ? 'error' : 'dirty'" />
+          <input
+            id="first-name"
+            type="text"
+            v-model="state.user.firstName"
+            @blur="v$.user.firstName.$touch"
+            :class="v$.user.firstName.$error === true ? 'error' : 'dirty'"
+          />
 
           <!-- Error Message -->
           <template v-if="v$.user.firstName.$dirty">
-            <div class="input-errors" v-for="(error, index) of v$.user.firstName.$errors" :key="index">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.firstName.$errors"
+              :key="index"
+            >
               <div class="error-msg">{{ error.$message }}</div>
             </div>
           </template>
@@ -20,12 +31,21 @@
 
         <div class="form-group">
           <label for="last-name">Nom de famille</label>
-          <input id="last-name" type="text" v-model="state.user.lastName" @blur="v$.user.lastName.$touch"
-            :class="v$.user.lastName.$error === true ? 'error' : 'dirty'" />
+          <input
+            id="last-name"
+            type="text"
+            v-model="state.user.lastName"
+            @blur="v$.user.lastName.$touch"
+            :class="v$.user.lastName.$error === true ? 'error' : 'dirty'"
+          />
 
           <!-- Error Message -->
           <template v-if="v$.user.lastName.$dirty">
-            <div class="input-errors" v-for="(error, index) of v$.user.lastName.$errors" :key="index">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.lastName.$errors"
+              :key="index"
+            >
               <div class="error-msg">{{ error.$message }}</div>
             </div>
           </template>
@@ -34,12 +54,21 @@
 
         <div class="form-group">
           <label for="birthday">Date de naissance</label>
-          <input id="birthday" type="date" v-model="state.user.birthday" @blur="v$.user.birthday.$touch"
-            :class="v$.user.birthday.$error === true ? 'error' : 'dirty'" />
+          <input
+            id="birthday"
+            type="date"
+            v-model="state.user.birthday"
+            @blur="v$.user.birthday.$touch"
+            :class="v$.user.birthday.$error === true ? 'error' : 'dirty'"
+          />
 
           <!-- Error Message -->
           <template v-if="v$.user.birthday.$dirty">
-            <div class="input-errors" v-for="(error, index) of v$.user.birthday.$errors" :key="index">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.birthday.$errors"
+              :key="index"
+            >
               <div class="error-msg">{{ error.$message }}</div>
             </div>
           </template>
@@ -48,12 +77,21 @@
 
         <div class="form-group">
           <label for="username">Nom d'utilisateur</label>
-          <input id="username" type="text" v-model="state.user.username" @blur="v$.user.username.$touch"
-            :class="v$.user.username.$error === true ? 'error' : 'dirty'" />
+          <input
+            id="username"
+            type="text"
+            v-model="state.user.username"
+            @blur="v$.user.username.$touch"
+            :class="v$.user.username.$error === true ? 'error' : 'dirty'"
+          />
 
           <!-- Error Message -->
           <template v-if="v$.user.username.$dirty">
-            <div class="input-errors" v-for="(error, index) of v$.user.username.$errors" :key="index">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.username.$errors"
+              :key="index"
+            >
               <div class="error-msg">{{ error.$message }}</div>
             </div>
           </template>
@@ -62,12 +100,21 @@
 
         <div class="form-group">
           <label for="email">E-mail</label>
-          <input id="email" type="email" v-model="state.user.email" @blur="v$.user.email.$touch"
-            :class="v$.user.email.$error === true ? 'error' : 'dirty'" />
+          <input
+            id="email"
+            type="email"
+            v-model="state.user.email"
+            @blur="v$.user.email.$touch"
+            :class="v$.user.email.$error === true ? 'error' : 'dirty'"
+          />
 
           <!-- Error Message -->
           <template v-if="v$.user.email.$dirty">
-            <div class="input-errors" v-for="(error, index) of v$.user.email.$errors" :key="index">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.email.$errors"
+              :key="index"
+            >
               <div class="error-msg">{{ error.$message }}</div>
             </div>
           </template>
@@ -76,12 +123,21 @@
 
         <div class="form-group">
           <label for="newPassword">Mot de passe</label>
-          <input id="newPassword" type="password" v-model="state.user.newPassword" @blur="v$.user.newPassword.$touch"
-            :class="v$.user.newPassword.$error === true ? 'error' : 'dirty'" />
+          <input
+            id="newPassword"
+            type="password"
+            v-model="state.user.newPassword"
+            @blur="v$.user.newPassword.$touch"
+            :class="v$.user.newPassword.$error === true ? 'error' : 'dirty'"
+          />
 
           <!-- Error Message -->
           <template v-if="v$.user.newPassword.$dirty">
-            <div class="input-errors" v-for="(error, index) of v$.user.newPassword.$errors" :key="index">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.newPassword.$errors"
+              :key="index"
+            >
               <div class="error-msg">{{ error.$message }}</div>
             </div>
           </template>
@@ -90,17 +146,27 @@
 
         <div class="form-group">
           <label for="userImage">Photo de profil</label>
-          <input class="input-file" v-on="state.user.userImage" id="userImage" type="file"
-            accept=".jpeg,.jpg,png" @change="onChangeFileUpload" ref="file" />
+          <input
+            class="input-file"
+            v-on="state.user.userImage"
+            id="userImage"
+            type="file"
+            accept=".jpeg,.jpg,png"
+            @change="onChangeFileUpload"
+            ref="file"
+          />
 
           <!-- Error Message -->
           <template v-if="v$.user.userImage.$dirty">
-            <div class="input-errors" v-for="(error, index) of v$.user.userImage.$errors" :key="index">
+            <div
+              class="input-errors"
+              v-for="(error, index) of v$.user.userImage.$errors"
+              :key="index"
+            >
               <div class="error-msg">{{ error.$message }}</div>
             </div>
           </template>
           <!-- Error Message -->
-
         </div>
 
         <!-- button submit -->
@@ -135,6 +201,9 @@ export function strongPassword(value) {
 
 export default {
   name: "Update-Profile",
+  props: {
+    msg: String,
+  },
   setup() {
     const state = reactive({
       test: "",
@@ -164,8 +233,8 @@ export default {
         },
         birthday: {
           // required: helpers.withMessage(
-            // "La date d'anniversaire est obligatoire",
-            // required
+          // "La date d'anniversaire est obligatoire",
+          // required
           // ),
           $autoDirty: true,
           $lazy: true,
@@ -233,9 +302,9 @@ export default {
       bodyFormData.append("newPassword", this.state.user.newPassword);
       bodyFormData.append("username", this.state.user.username);
       bodyFormData.append("image", this.state.user.userImage);
-      for (let value of bodyFormData.values()) {
-        console.log(value);
-      }
+      // for (let value of bodyFormData.values()) {
+      //   console.log(value);
+      // }
 
       axiosInstance
         .patch("/auth/update", bodyFormData, {
@@ -244,7 +313,7 @@ export default {
           },
         })
         .then((result) => {
-          console.log("result: ", result.data);
+          // console.log("result: ", result.data);
           this.$store.commit("updateUser", result.data);
           // alert("Vos modifications sont enregistrées");
 
@@ -275,20 +344,37 @@ export default {
 <style lang="scss" scoped>
 .container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  @media only screen and (min-width: 768px) {
-    flex-direction: column;
+  h1 {
+    font-size: 1.4rem;
+    line-height: 1.4rem;
+    letter-spacing: 0.3rem;
+    font-weight: bolder;
+    text-align: center;
+    margin: 2rem 0 0;
+
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    padding-bottom: 3vh;
   }
+}
+
+.container-update {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .title {
   font-size: 0.8rem;
   font-weight: lighter;
   text-align: center;
+  margin: 2rem 0;
   line-height: 1.5rem;
-  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+  border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
   padding-bottom: 3vh;
 }
 
@@ -328,15 +414,13 @@ input {
   cursor: pointer;
 }
 
-.input-file{
+.input-file {
   border: none;
   background: transparent;
 }
 
 // error if input is invalid
 .dirty {
-  // border-color: #5a5;
-  // background: #efe;
   border-color: #8de8fe;
 }
 
@@ -362,7 +446,7 @@ input {
   line-height: 15px;
   margin: 5px 0 0;
   max-width: 15rem;
-    @media only screen and (min-width: 576px) {
+  @media only screen and (min-width: 576px) {
     max-width: 25rem;
   }
 }

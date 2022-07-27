@@ -20,13 +20,23 @@
         <div>
           <div class="wrapper">
             <label>
-              <input type="text" placeholder="Nom d'utilisateur" v-model="state.user.username" ref="user.username"
-                @blur="v$.user.username.$touch" :class="v$.user.username.$error === true ? 'error' : 'dirty'" />
+              <input
+                type="text"
+                placeholder="Nom d'utilisateur"
+                v-model="state.user.username"
+                ref="user.username"
+                @blur="v$.user.username.$touch"
+                :class="v$.user.username.$error === true ? 'error' : 'dirty'"
+              />
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.username.$dirty">
-              <div class="input-errors" v-for="(error, index) of v$.user.username.$errors" :key="index">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.user.username.$errors"
+                :key="index"
+              >
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -38,13 +48,23 @@
         <div>
           <div class="wrapper">
             <label>
-              <input type="email" placeholder="E-mail" v-model="state.user.email" ref="user.email"
-                @blur="v$.user.email.$touch" :class="v$.user.email.$error === true ? 'error' : 'dirty'" />
+              <input
+                type="email"
+                placeholder="E-mail"
+                v-model="state.user.email"
+                ref="user.email"
+                @blur="v$.user.email.$touch"
+                :class="v$.user.email.$error === true ? 'error' : 'dirty'"
+              />
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.email.$dirty">
-              <div class="input-errors" v-for="(error, index) of v$.user.email.$errors" :key="index">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.user.email.$errors"
+                :key="index"
+              >
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -56,13 +76,23 @@
         <div>
           <div class="wrapper">
             <label>
-              <input type="password" placeholder="Mot de passe" v-model="state.user.password" ref="user.password"
-                @blur="v$.user.password.$touch" :class="v$.user.password.$error === true ? 'error' : 'dirty'" />
+              <input
+                type="password"
+                placeholder="Mot de passe"
+                v-model="state.user.password"
+                ref="user.password"
+                @blur="v$.user.password.$touch"
+                :class="v$.user.password.$error === true ? 'error' : 'dirty'"
+              />
             </label>
 
             <!-- Error Message -->
             <template v-if="v$.user.password.$dirty">
-              <div class="input-errors" v-for="(error, index) of v$.user.password.$errors" :key="index">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.user.password.$errors"
+                :key="index"
+              >
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -73,7 +103,11 @@
 
       <!-- bouton de soumission -->
       <div class="submit">
-        <button type="submit" title="Créer mon compte" aria-label="Créer mon compte">
+        <button
+          type="submit"
+          title="Créer mon compte"
+          aria-label="Créer mon compte"
+        >
           <span class="btn" v-if="!this.v$.$error">Créer mon compte</span>
           <span class="btn" v-else>Création en cours...</span>
         </button>
@@ -121,7 +155,7 @@ export function strongPassword(value) {
 }
 
 export default {
-  name: "SignupForm",
+  name: "Signup-Form",
   components: {
     modalStructure,
   },
@@ -130,7 +164,6 @@ export default {
   },
   setup() {
     const state = reactive({
-      mode: "create",
       user: {
         email: "",
         password: "",
@@ -196,7 +229,7 @@ export default {
             // console.log(result.data);
             this.state.user = result.data;
             // console.log(this.state.user);
-            
+
             // open success modal
             this.$refs.signupUser.openModal();
 
@@ -245,7 +278,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.error-api{
+.error-api {
   color: #cc0033;
   text-align: center;
   font-size: 12px;
@@ -255,18 +288,17 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
 
   h1 {
-    margin: 2rem 0 0;
-    font-weight: bold;
-    letter-spacing: 0.3rem;
     font-size: 1.4rem;
-    font-weight: bolder;
     line-height: 1.4rem;
+    letter-spacing: 0.3rem;
+    font-weight: bolder;
     text-align: center;
-    // margin: 4rem 1rem;
-    border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
+    margin: 2rem 0 0;
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
     padding-bottom: 3vh;
   }
 

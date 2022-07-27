@@ -18,6 +18,7 @@ import InputBox from "./InputBox.vue";
 import StoriesWall from "./StoriesWall.vue";
 
 export default {
+  name:"Feed-Wall",
   components: {
     PostsWall,
     InputBox,
@@ -25,7 +26,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-
-</style>

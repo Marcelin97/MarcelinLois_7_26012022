@@ -20,7 +20,7 @@ import HelloWorld from "@/components/HelloWorld.vue";
 import LogoHome from "@/components/Logo.vue";
 
 export default {
-  name: "WelcomeView",
+  name: "Welcome-View",
   components: {
     HelloWorld,
     LogoHome,

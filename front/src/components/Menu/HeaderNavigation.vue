@@ -43,7 +43,6 @@
         />
         <router-link class="text" to="#">Alerte</router-link>
       </label>
-      <div class="indicator"></div>
 
       <label class="messagerie" for="messagerie">
         <font-awesome-icon
@@ -52,7 +51,6 @@
         />
         <router-link class="text" to="#">Chat</router-link>
       </label>
-      <div class="indicator"></div>
     </nav>
   </div>
   <!-- Header navigation -->
@@ -60,7 +58,7 @@
 
 <script>
 export default {
-  name: "HeaderNavigation",
+  name: "Header-Navigation",
   methods: {
     async logout() {
       try {
@@ -197,18 +195,6 @@ export default {
   height: 70px;
 }
 
-.indicator {
-  position: absolute;
-  bottom: 3px;
-  left: 30px;
-  margin-left: 8px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #fd2d01;
-  transition: all 1s;
-}
-
 input {
   position: absolute;
   transform: scale(0);
@@ -255,21 +241,5 @@ input:nth-child(2):checked ~ label.find .text,
 input:nth-child(3):checked ~ label.notification .text,
 input:nth-child(4):checked ~ label.messagerie .text {
   opacity: 1;
-}
-
-input:nth-child(1):checked ~ .indicator {
-  transform: translateX(0);
-}
-
-input:nth-child(2):checked ~ .indicator {
-  transform: translateX(70px);
-}
-
-input:nth-child(3):checked ~ .indicator {
-  transform: translateX(130px);
-}
-
-input:nth-child(4):checked ~ .indicator {
-  transform: translateX(210px);
 }
 </style>
