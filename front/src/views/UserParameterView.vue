@@ -1,6 +1,8 @@
 <template>
-  <GoBack />
-  <UserParameter msg="Gestion du profil" />
+  <div>
+    <GoBack />
+    <UserParameter msg="Gestion du profil" />
+  </div>
 </template>
 
 <script>

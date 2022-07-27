@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" v-if="user.length != 0">
+  <div class="wrapper" >
     <div class="profile-card js-profile-card">
 
       <!-- Profil image -->

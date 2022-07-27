@@ -1,6 +1,4 @@
 <template>
-  <HeaderNavigation />
-
   <section>
     <h1 v-if="communities.length">Explore des nouvelles communautés !</h1>
     <h1 v-else>Il n'y a pas encore de communauté.</h1>
@@ -27,15 +25,13 @@
 
 <script>
 import CommunityList from "../components/Community/communityList.vue";
-import HeaderNavigation from "../components/Menu/HeaderNavigation.vue";
 import InputBoxCommunityVue from "../components/Community/InputBoxCommunity.vue";
 import axiosInstance from "../services/api";
 
 export default {
-  name: "CommunityView",
+  name: "Community-View",
   components: {
     CommunityList,
-    HeaderNavigation,
     InputBoxCommunityVue,
   },
  

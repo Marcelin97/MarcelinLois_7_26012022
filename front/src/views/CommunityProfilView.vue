@@ -1,5 +1,4 @@
 <template>
-  <HeaderNavigation />
   <section>
     <h1>Ma communauté</h1>
     <CommunityProfil />
@@ -7,13 +6,11 @@
 </template>
 
 <script>
-import HeaderNavigation from "../components/Menu/HeaderNavigation.vue";
 import CommunityProfil from "../components/Community/CommunityProfil.vue";
 
 export default {
   name: "CommunityProfilView",
   components: {
-    HeaderNavigation,
     CommunityProfil,
   },
 };

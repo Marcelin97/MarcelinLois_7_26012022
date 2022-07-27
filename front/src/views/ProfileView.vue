@@ -1,8 +1,8 @@
 <template>
-  <HeaderNavigation />
-  <section>
+  <section v-if="user.length != 0">
+    <HeaderNavigation />
     <h1>Mon compte</h1>
-    <UserProfile :user="user" :key="user.id" :userLoggedIn="userLoggedIn" />
+    <UserProfile :user="user" :userLoggedIn="true" />
   </section>
 </template>
 
@@ -19,12 +19,11 @@ export default {
   data() {
     return {
       user: [],
-      userLoggedIn: true,
     };
   },
   mounted() {
     this.user = this.$store.state.user;
-
+    // console.log(this.$store.state.user);
     // if user is not connected redirect to login page
     if (!this.user) {
       this.$router.push("/login");

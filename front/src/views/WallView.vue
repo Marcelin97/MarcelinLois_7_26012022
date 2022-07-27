@@ -1,8 +1,6 @@
 <template>
   <!-- The Wall view -->
   <div>
-    <!-- NavBar + Header -->
-    <NavBar />
     <div class="logo-home">
       <LogoHome />
     </div>
@@ -15,14 +13,12 @@
 
 <script>
 // @ is an alias to /src
-import NavBar from "@/components/Menu/NavBar.vue";
 import FeedWall from "@/components/Feed/FeedWall.vue";
 import LogoHome from "@/components/Logo.vue";
 
 export default {
   name: "Wall-View",
   components: {
-    NavBar,
     FeedWall,
     LogoHome,
   },

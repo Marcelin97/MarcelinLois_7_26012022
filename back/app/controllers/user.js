@@ -289,6 +289,8 @@ exports.readAll = (req, res) => {
 //* Update
 exports.update = async (req, res) => {
   console.log("body update : ", req.body);
+  var emailEncrypted = encrypted(req.body.email);
+
   // TODO : 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
   user
     .findOne({ where: { id: req.auth.userID } })
@@ -344,11 +346,17 @@ exports.update = async (req, res) => {
       // console.log(req.body);
       result
         .update(req.body, { where: { id: result.id } })
-        .then(() => {
+        .then((newUser) => {
+          // todo : decrypted email
+          newUser.email = decryptEmail(emailEncrypted);
+
+          // console.log("newUser" , newUser);
+          // console.log("résultt", result);
+
           res.status(200).json({
             message: " User updated",
             status: 200,
-            user: result,
+            user: newUser,
           });
         })
         .catch((error) =>

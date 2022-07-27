@@ -1,6 +1,8 @@
 <template>
-  <GoBack />
-  <SignupForm msg="Créer mon compte" />
+  <div>
+    <GoBack />
+    <SignupForm msg="Créer mon compte" />
+  </div>
 </template>
 
 <script>

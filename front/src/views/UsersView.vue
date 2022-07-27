@@ -1,6 +1,4 @@
 <template>
-  <HeaderNavigation />
-
   <section v-if="users.length != 0 && users.length != ''">
     <h1>Explore des nouveaux profils !</h1>
 
@@ -26,15 +24,13 @@
 </template>
 
 <script>
-import HeaderNavigation from "@/components/Menu/HeaderNavigation.vue";
 import UsersList from "@/components/Profil/UsersList";
 import axiosInstance from "../services/api";
 
 export default {
-  name: "UsersView",
+  name: "Users-View",
   components: {
     UsersList,
-    HeaderNavigation,
   },
   data() {
     return {
