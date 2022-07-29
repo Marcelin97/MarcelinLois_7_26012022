@@ -4,7 +4,7 @@
     <router-link to="/wall" class="logo">
       <img src="../../assets/img/icon.svg" alt="" />
     </router-link>
-<!-- 
+    <!-- 
 			<div class="nav-but-wrap menu-icon" type="checkbox" id="menu-icon" name="menu-icon" >
 				<div class="menu-icon hover-target">
 					<span class="menu-icon__line menu-icon__line-left"></span>
@@ -27,7 +27,9 @@
           <router-link class="dropdown-text" to="/">Enregistré</router-link>
         </li>
         <li>
-          <router-link class="dropdown-text" to="/user/parameter">Paramètres</router-link>
+          <router-link class="dropdown-text" to="/user/parameter"
+            >Paramètres</router-link
+          >
         </li>
         <li>
           <button class="logout" @click="logout">Déconnexion</button>
@@ -41,77 +43,71 @@
 </script>
 
 <style lang="scss" scoped>
-.nav-but-wrap{ 
-	position: relative;
-	display: inline-block;
-	float: right;
-	padding-left: 15px;
-	padding-top: 15px;
-	margin-top: 26px;
-	transition : all 0.3s ease-out;
+.nav-but-wrap {
+  position: relative;
+  display: inline-block;
+  float: right;
+  padding-left: 15px;
+  padding-top: 15px;
+  margin-top: 26px;
+  transition: all 0.3s ease-out;
 }
 .menu-icon {
-	height: 30px;
-	width: 30px;
-	position: relative;
-	z-index: 2;
-	cursor: pointer;
-	display: block;
+  height: 30px;
+  width: 30px;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+  display: block;
 }
 .menu-icon__line {
-	height: 2px;
-	width: 30px;
-	display: block;
-	background-color: rgb(227, 14, 14);
-	margin-bottom: 7px;
-	cursor: pointer;
-	-webkit-transition: background-color .5s ease, -webkit-transform .2s ease;
-	transition: background-color .5s ease, -webkit-transform .2s ease;
-	transition: transform .2s ease, background-color .5s ease;
-	transition: transform .2s ease, background-color .5s ease, -webkit-transform .2s ease;
+  height: 2px;
+  width: 30px;
+  display: block;
+  background-color: rgb(227, 14, 14);
+  margin-bottom: 7px;
+  cursor: pointer;
+  -webkit-transition: background-color 0.5s ease, -webkit-transform 0.2s ease;
+  transition: background-color 0.5s ease, -webkit-transform 0.2s ease;
+  transition: transform 0.2s ease, background-color 0.5s ease;
+  transition: transform 0.2s ease, background-color 0.5s ease,
+    -webkit-transform 0.2s ease;
 }
 .menu-icon__line-left {
-	width: 16.5px;
-	-webkit-transition: all 200ms linear;
-	transition: all 200ms linear;
+  width: 16.5px;
+  -webkit-transition: all 200ms linear;
+  transition: all 200ms linear;
 }
 .menu-icon__line-right {
-	width: 16.5px;
-	float: right;
-	-webkit-transition: all 200ms linear;
-	-moz-transition: all 200ms linear;
-	-o-transition: all 200ms linear;
-	-ms-transition: all 200ms linear;
-	transition: all 200ms linear;
+  width: 16.5px;
+  float: right;
+  -webkit-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  -ms-transition: all 200ms linear;
+  transition: all 200ms linear;
 }
 .menu-icon:hover .menu-icon__line-left,
 .menu-icon:hover .menu-icon__line-right {
-	width: 30px;
+  width: 30px;
 }
 
 .header {
- display: flex;
-    flex-basis: 100%;
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-
+  display: flex;
+  flex-basis: 100%;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
 }
-
-
-
-
 
 .logo {
   position: relative;
-  // top: 30px;
-  // left: 30px;
-  margin-bottom: 2rem;
 }
 
 .logo img {
   height: 90px;
   width: auto;
+  margin: 1rem;
 }
 
 [type="checkbox"]:checked,
@@ -120,7 +116,7 @@
   left: -9999px;
 }
 
-.menu-icon:checked+label{
+.menu-icon:checked + label {
   position: relative;
 }
 .menu-icon:checked + label,
@@ -374,12 +370,8 @@
 @media screen and (max-width: 768px) {
   .menu-icon:checked + label,
   .menu-icon:not(:checked) + label {
-    right: 55px;
+    // right: 55px;
   }
-
-  // .logo {
-  //   left: 30px;
-  // }
 
   .nav {
     right: 30px;
