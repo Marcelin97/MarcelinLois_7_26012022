@@ -1,6 +1,5 @@
 <template>
   <section v-if="user.length != 0">
-    <HeaderNavigation />
     <h1>Mon compte</h1>
     <UserProfile :user="user" :userLoggedIn="true" />
   </section>
@@ -8,13 +7,11 @@
 
 <script>
 import UserProfile from "@/components/Profil/UserProfile.vue";
-import HeaderNavigation from "@/components/Menu/HeaderNavigation.vue";
 
 export default {
   name: "Profile-View",
   components: {
     UserProfile,
-    HeaderNavigation,
   },
   data() {
     return {
@@ -33,10 +30,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 h1 {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 35px;
   line-height: 35px;
   text-transform: uppercase;
   font-weight: bold;
@@ -44,5 +42,8 @@ h1 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
   text-align: center;
+  @media only screen and (min-width: 768px) { 
+    margin-top: 0px;
+  }
 }
 </style>

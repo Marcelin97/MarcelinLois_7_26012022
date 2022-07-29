@@ -1,33 +1,35 @@
 <template>
-  <nav>
-    <GoBack />
-  </nav>
-  <div class="container">
-    <div class="connect-wrap">
-      <div class="extras">
-        <span>🤟</span>
-        <span>😂</span>
-        <span>😘</span>
-        <span>🤪</span>
-        <span>🥳</span>
+  <div>
+    <nav>
+      <GoBack />
+    </nav>
+    <div class="container">
+      <div class="connect-wrap">
+        <div class="extras">
+          <span>🤟</span>
+          <span>😂</span>
+          <span>😘</span>
+          <span>🤪</span>
+          <span>🥳</span>
+        </div>
+        <div class="smiley">
+          <img src="../assets/img/icon.svg" alt="Logo de l'entreprise" />
+        </div>
       </div>
-      <div class="smiley">
-        <img src="../assets/img/logo.svg" alt="" />
-      </div>
-    </div>
-    <div class="login">
-      <h1>Un seul identifiant</h1>
-      <p>
-        Avec votre compte Groupomania retrouvez tous vos collègues, communautés,
-        posts,...
-      </p>
-      <div class="actions">
-        <router-link class="nav btn" to="/signup"
-          >Créer un compte</router-link
-        >
-        <router-link class="nav btn-login btn" to="/login"
-          >Connexion</router-link
-        >
+      <div class="login">
+        <h1>Un seul identifiant</h1>
+        <p>
+          Avec votre compte Groupomania retrouvez tous vos collègues,
+          communautés, posts,...
+        </p>
+        <div class="actions">
+          <router-link class="nav btn" to="/signup"
+            >Créer un compte</router-link
+          >
+          <router-link class="nav btn-login btn" to="/login"
+            >Connexion</router-link
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -125,12 +127,12 @@ img {
   }
   h1 {
     margin: 2rem 0;
-    font-weight: bold;
+    font-weight: bolder;
     letter-spacing: 0.3rem;
     font-size: 1.4rem;
     line-height: 1.4rem;
     text-align: center;
-    border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
+    border-bottom: 1px solid #4e5166;
     padding-bottom: 3vh;
     @media only screen and (min-width: 576px) {
       display: flex;
@@ -139,11 +141,11 @@ img {
   }
   p {
     font-size: 0.8rem;
-    font-weight: lighter;
+    font-weight: 700;
     text-align: center;
     margin: 2rem 0;
     line-height: 1.5rem;
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    border-bottom: 1px solid #4e5166;
     padding-bottom: 3vh;
   }
 }
@@ -162,13 +164,11 @@ img {
   margin-bottom: 2rem;
 }
 .btn-login {
-  color: #f7f7f7;
-  border: 2px solid #fd2d01;
-  background: transparent;
-  transition: color, background 0.35s;
+  border: 2px solid #ffd7d7;
+  background-color: transparent;
+  transition: background-color 0.65s;
   &:hover {
-    background: #ffd7d7;
-    color: black;
+    background-color: #ffd7d7;
   }
 }
 

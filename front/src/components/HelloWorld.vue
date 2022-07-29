@@ -18,29 +18,28 @@ export default {
 <style scoped lang="scss">
 h1 {
   margin: 2rem 0;
-    font-weight: bold;
-    letter-spacing: 0.3rem;
-    font-size: 1.4rem;
-    font-weight: bolder;
-    line-height: 1.4rem;
-    text-align: left;
-    border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
-    padding-bottom: 3vh;
-    max-width: 440px;
+  letter-spacing: 0.3rem;
+  font-size: 1.4rem;
+  font-weight: bolder;
+  line-height: 1.4rem;
+  text-align: left;
+  border-bottom: 1px solid #4e5166;
+  padding-bottom: 3vh;
+  max-width: 411px;
   span {
     font-size: 1.4rem;
   }
 }
 
 p {
-   font-size: 0.8rem;
-    font-weight: lighter;
-    text-align: left;
-    margin: 2rem 0;
-    line-height: 1.5rem;
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-    max-width: 330px;
-    padding-bottom: 3vh;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: left;
+  margin: 2rem 0;
+  line-height: 1.5rem;
+  border-bottom: 1px solid #4e5166;
+  max-width: 330px;
+  padding-bottom: 3vh;
 }
 
 .blinker {

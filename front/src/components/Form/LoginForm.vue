@@ -253,14 +253,12 @@ section div {
 
 h1 {
   margin: 2rem 0;
-  font-weight: bold;
   letter-spacing: 0.3rem;
   font-size: 1.4rem;
   font-weight: bolder;
   line-height: 1.4rem;
   text-align: center;
-  // margin: 4rem 1rem;
-  border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
+  border-bottom: 1px solid #4e5166;
   padding-bottom: 3vh;
 }
 
@@ -268,8 +266,6 @@ form {
   display: flex;
   flex-direction: column;
   width: auto;
-  border-radius: 0.8rem;
-  background: #ffffff;
   padding: 1rem;
 }
 
@@ -279,7 +275,6 @@ form {
 
 .FormGroupLabel {
   font-size: 0.95rem;
-  color: #000000;
 }
 
 .FormTextboxWrapper {
@@ -291,15 +286,11 @@ form {
   height: 50px;
   line-height: 50px;
   border: 0;
-  border-bottom: 1px solid #000000;
-  color: black;
+  border-bottom: 1px solid #4e5166;
   text-indent: 2rem;
-  &::placeholder {
-    color: #142342;
-  }
   &:focus {
     outline: none;
-    border-color: #4e5166;
+    border-color: #ffd7d7;
   }
   @media only screen and (min-width: 768px) {
     width: 25rem;
@@ -338,11 +329,11 @@ button {
 // action signupUser
 .text-signup {
   font-size: 0.8rem;
-  font-weight: lighter;
+  font-weight: 700;
   text-align: center;
   margin: 2rem 0;
   line-height: 1.5rem;
-  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+  border-bottom: 1px solid #4e5166;
   padding-bottom: 3vh;
 }
 </style>

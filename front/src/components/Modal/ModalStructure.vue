@@ -52,11 +52,12 @@ export default {
   bottom: 0;
   left: 0;
   z-index: 99999;
-  overflow-x: hidden;
-  overflow-y: auto;
+  // overflow-x: hidden;
+  // overflow-y: auto;
   backface-visibility: hidden;
-  transition: overflow-x 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+  // transition: overflow-x 0.6s cubic-bezier(0.55, 0, 0.1, 1);
   &__backdrop {
+    background-color: rgba(0, 0, 0, 0.3);
     position: fixed;
     top: 0;
     right: 0;
@@ -65,12 +66,14 @@ export default {
     z-index: 1;
   }
   &__dialog {
+    background-color: #ffffff;
     position: relative;
     width: 600px;
     margin: 50px auto;
     display: flex;
     flex-direction: column;
     z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
     @media screen and (max-width: 992px) {
       width: 90%;
     }
@@ -80,13 +83,13 @@ export default {
     height: 30px;
     background-color: unset;
     cursor: pointer;
+    border: none;
   }
   &__header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     padding: 20px 20px 10px;
-    background-color: black;
   }
   &__body {
     padding: 10px 20px 10px;
@@ -94,11 +97,9 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    background-color: #4e5166;
   }
   &__footer {
     padding: 10px 15px 15px;
-    background-color: black;
   }
 }
 

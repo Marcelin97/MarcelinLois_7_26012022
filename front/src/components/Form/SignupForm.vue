@@ -6,9 +6,9 @@
     </p>
 
     <!-- gestion erreur API avec axios -->
-    <div v-if="this.state.apiError != ''" class="error-api">
+    <div v-if="this.state.apiErrors != ''" class="error-api">
       Il y a une erreur dans le formulaire <br />
-      {{ this.state.apiError }}
+      {{ this.state.apiErrors }}
     </div>
     <!-- gestion erreur API avec axios -->
 
@@ -169,7 +169,7 @@ export default {
         password: "",
         username: "",
       },
-      apiError: "",
+      apiErrors: [],
       showModal: false,
     });
 
@@ -218,17 +218,18 @@ export default {
     $lazy: true,
   },
   methods: {
-    createAccount() {
-      this.v$.$validate(); // checks all inputs
-      if (!this.v$.$error) {
+    async createAccount() {
+      this.apiErrors = [];
+      const isFormCorrect = await this.v$.$validate(); // checks all inputs
+
+      if (isFormCorrect) {
         // if ANY fail validation
         // alert("Form successfully submitted.");
         axiosInstance
           .post("/auth/signup", this.state.user)
-          .then((result) => {
+          .then(async (result) => {
             // console.log(result.data);
             this.state.user = result.data;
-            // console.log(this.state.user);
 
             // open success modal
             this.$refs.signupUser.openModal();
@@ -244,7 +245,7 @@ export default {
           })
           .catch((error) => {
             // console.log(error.response.data.error.errors[0].message);
-            const errorMessage = (this.state.apiError =
+            const errorMessage = (this.state.apiErrors =
               error.response.data.error.errors[0].message);
 
             // error notification
@@ -278,13 +279,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.error-api {
-  color: #cc0033;
-  text-align: center;
-  font-size: 12px;
-  line-height: 15px;
-  margin: 5px 0 0;
-}
 .container {
   display: flex;
   flex-direction: column;
@@ -298,17 +292,17 @@ export default {
     font-weight: bolder;
     text-align: center;
     margin: 2rem 0 0;
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    border-bottom: 1px solid #4e5166;
     padding-bottom: 3vh;
   }
 
   p {
     font-size: 0.8rem;
-    font-weight: lighter;
+    font-weight: 700;
     text-align: center;
     margin: 2rem 0;
     line-height: 1.5rem;
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    border-bottom: 1px solid #4e5166;
     padding-bottom: 3vh;
   }
 }
@@ -321,8 +315,6 @@ form {
 
 legend {
   line-height: 1.5rem;
-  letter-spacing: 0.1rem;
-  color: #ffff;
 }
 
 fieldset {
@@ -343,7 +335,7 @@ input {
   margin-bottom: 0.3rem;
   border: none;
   color: #ffff;
-  background-color: black;
+  background-color: #4e5166;
 
   @media only screen and (min-width: 400px) {
     width: 18rem;
@@ -373,7 +365,6 @@ button {
 }
 
 .error {
-  background: #fdd;
   border-color: #fd4444;
   animation: shake 0.2s;
   animation-iteration-count: 3;
@@ -404,5 +395,14 @@ button {
   75% {
     transform: translateX(-8px);
   }
+}
+
+// Api error message
+.error-api {
+  color: #cc0033;
+  text-align: center;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
 }
 </style>

@@ -1,53 +1,117 @@
 <!-- Use preprocessors via the lang attribute! e.g. <template lang="pug"> -->
 <template>
-  <router-link to="/wall" class="logo">
-    <img src="../../assets/img/icon.svg" alt="">
-  </router-link>
+  <div class="header">
+    <router-link to="/wall" class="logo">
+      <img src="../../assets/img/icon.svg" alt="" />
+    </router-link>
+<!-- 
+			<div class="nav-but-wrap menu-icon" type="checkbox" id="menu-icon" name="menu-icon" >
+				<div class="menu-icon hover-target">
+					<span class="menu-icon__line menu-icon__line-left"></span>
+					<span class="menu-icon__line"></span>
+					<span class="menu-icon__line menu-icon__line-right"></span>
+				</div>					
+			</div>					 -->
 
-  <input class="menu-icon" type="checkbox" id="menu-icon" name="menu-icon" />
-  <label for="menu-icon"></label>
-  <nav class="nav">
-    <ul class="pt-5">
-      <li>
-        <router-link class="text" to="/wall">Home</router-link>
-      </li>
-      <li>
-        <router-link class="dropdown-text" to="/user">Profil</router-link>
-      </li>
-      <li>
-        <router-link class="dropdown-text" to="/">Enregistré</router-link>
-      </li>
-      <li>
-        <router-link class="dropdown-text" to="/user/parameter">Paramètres</router-link>
-      </li>
-      <li>
-        <button class="logout" @click="logout">
-          Déconnexion
-        </button>
-      </li>
-    </ul>
-  </nav>
-
+    <input class="menu-icon" type="checkbox" id="menu-icon" name="menu-icon" />
+    <label for="menu-icon"></label>
+    <nav class="nav">
+      <ul class="pt-5">
+        <li>
+          <router-link class="text" to="/wall">Home</router-link>
+        </li>
+        <li>
+          <router-link class="dropdown-text" to="/user">Profil</router-link>
+        </li>
+        <li>
+          <router-link class="dropdown-text" to="/">Enregistré</router-link>
+        </li>
+        <li>
+          <router-link class="dropdown-text" to="/user/parameter">Paramètres</router-link>
+        </li>
+        <li>
+          <button class="logout" @click="logout">Déconnexion</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </template>
 
 <script>
 </script>
 
-<style>
+<style lang="scss" scoped>
+.nav-but-wrap{ 
+	position: relative;
+	display: inline-block;
+	float: right;
+	padding-left: 15px;
+	padding-top: 15px;
+	margin-top: 26px;
+	transition : all 0.3s ease-out;
+}
+.menu-icon {
+	height: 30px;
+	width: 30px;
+	position: relative;
+	z-index: 2;
+	cursor: pointer;
+	display: block;
+}
+.menu-icon__line {
+	height: 2px;
+	width: 30px;
+	display: block;
+	background-color: rgb(227, 14, 14);
+	margin-bottom: 7px;
+	cursor: pointer;
+	-webkit-transition: background-color .5s ease, -webkit-transform .2s ease;
+	transition: background-color .5s ease, -webkit-transform .2s ease;
+	transition: transform .2s ease, background-color .5s ease;
+	transition: transform .2s ease, background-color .5s ease, -webkit-transform .2s ease;
+}
+.menu-icon__line-left {
+	width: 16.5px;
+	-webkit-transition: all 200ms linear;
+	transition: all 200ms linear;
+}
+.menu-icon__line-right {
+	width: 16.5px;
+	float: right;
+	-webkit-transition: all 200ms linear;
+	-moz-transition: all 200ms linear;
+	-o-transition: all 200ms linear;
+	-ms-transition: all 200ms linear;
+	transition: all 200ms linear;
+}
+.menu-icon:hover .menu-icon__line-left,
+.menu-icon:hover .menu-icon__line-right {
+	width: 30px;
+}
+
+.header {
+ display: flex;
+    flex-basis: 100%;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+
+
+
+
 .logo {
-  position: absolute;
-  top: 60px;
-  left: 50px;
-  display: block;
-  /* z-index: 11; */
-  transition: all 250ms linear;
+  position: relative;
+  // top: 30px;
+  // left: 30px;
+  margin-bottom: 2rem;
 }
 
 .logo img {
-  height: 60px;
+  height: 90px;
   width: auto;
-  display: block;
-  background: transparent;
 }
 
 [type="checkbox"]:checked,
@@ -56,62 +120,64 @@
   left: -9999px;
 }
 
-.menu-icon:checked+label,
-.menu-icon:not(:checked)+label {
-  position: fixed;
-  top: 63px;
-  right: 75px;
-  display: block;
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  margin: 0;
+.menu-icon:checked+label{
+  position: relative;
+}
+.menu-icon:checked + label,
+.menu-icon:not(:checked) + label {
+  // position: absolute;
+  // // position: fixed;
+  // top: 63px;
+  // right: 75px;
+  // display: block;
+  // width: 30px;
+  // height: 30px;
+  // padding: 0;
+  // margin: 0;
   cursor: pointer;
   z-index: 10;
+  margin: 3rem;
 }
 
-.menu-icon:checked+label:before,
-.menu-icon:not(:checked)+label:before {
-  position: absolute;
-  content: '';
+.menu-icon:checked + label:before,
+.menu-icon:not(:checked) + label:before {
+  // position: relative;
+  content: "";
   display: block;
   width: 30px;
-  height: 20px;
+  height: 4px;
   z-index: 20;
   top: 0;
   left: 0;
-  border-top: 2px solid #FFD7D7;
-  border-bottom: 2px solid #FFD7D7;
+  border-top: 3px solid #ffd7d7;
+  border-bottom: 2px solid #ffd7d7;
   transition: border-width 100ms 1500ms ease,
     top 100ms 1600ms cubic-bezier(0.23, 1, 0.32, 1),
     height 100ms 1600ms cubic-bezier(0.23, 1, 0.32, 1),
-    background-color 200ms ease,
-    transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+    background-color 200ms ease, transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.menu-icon:checked+label:after,
-.menu-icon:not(:checked)+label:after {
-  position: absolute;
-  content: '';
+.menu-icon:checked + label:after,
+.menu-icon:not(:checked) + label:after {
+  // position: absolute;
+  content: "";
   display: block;
-  width: 22px;
+  // width: 22px;
   height: 2px;
   z-index: 20;
   top: 10px;
   right: 4px;
-  background-color: #FFD7D7;
+  background-color: #ffd7d7;
   margin-top: -1px;
-  transition: width 100ms 1750ms ease,
-    right 100ms 1750ms ease,
-    margin-top 100ms ease,
-    transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: width 100ms 1750ms ease, right 100ms 1750ms ease,
+    margin-top 100ms ease, transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.menu-icon:checked+label:before {
+.menu-icon:checked + label:before {
   top: 10px;
   transform: rotate(45deg);
   height: 2px;
-  background-color: #FFD7D7;
+  background-color: #ffd7d7;
   border-width: 0;
   transition: border-width 100ms 340ms ease,
     top 100ms 300ms cubic-bezier(0.23, 1, 0.32, 1),
@@ -120,28 +186,27 @@
     transform 200ms 1700ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.menu-icon:checked+label:after {
+.menu-icon:checked + label:after {
   width: 30px;
   margin-top: 0;
   right: 0;
   transform: rotate(-45deg);
-  transition: width 100ms ease,
-    right 100ms ease,
-    margin-top 100ms 500ms ease,
+  transition: width 100ms ease, right 100ms ease, margin-top 100ms 500ms ease,
     transform 200ms 1700ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .nav {
-  position: fixed;
-  top: 33px;
-  right: 50px;
+  position: absolute;
+  top: 24px;
+  right: 28px;
   display: block;
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   padding: 0;
   margin: 0;
   z-index: 9;
   overflow: hidden;
+  opacity: 0.8;
   box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.3);
   background-color: #000;
   animation: border-transform 7s linear infinite;
@@ -153,7 +218,6 @@
 }
 
 @keyframes border-transform {
-
   0%,
   100% {
     border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
@@ -184,7 +248,7 @@
   }
 }
 
-.menu-icon:checked~.nav {
+.menu-icon:checked ~ .nav {
   animation-play-state: paused;
   top: 50%;
   right: 50%;
@@ -192,8 +256,7 @@
   width: 200%;
   height: 200%;
   transition: top 350ms 700ms cubic-bezier(0.23, 1, 0.32, 1),
-    right 350ms 700ms cubic-bezier(0.23, 1, 0.32, 1),
-    transform 250ms 700ms ease,
+    right 350ms 700ms cubic-bezier(0.23, 1, 0.32, 1), transform 250ms 700ms ease,
     width 750ms 1000ms cubic-bezier(0.23, 1, 0.32, 1),
     height 750ms 1000ms cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -241,8 +304,9 @@
   transition-delay: 50ms;
 }
 
-.nav ul li a {
-  font-size: 9vh;
+.nav ul li a,
+.nav ul li button {
+  font-size: 7vh;
   text-transform: uppercase;
   line-height: 1.2;
   font-weight: 800;
@@ -252,15 +316,24 @@
   transition: all 250ms linear;
 }
 
+.nav ul li button {
+  color: #000;
+  cursor: pointer;
+  border: none;
+  background: #ffd7d7;
+  &:hover {
+    background: #95989a;
+  }
+}
 .nav ul li a:hover {
-  color: #FFD7D7;
+  color: #ffd7d7;
 }
 
 .nav ul li a:after {
   display: block;
   position: absolute;
   top: 50%;
-  content: '';
+  content: "";
   height: 2vh;
   margin-top: -1vh;
   width: 0;
@@ -274,54 +347,47 @@
   width: 100%;
 }
 
-
-.menu-icon:checked~.nav ul li {
+.menu-icon:checked ~ .nav ul li {
   pointer-events: auto;
   visibility: visible;
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 350ms ease,
-    transform 250ms ease;
+  transition: opacity 350ms ease, transform 250ms ease;
 }
 
-.menu-icon:checked~.nav ul li:nth-child(1) {
+.menu-icon:checked ~ .nav ul li:nth-child(1) {
   transition-delay: 1400ms;
 }
 
-.menu-icon:checked~.nav ul li:nth-child(2) {
+.menu-icon:checked ~ .nav ul li:nth-child(2) {
   transition-delay: 1480ms;
 }
 
-.menu-icon:checked~.nav ul li:nth-child(3) {
+.menu-icon:checked ~ .nav ul li:nth-child(3) {
   transition-delay: 1560ms;
 }
 
-.menu-icon:checked~.nav ul li:nth-child(4) {
+.menu-icon:checked ~ .nav ul li:nth-child(4) {
   transition-delay: 1640ms;
 }
 
-
-
-
-
-
-@media screen and (max-width: 991px) {
-
-  .menu-icon:checked+label,
-  .menu-icon:not(:checked)+label {
+@media screen and (max-width: 768px) {
+  .menu-icon:checked + label,
+  .menu-icon:not(:checked) + label {
     right: 55px;
   }
 
-  .logo {
-    left: 30px;
-  }
+  // .logo {
+  //   left: 30px;
+  // }
 
   .nav {
     right: 30px;
   }
 
-  .nav ul li a {
-    font-size: 8vh;
+  .nav ul li a,
+  .nav ul li button {
+    font-size: 6vh;
   }
 }
 </style>
