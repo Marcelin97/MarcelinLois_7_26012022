@@ -12,8 +12,14 @@
           </div>
         </transition>
       </router-view>
-      <notifications id="notifications" position="bottom right" :duration="3000" :ignoreDuplicates="true"
-        :reverse="true" :animation-type="velocity" />
+      <notifications
+        id="notifications"
+        position="bottom right"
+        :duration="3000"
+        :ignoreDuplicates="true"
+        :reverse="true"
+        :animation-type="velocity"
+      />
     </main>
 
     <!-- footer -->
@@ -29,7 +35,7 @@ export default {
   name: "App",
   components: {
     Header,
-    Footer
+    Footer,
   },
   computed: {
     isLogin() {

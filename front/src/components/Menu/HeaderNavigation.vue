@@ -1,20 +1,13 @@
-<!-- Use preprocessors via the lang attribute! e.g. <template lang="pug"> -->
 <template>
   <div class="header">
+    <!-- backgroundimage -->
     <router-link to="/wall" class="logo">
       <img src="../../assets/img/icon.svg" alt="" />
     </router-link>
-    <!-- 
-			<div class="nav-but-wrap menu-icon" type="checkbox" id="menu-icon" name="menu-icon" >
-				<div class="menu-icon hover-target">
-					<span class="menu-icon__line menu-icon__line-left"></span>
-					<span class="menu-icon__line"></span>
-					<span class="menu-icon__line menu-icon__line-right"></span>
-				</div>					
-			</div>					 -->
 
     <input class="menu-icon" type="checkbox" id="menu-icon" name="menu-icon" />
     <label for="menu-icon"></label>
+
     <nav class="nav">
       <ul class="pt-5">
         <li>
@@ -39,59 +32,7 @@
   </div>
 </template>
 
-<script>
-</script>
-
 <style lang="scss" scoped>
-.nav-but-wrap {
-  position: relative;
-  display: inline-block;
-  float: right;
-  padding-left: 15px;
-  padding-top: 15px;
-  margin-top: 26px;
-  transition: all 0.3s ease-out;
-}
-.menu-icon {
-  height: 30px;
-  width: 30px;
-  position: relative;
-  z-index: 2;
-  cursor: pointer;
-  display: block;
-}
-.menu-icon__line {
-  height: 2px;
-  width: 30px;
-  display: block;
-  background-color: rgb(227, 14, 14);
-  margin-bottom: 7px;
-  cursor: pointer;
-  -webkit-transition: background-color 0.5s ease, -webkit-transform 0.2s ease;
-  transition: background-color 0.5s ease, -webkit-transform 0.2s ease;
-  transition: transform 0.2s ease, background-color 0.5s ease;
-  transition: transform 0.2s ease, background-color 0.5s ease,
-    -webkit-transform 0.2s ease;
-}
-.menu-icon__line-left {
-  width: 16.5px;
-  -webkit-transition: all 200ms linear;
-  transition: all 200ms linear;
-}
-.menu-icon__line-right {
-  width: 16.5px;
-  float: right;
-  -webkit-transition: all 200ms linear;
-  -moz-transition: all 200ms linear;
-  -o-transition: all 200ms linear;
-  -ms-transition: all 200ms linear;
-  transition: all 200ms linear;
-}
-.menu-icon:hover .menu-icon__line-left,
-.menu-icon:hover .menu-icon__line-right {
-  width: 30px;
-}
-
 .header {
   display: flex;
   flex-basis: 100%;
@@ -110,6 +51,15 @@
   margin: 1rem;
 }
 
+.menu-icon {
+  height: 30px;
+  width: 30px;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+  display: block;
+}
+
 [type="checkbox"]:checked,
 [type="checkbox"]:not(:checked) {
   position: absolute;
@@ -121,15 +71,6 @@
 }
 .menu-icon:checked + label,
 .menu-icon:not(:checked) + label {
-  // position: absolute;
-  // // position: fixed;
-  // top: 63px;
-  // right: 75px;
-  // display: block;
-  // width: 30px;
-  // height: 30px;
-  // padding: 0;
-  // margin: 0;
   cursor: pointer;
   z-index: 10;
   margin: 3rem;
@@ -137,7 +78,6 @@
 
 .menu-icon:checked + label:before,
 .menu-icon:not(:checked) + label:before {
-  // position: relative;
   content: "";
   display: block;
   width: 30px;
@@ -155,10 +95,8 @@
 
 .menu-icon:checked + label:after,
 .menu-icon:not(:checked) + label:after {
-  // position: absolute;
   content: "";
   display: block;
-  // width: 22px;
   height: 2px;
   z-index: 20;
   top: 10px;
@@ -368,11 +306,6 @@
 }
 
 @media screen and (max-width: 768px) {
-  .menu-icon:checked + label,
-  .menu-icon:not(:checked) + label {
-    // right: 55px;
-  }
-
   .nav {
     right: 30px;
   }

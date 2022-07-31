@@ -20,7 +20,7 @@
 <style lang="scss" scoped>
 .footer {
   // height: 120px;
-  margin-top: -30px;
+  margin-top: -10px;
 }
 
 .footer-container {
@@ -33,6 +33,7 @@
 .footer2 {
   letter-spacing: 4px;
   cursor: default;
+
   @media screen and (min-width: 479px) {
     line-height: 24px;
   }

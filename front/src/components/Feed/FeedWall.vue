@@ -34,19 +34,20 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" scoped>
 .container {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  @media only screen and (min-width: 576px) { 
-    flex-direction: inherit
+  @media only screen and (min-width: 576px) {
+    flex-direction: inherit;
   }
 }
 .container__sidebar {
   width: 100%;
-    @media only screen and (min-width: 576px) { 
-      width: 30%;
+  @media only screen and (min-width: 576px) {
+    width: 30%;
   }
 }
 .container__main {

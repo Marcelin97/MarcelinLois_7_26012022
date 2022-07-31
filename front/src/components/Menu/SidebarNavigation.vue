@@ -30,6 +30,7 @@
     </nav>
   </aside>
 </template>
+
 <script>
 export default {
   setup() {},
@@ -41,6 +42,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" scoped>
 .menu-list {
   background-image: url(../../assets/img/sidebarNavigation1.svg);
@@ -51,6 +53,7 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+
   @media only screen and (min-width: 576px) {
     justify-content: flex-start;
     width: min-content;
