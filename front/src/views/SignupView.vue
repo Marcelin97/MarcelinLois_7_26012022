@@ -1,14 +1,16 @@
 <template>
-  <GoBack />
-  <SignupForm msg="Créer mon compte" />
+  <div>
+    <GoBack />
+    <SignupForm msg="Créer mon compte" />
+  </div>
 </template>
 
 <script>
-import SignupForm from "../components/Form/SignupForm.vue";
-import GoBack from "../components/Base/GoBack.vue";
+import SignupForm from "@/components/Form/SignupForm.vue";
+import GoBack from "@/components/Base/GoBack.vue";
 
 export default {
-  name: "SignupView",
+  name: "Signup-View",
   components: {
     SignupForm,
     GoBack,

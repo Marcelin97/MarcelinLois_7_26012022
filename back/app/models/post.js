@@ -55,10 +55,12 @@ module.exports = (sequelize, Sequelize) => {
   Post.associate = (models) => {
     // is linked to
     Post.belongsTo(models.user, {
-      as: "creator",
+      as: "users",
+      foreignKey: "creatorId",
+      onDelete: "CASCADE",
     });
     Post.belongsTo(models.community, {
-      as: "category",
+      as: "community",
       foreignKey: "communityId",
     });
     Post.hasMany(models.comment, {

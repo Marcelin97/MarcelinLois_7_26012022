@@ -76,7 +76,7 @@ exports.readPostById = (req, res, next) => {
       include: [
         {
           model: user,
-          as: "creator",
+          as: "post",
           attributes: ["id", "username", "imageUrl"],
         },
         {

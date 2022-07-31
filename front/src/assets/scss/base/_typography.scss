@@ -1,9 +1,9 @@
 @import "../abstracts/variables";
 
-@import url(https://fonts.googleapis.com/css?family=Inter:100,200,300,400,500,600,700,800,900);
-@import url(http://fonts.cdnfonts.com/css/belligerent-madness);
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,400;0,700;0,900;1,400&display=swap');
+
 * {
-  font-family: "Inter", Verdana, Geneva, Tahoma, sans-serif;
+  font-family: 'Lato', Verdana, Geneva, Tahoma, sans-serif;
   color: $typo;
   list-style-type: none;
   letter-spacing: 0.1rem;

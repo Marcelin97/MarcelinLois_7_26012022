@@ -13,11 +13,11 @@ module.exports = (sequelize, Sequelize) => {
     // is linked to
     LikeComment.belongsTo(models.comment, {
       foreignKey: "commentId",
-      as: "post",
+      as: "comments",
     });
     LikeComment.belongsTo(models.user, {
       foreignKey: "userId",
-      as: "user",
+      as: "users",
     });
   };
 

@@ -21,15 +21,13 @@ module.exports = (sequelize, Sequelize) => {
           args: /^[a-z0-9]+$/i,
           msg: "Username can only contain numbers and letters",
         },
-      },
-      unique: true,
-      validate: {
         notEmpty: true,
         len: {
           args: [3, 25],
           msg: "The username needs to be between 3 and 25 characteres long",
         },
       },
+      unique: true,
     },
     email: {
       type: Sequelize.STRING(),
@@ -59,9 +57,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING(64),
       allowNull: false,
       validate: {
-        notEmpty: true,
-      },
-      validate: {
         notNull: {
           args: true,
           msg: "Password is empty",
@@ -70,8 +65,6 @@ module.exports = (sequelize, Sequelize) => {
           args: true,
           msg: "Password is empty",
         },
-      },
-      validate: {
         isLongEnough: function (val) {
           if (val.length < 8) {
             throw new Error("Please choose a longer password");
@@ -100,12 +93,12 @@ module.exports = (sequelize, Sequelize) => {
   // * Sequelize associations
   User.associate = (models) => {
     User.hasMany(models.comment, {
-      as: "author",
-      foreignKey: "postId"
+      as: "comments",
+      foreignKey: "postId",
     });
     User.hasMany(models.post, {
-      as: "creator",
-      foreignKey: "creatorId"
+      as: "posts",
+      foreignKey: "creatorId",
     });
     User.hasMany(models.likePost, {
       as: "likePosts",
@@ -130,21 +123,19 @@ module.exports = (sequelize, Sequelize) => {
       as: "userFrom",
     });
     User.hasMany(models.postReport, {
-      as: "postReport",
+      as: "postReports",
     });
-    User.hasMany(models.comment, {
-      as: "commentParent",
-    });
+    // User.hasMany(models.comment, {
+    //   as: "commentParents",
+    //   onDelete: "CASCADE",
+    //   onUpdate: "CASCADE",
+    // });
     User.hasMany(models.commentReplies, {
       as: "replies",
     });
     User.hasMany(models.savePost, {
       as: "savePosts",
     });
-    // User.hasMany(models.follower, {
-    //   sourceKey: "userId",
-    // });
-  
     User.hasOne(models.refreshToken, {
       foreignKey: "userId",
       targetKey: "id",
@@ -153,7 +144,10 @@ module.exports = (sequelize, Sequelize) => {
     // * Many to Many associations
 
     // ! One user can own 0 or many communities
-    User.hasMany(models.community, { as: "communities" });
+    User.hasMany(models.community, {
+      as: "community",
+      // foreignKey: "userId",
+    });
 
     // ! One user can join one or many communities
     User.belongsToMany(models.community, {
@@ -163,6 +157,7 @@ module.exports = (sequelize, Sequelize) => {
     // ! One user can manage one or many communities
     User.belongsToMany(models.community, {
       through: "community_moderator",
+      as: "moderators",
       // foreignKey: "moderatorId", // replaces `userId`
       // otherKey: "communityId", // replaces `communityId`
     });

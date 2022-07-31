@@ -17,21 +17,29 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 h1 {
+  margin: 2rem 0;
+  letter-spacing: 0.3rem;
   font-size: 1.4rem;
   font-weight: bolder;
-  margin-bottom: 1rem;
-  line-height: 1.5rem;
-  // text-transform: uppercase;
+  line-height: 1.4rem;
+  text-align: left;
+  border-bottom: 1px solid #4e5166;
+  padding-bottom: 3vh;
+  max-width: 411px;
   span {
     font-size: 1.4rem;
-    color: #8de8fe;
   }
 }
 
 p {
   font-size: 0.8rem;
-  font-weight: lighter;
+  font-weight: 700;
+  text-align: left;
+  margin: 2rem 0;
   line-height: 1.5rem;
+  border-bottom: 1px solid #4e5166;
+  max-width: 330px;
+  padding-bottom: 3vh;
 }
 
 .blinker {

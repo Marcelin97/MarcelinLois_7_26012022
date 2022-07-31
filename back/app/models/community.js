@@ -38,15 +38,18 @@ module.exports = (sequelize, Sequelize) => {
   // * Sequelize associations
   Community.associate = (models) => {
     Community.hasMany(models.post, {
-      as: "category",
+      as: "posts",
       targetKey: "communityId",
     });
-    // Community.hasMany(models.follower, {});
 
     // * Many to Many associations
-    
+
     // ! One community is owned by one user
-    Community.belongsTo(models.user, { foreignKey: "userId", as: "owner" });
+    Community.belongsTo(models.user, {
+      foreignKey: "userId",
+      as: "users",
+      onDelete: "CASCADE",
+    });
 
     // ! One community can be joined by 0 or many users
     Community.belongsToMany(models.user, {
@@ -56,6 +59,7 @@ module.exports = (sequelize, Sequelize) => {
     // ! One community can be managed by 0 or many users
     Community.belongsToMany(models.user, {
       through: "community_moderator",
+      as: "moderators",
       // foreignKey: "communityId", // replaces `communityId`
       // otherKey: "moderatorId", // replaces `userId`
     });
@@ -63,4 +67,3 @@ module.exports = (sequelize, Sequelize) => {
 
   return Community;
 };
-

@@ -1,265 +1,318 @@
-    <template>
-  <!-- Header navigation -->
-  <div class="container-nav">
-    <nav class="nav-header">
-      <input checked id="home" type="radio" name="nav" />
-      <input id="find" type="radio" name="nav" />
-      <input id="notification" type="radio" name="nav" />
-      <input id="messagerie" type="radio" name="nav" />
+<template>
+  <div class="header">
+    <!-- backgroundimage -->
+    <router-link to="/wall" class="logo">
+      <img src="../../assets/img/icon.svg" alt="" />
+    </router-link>
 
-      <label class="home" for="home">
-        <font-awesome-icon
-          class="icon home uil uil-estate"
-          :icon="['fas', 'home']"
-        />
-        <router-link class="text" to="/wall">Home</router-link>
-      </label>
-      <div class="indicator"></div>
+    <input class="menu-icon" type="checkbox" id="menu-icon" name="menu-icon" />
+    <label for="menu-icon"></label>
 
-      <div class="dropdown">
-        <!-- The trigger element -->
-        <!-- <button class="press"> -->
-        <label class="find" for="find">
-          <font-awesome-icon class="icon find" :icon="['fas', 'user']" />
-        </label>
-        <!-- </button> -->
-
-        <!-- The content -->
-        <div class="dropdown__content">
+    <nav class="nav">
+      <ul class="pt-5">
+        <li>
+          <router-link class="text" to="/wall">Home</router-link>
+        </li>
+        <li>
           <router-link class="dropdown-text" to="/user">Profil</router-link>
+        </li>
+        <li>
           <router-link class="dropdown-text" to="/">Enregistré</router-link>
-          <router-link class="dropdown-text" to="/user/parameter">Paramètres</router-link>
-          <hr class="line" />
-          <button class="dropdown-text" @click="logout">Déconnexion</button>
-        </div>
-      </div>
-      <div class="indicator"></div>
-
-      <label class="notification" for="notification">
-        <font-awesome-icon
-          class="icon notification bell"
-          :icon="['fas', 'bell']"
-        />
-        <router-link class="text" to="#">Alerte</router-link>
-      </label>
-      <div class="indicator"></div>
-
-      <label class="messagerie" for="messagerie">
-        <font-awesome-icon
-          class="icon messagerie"
-          :icon="['fas', 'paper-plane']"
-        />
-        <router-link class="text" to="#">Chat</router-link>
-      </label>
-      <div class="indicator"></div>
+        </li>
+        <li>
+          <router-link class="dropdown-text" to="/user/parameter"
+            >Paramètres</router-link
+          >
+        </li>
+        <li>
+          <button class="logout" @click="logout">Déconnexion</button>
+        </li>
+      </ul>
     </nav>
   </div>
-  <!-- Header navigation -->
 </template>
 
-<script>
-export default {
-  name: "HeaderNavigation",
-  methods: {
-    logout: function () {
-      this.$store.commit("logout");
-      this.$router.push("/");
-    },
-  },
-};
-</script>
-
 <style lang="scss" scoped>
-.dropdown {
+.header {
+  display: flex;
+  flex-basis: 100%;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.logo {
   position: relative;
-  display: grid;
-  place-items: center;
-  flex: 1 1 auto;
-  cursor: pointer;
+}
+
+.logo img {
+  height: 90px;
   width: auto;
+  margin: 1rem;
 }
 
-/* Hide the dropdown's content by default */
-.dropdown__content {
-  display: none;
-
-  /* Position it right below the trigger element */
-  left: 0;
-  padding-top: 4px;
-  position: absolute;
-  top: 100%;
-
-  /* It should be on the top of other elements */
-  background: rgba(var(--d87, 255, 255, 255), 1);
-  box-shadow: 0 0 5px 1px rgb(0 0 0 / 10%);
-  z-index: 9999;
-
-  /* Size */
-  height: auto;
-  width: 200px;
-
-  border-radius: 6px;
-  transition: 0.5s;
-  .dropdown-text {
-    padding-bottom: 8px;
-    padding-top: 8px;
-    padding-left: 16px;
-    padding-right: 16px;
-    display: inline-block;
-    transition: 0.5s;
-    background: transparent;
-    width: 100%;
-    color: #00376b;
-    &:hover {
-      background: rgb(221, 220, 220);
-      border-radius: 6px;
-    }
-  }
-}
-.dropdown:hover .dropdown__content::before {
-  content: "";
-  position: absolute;
-  top: -6px;
-  left: 29px;
-  width: 14px;
-  height: 14px;
-  background: #ffff;
-  transform: rotate(45deg);
-}
-/* Show the content when hover on the container */
-.dropdown:hover .dropdown__content {
+.menu-icon {
+  height: 30px;
+  width: 30px;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
   display: block;
 }
 
-.line {
-  background-color: rgba(var(--b38, 219, 219, 219), 1);
-  border: 0;
-  height: 1px;
+[type="checkbox"]:checked,
+[type="checkbox"]:not(:checked) {
+  position: absolute;
+  left: -9999px;
+}
+
+.menu-icon:checked + label {
+  position: relative;
+}
+.menu-icon:checked + label,
+.menu-icon:not(:checked) + label {
+  cursor: pointer;
+  z-index: 10;
+  margin: 3rem;
+}
+
+.menu-icon:checked + label:before,
+.menu-icon:not(:checked) + label:before {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 4px;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  border-top: 3px solid #ffd7d7;
+  border-bottom: 2px solid #ffd7d7;
+  transition: border-width 100ms 1500ms ease,
+    top 100ms 1600ms cubic-bezier(0.23, 1, 0.32, 1),
+    height 100ms 1600ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 200ms ease, transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu-icon:checked + label:after,
+.menu-icon:not(:checked) + label:after {
+  content: "";
+  display: block;
+  height: 2px;
+  z-index: 20;
+  top: 10px;
+  right: 4px;
+  background-color: #ffd7d7;
+  margin-top: -1px;
+  transition: width 100ms 1750ms ease, right 100ms 1750ms ease,
+    margin-top 100ms ease, transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu-icon:checked + label:before {
+  top: 10px;
+  transform: rotate(45deg);
+  height: 2px;
+  background-color: #ffd7d7;
+  border-width: 0;
+  transition: border-width 100ms 340ms ease,
+    top 100ms 300ms cubic-bezier(0.23, 1, 0.32, 1),
+    height 100ms 300ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 200ms 500ms ease,
+    transform 200ms 1700ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu-icon:checked + label:after {
+  width: 30px;
+  margin-top: 0;
+  right: 0;
+  transform: rotate(-45deg);
+  transition: width 100ms ease, right 100ms ease, margin-top 100ms 500ms ease,
+    transform 200ms 1700ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  display: block;
+  width: 70px;
+  height: 70px;
+  padding: 0;
   margin: 0;
+  z-index: 9;
+  overflow: hidden;
+  opacity: 0.8;
+  box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.3);
+  background-color: #000;
+  animation: border-transform 7s linear infinite;
+  transition: top 350ms 1100ms cubic-bezier(0.23, 1, 0.32, 1),
+    right 350ms 1100ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 250ms 1100ms ease,
+    width 650ms 400ms cubic-bezier(0.23, 1, 0.32, 1),
+    height 650ms 400ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes border-transform {
+  0%,
+  100% {
+    border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+  }
+
+  14% {
+    border-radius: 40% 60% 54% 46% / 49% 60% 40% 51%;
+  }
+
+  28% {
+    border-radius: 54% 46% 38% 62% / 49% 70% 30% 51%;
+  }
+
+  42% {
+    border-radius: 61% 39% 55% 45% / 61% 38% 62% 39%;
+  }
+
+  56% {
+    border-radius: 61% 39% 67% 33% / 70% 50% 50% 30%;
+  }
+
+  70% {
+    border-radius: 50% 50% 34% 66% / 56% 68% 32% 44%;
+  }
+
+  84% {
+    border-radius: 46% 54% 50% 50% / 35% 61% 39% 65%;
+  }
+}
+
+.menu-icon:checked ~ .nav {
+  animation-play-state: paused;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  width: 200%;
+  height: 200%;
+  transition: top 350ms 700ms cubic-bezier(0.23, 1, 0.32, 1),
+    right 350ms 700ms cubic-bezier(0.23, 1, 0.32, 1), transform 250ms 700ms ease,
+    width 750ms 1000ms cubic-bezier(0.23, 1, 0.32, 1),
+    height 750ms 1000ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav ul {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  z-index: 6;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+.nav ul li {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 10px 0;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(30px);
+  transition: all 250ms linear;
+}
+
+.nav ul li:nth-child(1) {
+  transition-delay: 200ms;
+}
+
+.nav ul li:nth-child(2) {
+  transition-delay: 150ms;
+}
+
+.nav ul li:nth-child(3) {
+  transition-delay: 100ms;
+}
+
+.nav ul li:nth-child(4) {
+  transition-delay: 50ms;
+}
+
+.nav ul li a,
+.nav ul li button {
+  font-size: 7vh;
+  text-transform: uppercase;
+  line-height: 1.2;
+  font-weight: 800;
+  display: inline-block;
+  position: relative;
+  color: #95989a;
+  transition: all 250ms linear;
+}
+
+.nav ul li button {
+  color: #000;
+  cursor: pointer;
+  border: none;
+  background: #ffd7d7;
+  &:hover {
+    background: #95989a;
+  }
+}
+.nav ul li a:hover {
+  color: #ffd7d7;
+}
+
+.nav ul li a:after {
+  display: block;
+  position: absolute;
+  top: 50%;
+  content: "";
+  height: 2vh;
+  margin-top: -1vh;
+  width: 0;
+  left: 0;
+  background-color: #353746;
+  opacity: 0.8;
+  transition: width 250ms linear;
+}
+
+.nav ul li a:hover:after {
   width: 100%;
 }
 
-// Animation bell ring
-.bell {
-  animation-name: bell-ring;
-  animation-duration: 1.5s;
-  animation-delay: 2s;
-  animation-iteration-count: infinite;
-}
-@keyframes bell-ring {
-  0% {
-    transform: rotate(-8deg);
-  }
-  8% {
-    transform: rotate(8deg);
-  }
-  16% {
-    transform: rotate(-8deg);
-  }
-  24% {
-    transform: rotate(8deg);
-  }
-  32% {
-    transform: rotate(-8deg);
-  }
-  40% {
-    transform: rotate(8deg);
-  }
-  48% {
-    transform: rotate(0);
-  }
-  100% {
-    transform: rotate(0);
-  }
-}
-// End Animation bell ring
-
-.container-nav {
-  display: flex;
-  justify-content: center;
-}
-.nav-header {
-  position: relative;
-  display: flex;
-  width: 280px;
-  height: 70px;
-}
-
-.indicator {
-  position: absolute;
-  bottom: 3px;
-  left: 30px;
-  margin-left: 8px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #8de8fe;
-  transition: all 1s;
-}
-
-input {
-  position: absolute;
-  transform: scale(0);
-}
-
-label {
-  position: relative;
-  display: grid;
-  place-items: center;
-  flex: 1 1 auto;
-  cursor: pointer;
-  width: auto;
-}
-
-.icon,
-.text {
-  color: #ccc;
-  transition: all 0.15s;
-}
-
-.icon {
-  font-size: 22px;
-}
-
-.text {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-
-input:nth-child(1):checked ~ label.home .icon,
-input:nth-child(2):checked ~ label.find .icon,
-input:nth-child(3):checked ~ label.notification .icon,
-input:nth-child(4):checked ~ label.messagerie .icon {
-  opacity: 0;
-}
-
-input:nth-child(1):checked ~ label.home .text,
-input:nth-child(2):checked ~ label.find .text,
-input:nth-child(3):checked ~ label.notification .text,
-input:nth-child(4):checked ~ label.messagerie .text {
+.menu-icon:checked ~ .nav ul li {
+  pointer-events: auto;
+  visibility: visible;
   opacity: 1;
-  color: #45c2f8;
+  transform: translateY(0);
+  transition: opacity 350ms ease, transform 250ms ease;
 }
 
-input:nth-child(1):checked ~ .indicator {
-  transform: translateX(0);
+.menu-icon:checked ~ .nav ul li:nth-child(1) {
+  transition-delay: 1400ms;
 }
 
-input:nth-child(2):checked ~ .indicator {
-  transform: translateX(70px);
+.menu-icon:checked ~ .nav ul li:nth-child(2) {
+  transition-delay: 1480ms;
 }
 
-input:nth-child(3):checked ~ .indicator {
-  transform: translateX(130px);
+.menu-icon:checked ~ .nav ul li:nth-child(3) {
+  transition-delay: 1560ms;
 }
 
-input:nth-child(4):checked ~ .indicator {
-  transform: translateX(210px);
+.menu-icon:checked ~ .nav ul li:nth-child(4) {
+  transition-delay: 1640ms;
+}
+
+@media screen and (max-width: 768px) {
+  .nav {
+    right: 30px;
+  }
+
+  .nav ul li a,
+  .nav ul li button {
+    font-size: 6vh;
+  }
 }
 </style>

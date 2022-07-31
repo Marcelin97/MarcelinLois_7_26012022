@@ -3,6 +3,7 @@
     <div>
       <div>
         <h1>{{ msg }}</h1>
+
         <div class="container">
           <form action="#" method="post" @submit.prevent="login">
             <div class="FormGroup">
@@ -12,7 +13,9 @@
                   class="FormTextbox"
                   type="text"
                   placeholder="E-mail"
-                  v-model.trim="user.email"
+                  v-model="state.user.email"
+                  @blur="v$.user.email.$touch"
+                  :class="v$.user.email.$error === true ? 'error' : 'dirty'"
                 />
                 <span class="FormTextboxIcon">
                   <font-awesome-icon :icon="['fas', 'user']" />
@@ -29,6 +32,7 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+              <!-- Error Message -->
             </div>
 
             <div class="FormGroup">
@@ -38,7 +42,9 @@
                   class="FormTextbox"
                   type="password"
                   placeholder="Mot de passe"
-                  v-model.trim="user.password"
+                  v-model="state.user.password"
+                  @blur="v$.user.password.$touch"
+                  :class="v$.user.password.$error === true ? 'error' : 'dirty'"
                 />
                 <span class="FormTextboxIcon">
                   <font-awesome-icon :icon="['fas', 'lock']" />
@@ -55,37 +61,30 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+              <!-- Error Message -->
             </div>
 
-            <!-- gestion erreur avec axios -->
-            <div
-              class="form-row error-msg"
-              v-if="mode == 'login' && status == 'error_login'"
-            >
-              Adresse mail et/ou mot de passe invalide
+            <!-- gestion erreur API avec axios -->
+            <div v-if="this.state.apiError != ''" class="error-api">
+              <p class="error-msg">{{ this.state.apiError }}</p>
             </div>
+            <!-- gestion erreur API avec axios -->
 
-            <!-- gestion erreur de l'API -->
-            <div
-              class="typo__p"
-              v-if="mode == 'login' && status == 'error_login'"
-            >
-              <h3 class="error-msg">Erreur de l'API</h3>
-              <p class="error-msg">{{ apiError }}</p>
-            </div>
-
+            <!-- bouton de soumission -->
             <button
-              @click="login"
+              type="submit"
               class="btn button"
-              :class="{ disable: !emptyFields }"
+              title="Connexion"
+              value="Connexion"
             >
-              <span v-if="status == 'loading'">Connexion en cours...</span>
-              <span v-else>Connexion</span>
+              Connexion
             </button>
+            <!-- bouton de soumission -->
           </form>
         </div>
       </div>
 
+      <!-- redirection sur la page création d'un compte -->
       <div class="signup">
         <p class="text-signup">Pas encore inscrit ?</p>
         <div class="actions">
@@ -94,12 +93,12 @@
           </router-link>
         </div>
       </div>
+      <!-- redirection sur la page création d'un compte -->
     </div>
   </section>
 </template>
 
 <script>
-import { mapState } from "vuex";
 import useVuelidate from "@vuelidate/core";
 import {
   helpers,
@@ -108,26 +107,24 @@ import {
   minLength,
   maxLength,
 } from "@vuelidate/validators";
+import { reactive, computed } from "vue";
+import axiosInstance from "../../services/api";
 
 export default {
   name: "LoginForm",
   props: {
     msg: String,
   },
-  data() {
-    return {
-      mode: "login",
-      v$: useVuelidate(),
-      // submitStatus: null,
-      apiError: null,
+  setup() {
+    const state = reactive({
       user: {
         email: "",
         password: "",
       },
-    };
-  },
-  validations() {
-    return {
+      apiError: "",
+    });
+
+    const rules = computed(() => ({
       user: {
         email: {
           required: helpers.withMessage("L'/email est obligatoire", required),
@@ -155,36 +152,85 @@ export default {
           $lazy: true,
         },
       },
-    };
+    }));
+
+    const v$ = useVuelidate(rules, state);
+
+    return { state, v$ };
   },
-  mounted: function () {
-    if (this.$store.state.user.userId != -1) {
-      this.$router.push("/");
-      return;
-    }
-  },
-  computed: {
-    emptyFields: function () {
-      if (this.user.email != "" && this.user.password != "") {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    ...mapState(["status"]),
+  validationConfig: {
+    $lazy: true,
   },
   methods: {
-    async login() {
-      try {
-        await this.$store.dispatch("login", this.user);
-        await this.$router.push("/user");
-      } catch (error) {
-        this.apiError =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
+    login() {
+      this.v$.$validate(); // checks all inputs
+      if (!this.v$.$error) {
+        // if ANY fail validation
+        axiosInstance
+          .post("/auth/login", this.state.user)
+          .then((result) => {
+            // notification de succès
+            this.$notify({
+              type: "success",
+              title: `Connexion réussi !`,
+              text: `Vous allez être redirigé vers votre profil.`,
+            });
+
+            // store current_user
+            this.$store.commit("logUser", result.data);
+
+            // redirection sur la page utilisateur
+            setTimeout(
+              function () {
+                this.$router.push("/user");
+              }.bind(this),
+              2000,
+              this
+            );
+          })
+          .catch((error) => {
+            console.log("erreur", error);
+            if (error.response.status == 404) {
+              const errorMessage = (this.state.apiError =
+                "Utilisateur introuvable !");
+              this.errorMessage = errorMessage;
+
+              console.log(this.state.apiError);
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors de la connexion`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            } else if (error.response.status == 401) {
+              const errorMessage = (this.state.apiError =
+                "Mot de passe invalide !");
+              this.errorMessage = errorMessage;
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors de la connexion`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            }
+          });
+      } else {
+        // notification d'erreur
+        this.$notify({
+          type: "warn",
+          title: `Veuillez vous identifié correctement`,
+        });
+
+        // montre les erreurs à l'écran
+        this.$nextTick(() => {
+          let domRect = document
+            .querySelector(".error")
+            .getBoundingClientRect();
+          window.scrollTo(
+            domRect.left + document.documentElement.scrollLeft,
+            domRect.top + document.documentElement.scrollTop
+          );
+        });
       }
     },
   },
@@ -204,35 +250,31 @@ section div {
     flex-direction: column;
   }
 }
-.container {
-  width: auto;
-  padding: 0.1rem;
-  border-radius: 0.5rem;
-  background: #ffffff;
-}
 
 h1 {
+  margin: 2rem 0;
+  letter-spacing: 0.3rem;
   font-size: 1.4rem;
   font-weight: bolder;
-  margin: 4rem 1rem;
-  line-height: 1.5rem;
+  line-height: 1.4rem;
   text-align: center;
-  width: 100%;
+  border-bottom: 1px solid #4e5166;
+  padding-bottom: 3vh;
 }
+
 form {
   display: flex;
   flex-direction: column;
   width: auto;
   padding: 1rem;
-  border-radius: 0.5rem;
 }
+
 .FormGroup {
   margin-bottom: 1.75rem;
 }
 
 .FormGroupLabel {
   font-size: 0.95rem;
-  color: #8de8fe;
 }
 
 .FormTextboxWrapper {
@@ -244,15 +286,11 @@ form {
   height: 50px;
   line-height: 50px;
   border: 0;
-  border-bottom: 1px solid #c7c7c7;
-  color: #606060;
+  border-bottom: 1px solid #4e5166;
   text-indent: 2rem;
-  &::placeholder {
-    color: #a7a7a7;
-  }
   &:focus {
     outline: none;
-    border-color: #b44ff6;
+    border-color: #ffd7d7;
   }
   @media only screen and (min-width: 768px) {
     width: 25rem;
@@ -268,28 +306,34 @@ form {
 }
 
 button {
-  margin-bottom: 1.75rem;
   display: flex;
   align-self: center;
-}
-.text-signup {
-  margin: 2rem;
-}
-
-// btn disabled
-.disable {
-  color: rgba(255, 255, 255, 0.3);
-  background-color: rgba(255, 255, 255, 0.1);
-  cursor: default;
 }
 
 // error message
 .error-msg {
   color: #cc0033;
   display: inline-block;
-  font-size: 12px;
+  font-size: 0.6rem;
   line-height: 15px;
   margin: 5px 0 0;
 }
-</style>
 
+.error-api {
+  padding: 1rem;
+  color: #cc0033;
+  text-align: center;
+  font-size: 12px;
+}
+
+// action signupUser
+.text-signup {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 2rem 0;
+  line-height: 1.5rem;
+  border-bottom: 1px solid #4e5166;
+  padding-bottom: 3vh;
+}
+</style>

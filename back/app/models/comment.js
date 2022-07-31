@@ -27,11 +27,12 @@ module.exports = (sequelize, Sequelize) => {
     // is linked to
     Comment.belongsTo(models.user, {
       foreignKey: "userId",
-      as: "author",
+      as: "users",
+      onDelete: "CASCADE",
     });
     Comment.belongsTo(models.post, {
       foreignKey: "postId",
-      as: "post",
+      as: "posts",
     });
     // Reply a comment
     Comment.hasMany(models.commentReplies, {
@@ -42,7 +43,7 @@ module.exports = (sequelize, Sequelize) => {
 
     // Like a comment
     Comment.hasMany(models.likeComment, {
-      as: "likeComment",
+      as: "likeComments",
     });
   };
 

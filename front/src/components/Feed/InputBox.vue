@@ -23,7 +23,7 @@
 
                   <button class="split-button">
                     <font-awesome-icon
-                      class="icon close btn-edit"
+                      class="icon close btn-fas"
                       :icon="['fas', 'xmark']"
                     />
                   </button>
@@ -31,7 +31,7 @@
                   <div class="menu">
                     <button class="button">
                       <font-awesome-icon
-                        class="icon close"
+                        class="icon close btn-fas"
                         :icon="['fas', 'file']"
                       />
                       <div class="form-file">
@@ -76,17 +76,22 @@
         <button
           title="Add a new post"
           class="btn-form-new-post"
-          type="button"
+          type="submit"
           aria-label="Add a new post"
         >
           Publier
         </button>
       </div>
+
     </form>
   </section>
 </template>
 
 <script>
+export default {
+  name: "InputBoxPost",
+  setup() {},
+};
 </script>
 
 <style lang="scss" scoped>
@@ -182,6 +187,9 @@
   outline: none;
 }
 
+.btn-fas {
+  background: transparent;
+}
 .menu {
   position: absolute;
   z-index: 1;
@@ -202,6 +210,7 @@
 .file {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .wrapper:hover .menu {

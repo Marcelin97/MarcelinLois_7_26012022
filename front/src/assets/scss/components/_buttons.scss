@@ -9,23 +9,19 @@
   font-size: 1rem;
   border: none;
   border-radius: 0.8rem;
-  color: black;
   text-align: center;
-  background: #08708a;
+  background-color: #ffd7d7;
   cursor: pointer;
   outline: none;
-  transition-property: box-shadow, background;
-  transition-duration: 0.35s;
+  transition-property: box-shadow, background-color;
+  transition-duration: 0.65s;
   max-width: 7rem;
-  span{
-    background: transparent;
-  }
 }
 
 .btn:focus {
-  box-shadow: 0 0 0 2px #95d7e7;
+  box-shadow: 0 0 0 2px #fd2d01;
 }
 
 .btn:hover {
-  background: #95d7e7;
+  background-color: #f6a7a7;
 }

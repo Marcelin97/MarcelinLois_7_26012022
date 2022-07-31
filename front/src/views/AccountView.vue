@@ -1,50 +1,52 @@
 <template>
-  <nav>
-    <GoBack />
-  </nav>
-  <div class="container">
-    <div class="connect-wrap">
-      <div class="extras">
-        <span>🤟</span>
-        <span>😂</span>
-        <span>😘</span>
-        <span>🤪</span>
-        <span>🥳</span>
+  <div>
+    <nav>
+      <GoBack />
+    </nav>
+    <div class="container">
+      <div class="connect-wrap">
+        <div class="extras">
+          <span>🤟</span>
+          <span>😂</span>
+          <span>😘</span>
+          <span>🤪</span>
+          <span>🥳</span>
+        </div>
+        <div class="smiley">
+          <img src="../assets/img/icon.svg" alt="Logo de l'entreprise" />
+        </div>
       </div>
-      <div class="smiley">
-        <img src="../assets/img/logo.svg" alt="" />
-      </div>
-    </div>
-    <div class="login">
-      <h1>Un seul identifiant</h1>
-      <p>
-        Avec votre compte Groupomania retrouvez tous vos collègues, communautés,
-        posts,...
-      </p>
-      <div class="actions">
-        <router-link class="nav btn button" to="/signup"
-          >Créer un compte</router-link
-        >
-        <router-link class="nav btn-login btn" to="/login"
-          >Connexion</router-link
-        >
+      <div class="login">
+        <h1>Un seul identifiant</h1>
+        <p>
+          Avec votre compte Groupomania retrouvez tous vos collègues,
+          communautés, posts,...
+        </p>
+        <div class="actions">
+          <router-link class="nav btn" to="/signup"
+            >Créer un compte</router-link
+          >
+          <router-link class="nav btn-login btn" to="/login"
+            >Connexion</router-link
+          >
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import GoBack from "../components/Base/GoBack.vue";
+import GoBack from "@/components/Base/GoBack.vue";
 
 export default {
+  name: "Account-View",
   components: {
     GoBack,
   },
-  name: "AccountView",
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 nav {
   display: flex;
   justify-content: flex-start;
@@ -68,6 +70,9 @@ nav {
   flex-direction: column;
   align-items: center;
   transition: all 0.4s ease-in-out 0s;
+  @media only screen and (min-width: 768px) {
+    margin: 0 auto;
+  }
 }
 
 .connect-wrap .extras {
@@ -80,7 +85,6 @@ nav {
     line-height: 30px;
     text-align: center;
     border-radius: 50%;
-    background-color: #8de8fe;
   }
 }
 
@@ -116,26 +120,32 @@ img {
 .login {
   @media only screen and (min-width: 576px) {
     width: 420px;
-    margin-left: 90px;
+    margin: 0 auto;
   }
   @media only screen and (min-width: 992px) {
     width: 600px;
   }
   h1 {
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-    padding-bottom: 3vh;
-    font-size: 1.4rem;
-    font-weight: bolder;
     margin: 2rem 0;
-    line-height: 2rem;
+    font-weight: bolder;
+    letter-spacing: 0.3rem;
+    font-size: 1.4rem;
+    line-height: 1.4rem;
+    text-align: center;
+    border-bottom: 1px solid #4e5166;
+    padding-bottom: 3vh;
     @media only screen and (min-width: 576px) {
       display: flex;
       flex-direction: column;
     }
   }
   p {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 2rem 0;
     line-height: 1.5rem;
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    border-bottom: 1px solid #4e5166;
     padding-bottom: 3vh;
   }
 }
@@ -154,16 +164,15 @@ img {
   margin-bottom: 2rem;
 }
 .btn-login {
-  color: #f7f7f7;
-  border: 2px solid #8de8fe;
-  background: transparent;
-  transition: color, background 0.35s;
+  border: 2px solid #ffd7d7;
+  background-color: transparent;
+  transition: background-color 0.65s;
   &:hover {
-    background: #8de8fe;
-    color: black;
+    background-color: #ffd7d7;
   }
 }
 
+// animations
 @keyframes emoji-1 {
   0% {
     transform: translate(0) scale(0);

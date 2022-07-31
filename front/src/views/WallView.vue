@@ -1,8 +1,9 @@
 <template>
-<!-- The Wall view -->
+  <!-- The Wall view -->
   <div>
-    <!-- NavBar + Header -->
-    <NavBar />
+    <div class="logo-home">
+      <LogoHome />
+    </div>
     <div>
       <!-- Feed -->
       <FeedWall />
@@ -11,22 +12,24 @@
 </template>
 
 <script>
-import NavBar from "@/components/Menu/NavBar.vue";
+// @ is an alias to /src
 import FeedWall from "@/components/Feed/FeedWall.vue";
+import LogoHome from "@/components/Logo.vue";
 
 export default {
-  name: "WallView",
+  name: "Wall-View",
   components: {
-    NavBar,
     FeedWall,
+    LogoHome,
   },
 };
 </script>
+
 <style lang="scss" scoped>
-NavBar{
-    z-index: 999;
-}
-FeedWall{
-  z-index: 1;
+.logo-home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

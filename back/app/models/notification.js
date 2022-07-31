@@ -30,7 +30,7 @@ module.exports = function (sequelize, Sequelize) {
     // is linked to
     Notification.belongsTo(models.user, {
       foreignKey: "userId",
-      as: "user",
+      as: "users",
     });
   };
 

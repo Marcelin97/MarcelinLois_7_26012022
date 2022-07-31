@@ -4,10 +4,9 @@
       <LogoHome />
     </div>
     <div class="home">
-      <!-- <font-awesome-icon :icon="['fas', 'user-secret']"  /> -->
       <HelloWorld msg="Bienvenue sur Groupomania" />
     </div>
-    
+
     <nav>
       <!-- <router-view/> -->
       <router-link class="btn button" to="/account">Découvrir</router-link>
@@ -21,7 +20,7 @@ import HelloWorld from "@/components/HelloWorld.vue";
 import LogoHome from "@/components/Logo.vue";
 
 export default {
-  name: "WelcomeView",
+  name: "Welcome-View",
   components: {
     HelloWorld,
     LogoHome,
@@ -29,6 +28,7 @@ export default {
 };
 </script>
 
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .load {
   margin-bottom: 5em;

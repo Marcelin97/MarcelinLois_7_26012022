@@ -8,6 +8,7 @@ const CryptoJS = require("crypto-js");
 // Import the filesystem module
 const fs = require("fs");
 const path = require("path");
+const { log } = require("console");
 
 //=================================>
 //* ENCRYPTED EMAIL
@@ -88,11 +89,11 @@ exports.signup = async (req, res, next) => {
       };
       user
         .create(userObject)
-        .then((createdUser) => {
+        .then((data) => {
           res.status(201).send({
             status: 200,
             message: "User created successfully",
-            createdUser,
+            data,
           });
         })
         .catch((error) => {
@@ -113,18 +114,27 @@ exports.login = (req, res) => {
   var emailEncrypted = encrypted(req.body.email);
   user
     .findOne({
+      include: {
+        all: true,
+      },
       where: {
         email: emailEncrypted,
       },
     })
     .then(async (user) => {
+      // console.log(user.email)
+      // todo : decrypted email
+      user.email = decryptEmail(emailEncrypted);
+
       if (!user) {
         return res.status(404).json({ message: "User Not found." });
       }
+
       var passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
       );
+
       if (!passwordIsValid) {
         return res.status(401).json({
           accessToken: null,
@@ -144,11 +154,9 @@ exports.login = (req, res) => {
       const refreshToken = await RefreshToken.createToken(user);
       res.status(200).json({
         // status: 200,
-        userId: user.id,
+        user: user,
         accessToken: token,
         refreshToken: refreshToken,
-        isAdmin: user.isAdmin,
-        email: user.email
         // user,
       });
     })
@@ -213,6 +221,7 @@ exports.readUser = async (req, res) => {
       },
     })
     .then((data) => {
+      // console.log(data);
       var emailEncrypted = data.email;
       data.email = decryptEmail(emailEncrypted);
       res.status(200).json({
@@ -236,7 +245,7 @@ exports.readByName = async (req, res) => {
         all: true,
       },
       where: {
-        username: req.body.username,
+        id: req.params.id,
       },
     })
     .then((result) => {
@@ -279,6 +288,9 @@ exports.readAll = (req, res) => {
 
 //* Update
 exports.update = async (req, res) => {
+  console.log("body update : ", req.body);
+  var emailEncrypted = encrypted(req.body.email);
+
   // TODO : 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
   user
     .findOne({ where: { id: req.auth.userID } })
@@ -334,11 +346,17 @@ exports.update = async (req, res) => {
       // console.log(req.body);
       result
         .update(req.body, { where: { id: result.id } })
-        .then(() => {
+        .then((newUser) => {
+          // todo : decrypted email
+          newUser.email = decryptEmail(emailEncrypted);
+
+          // console.log("newUser" , newUser);
+          // console.log("résultt", result);
+
           res.status(200).json({
             message: " User updated",
             status: 200,
-            data: result,
+            user: newUser,
           });
         })
         .catch((error) =>
@@ -403,10 +421,10 @@ exports.exportUser = async (req, res) => {
       include: [
         { association: "comments" },
         { association: "posts" },
-        { association: "moderators" },
+        { association: "community" },
         { association: "likePosts" },
         { association: "userReported" },
-        { association: "postReport" },
+        { association: "postReports" },
         { association: "replies" },
         { association: "messageToUserId" },
       ],
@@ -417,17 +435,11 @@ exports.exportUser = async (req, res) => {
     .then((datas) => {
       var emailEncrypted = datas.email;
       datas.email = decryptEmail(emailEncrypted);
-      const dataFile = path.join(
-        __dirname,
-        "export",
-        `datasUser.${req.auth.userID}.txt`
-      );
-      const file = JSON.stringify(datas, null, 4);
-      fs.writeFileSync(dataFile, file);
-      return res.status(200).json({
-        status: 200,
-        file,
-      });
+      var text = JSON.stringify(datas, null, 2);
+      res.attachment("user-datas.txt");
+      res.type("txt");
+
+      return res.status(200).send(text);
     })
     .catch((error) =>
       res.status(500).json({
@@ -440,44 +452,47 @@ exports.exportUser = async (req, res) => {
 //* Report a user
 exports.report = (req, res) => {
   // TODO : I find the user to report
-  user.findOne({ where: { id: req.params.id } }).then((targetUser) => {
-    if (!targetUser) {
-      return res.status(404).json({ error: "Reportable user not found." });
-    }
-    // TODO : I check if a report has already been made
-    userReport
-      .count({
-        where: { userReportedId: targetUser.id, fromUserId: req.auth.userID },
-      })
-      .then((isAlreadyReported) => {
-        if (isAlreadyReported) {
-          return res
-            .status(409)
-            .json({ message: "You have already reported this user" });
-        }
+  user.findOne({ where: { id: req.params.id } })
+    .then((targetUser) => {
+      if (!targetUser) {
+        return res.status(404).json({ error: "Reportable user not found." });
+      }
+      // TODO : I check if a report has already been made
+      userReport
+        .count({
+          where: { userReportedId: targetUser.id, fromUserId: req.auth.userID },
+        })
+        .then((isAlreadyReported) => {
+          if (isAlreadyReported) {
+            return res
+              .status(409)
+              .json({ message: "You have already reported this user" });
+          }
 
-        userReport
-          .create({
-            userReportedId: targetUser.id,
-            fromUserId: req.auth.userID,
-            content: req.body.content,
-          })
-          .then(() => {
-            res.status(201).json({
-              message:
-                " User" +
-                " " +
-                targetUser.username +
-                " " +
-                "reported successfully",
-            });
-          })
-          .catch((error) =>
-            res.status(500).json({ error: error.name, message: error.message })
-          );
-      })
-      .catch((err) => {
-        return res.status(500).json({ error: err.message });
-      });
-  });
+          userReport
+            .create({
+              userReportedId: targetUser.id,
+              fromUserId: req.auth.userID,
+              content: req.body.content,
+            })
+            .then(() => {
+              res.status(201).json({
+                message:
+                  " User" +
+                  " " +
+                  targetUser.username +
+                  " " +
+                  "reported successfully",
+              });
+            })
+            .catch((error) =>
+              res.status(500).json({ error: error.name, message: error.message })
+            );
+        })
+        .catch((err) => {
+          return res.status(500).json({ error: err.message });
+        });
+    }).catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });  
 };
