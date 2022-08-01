@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <article class="container">
     <div class="community-card">
       <h5 class="community-card__title">
         {{ community.title }}
@@ -12,26 +12,37 @@
       ></div>
       <p class="community-card__desc">{{ community.about }}</p>
     </div>
-  </div>
+
+    <!-- link to profile page -->
+    <router-link class="more" :to="`/communities/profil/${this.id}`">
+      <span class="more__user">Voir cette communauté.</span>
+      <span>
+        <font-awesome-icon
+          class="more__icon"
+          :icon="['fa', 'person-walking-arrow-right']"
+        />
+      </span>
+    </router-link>
+  </article>
 </template>
 
 <script>
 export default {
-  name: "CommunityList",
-  setup() {},
+  name: "Community-List",
   props: ["community"],
   data() {
     return {
-      title: "Voici la liste de toutes les communautés",
-      bottom: false,
-      communities: [],
+      id: "",
     };
+  },
+  mounted() {
+    this.id = this.community.id;
+    // console.log(this.id);
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
 .container {
   max-width: 800px;
   margin: 0 auto;
@@ -97,6 +108,28 @@ export default {
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.more {
+  color: #000000;
+
+  &__user {
+    color: #000000;
+  }
+
+  &__icon {
+    background-color: #000000;
+    opacity: 0.5;
+    padding: 0.2rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    line-height: 1rem;
+    border-radius: 0.625rem;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 </style>

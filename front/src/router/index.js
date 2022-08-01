@@ -5,13 +5,14 @@ import WelcomeView from "../views/WelcomeView.vue";
 import AccountView from "../views/AccountView.vue";
 import SignupView from "../views/SignupView.vue";
 import LoginView from "../views/LoginView.vue";
-import WallView from "../views/WallView.vue";
 import UserView from "../views/UserView";
 import UserParameterView from "../views/UserParameterView";
-import CommunityView from "../views/CommunityView";
-import CommunityProfileView from "../views/CommunityProfilView";
 import UsersView from "../views/UsersView";
 import ProfileView from "../views/ProfileView";
+import CommunitiesView from "../views/CommunitiesView";
+import CommunityProfileView from "../views/CommunityProfilView";
+import WallView from "../views/WallView.vue";
+
 
 const routes = [
   {
@@ -19,10 +20,6 @@ const routes = [
     name: "NotFound",
     component: NotFound,
   },
-  // {
-  //   path: "/auth-required",
-  //   component: { render: (h) => h("div", ["Auth required!"]) },
-  // },
   {
     path: "/",
     name: "home",
@@ -72,11 +69,11 @@ const routes = [
   {
     path: "/communities",
     name: "communities",
-    component: CommunityView,
+    component: CommunitiesView,
   },
   {
     path: "/communities/profil/:id",
-    name: "communities/profil",
+    name: "communitiesTarget",
     component: CommunityProfileView,
   },
 ];

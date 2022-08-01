@@ -1,14 +1,22 @@
 <template>
   <section>
-    <h1 v-if="communities.length">Explore des nouvelles communautés !</h1>
-    <h1 v-else>Il n'y a pas encore de communauté.</h1>
+    <!-- If there are communities -->
+    <h1 v-if="communities.length != 0">Explore des nouvelles communautés !</h1>
+    <!-- If there are no communities-->
+    <h1 v-else>
+      Il n'y a pas de communautés pour le moment. Crée une communauté.
+    </h1>
 
     <!-- Input Box Communities -->
     <InputBoxCommunityVue />
 
     <!-- search bar -->
     <div class="search-bar">
-      <input type="text" placeholder="Search" v-model="search" />
+      <input
+        type="text"
+        placeholder="Recherche une communauté"
+        v-model="search"
+      />
     </div>
 
     <!-- output component -->
@@ -17,7 +25,6 @@
         v-for="(community, index) in filteredCommunities"
         :key="index"
         :community="community"
-        :items="filteredArticles"
       />
     </div>
   </section>
@@ -34,7 +41,14 @@ export default {
     CommunityList,
     InputBoxCommunityVue,
   },
- 
+  data() {
+    return {
+      // add communities array:
+      communities: [],
+      apiError: "",
+      search: "",
+    };
+  },
   computed: {
     filteredCommunities() {
       return this.communities.filter((community) =>
@@ -43,12 +57,14 @@ export default {
     },
   },
   mounted() {
-    this.apiError = "";
     axiosInstance
       .get("/community/readAllCommunities")
-      .then((response) => (this.communities = response.data.datas))
+      .then((response) => {
+        // console.log(response);
+        this.communities = response.data.datas;
+      })
       .catch((error) => {
-        // console.log(error.response.status);
+        console.log(error.response.status);
         if (error.response.status == 404) {
           const errorMessage = (this.apiError =
             "Il n'y pas de communauté(s) !");
@@ -56,9 +72,9 @@ export default {
 
           // notification d'erreur
           this.$notify({
-            type: "warn",
-            title: `Pour information`,
-            text: `${errorMessage}`,
+            type: "error",
+            title: `Erreur de l'api`,
+            text: `Erreur reporté : ${errorMessage}`,
           });
         }
       });
@@ -68,32 +84,43 @@ export default {
 
 <style lang="scss" scoped>
 h1 {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  line-height: 35px;
+  text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 0.3rem;
-  font-size: 1.4rem;
-  line-height: 1.4rem;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
   text-align: center;
-  margin: 2rem auto;
-  border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
-  padding-bottom: 3vh;
-  max-width: 350px;
 }
 
 .search-bar {
   height: 34px;
   display: flex;
+  justify-content: center;
   width: 100%;
   margin: 0 auto;
   margin-bottom: 2rem;
 
   input {
-    width: 60%;
-    height: 100%;
+    width: 15rem;
+    height: 2.5rem;
+    padding: 0 0.5rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.3rem;
     border: none;
-    background-color: rgb(23, 23, 23);
-    border-radius: 8px;
-    padding: 0 40px 0 16px;
-    margin: 0 auto;
+    color: #ffff;
+    background-color: #4e5166;
+
+    @media only screen and (min-width: 400px) {
+      width: 18rem;
+    }
+
+    @media only screen and (min-width: 768px) {
+      width: 25rem;
+    }
   }
 }
 </style>

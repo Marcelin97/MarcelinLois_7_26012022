@@ -285,7 +285,7 @@ form {
   width: 14rem;
   height: 50px;
   line-height: 50px;
-  border: 0;
+  border: none;
   border-bottom: 1px solid #4e5166;
   text-indent: 2rem;
   &:focus {
