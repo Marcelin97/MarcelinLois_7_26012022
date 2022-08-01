@@ -12,7 +12,7 @@ import ProfileView from "../views/ProfileView";
 import CommunitiesView from "../views/CommunitiesView";
 import CommunityProfileView from "../views/CommunityProfilView";
 import WallView from "../views/WallView.vue";
-
+import CommunitySettings from "../views/CommunitySettingsView";
 
 const routes = [
   {
@@ -75,6 +75,11 @@ const routes = [
     path: "/communities/profil/:id",
     name: "communitiesTarget",
     component: CommunityProfileView,
+  },
+  {
+    path: "/communities/profil/:id/settings",
+    name: "communitySettings",
+    component: CommunitySettings,
   },
 ];
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <UserParameter msg="Gestion du profil" />
+    <UserParameter msg="Gestion du profil." />
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import UserParameter from "@/components/Profil/UserParameter.vue";
 
 export default {
-  name: "Profil-Settings",
+  name: "Profile-Settings",
   components: {
     UserParameter,
   },

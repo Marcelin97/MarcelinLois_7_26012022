@@ -40,7 +40,7 @@
           </button>
 
           <!-- update profile -->
-          <router-link class="btn" to="/user/parameter">
+          <router-link class="btn" to="/communities/profil/:id/settings">
             Modifier la communauté
           </router-link>
 
@@ -77,7 +77,7 @@
           <button
             type="button"
             class="btn"
-            @click="$refs.reportUser.openModal()"
+            @click="$refs.reportCommunity.openModal()"
             text="Signaler ce compte"
           >
             Signaler...
@@ -119,7 +119,7 @@
   </modalStructure>
 
   <!-- modal report user -->
-  <modalStructure ref="reportUser">
+  <modalStructure ref="reportCommunity">
     <template v-slot:header>
       <h1>Signaler ce compte</h1>
     </template>
