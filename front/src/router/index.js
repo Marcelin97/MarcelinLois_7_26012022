@@ -73,13 +73,15 @@ const routes = [
   },
   {
     path: "/communities/profil/:id",
-    name: "communitiesTarget",
+    name: "communities-Target",
     component: CommunityProfileView,
+    props: true,
   },
   {
     path: "/communities/profil/:id/settings",
-    name: "communitySettings",
+    name: "Community-Settings",
     component: CommunitySettings,
+    props: true,
   },
 ];
 

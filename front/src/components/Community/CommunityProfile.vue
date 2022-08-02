@@ -1,184 +1,192 @@
 <template>
-  <div class="wrapper">
-    <div class="profile-card js-profile-card">
-      <!-- Profil image -->
-      <div>
-        <div class="profile-card__img">
-          <img
-            v-if="community.icon"
-            :src="`http://localhost:3000${community.icon}`"
-            :alt="'Avatar de ' + community.icon"
-            aria-label="Photo de la communauté"
-          />
-          <!-- <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" /> -->
-        </div>
-      </div>
-
-      <!-- Profil informations -->
-      <div class="profile-card__cnt js-profile-cnt">
-        <div class="profile-card__name">
-          {{ community.title }}
+  <div>
+    <div class="wrapper">
+      <div class="profile-card js-profile-card">
+        <!-- Profil image -->
+        <div>
+          <div class="profile-card__img">
+            <img
+              v-if="community.icon"
+              :src="`http://localhost:3000${community.icon}`"
+              :alt="'Avatar de ' + community.icon"
+              aria-label="Photo de la communauté"
+            />
+            <!-- <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" /> -->
+          </div>
         </div>
 
-        <!-- Profil statistics -->
-        <div class="profile-card-inf">
-          {{ community.about }}
-        </div>
-      </div>
+        <!-- Profil informations -->
+        <div class="profile-card__cnt js-profile-cnt">
+          <div class="profile-card__name">
+            {{ community.title }}
+          </div>
 
-      <!-- button actions -->
-      <div class="profile-card-ctr">
-        <div class="profile-card-ctr__actions">
-          <!-- button delete account -->
-          <button
-            type="button"
-            class="btn btn-delete"
-            @click="$refs.deleteAccount.openModal()"
-            text="Supprimer mon compte"
-          >
-            Supprimer la communauté
-          </button>
-
-          <!-- update profile -->
-          <router-link class="btn" to="/communities/profil/:id/settings">
-            Modifier la communauté
-          </router-link>
-
-          <!-- update profile -->
-          <router-link class="btn" to="/user/parameter">
-            Ajouter un modérateur
-          </router-link>
-
-          <router-link class="btn" to="/user/parameter">
-            Supprimer un modérateur
-          </router-link>
+          <!-- Profil statistics -->
+          <div class="profile-card-inf">
+            {{ community.about }}
+          </div>
         </div>
 
-        <div class="profile-card-ctr__actions">
-          <!-- export data -->
-          <button
-            type="button"
-            class="btn btn-export"
-            @click="exportDataClick"
-            text="Exporter mes données"
-          >
-            s'abonner
-          </button>
-          <button
-            type="button"
-            class="btn btn-export"
-            @click="exportDataClick"
-            text="Exporter mes données"
-          >
-            se désabonner
-          </button>
+        <!-- button actions -->
+        <div class="profile-card-ctr">
+          <div class="profile-card-ctr__actions">
+            <!-- button delete account -->
+            <button
+              type="button"
+              class="btn btn-delete"
+              @click="$refs.deleteAccount.openModal()"
+              text="Supprimer mon compte"
+            >
+              Supprimer la communauté
+            </button>
 
-          <!-- button report user -->
-          <button
-            type="button"
-            class="btn"
-            @click="$refs.reportCommunity.openModal()"
-            text="Signaler ce compte"
-          >
-            Signaler...
-          </button>
+            <!-- update profile -->
+            <router-link
+              :communityId="communityId"
+              class="btn"
+              :to="'/communities/profil/' + community.id + '/settings'"
+            >
+              Modifier la communauté
+            </router-link>
+
+            <!-- update profile -->
+            <router-link class="btn" to="/user/parameter">
+              Ajouter un modérateur
+            </router-link>
+
+            <router-link class="btn" to="/user/parameter">
+              Supprimer un modérateur
+            </router-link>
+          </div>
+
+          <div class="profile-card-ctr__actions">
+            <!-- export data -->
+            <button
+              type="button"
+              class="btn btn-export"
+              @click="exportDataClick"
+              text="Exporter mes données"
+            >
+              s'abonner
+            </button>
+            <button
+              type="button"
+              class="btn btn-export"
+              @click="exportDataClick"
+              text="Exporter mes données"
+            >
+              se désabonner
+            </button>
+
+            <!-- button report user -->
+            <button
+              type="button"
+              class="btn"
+              @click="$refs.reportCommunity.openModal()"
+              text="Signaler ce compte"
+            >
+              Signaler...
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div>
-    <PostCard />
-  </div>
+    <div>
+      <PostCard />
+    </div>
 
-  <!-- modal delete account -->
-  <modalStructure ref="deleteAccount">
-    <template v-slot:header>
-      <h1>Supprimer la communauté</h1>
-    </template>
+    <!-- modal delete account -->
+    <modalStructure ref="deleteAccount">
+      <template v-slot:header>
+        <h1>Supprimer la communauté</h1>
+      </template>
 
-    <template v-slot:body>
-      <p>
-        Attention, vous êtes sur le point de supprimer cette communauté. Cette
-        action est irréversible. Souhaitez-vous tout de même continuer ?'
-      </p>
-    </template>
+      <template v-slot:body>
+        <p>
+          Attention, vous êtes sur le point de supprimer cette communauté. Cette
+          action est irréversible. Souhaitez-vous tout de même continuer ?'
+        </p>
+      </template>
 
-    <template v-slot:footer>
-      <div class="modal__actions">
-        <button
-          class="btn"
-          text="Annuler"
-          @click="$refs.modalName.closeModal()"
-        >
-          Cancel
-        </button>
-        <deleteBtn @click="deleteAccountClick" />
-      </div>
-    </template>
-  </modalStructure>
+      <template v-slot:footer>
+        <div class="modal__actions">
+          <button
+            class="btn"
+            text="Annuler"
+            @click="$refs.modalName.closeModal()"
+          >
+            Cancel
+          </button>
+          <deleteBtn @click="deleteAccountClick" />
+        </div>
+      </template>
+    </modalStructure>
 
-  <!-- modal report user -->
-  <modalStructure ref="reportCommunity">
-    <template v-slot:header>
-      <h1>Signaler ce compte</h1>
-    </template>
+    <!-- modal report user -->
+    <modalStructure ref="reportCommunity">
+      <template v-slot:header>
+        <h1>Signaler ce compte</h1>
+      </template>
 
-    <template v-slot:body>
-      <div class="container">
-        <form action="#" method="post" @submit.prevent="reportAccountClick">
-          <div class="FormGroup">
-            <label class="FormGroupLabel" for=""
-              >Pourquoi signalez-vous ce compte ?</label
-            >
-            <div class="FormTextboxWrapper">
-              <textarea
-                cols="50"
-                rows="5"
-                required
-                class="FormTextbox"
-                type="text"
-                placeholder="Explique nous les raisons de ce signalement."
-                v-model="state.community.content"
-                @blur="v$.community.content.$touch"
-                :class="v$.community.content.$error === true ? 'error' : 'dirty'"
-              />
+      <template v-slot:body>
+        <div class="container">
+          <form action="#" method="post" @submit.prevent="reportAccountClick">
+            <div class="FormGroup">
+              <label class="FormGroupLabel" for=""
+                >Pourquoi signalez-vous ce compte ?</label
+              >
+              <div class="FormTextboxWrapper">
+                <textarea
+                  cols="50"
+                  rows="5"
+                  required
+                  class="FormTextbox"
+                  type="text"
+                  placeholder="Explique nous les raisons de ce signalement."
+                  v-model="state.community.content"
+                  @blur="v$.community.content.$touch"
+                  :class="
+                    v$.community.content.$error === true ? 'error' : 'dirty'
+                  "
+                />
+              </div>
+
+              <!-- Error Message -->
+              <template v-if="v$.community.content.$dirty">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.community.content.$errors"
+                  :key="index"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <!-- Error Message -->
             </div>
 
-            <!-- Error Message -->
-            <template v-if="v$.community.content.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.community.content.$errors"
-                :key="index"
-              >
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-            <!-- Error Message -->
-          </div>
+            <button
+              type="submit"
+              class="btn button"
+              title="Signaler"
+              text="Signaler"
+              value="Signaler"
+            >
+              Confirmer signalement
+            </button>
+          </form>
+        </div>
+      </template>
 
-          <button
-            type="submit"
-            class="btn button"
-            title="Signaler"
-            text="Signaler"
-            value="Signaler"
-          >
-            Confirmer signalement
-          </button>
-        </form>
-      </div>
-    </template>
-
-    <template v-slot:footer>
-      <!-- gestion erreur API avec axios -->
-      <div class="error-api">
-        <p class="error-msg">{{ apiError }}</p>
-      </div>
-      <!-- gestion erreur API avec axios -->
-    </template>
-  </modalStructure>
+      <template v-slot:footer>
+        <!-- gestion erreur API avec axios -->
+        <div class="error-api">
+          <p class="error-msg">{{ apiError }}</p>
+        </div>
+        <!-- gestion erreur API avec axios -->
+      </template>
+    </modalStructure>
+  </div>
 </template>
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
@@ -239,9 +247,12 @@ export default {
       communityId: "",
     };
   },
+  mounted() {
+    this.communityId = this.$route.params.id;
+  },
   methods: {
     async deleteAccountClick() {
-      this.communityId = this.$route.params.id;
+    //   this.communityId = this.$route.params.id;
 
       if (
         window.confirm(
@@ -274,8 +285,8 @@ export default {
         }
       }
     },
-      reportAccountClick() {
-              this.communityId = this.$route.params.id;
+    reportAccountClick() {
+    //   this.communityId = this.$route.params.id;
 
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
@@ -302,10 +313,9 @@ export default {
           .catch((error) => {
             console.log(error.response.status);
             if (error.response.status == 404) {
-              const errorMessage = (this.apiError =
-                "Communauté introuvable !");
-                this.errorMessage = errorMessage;
-              
+              const errorMessage = (this.apiError = "Communauté introuvable !");
+              this.errorMessage = errorMessage;
+
               // notification d'erreur
               this.$notify({
                 type: "error",
@@ -314,7 +324,7 @@ export default {
               });
             } else if (error.response) {
               const errorMessage = (this.apiErrors = error.response);
-          this.errorMessage = errorMessage;
+              this.errorMessage = errorMessage;
               // notification d'erreur
               this.$notify({
                 type: "error",

@@ -117,7 +117,8 @@ exports.updateCommunity = async (req, res, next) => {
               fs.unlinkSync(`images/${filename}`);
             }
           } catch (error) {
-            return res.status(404).json({ message: "Image not found" });
+            console.log(error);
+            // return res.status(404).json({ message: "Image not found" });
           }
         }
       } catch (error) {

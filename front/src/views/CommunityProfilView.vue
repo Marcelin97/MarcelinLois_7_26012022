@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1>{{ this.community.title }}</h1>
-    <CommunityProfile :community="community" />
+    <CommunityProfile :community="community" :communityId = "communityId"/>
 
     <!-- gestion erreur API avec axios -->
     <div v-if="apiErrors" class="error-api">

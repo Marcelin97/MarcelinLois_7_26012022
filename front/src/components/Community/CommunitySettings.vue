@@ -3,24 +3,24 @@
     <h1>{{ msg }}</h1>
 
     <div class="container-update">
-      <h2 class="title">Modifier mon profil</h2>
+      <h2 class="title">Modifier la communauté</h2>
 
       <form @submit.prevent="updateAccountClick" enctype="multipart/form-data">
         <div class="form-group">
-          <label for="first-name">Prénom</label>
+          <label for="title">Nouveau titre de la communauté</label>
           <input
-            id="first-name"
+            id="title"
             type="text"
-            v-model="state.user.firstName"
-            @blur="v$.user.firstName.$touch"
-            :class="v$.user.firstName.$error === true ? 'error' : 'dirty'"
+            v-model="state.community.title"
+            @blur="v$.community.title.$touch"
+            :class="v$.community.title.$error === true ? 'error' : 'dirty'"
           />
 
           <!-- Error Message -->
-          <template v-if="v$.user.firstName.$dirty">
+          <template v-if="v$.community.title.$dirty">
             <div
               class="input-errors"
-              v-for="(error, index) of v$.user.firstName.$errors"
+              v-for="(error, index) of v$.community.title.$errors"
               :key="index"
             >
               <div class="error-msg">{{ error.$message }}</div>
@@ -30,20 +30,20 @@
         </div>
 
         <div class="form-group">
-          <label for="last-name">Nom de famille</label>
+          <label for="about">Nouvelle description de la communauté</label>
           <input
-            id="last-name"
+            id="about"
             type="text"
-            v-model="state.user.lastName"
-            @blur="v$.user.lastName.$touch"
-            :class="v$.user.lastName.$error === true ? 'error' : 'dirty'"
+            v-model="state.community.about"
+            @blur="v$.community.about.$touch"
+            :class="v$.community.about.$error === true ? 'error' : 'dirty'"
           />
 
           <!-- Error Message -->
-          <template v-if="v$.user.lastName.$dirty">
+          <template v-if="v$.community.about.$dirty">
             <div
               class="input-errors"
-              v-for="(error, index) of v$.user.lastName.$errors"
+              v-for="(error, index) of v$.community.about.$errors"
               :key="index"
             >
               <div class="error-msg">{{ error.$message }}</div>
@@ -53,103 +53,11 @@
         </div>
 
         <div class="form-group">
-          <label for="birthday">Date de naissance</label>
-          <input
-            id="birthday"
-            type="date"
-            v-model="state.user.birthday"
-            @blur="v$.user.birthday.$touch"
-            :class="v$.user.birthday.$error === true ? 'error' : 'dirty'"
-          />
-
-          <!-- Error Message -->
-          <template v-if="v$.user.birthday.$dirty">
-            <div
-              class="input-errors"
-              v-for="(error, index) of v$.user.birthday.$errors"
-              :key="index"
-            >
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
-          </template>
-          <!-- Error Message -->
-        </div>
-
-        <div class="form-group">
-          <label for="username">Nom d'utilisateur</label>
-          <input
-            id="username"
-            type="text"
-            v-model="state.user.username"
-            @blur="v$.user.username.$touch"
-            :class="v$.user.username.$error === true ? 'error' : 'dirty'"
-          />
-
-          <!-- Error Message -->
-          <template v-if="v$.user.username.$dirty">
-            <div
-              class="input-errors"
-              v-for="(error, index) of v$.user.username.$errors"
-              :key="index"
-            >
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
-          </template>
-          <!-- Error Message -->
-        </div>
-
-        <div class="form-group">
-          <label for="email">E-mail</label>
-          <input
-            id="email"
-            type="email"
-            v-model="state.user.email"
-            @blur="v$.user.email.$touch"
-            :class="v$.user.email.$error === true ? 'error' : 'dirty'"
-          />
-
-          <!-- Error Message -->
-          <template v-if="v$.user.email.$dirty">
-            <div
-              class="input-errors"
-              v-for="(error, index) of v$.user.email.$errors"
-              :key="index"
-            >
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
-          </template>
-          <!-- Error Message -->
-        </div>
-
-        <div class="form-group">
-          <label for="newPassword">Mot de passe</label>
-          <input
-            id="newPassword"
-            type="password"
-            v-model="state.user.newPassword"
-            @blur="v$.user.newPassword.$touch"
-            :class="v$.user.newPassword.$error === true ? 'error' : 'dirty'"
-          />
-
-          <!-- Error Message -->
-          <template v-if="v$.user.newPassword.$dirty">
-            <div
-              class="input-errors"
-              v-for="(error, index) of v$.user.newPassword.$errors"
-              :key="index"
-            >
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
-          </template>
-          <!-- Error Message -->
-        </div>
-
-        <div class="form-group">
-          <label for="userImage">Photo de profil</label>
+          <label for="communityImage">Nouvelle photo de la communauté</label>
           <input
             class="input-file"
-            v-on="state.user.userImage"
-            id="userImage"
+            v-on="state.community.communityImage"
+            id="communityImage"
             type="file"
             accept=".jpeg,.jpg,png"
             @change="onChangeFileUpload"
@@ -157,10 +65,10 @@
           />
 
           <!-- Error Message -->
-          <template v-if="v$.user.userImage.$dirty">
+          <template v-if="v$.community.communityImage.$dirty">
             <div
               class="input-errors"
-              v-for="(error, index) of v$.user.userImage.$errors"
+              v-for="(error, index) of v$.community.communityImage.$errors"
               :key="index"
             >
               <div class="error-msg">{{ error.$message }}</div>
@@ -180,98 +88,45 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import {
-  // helpers,
-  // required,
-  minLength,
-  email,
-  maxLength,
-  alphaNum,
-} from "@vuelidate/validators";
+import { minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 import axiosInstance from "../../services/api";
-
-export function strongPassword(value) {
-  return (
-    /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/.test(
-      value
-    ) && value.length >= 8
-  );
-}
 
 export default {
   name: "Update-Profile",
   props: {
     msg: String,
   },
+  data() {
+    return {
+      community: [],
+      communityId: "",
+    };
+  },
   setup() {
     const state = reactive({
-      test: "",
-      user: {
-        firstName: "",
-        lastName: "",
-        birthday: "",
-        email: "",
-        newPassword: "",
-        username: "",
-        userImage: "",
+      community: {
+        title: "",
+        about: "",
+        communityImage: "",
       },
       apiError: "",
     });
 
     const rules = computed(() => ({
-      user: {
-        firstName: {
-          // required: helpers.withMessage("Le prénom est obligatoire", required),
+      community: {
+        title: {
           $autoDirty: true,
           $lazy: true,
         },
-        lastName: {
-          // required: helpers.withMessage("Le nom est obligatoire", required),
-          $autoDirty: true,
-          $lazy: true,
-        },
-        birthday: {
-          // required: helpers.withMessage(
-          // "La date d'anniversaire est obligatoire",
-          // required
-          // ),
-          $autoDirty: true,
-          $lazy: true,
-        },
-        username: {
-          // required: helpers.withMessage(
-          //   "Le nom d'utilisateur est obligatoire",
-          //   required
-          // ),
+        about: {
           $autoDirty: true,
           $lazy: true,
           minLength: minLength(3),
           maxLength: maxLength(25),
-          alphaNum,
         },
-        email: {
-          // required: helpers.withMessage("L'/email est obligatoire", required),
-          $autoDirty: true,
-          $lazy: true,
-          email,
-          minLength: minLength(5),
-          maxLength: maxLength(60),
-        },
-        newPassword: {
-          // required: helpers.withMessage(
-          //   "Le mot de passe est obligatoire",
-          //   required
-          // ),
-          $autoDirty: true,
-          $lazy: true,
-          password_validation: {
-            $validator: strongPassword,
-            $message:
-              "Entre 8 et 16 caractères, Une minuscule au moins, Une majuscule au moins, Un chiffre au moins, Un caractère spécial au moins (@&/!$ ...)",
-          },
-        },
-        userImage: {
+
+        communityImage: {
           $autoDirty: true,
           $lazy: true,
         },
@@ -286,48 +141,48 @@ export default {
     $lazy: true,
   },
   mounted() {
-    this.state.user = this.$store.state.user;
+    this.communityId = this.$route.params.id;
+    // console.log("bonjour",this.communityId)
   },
   methods: {
     onChangeFileUpload() {
-      this.state.user.userImage = document.querySelector("#userImage").files[0];
-      // console.log("image update", this.state.user.userImage);
+      this.state.community.communityImage =
+        document.querySelector("#communityImage").files[0];
+      console.log(
+        "community image update",
+        this.state.community.communityImage
+      );
     },
     updateAccountClick() {
       var bodyFormData = new FormData();
-      bodyFormData.append("firstName", this.state.user.firstName);
-      bodyFormData.append("lastName", this.state.user.lastName);
-      bodyFormData.append("birthday", this.state.user.birthday);
-      bodyFormData.append("email", this.state.user.email);
-      bodyFormData.append("newPassword", this.state.user.newPassword);
-      bodyFormData.append("username", this.state.user.username);
-      bodyFormData.append("image", this.state.user.userImage);
-      // for (let value of bodyFormData.values()) {
-      //   console.log(value);
-      // }
+      bodyFormData.append("title", this.state.community.title);
+      bodyFormData.append("about", this.state.community.about);
+      bodyFormData.append("image", this.state.community.communityImage);
+      for (let value of bodyFormData.values()) {
+        console.log(value);
+      }
 
       axiosInstance
-        .patch("/auth/update", bodyFormData, {
+        .patch(`/community/updateCommunity/${this.communityId}`, bodyFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then((result) => {
-          // console.log("result: ", result.data);
-          this.$store.commit("updateUser", result.data);
-          // alert("Vos modifications sont enregistrées");
+          console.log("result: ", result);
+          alert("Vos modifications sont enregistrées");
 
           // notification de succès
           this.$notify({
             type: "success",
-            title: `Profil mise à jour`,
-            text: `Vous allez être redirigé vers votre profil.`,
+            title: `Communauté mise à jour`,
+            text: `Vous allez être redirigé vers la communauté.`,
           });
 
           // redirection sur la page utilisateur
           setTimeout(
             function () {
-              this.$router.push("/user");
+              this.$router.push(`/communities/profil/${this.communityId}`);
             }.bind(this),
             2000,
             this
@@ -355,8 +210,7 @@ export default {
     font-weight: bolder;
     text-align: center;
     margin: 2rem 0 0;
-
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+    border-bottom: 1px solid #95989a;
     padding-bottom: 3vh;
   }
 }
@@ -369,12 +223,12 @@ export default {
 }
 
 .title {
-  font-size: 0.8rem;
+  font-size: 1.3rem;
+  line-height: 1.3rem;
   font-weight: lighter;
   text-align: center;
-  margin: 2rem 0;
-  line-height: 1.5rem;
-  border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
+  margin: 2rem 0 0;
+  border-bottom: 1px solid #95989a;
   padding-bottom: 3vh;
 }
 
@@ -389,6 +243,7 @@ form {
   margin-top: 25px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
   label {
     margin-bottom: 10px;

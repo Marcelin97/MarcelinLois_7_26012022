@@ -32,6 +32,18 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: "Nav-Bar",
+  methods: {
+    logout: function () {
+      this.$store.commit("logout");
+      this.$router.push("/");
+    },
+  },
+};
+</script>
+
 <style lang="scss" scoped>
 .header {
   display: flex;
