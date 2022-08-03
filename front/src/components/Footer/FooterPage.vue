@@ -9,7 +9,7 @@
       <router-link
         class="footer_link"
         to="/wall"
-        aria-label="Read more about Seminole's new baby mayor"
+        aria-label="Read more about Groupomania"
       >
         Groupomania
       </router-link>
@@ -19,7 +19,6 @@
 
 <style lang="scss" scoped>
 .footer {
-  // height: 120px;
   margin-top: -10px;
 }
 

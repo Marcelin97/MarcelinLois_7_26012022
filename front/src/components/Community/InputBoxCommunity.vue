@@ -1,5 +1,39 @@
 <template>
   <div class="form-input-box">
+    <h2>Crée une communauté</h2>
+    <form class="community-form">
+
+<!-- add file -->
+<div class="container">
+  <div class="fileUploadInput">
+    <label>✨ Upload File</label>
+    <input type="file"/>
+    <button>+</button>
+  </div>
+</div><a class="reference" href="http://bit.ly/2JPuBjx" target="_blank">🔗 Ali Soueidan</a>
+
+      <input
+        type="text"
+        name="name"
+        class="question"
+        id="nme"
+        required
+        autocomplete="off"
+      />
+      <label for="nme"><span>What's your name?</span></label>
+      <input
+        name="message"
+        rows="2"
+        class="question"
+        id="msg"
+        required
+        autocomplete="off"
+      />
+      <label for="msg"><span>What's your message?</span></label>
+    </form>
+  </div>
+
+  <div class="form-input-box">
     <form @submit.prevent="createCommunityClick" class="community-form">
       <!-- Post form header -->
       <div class="community-form-header">
@@ -15,18 +49,6 @@
             <div>
               <div class="wrapper">
                 <div class="split">
-                  <div class="split-button">
-                    <font-awesome-icon class="icon" :icon="['fas', 'upload']" />
-                    Ajoute une image
-                  </div>
-
-                  <button class="split-button">
-                    <font-awesome-icon
-                      class="icon close btn-fas"
-                      :icon="['fas', 'xmark']"
-                    />
-                  </button>
-
                   <div class="menu">
                     <button class="button">
                       <font-awesome-icon
@@ -263,13 +285,278 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h2 {
+  font-size: 28px;
+  margin-bottom: 2.5%;
+  text-align: center;
+}
+
+.community-form {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+
+input,
+span,
+label,
+textarea {
+  display: block;
+  margin: 10px;
+  padding: 5px;
+  border: none;
+  font-size: 22px;
+}
+
+textarea:focus,
+input:focus {
+  outline: 0;
+}
+/* Question */
+
+input.question,
+textarea.question {
+  font-size: 48px;
+  font-weight: 300;
+  border-radius: 2px;
+  margin: 0;
+  border: none;
+  width: 80%;
+  background: rgba(0, 0, 0, 0);
+  transition: padding-top 0.2s ease, margin-top 0.2s ease;
+  overflow-x: hidden; /* Hack to make "rows" attribute apply in Firefox. */
+}
+/* Underline and Placeholder */
+
+input.question + label,
+textarea.question + label {
+  display: block;
+  position: relative;
+  white-space: nowrap;
+  padding: 0;
+  margin: 0;
+  width: 10%;
+  border-top: 1px solid red;
+  transition: width 0.4s ease;
+  height: 0px;
+}
+
+input.question:focus + label,
+textarea.question:focus + label {
+  width: 80%;
+}
+
+input.question:focus,
+input.question:valid {
+  padding-top: 35px;
+}
+
+textarea.question:valid,
+textarea.question:focus {
+  margin-top: 35px;
+}
+
+input.question:focus + label > span,
+input.question:valid + label > span {
+  top: -100px;
+  font-size: 22px;
+  color: #333;
+}
+
+textarea.question:focus + label > span,
+textarea.question:valid + label > span {
+  top: -150px;
+  font-size: 22px;
+  color: #333;
+}
+
+input.question:valid + label,
+textarea.question:valid + label {
+  border-color: green;
+}
+
+input.question:invalid,
+textarea.question:invalid {
+  box-shadow: none;
+}
+
+input.question + label > span,
+textarea.question + label > span {
+  font-weight: 300;
+  margin: 0;
+  position: absolute;
+  color: #8f8f8f;
+  font-size: 48px;
+  top: -66px;
+  left: 0px;
+  z-index: -1;
+  transition: top 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+}
+
+input[type="submit"] {
+  transition: opacity 0.2s ease, background 0.2s ease;
+  display: block;
+  opacity: 0;
+  margin: 10px 0 0 0;
+  padding: 10px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background: #eee;
+}
+
+input[type="submit"]:active {
+  background: #999;
+}
+
+input.question:valid ~ input[type="submit"],
+textarea.question:valid ~ input[type="submit"] {
+  opacity: 0;
+  transform: translateY(-5rem);
+  animation: appear 750ms ease forwards;
+  animation-delay: 1s;
+}
+
+input.question:invalid ~ input[type="submit"],
+textarea.question:invalid ~ input[type="submit"] {
+  display: none;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: translateY(-5rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// file
+.reference {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  padding: 10px;
+  color: #fff;
+  font-family: arial;
+  text-decoration: none;
+  background: #323262;
+  box-shadow: 0 0 20px rgba(66, 50, 98, 0.35);
+  border-radius: 10px;
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  border: 0px;
+  outline: 0;
+  background-repeat: no-repeat;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border-radius: 0;
+  vertical-align: middle;
+  font-weight: inherit;
+  font-style: inherit;
+  font-family: inherit;
+  text-decoration: none;
+  list-style: none;
+  -webkit-user-select: text;
+     -moz-user-select: text;
+      -ms-user-select: text;
+          user-select: text;
+  line-height: 1.333em;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  background: rgba(66, 50, 98, 0.05);
+}
+
+.container {
+  padding: 25px;
+  box-shadow: 0 0 20px rgba(66, 50, 98, 0.35);
+  border: 1px solid #eaeaea;
+  border-radius: 3px;
+  background: white;
+}
+
+.fileUploadInput {
+  display: grid;
+  grid-gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+.fileUploadInput label {
+  display: flex;
+  align-items: center;
+  color: setColor(primary, 0.5);
+  background: setColor(white);
+  transition: 0.4s ease;
+  font-family: arial, sans-serif;
+  font-size: 0.75em;
+  font-weight: regular;
+}
+.fileUploadInput input {
+  position: relative;
+  z-index: 1;
+  padding: 0 gap(m);
+  width: 100%;
+  height: 50px;
+  border: 1px solid #323262;
+  border-radius: 3px;
+  font-family: arial, sans-serif;
+  font-size: 1rem;
+  font-weight: regular;
+}
+.fileUploadInput input[type=file] {
+  padding: 0 gap(m);
+}
+.fileUploadInput input[type=file]::-webkit-file-upload-button {
+  visibility: hidden;
+  margin-left: 10px;
+  padding: 0;
+  height: 50px;
+  width: 0px;
+}
+.fileUploadInput button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 50px;
+  width: 50px;
+  line-height: 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  color: white;
+  background-color: #323262;
+  border-radius: 0 3px 3px 0;
+  font-family: arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+
 .form-input-box {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   margin-bottom: 2rem;
 }
 .community-form {
-  width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
   @media only screen and (min-width: 576px) {
     width: 380px;
   }
@@ -282,11 +569,10 @@ export default {
   display: flex;
   div span {
     font-size: 0.8rem;
-    font-weight: lighter;
     text-align: center;
+    margin: 1rem 0;
     line-height: 1.5rem;
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-    padding-bottom: 3vh;
+    color: #95989a;
   }
 }
 

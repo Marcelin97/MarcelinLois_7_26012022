@@ -8,7 +8,6 @@
     </div>
 
     <nav>
-      <!-- <router-view/> -->
       <router-link class="btn button" to="/account">Découvrir</router-link>
     </nav>
   </section>

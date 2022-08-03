@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <div class="container">
     <h1>{{ msg }}</h1>
     <p>
       Pour créer votre compte Groupomania, merci de remplir les champs suivants:
@@ -129,7 +129,7 @@
       </template>
     </modalStructure>
     <!-- success modal -->
-  </section>
+  </div>
 </template>
 
 <script>
@@ -219,7 +219,6 @@ export default {
   },
   methods: {
     async createAccount() {
-      this.apiErrors = [];
       const isFormCorrect = await this.v$.$validate(); // checks all inputs
 
       if (isFormCorrect) {
@@ -227,21 +226,13 @@ export default {
         // alert("Form successfully submitted.");
         axiosInstance
           .post("/auth/signup", this.state.user)
-          .then(async (result) => {
-            // console.log(result.data);
-            this.state.user = result.data;
+          .then(() => {
 
             // open success modal
             this.$refs.signupUser.openModal();
 
             // and redirect to the login page
-            setTimeout(
-              function () {
-                this.$router.push("/login");
-              }.bind(this),
-              3000,
-              this
-            );
+            this.$router.push("/login");
           })
           .catch((error) => {
             // console.log(error.response.data.error.errors[0].message);

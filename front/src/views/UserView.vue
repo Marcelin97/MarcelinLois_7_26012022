@@ -34,11 +34,8 @@ export default {
 
     try {
       const response = await usersApi.readTargetUser(this.userId);
-      // console.log("Target user", response);
       this.user = response.data.data;
     } catch (error) {
-      console.log(error);
-
       const errorMessage = (this.apiErrors = error.response);
       this.errorMessage = errorMessage;
 

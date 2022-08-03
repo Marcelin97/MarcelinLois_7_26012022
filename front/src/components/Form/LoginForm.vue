@@ -1,5 +1,5 @@
 <template>
-  <section class="card">
+  <div class="card">
     <div>
       <div>
         <h1>{{ msg }}</h1>
@@ -95,7 +95,7 @@
       </div>
       <!-- redirection sur la page création d'un compte -->
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -169,24 +169,18 @@ export default {
         axiosInstance
           .post("/auth/login", this.state.user)
           .then((result) => {
-            // notification de succès
+            // store current_user
+            this.$store.commit("logUser", result.data);
+
+            // success notification
             this.$notify({
               type: "success",
               title: `Connexion réussi !`,
               text: `Vous allez être redirigé vers votre profil.`,
             });
 
-            // store current_user
-            this.$store.commit("logUser", result.data);
-
-            // redirection sur la page utilisateur
-            setTimeout(
-              function () {
-                this.$router.push("/user");
-              }.bind(this),
-              2000,
-              this
-            );
+            // redirect to user page
+            this.$router.push("/user");
           })
           .catch((error) => {
             console.log("erreur", error);
@@ -195,8 +189,7 @@ export default {
                 "Utilisateur introuvable !");
               this.errorMessage = errorMessage;
 
-              console.log(this.state.apiError);
-              // notification d'erreur
+              // error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la connexion`,
@@ -206,7 +199,8 @@ export default {
               const errorMessage = (this.state.apiError =
                 "Mot de passe invalide !");
               this.errorMessage = errorMessage;
-              // notification d'erreur
+              
+              // error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la connexion`,
@@ -215,7 +209,7 @@ export default {
             }
           });
       } else {
-        // notification d'erreur
+        // error notification
         this.$notify({
           type: "warn",
           title: `Veuillez vous identifié correctement`,
@@ -238,7 +232,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-section div {
+div div {
   display: flex;
   flex-direction: column;
   align-items: center;

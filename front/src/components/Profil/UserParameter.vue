@@ -122,10 +122,10 @@
         </div>
 
         <div class="form-group">
-          <label for="newPassword">Mot de passe</label>
+          <label for="newPassword">Nouveau mot de passe</label>
           <input
             id="newPassword"
-            type="password"
+            type="newPassword"
             v-model="state.user.newPassword"
             @blur="v$.user.newPassword.$touch"
             :class="v$.user.newPassword.$error === true ? 'error' : 'dirty'"
@@ -181,8 +181,6 @@
 <script>
 import useVuelidate from "@vuelidate/core";
 import {
-  // helpers,
-  // required,
   minLength,
   email,
   maxLength,
@@ -222,28 +220,18 @@ export default {
     const rules = computed(() => ({
       user: {
         firstName: {
-          // required: helpers.withMessage("Le prénom est obligatoire", required),
           $autoDirty: true,
           $lazy: true,
         },
         lastName: {
-          // required: helpers.withMessage("Le nom est obligatoire", required),
           $autoDirty: true,
           $lazy: true,
         },
         birthday: {
-          // required: helpers.withMessage(
-          // "La date d'anniversaire est obligatoire",
-          // required
-          // ),
           $autoDirty: true,
           $lazy: true,
         },
         username: {
-          // required: helpers.withMessage(
-          //   "Le nom d'utilisateur est obligatoire",
-          //   required
-          // ),
           $autoDirty: true,
           $lazy: true,
           minLength: minLength(3),
@@ -251,7 +239,6 @@ export default {
           alphaNum,
         },
         email: {
-          // required: helpers.withMessage("L'/email est obligatoire", required),
           $autoDirty: true,
           $lazy: true,
           email,
@@ -259,11 +246,7 @@ export default {
           maxLength: maxLength(60),
         },
         newPassword: {
-          // required: helpers.withMessage(
-          //   "Le mot de passe est obligatoire",
-          //   required
-          // ),
-          $autoDirty: true,
+          // $autoDirty: true,
           $lazy: true,
           password_validation: {
             $validator: strongPassword,
@@ -317,21 +300,15 @@ export default {
           this.$store.commit("updateUser", result.data);
           // alert("Vos modifications sont enregistrées");
 
-          // notification de succès
+          // success notification
           this.$notify({
             type: "success",
             title: `Profil mise à jour`,
             text: `Vous allez être redirigé vers votre profil.`,
           });
 
-          // redirection sur la page utilisateur
-          setTimeout(
-            function () {
-              this.$router.push("/user");
-            }.bind(this),
-            2000,
-            this
-          );
+          // redirect to user page
+          this.$router.push("/user");
         })
         .catch((err) => {
           console.log(err);
@@ -354,10 +331,7 @@ export default {
     letter-spacing: 0.3rem;
     font-weight: bolder;
     text-align: center;
-    margin: 2rem 0 0;
-
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-    padding-bottom: 3vh;
+    margin: 1rem 0 0 0;
   }
 }
 
@@ -370,12 +344,10 @@ export default {
 
 .title {
   font-size: 0.8rem;
-  font-weight: lighter;
   text-align: center;
-  margin: 2rem 0;
+  margin: 1rem 0;
   line-height: 1.5rem;
-  border-bottom: 1px solid hsla(0deg, 0%, 100%, 0.1);
-  padding-bottom: 3vh;
+  color: #95989a;
 }
 
 form {

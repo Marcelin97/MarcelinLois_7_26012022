@@ -123,12 +123,13 @@ exports.login = (req, res) => {
     })
     .then(async (user) => {
       // console.log(user.email)
-      // todo : decrypted email
-      user.email = decryptEmail(emailEncrypted);
-
+      
       if (!user) {
         return res.status(404).json({ message: "User Not found." });
       }
+
+      // todo : decrypted email
+      user.email = decryptEmail(emailEncrypted);
 
       var passwordIsValid = bcrypt.compareSync(
         req.body.password,
@@ -311,8 +312,13 @@ exports.update = async (req, res) => {
       // TODO : Gestion password ==> req.body.password
       try {
         if (req.body.newPassword) {
+          // bcrypt
+          //   .hash(req.body.newPassword, 10)
           const hashPass = await bcrypt.hash(req.body.newPassword, 10);
           req.body.password = hashPass;
+          console.log("mot de pass hash", req.body.newPassword);
+          console.log("mot de pass hash", hashPass);
+
         }
       } catch (error) {
         console.log(error.message);
@@ -349,9 +355,6 @@ exports.update = async (req, res) => {
         .then((newUser) => {
           // todo : decrypted email
           newUser.email = decryptEmail(emailEncrypted);
-
-          // console.log("newUser" , newUser);
-          // console.log("résultt", result);
 
           res.status(200).json({
             message: " User updated",
