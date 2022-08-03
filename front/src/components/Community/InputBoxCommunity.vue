@@ -15,7 +15,7 @@
             <div>
               <div class="wrapper">
                 <div class="split">
-                  <div class="button">
+                  <div class="split-button">
                     <font-awesome-icon class="icon" :icon="['fas', 'upload']" />
                     Ajoute une image
                   </div>
@@ -299,8 +299,10 @@ export default {
   // height: calc(100vh - var(-56px) - var(-72px));
   display: flex;
   flex-direction: column;
-  border-radius: 0.5rem;
-  background: rgb(23, 23, 23);
+  border-radius: 0.25rem;
+  border: 1px solid #585858;
+  color: #8de8fe;
+  background-color: rgb(12, 19, 31);
   overflow-wrap: break-word;
   overflow-wrap: anywhere;
 }
@@ -406,6 +408,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   textarea {
+    color: #8de8fe;
     min-height: 46px;
     max-height: 46px;
     font-weight: 700;
@@ -440,6 +443,7 @@ export default {
   .community-form-body-text {
     background: transparent;
     textarea {
+      color: #8de8fe;
       min-height: 27px;
       max-height: 100px;
       height: 100% !important;
@@ -457,6 +461,7 @@ export default {
 }
 
 .btn-form-new-community {
+  color: #fff;
   margin-top: 1rem;
   background: lighten(rgb(23, 23, 23), 1%);
   border: none;

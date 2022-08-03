@@ -69,5 +69,13 @@ h1 {
   margin-bottom: 1rem;
   margin-right: 1rem;
   text-align: center;
+
+      font-size: 1.4rem;
+    line-height: 1.4rem;
+    letter-spacing: 0.3rem;
+    font-weight: bolder;
+    text-align: center;
+    margin: 2rem 0 0;
+    padding-bottom: 3vh;
 }
 </style>

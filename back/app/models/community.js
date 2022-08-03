@@ -39,7 +39,7 @@ module.exports = (sequelize, Sequelize) => {
   Community.associate = (models) => {
     Community.hasMany(models.post, {
       as: "posts",
-      targetKey: "communityId",
+      foreignKey: "communityId",
     });
 
     // * Many to Many associations
@@ -53,6 +53,7 @@ module.exports = (sequelize, Sequelize) => {
 
     // ! One community can be joined by 0 or many users
     Community.belongsToMany(models.user, {
+      // as: 'follower',
       through: "follower",
     });
 

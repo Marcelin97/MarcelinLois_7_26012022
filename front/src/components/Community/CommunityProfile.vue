@@ -17,10 +17,6 @@
 
         <!-- Profil informations -->
         <div class="profile-card__cnt js-profile-cnt">
-          <div class="profile-card__name">
-            {{ community.title }}
-          </div>
-
           <!-- Profil statistics -->
           <div class="profile-card-inf">
             {{ community.about }}
@@ -406,21 +402,12 @@ export default {
     transition: all 0.3s;
   }
 
-  &__name {
-    line-height: 35px;
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 0.3rem;
-    font-size: 1rem;
-    text-align: center;
-  }
-
   &-inf {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     align-items: flex-start;
-    margin-top: 35px;
+    margin: 2rem 0 0;
     background: transparent;
   }
 

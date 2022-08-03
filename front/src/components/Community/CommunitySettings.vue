@@ -148,19 +148,19 @@ export default {
     onChangeFileUpload() {
       this.state.community.communityImage =
         document.querySelector("#communityImage").files[0];
-      console.log(
-        "community image update",
-        this.state.community.communityImage
-      );
+      // console.log(
+      //   "community image update",
+      //   this.state.community.communityImage
+      // );
     },
     updateAccountClick() {
       var bodyFormData = new FormData();
       bodyFormData.append("title", this.state.community.title);
       bodyFormData.append("about", this.state.community.about);
       bodyFormData.append("image", this.state.community.communityImage);
-      for (let value of bodyFormData.values()) {
-        console.log(value);
-      }
+      // for (let value of bodyFormData.values()) {
+      //   console.log(value);
+      // }
 
       axiosInstance
         .patch(`/community/updateCommunity/${this.communityId}`, bodyFormData, {
@@ -170,7 +170,7 @@ export default {
         })
         .then((result) => {
           console.log("result: ", result);
-          alert("Vos modifications sont enregistrées");
+          // alert("Vos modifications sont enregistrées");
 
           // notification de succès
           this.$notify({
@@ -179,7 +179,7 @@ export default {
             text: `Vous allez être redirigé vers la communauté.`,
           });
 
-          // redirection sur la page utilisateur
+          // redirect to the community page
           setTimeout(
             function () {
               this.$router.push(`/communities/profil/${this.communityId}`);
