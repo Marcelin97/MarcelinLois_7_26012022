@@ -106,13 +106,14 @@ h1 {
 
   input {
     width: 15rem;
-    height: 2.5rem;
+    height: 2rem;
     padding: 0 0.5rem;
-    border-radius: 0.25rem;
+    border-radius: 0.4rem;
     margin-bottom: 0.3rem;
     border: none;
-    color: #ffff;
-    background-color: #4e5166;
+    outline: none;
+    background: #4e5166;
+    color: #e2dedb;
 
     @media only screen and (min-width: 400px) {
       width: 18rem;
@@ -122,5 +123,10 @@ h1 {
       width: 25rem;
     }
   }
+}
+
+input::placeholder {
+  color: #ffff;
+  opacity: 0.7;
 }
 </style>

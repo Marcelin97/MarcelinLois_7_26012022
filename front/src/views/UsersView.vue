@@ -94,12 +94,19 @@ h1 {
 
   input {
     width: 100%;
-    height: 100%;
+    height: 2rem;
     border: none;
-    background-color: rgb(23, 23, 23);
+    outline: none;
+    background: #4e5166;
     border-radius: 8px;
     padding: 0 40px 0 16px;
+    color: #e2dedb;
   }
+}
+
+input::placeholder {
+  color: #ffff;
+  opacity: 0.7;
 }
 
 .list_users {

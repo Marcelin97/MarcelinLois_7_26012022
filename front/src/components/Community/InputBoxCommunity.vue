@@ -1,153 +1,84 @@
 <template>
   <div class="form-input-box">
     <h2>Crée une communauté</h2>
-    <form class="community-form">
-
-<!-- add file -->
-<div class="container">
-  <div class="fileUploadInput">
-    <label>✨ Upload File</label>
-    <input type="file"/>
-    <button>+</button>
-  </div>
-</div><a class="reference" href="http://bit.ly/2JPuBjx" target="_blank">🔗 Ali Soueidan</a>
+    <!-- form structure-->
+    <form id="form" @submit.prevent="createCommunityClick">
+      <!-- add file -->
+      <div class="container">
+        <div class="fileUploadInput">
+          <label>✨ Upload File</label>
+          <input
+            accept=".jpeg,.jpg,png"
+            @change="onChangeFileUpload"
+            ref="image"
+            class="image"
+            type="file"
+            id="image"
+            @blur="v$.community.image.$touch"
+            :class="v$.community.image.$error === true ? 'error' : 'dirty'"
+          />
+          <button>🔗</button>
+        </div>
+      </div>
 
       <input
+        class="form-title"
+        id="name"
         type="text"
-        name="name"
-        class="question"
-        id="nme"
+        placeholder="TITRE"
         required
         autocomplete="off"
+        v-model="state.community.title"
+        blur="v$.community.title.$touch"
+        :class="v$.community.title.$error === true ? 'error' : 'dirty'"
+        minlength="3"
+        maxlength="255"
+        aria-label="Titre de votre communauté"
       />
-      <label for="nme"><span>What's your name?</span></label>
-      <input
-        name="message"
-        rows="2"
-        class="question"
-        id="msg"
-        required
-        autocomplete="off"
-      />
-      <label for="msg"><span>What's your message?</span></label>
-    </form>
-  </div>
-
-  <div class="form-input-box">
-    <form @submit.prevent="createCommunityClick" class="community-form">
-      <!-- Post form header -->
-      <div class="community-form-header">
-        <div class="community-form-header-text">
-          <span>Crée une communauté</span>
-        </div>
-      </div>
-
-      <!-- post form content -->
-      <div class="community-form-content">
-        <div class="community-form-top">
-          <div class="community-form-file">
-            <div>
-              <div class="wrapper">
-                <div class="split">
-                  <div class="menu">
-                    <button class="button">
-                      <font-awesome-icon
-                        class="icon close btn-fas"
-                        :icon="['fas', 'file']"
-                      />
-                      <div>
-                        <input
-                          accept=".jpeg,.jpg,png"
-                          @change="onChangeFileUpload"
-                          ref="image"
-                          class="image"
-                          type="file"
-                          id="image"
-                          @blur="v$.community.image.$touch"
-                          :class="
-                            v$.community.image.$error === true
-                              ? 'error'
-                              : 'dirty'
-                          "
-                        />
-                        <label class="community-form-label" for="image"></label>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="community-form-title">
-            <textarea
-              v-model="state.community.title"
-              blur="v$.community.title.$touch"
-              :class="v$.community.title.$error === true ? 'error' : 'dirty'"
-              required
-              minlength="3"
-              maxlength="255"
-              name="title"
-              id="title"
-              cols="30"
-              rows="10"
-              aria-label="Titre de votre communauté"
-              placeholder="Titre de votre communauté ici..."
-            ></textarea>
-            <!-- Error Message -->
-            <template v-if="v$.community.title.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.community.title.$errors"
-                :key="index"
-              >
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-            <!-- Error Message -->
-          </div>
-        </div>
-        <div class="holes-lower"></div>
-
-        <div class="community-form-body">
-          <div class="community-form-body-text">
-            <textarea
-              v-model="state.community.about"
-              @blur="v$.community.about.$touch"
-              :class="v$.community.about.$error === true ? 'error' : 'dirty'"
-              name="about"
-              id="about"
-              rows="10"
-              minlength="20"
-              required
-              aria-label="à propos de votre communauté"
-              placeholder="Écrivez quelque chose à propos de votre communauté ici..."
-            ></textarea>
-            <!-- Error Message -->
-            <template v-if="v$.community.about.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.community.about.$errors"
-                :key="index"
-              >
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-            <!-- Error Message -->
-          </div>
-        </div>
-      </div>
-
-      <!-- post form footer -->
-      <div>
-        <button
-          title="Crée une communauté"
-          class="btn-form-new-community"
-          type="submit"
-          aria-label="Crée une communauté"
+      <!-- Error Message -->
+      <template v-if="v$.community.title.$dirty">
+        <div
+          class="input-errors"
+          v-for="(error, index) of v$.community.title.$errors"
+          :key="index"
         >
-          Crée une communauté
-        </button>
-      </div>
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+      </template>
+      <!-- Error Message -->
+      <textarea
+        id="message"
+        type="text"
+        placeholder="À PROPOS de..."
+        autocomplete="off"
+        v-model="state.community.about"
+        @blur="v$.community.about.$touch"
+        :class="v$.community.about.$error === true ? 'error' : 'dirty'"
+        minlength="20"
+        required
+        aria-label="à propos de votre communauté"
+      ></textarea>
+      <!-- Error Message -->
+      <template v-if="v$.community.about.$dirty">
+        <div
+          class="input-errors"
+          v-for="(error, index) of v$.community.about.$errors"
+          :key="index"
+        >
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+      </template>
+      <!-- Error Message -->
+      <button
+        class="btn"
+        id="submit"
+        type="submit"
+        value="CRÉE!"
+        title="Crée une communauté"
+        aria-label="Crée une communauté"
+      >
+        CRÉE!
+      </button>
     </form>
   </div>
 </template>
@@ -176,7 +107,7 @@ export default {
       community: {
         title: {
           required: helpers.withMessage(
-            "Le titre de la communauté est obligatoire",
+            "Le titre de la communauté est obligatoire.",
             required
           ),
           $autoDirty: true,
@@ -185,11 +116,15 @@ export default {
           maxLength: maxLength(25),
         },
         image: {
-          required: helpers.withMessage("Une image est obligatoire", required),
+          required: helpers.withMessage("Une image est obligatoire.", required),
           $autoDirty: true,
           $lazy: true,
         },
         about: {
+          required: helpers.withMessage(
+            "Une description aidera à comprendre l'objet de votre communauté.",
+            required
+          ),
           $autoDirty: true,
           $lazy: true,
         },
@@ -285,208 +220,36 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h2 {
-  font-size: 28px;
-  margin-bottom: 2.5%;
-  text-align: center;
-}
-
-.community-form {
+.form-input-box {
   display: flex;
   flex-direction: column;
-  align-self: center;
-}
-
-input,
-span,
-label,
-textarea {
-  display: block;
-  margin: 10px;
-  padding: 5px;
-  border: none;
-  font-size: 22px;
-}
-
-textarea:focus,
-input:focus {
-  outline: 0;
-}
-/* Question */
-
-input.question,
-textarea.question {
-  font-size: 48px;
-  font-weight: 300;
-  border-radius: 2px;
-  margin: 0;
-  border: none;
-  width: 80%;
-  background: rgba(0, 0, 0, 0);
-  transition: padding-top 0.2s ease, margin-top 0.2s ease;
-  overflow-x: hidden; /* Hack to make "rows" attribute apply in Firefox. */
-}
-/* Underline and Placeholder */
-
-input.question + label,
-textarea.question + label {
-  display: block;
-  position: relative;
-  white-space: nowrap;
-  padding: 0;
-  margin: 0;
-  width: 10%;
-  border-top: 1px solid red;
-  transition: width 0.4s ease;
-  height: 0px;
-}
-
-input.question:focus + label,
-textarea.question:focus + label {
-  width: 80%;
-}
-
-input.question:focus,
-input.question:valid {
-  padding-top: 35px;
-}
-
-textarea.question:valid,
-textarea.question:focus {
-  margin-top: 35px;
-}
-
-input.question:focus + label > span,
-input.question:valid + label > span {
-  top: -100px;
-  font-size: 22px;
-  color: #333;
-}
-
-textarea.question:focus + label > span,
-textarea.question:valid + label > span {
-  top: -150px;
-  font-size: 22px;
-  color: #333;
-}
-
-input.question:valid + label,
-textarea.question:valid + label {
-  border-color: green;
-}
-
-input.question:invalid,
-textarea.question:invalid {
-  box-shadow: none;
-}
-
-input.question + label > span,
-textarea.question + label > span {
-  font-weight: 300;
-  margin: 0;
-  position: absolute;
-  color: #8f8f8f;
-  font-size: 48px;
-  top: -66px;
-  left: 0px;
-  z-index: -1;
-  transition: top 0.2s ease, font-size 0.2s ease, color 0.2s ease;
-}
-
-input[type="submit"] {
-  transition: opacity 0.2s ease, background 0.2s ease;
-  display: block;
-  opacity: 0;
-  margin: 10px 0 0 0;
-  padding: 10px;
-  cursor: pointer;
-}
-
-input[type="submit"]:hover {
-  background: #eee;
-}
-
-input[type="submit"]:active {
-  background: #999;
-}
-
-input.question:valid ~ input[type="submit"],
-textarea.question:valid ~ input[type="submit"] {
-  opacity: 0;
-  transform: translateY(-5rem);
-  animation: appear 750ms ease forwards;
-  animation-delay: 1s;
-}
-
-input.question:invalid ~ input[type="submit"],
-textarea.question:invalid ~ input[type="submit"] {
-  display: none;
-}
-
-@keyframes appear {
-  0% {
-    opacity: 0;
-    transform: translateY(-5rem);
+  justify-content: center;
+  box-shadow: 0 0 20px rgb(66 50 98 / 35%);
+  margin: 2rem auto 2rem auto;
+  padding: 2rem;
+  border-radius: 0.8rem;
+  @media only screen and (min-width: 768px) {
+    width: 580px;
   }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+}
+
+h2 {
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.5rem;
+  color: #95989a;
+}
+
+#form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 // file
-.reference {
-  position: absolute;
-  right: 24px;
-  bottom: 24px;
-  padding: 10px;
-  color: #fff;
-  font-family: arial;
-  text-decoration: none;
-  background: #323262;
-  box-shadow: 0 0 20px rgba(66, 50, 98, 0.35);
-  border-radius: 10px;
-}
-
-* {
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
-  border: 0px;
-  outline: 0;
-  background-repeat: no-repeat;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  border-radius: 0;
-  vertical-align: middle;
-  font-weight: inherit;
-  font-style: inherit;
-  font-family: inherit;
-  text-decoration: none;
-  list-style: none;
-  -webkit-user-select: text;
-     -moz-user-select: text;
-      -ms-user-select: text;
-          user-select: text;
-  line-height: 1.333em;
-}
-
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100vh;
-  background: rgba(66, 50, 98, 0.05);
-}
-
 .container {
-  padding: 25px;
-  box-shadow: 0 0 20px rgba(66, 50, 98, 0.35);
-  border: 1px solid #eaeaea;
-  border-radius: 3px;
-  background: white;
+  margin: 1rem auto;
 }
 
 .fileUploadInput {
@@ -495,32 +258,27 @@ body {
   position: relative;
   z-index: 1;
 }
+
 .fileUploadInput label {
   display: flex;
   align-items: center;
-  color: setColor(primary, 0.5);
-  background: setColor(white);
-  transition: 0.4s ease;
-  font-family: arial, sans-serif;
-  font-size: 0.75em;
-  font-weight: regular;
+  font-size: 0.8rem;
 }
+
 .fileUploadInput input {
   position: relative;
   z-index: 1;
   padding: 0 gap(m);
   width: 100%;
   height: 50px;
-  border: 1px solid #323262;
-  border-radius: 3px;
-  font-family: arial, sans-serif;
-  font-size: 1rem;
-  font-weight: regular;
+  border: 1px solid #4e5166;
+  border-radius: 0.4rem;
+  color: #95989a;
 }
-.fileUploadInput input[type=file] {
+.fileUploadInput input[type="file"] {
   padding: 0 gap(m);
 }
-.fileUploadInput input[type=file]::-webkit-file-upload-button {
+.fileUploadInput input[type="file"]::-webkit-file-upload-button {
   visibility: hidden;
   margin-left: 10px;
   padding: 0;
@@ -528,242 +286,88 @@ body {
   width: 0px;
 }
 .fileUploadInput button {
+  z-index: 1;
   position: absolute;
   right: 0;
   bottom: 0;
   height: 50px;
   width: 50px;
   line-height: 0;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  color: white;
-  background-color: #323262;
-  border-radius: 0 3px 3px 0;
-  font-family: arial, sans-serif;
+  user-select: none;
+  border: none;
+  background-color: #4e5166;
+  border-radius: 0 0.4rem 0.4rem 0;
   font-size: 1rem;
   font-weight: 800;
 }
 
-
-.form-input-box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-.community-form {
-  display: flex;
-  flex-direction: column;
-  align-self: center;
-  @media only screen and (min-width: 576px) {
-    width: 380px;
-  }
-  @media only screen and (min-width: 768px) {
-    width: 480px;
-  }
+// form
+.form-title::placeholder,
+textarea::placeholder {
+  font-size: 0.875em;
+  color: #95989a;
 }
 
-.community-form-header {
-  display: flex;
-  div span {
-    font-size: 0.8rem;
-    text-align: center;
-    margin: 1rem 0;
-    line-height: 1.5rem;
-    color: #95989a;
-  }
-}
-
-.community-form-header-text {
-  margin: auto auto 31px;
-}
-// post form contents
-.community-form-content {
-  overflow: auto;
-  // height: calc(100vh - var(-56px) - var(-72px));
-  display: flex;
-  flex-direction: column;
-  border-radius: 0.25rem;
-  border: 1px solid #585858;
-  color: #8de8fe;
-  background-color: rgb(12, 19, 31);
-  overflow-wrap: break-word;
-  overflow-wrap: anywhere;
-}
-
-.community-form-top {
-  padding: 1rem 1rem;
-  background: transparent;
-}
-
-.community-form-file {
-  margin-bottom: 0.5rem;
-}
-
-.community-form-label {
-  background: transparent;
-  border: #3d3d3d;
-  border-width: 2px;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.wrapper {
-  position: relative;
-  perspective: 1000px;
-}
-
-.split {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 3.5rem;
-  border: 0;
-  font-size: 0.875rem;
-  background: #17181b;
-  cursor: pointer;
-}
-
-.split-button {
-  display: grid;
-  place-items: center;
-  width: 3.5rem;
-  height: inherit;
-  padding: 0;
-  border: 0;
-  font-size: 0.75rem;
-  background: #08708a;
-  color: #f7f7f7;
-}
-
-.button {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 12rem;
-  height: 3rem;
-  padding-left: 1rem;
-  border: 0;
-  font-family: Poppins;
-  text-align: left;
+.form-title {
+  font-size: 0.875em;
+  width: 100%;
+  max-width: 20rem;
+  height: 50px;
+  padding: 0px 15px 0px 15px;
   background: transparent;
   outline: none;
+  border: solid 1px #4e5166;
+  border-radius: 0.4em 0.4rem 0 0;
+  border-bottom: none;
+  transition: all 0.3s ease-in-out;
 }
 
-.btn-fas {
-  background: transparent;
-}
-.menu {
-  position: absolute;
-  z-index: 1;
-  top: 3.5rem;
-  right: 0;
-  display: block;
+textarea {
   width: 100%;
-  padding: 0.25rem 0 1rem;
-  background: #08708a;
-  opacity: 0;
-  visibility: hidden;
-  backface-visibility: hidden;
-  transform: rotate3d(1, 0, 0, -90deg);
-  transform-origin: 0% 0%;
-  transition-property: transform, opacity, visibility;
-  transition-duration: 0.35s;
+  max-width: 20rem;
+  height: 110px;
+  max-height: 110px;
+  padding: 15px;
+  background: transparent;
+  outline: none;
+  color: #726659;
+  font-size: 0.875em;
+  border: solid 1px #4e5166;
+  transition: all 0.3s ease-in-out;
 }
-.file {
-  display: flex;
-  flex-direction: column;
+
+button#submit {
   width: 100%;
+  max-width: 20rem;
+  margin: 10px;
+  font-size: 0.875em;
 }
 
-.wrapper:hover .menu {
-  visibility: visible;
-  opacity: 1;
-  transform: rotate3d(0, 0, 0, 0);
+// error if input is invalid
+.dirty:focus {
+  border-color: #8e8;
 }
 
-.wrapper:hover .close {
-  transform: rotate(-45deg);
+.error {
+  background: #fdd;
+  border-color: #fd4444;
+  opacity: 0.7;
 }
 
-.community-form-title {
-  overflow: hidden;
-  background: transparent;
-  display: flex;
-  flex-wrap: wrap;
-  textarea {
-    color: #8de8fe;
-    min-height: 46px;
-    max-height: 46px;
-    font-weight: 700;
-    font-size: 1.075rem;
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    outline: none;
-    resize: none;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    //   white-space: nowrap;
-    flex-basis: 100%;
-    display: flex;
-    flex-wrap: nowrap;
-  }
-}
-.holes-lower {
-  position: relative;
-  margin: 0.3rem;
-  border-bottom: 1px dashed #292929;
-  background: transparent;
+.error:focus {
+  outline-color: #f99;
 }
 
-.community-form-body {
-  padding: 1rem 1rem;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  .community-form-body-text {
-    background: transparent;
-    textarea {
-      color: #8de8fe;
-      min-height: 27px;
-      max-height: 100px;
-      height: 100% !important;
-      background: transparent;
-      border: none;
-      outline: none;
-      padding: 0.5rem;
-      margin: 0;
-      resize: none;
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
-    }
-  }
-}
-
-.btn-form-new-community {
-  color: #fff;
-  margin-top: 1rem;
-  background: lighten(rgb(23, 23, 23), 1%);
-  border: none;
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
   font-size: 12px;
-  padding: 0.6rem 0.6rem;
-  border-radius: 0.8rem;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-  box-shadow: inset -3px -3px 3px rgba(white, 0.025),
-    inset 3px 3px 5px rgba(black, 0.075), -3px -3px 5px rgba(white, 0.025),
-    3px 3px 5px rgba(black, 0.05);
-  &:hover {
-    background: darken(rgb(12, 19, 31), 1%);
-    box-shadow: inset -5px -5px 5px rgba(white, 0.01),
-      inset 5px 5px 5px rgba(black, 0.1), -5px -5px 5px rgba(white, 0.015),
-      5px 5px 5px rgba(black, 0.05);
+  line-height: 15px;
+  margin: 5px 0 0;
+  max-width: 15rem;
+  @media only screen and (min-width: 576px) {
+    max-width: 25rem;
   }
 }
 </style>
