@@ -13,7 +13,9 @@ class TokenService {
     localStorage.setItem("vuex", JSON.stringify(user));
   }
   getUser() {
-    return JSON.parse(localStorage.getItem("vuex")) || {};
+    // const user = JSON.parse(localStorage.getItem("vuex")) || {};
+    const user = localStorage.getItem("vuex");
+    return user;
   }
   setUser(vuex) {
     console.log(JSON.stringify(vuex));

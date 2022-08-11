@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import TokenService from "../services/token.service";
 
 import NotFound from "../views/NotFound.vue";
 import WelcomeView from "../views/WelcomeView.vue";
@@ -54,6 +55,10 @@ const routes = [
     path: "/user/parameter",
     name: "user/parameter",
     component: UserParameterView,
+    // meta: {
+    //   requiresAuth: false,
+    //   title: "Bienvenido a Home",
+    // }
   },
   {
     path: "/explore/users",
@@ -98,17 +103,42 @@ const router = createRouter({
   },
 });
 
-// * Check if user is authenticated
-const isAuthenticated = () => false;
+// ? Navigation Guards
+// TODO Check if user is authenticated
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((route) => route.meta?.requiresAuth)) {
-    if (isAuthenticated()) {
-      next();
-    } else {
-      next("/auth-required");
-    }
+  const publicPages = [
+    "/NotFound",
+    "/",
+    "/account",
+    "/home",
+    "/login",
+    "/signup",
+  ];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = TokenService.getUser();
+  console.log(loggedIn); // Il will show the user loggedIn
+  console.log(` navigation to ${to.name} from ${from.name} `); // I will log a message mentioning to which route we are navigating.
+
+  if (authRequired && !loggedIn) {
+    next("/login");
   } else {
     next();
   }
 });
+
+// // * Check if user is authenticated
+// const isAuthenticated = () => false;
+// router.beforeEach((to, from, next) => {
+//   // console.log(` navigation to ${to.name} from ${from.name} `)// I will log a message mentioning to which route we are navigating.
+//   next();
+//   if (to.matched.some((route) => route.meta?.requiresAuth)) {
+//     if (isAuthenticated()) {
+//       next();
+//     } else {
+//       next("/login");
+//     }
+//   } else {
+//     next();
+//   }
+// });
 export default router;
