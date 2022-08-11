@@ -144,7 +144,7 @@
           <!-- Error Message -->
         </div>
 
-        <div class="form-group">
+        <div class="form-group  fileUploadInput">
           <label for="userImage">Photo de profil</label>
           <input
             class="input-file"
@@ -358,12 +358,12 @@ form {
 }
 
 .form-group {
-  margin-top: 25px;
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
 
   label {
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
   }
 }
 
@@ -386,11 +386,42 @@ input {
   cursor: pointer;
 }
 
-.input-file {
-  border: none;
-  background: transparent;
+// file
+.fileUploadInput {
+  display: grid;
+  grid-gap: 10px;
+  position: relative;
+  z-index: 1;
 }
 
+.fileUploadInput label {
+  display: flex;
+  align-items: center;
+}
+
+.fileUploadInput input {
+  position: relative;
+  z-index: 1;
+  height: 50px;
+  border: 1px solid #4e5166;
+  border-radius: 0.4rem;
+  color: #95989a;
+}
+.fileUploadInput input[type="file"] {
+  padding: 0 gap(m);
+}
+.fileUploadInput input[type="file"]::-webkit-file-upload-button {
+  visibility: hidden;
+  margin-left: 10px;
+  padding: 0;
+  height: 50px;
+  width: 0px;
+}
+
+// submit button
+.button-container{
+  margin-top: 2rem;
+}
 // error if input is invalid
 .dirty {
   border-color: #8de8fe;

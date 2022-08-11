@@ -27,7 +27,7 @@
           <!-- Publications -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.posts.length }}
+              <!-- {{ user.posts.length }} -->
             </div>
             <div class="profile-card-inf__txt">Publications</div>
           </div>
@@ -35,7 +35,7 @@
           <!-- Commentaires -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.comments.length }}
+              <!-- {{ user.comments.length }} -->
             </div>
             <div class="profile-card-inf__txt">Commentaires</div>
           </div>
@@ -43,7 +43,7 @@
           <!-- Communautés crées -->
           <div class="profile-card-inf__item">
             <div class="profile-card-inf__title">
-              {{ user.community.length }}
+              <!-- {{ user.community.length }} -->
             </div>
             <div class="profile-card-inf__txt">Communautés crées</div>
           </div>

@@ -21,6 +21,7 @@ module.exports = (sequelize, Sequelize) => {
       about: {
         type: Sequelize.TEXT,
         unique: false,
+        allowNull: false,
       },
       icon: {
         type: Sequelize.STRING,

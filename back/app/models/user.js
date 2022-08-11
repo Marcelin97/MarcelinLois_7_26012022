@@ -4,10 +4,12 @@ module.exports = (sequelize, Sequelize) => {
     firstName: {
       type: Sequelize.STRING,
       required: true,
+      omitNull: true
     },
     lastName: {
       type: Sequelize.STRING,
       required: true,
+      omitNull: true
     },
     username: {
       type: Sequelize.STRING,
