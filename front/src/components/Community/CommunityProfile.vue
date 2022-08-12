@@ -60,18 +60,18 @@
             <button
               type="button"
               class="btn btn-export"
-              @click="exportDataClick"
-              text="Exporter mes données"
+              @click="followCommunityClick"
+              text="S'abonner"
             >
-              s'abonner
+              S'abonner
             </button>
             <button
               type="button"
               class="btn btn-export"
-              @click="exportDataClick"
-              text="Exporter mes données"
+              @click="unfollowCommunityClick"
+              text="Se désabonner"
             >
-              se désabonner
+              Se désabonner
             </button>
 
             <!-- button report user -->
@@ -298,13 +298,7 @@ export default {
             });
 
             // force refresh page
-            setTimeout(
-              function () {
-                this.$router.go(0);
-              }.bind(this),
-              1000,
-              this
-            );
+            this.$router.go(0);
           })
           .catch((error) => {
             console.log(error.response.status);
@@ -345,6 +339,52 @@ export default {
             domRect.left + document.documentElement.scrollLeft,
             domRect.top + document.documentElement.scrollTop
           );
+        });
+      }
+    },
+    async followCommunityClick() {
+      try {
+        await communitiesApi.followCommunity(this.communityId);
+
+        // notification success
+        this.$notify({
+          type: "success",
+          text: "Vous suivez désormais cette communauté",
+        });
+      } catch (error) {
+        const errorMessage = (this.apiError = error.response);
+        this.errorMessage = errorMessage;
+        // console.log("apiError", error);
+
+        // notification d'erreur
+        this.$notify({
+          duration: 2500,
+          type: "error",
+          title: `Erreur lors du téléchargement des données`,
+          text: `Erreur reporté : ${errorMessage}`,
+        });
+      }
+    },
+      async unfollowCommunityClick() {
+      try {
+        await communitiesApi.unfollowCommunity(this.communityId);
+
+        // notification success
+        this.$notify({
+          type: "success",
+          text: "Vous ne suivez plus cette communauté",
+        });
+      } catch (error) {
+        const errorMessage = (this.apiError = error.response);
+        this.errorMessage = errorMessage;
+        // console.log("apiError", error);
+
+        // notification d'erreur
+        this.$notify({
+          duration: 2500,
+          type: "error",
+          title: `Erreur lors du téléchargement des données`,
+          text: `Erreur reporté : ${errorMessage}`,
         });
       }
     },

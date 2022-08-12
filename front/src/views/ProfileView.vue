@@ -21,11 +21,6 @@ export default {
   mounted() {
     this.user = this.$store.state.user;
     // console.log(this.$store.state.user);
-
-    // if user is not connected redirect to login page
-    if (!this.user) {
-      this.$router.push("/login");
-    }
   },
 };
 </script>

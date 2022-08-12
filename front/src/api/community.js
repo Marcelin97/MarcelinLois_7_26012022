@@ -27,9 +27,16 @@ export default {
             throw e.response
         }
     },
-    async deleteCommunity(id) {
+    async followCommunity(id) {
         try {
-            return await axiosInstance.delete(`community/deleteCommunity/${id}`);
+            return await axiosInstance.post(`community/${id}/follow`);
+        } catch (e) {
+            throw e.response;
+        }
+    },
+    async unfollowCommunity(id) {
+        try {
+            return await axiosInstance.post(`community/${id}/unfollow`);
         } catch (e) {
             throw e.response;
         }

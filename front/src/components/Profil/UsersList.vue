@@ -21,7 +21,7 @@
 
     <!-- link to profile page -->
     <router-link class="more" :to="`/explore/users/${this.id}`">
-      <span class="more__user">Voir le profile.</span>
+      <span class="more__user">Voir le profile</span>
       <span>
         <font-awesome-icon
           class="more__icon"

@@ -67,13 +67,13 @@ export default {
         console.log(error.response.status);
         if (error.response.status == 404) {
           const errorMessage = (this.apiError =
-            "Il n'y pas de communauté(s) !");
+            "Il n'y pas encore de communauté(s) !");
           this.errorMessage = errorMessage;
 
           // notification d'erreur
           this.$notify({
-            type: "error",
-            title: `Erreur de l'api`,
+            type: "info",
+            title: `Information de l'api`,
             text: `Erreur reporté : ${errorMessage}`,
           });
         }
