@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
-import TokenService from "../services/token.service";
+import store from "../store/index";
 
 import NotFound from "../views/NotFound.vue";
-import WelcomeView from "../views/WelcomeView.vue";
-import AccountView from "../views/AccountView.vue";
+import HomeView from "../views/HomeView.vue";
 import SignupView from "../views/SignupView.vue";
 import LoginView from "../views/LoginView.vue";
 import UserView from "../views/UserView";
@@ -24,12 +23,7 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: WelcomeView,
-  },
-  {
-    path: "/account",
-    name: "account",
-    component: AccountView,
+    component: HomeView,
   },
   {
     path: "/signup",
@@ -55,10 +49,6 @@ const routes = [
     path: "/user/parameter",
     name: "user/parameter",
     component: UserParameterView,
-    // meta: {
-    //   requiresAuth: false,
-    //   title: "Bienvenido a Home",
-    // }
   },
   {
     path: "/explore/users",
@@ -115,9 +105,9 @@ router.beforeEach((to, from, next) => {
     "/signup",
   ];
   const authRequired = !publicPages.includes(to.path);
-  const loggedIn = TokenService.getUser();
-  console.log(loggedIn); // Il will show the user loggedIn
-  console.log(` navigation to ${to.name} from ${from.name} `); // I will log a message mentioning to which route we are navigating.
+  const loggedIn = store.state.isAuthenticated;
+  // console.log(loggedIn); // Il will show the user loggedIn
+  // console.log(` navigation to ${to.name} from ${from.name} `); // I will log a message mentioning to which route we are navigating.
 
   if (authRequired && !loggedIn) {
     next("/login");
@@ -125,20 +115,4 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
-// // * Check if user is authenticated
-// const isAuthenticated = () => false;
-// router.beforeEach((to, from, next) => {
-//   // console.log(` navigation to ${to.name} from ${from.name} `)// I will log a message mentioning to which route we are navigating.
-//   next();
-//   if (to.matched.some((route) => route.meta?.requiresAuth)) {
-//     if (isAuthenticated()) {
-//       next();
-//     } else {
-//       next("/login");
-//     }
-//   } else {
-//     next();
-//   }
-// });
 export default router;

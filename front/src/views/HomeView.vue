@@ -1,8 +1,8 @@
 <template>
   <div>
-    <nav>
-      <GoBack />
-    </nav>
+    <div class="home">
+      <HelloWorld msg="Bienvenue sur Groupomania" />
+    </div>
     <div class="container">
       <div class="connect-wrap">
         <div class="extras">
@@ -17,9 +17,9 @@
         </div>
       </div>
       <div class="login">
-        <h1>Un seul identifiant</h1>
+        <h1>Groupomania<span class="blinker">'</span></h1>
         <p>
-          Avec votre compte Groupomania retrouvez tous vos collègues,
+          Créer un compte et retrouvez tous vos collègues,
           communautés, posts,...
         </p>
         <div class="actions">
@@ -36,26 +36,14 @@
 </template>
 
 <script>
-import GoBack from "@/components/Base/GoBack.vue";
-
 export default {
-  name: "Account-View",
-  components: {
-    GoBack,
-  },
+  name: "Home-View",
 };
 </script>
 
 <style lang="scss" scoped>
-nav {
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-}
-
 .container {
   padding: 50px;
-  margin-top: 20vh;
   display: flex;
   flex-direction: column;
   @media only screen and (min-width: 768px) {
@@ -70,6 +58,7 @@ nav {
   flex-direction: column;
   align-items: center;
   transition: all 0.4s ease-in-out 0s;
+  margin-top: 2rem;
   @media only screen and (min-width: 768px) {
     margin: 0 auto;
   }
@@ -134,6 +123,9 @@ img {
     text-align: center;
     border-bottom: 1px solid #4e5166;
     padding-bottom: 3vh;
+    span {
+      font-size: 1.4rem;
+    }
     @media only screen and (min-width: 576px) {
       display: flex;
       flex-direction: column;
@@ -148,6 +140,10 @@ img {
     border-bottom: 1px solid #4e5166;
     padding-bottom: 3vh;
   }
+
+  .blinker {
+    animation: blink 2s infinite linear;
+  }
 }
 
 .actions {
@@ -160,9 +156,6 @@ img {
     flex-direction: row;
   }
 }
-.nav {
-  margin-bottom: 2rem;
-}
 .btn-login {
   border: 2px solid #ffd7d7;
   background-color: transparent;
@@ -173,6 +166,18 @@ img {
 }
 
 // animations
+@keyframes blink {
+  49.99% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @keyframes emoji-1 {
   0% {
     transform: translate(0) scale(0);

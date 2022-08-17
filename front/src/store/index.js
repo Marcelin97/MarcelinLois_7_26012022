@@ -13,10 +13,6 @@ const store = createStore({
     isAuthenticated: false,
   },
   mutations: {
-    signupUser: function (state, data) {
-      state.user = data;
-      state.isAuthenticated = true;
-    },
     logUser: function (state, datas) {
       state.user = datas.user;
       state.isAuthenticated = true;
@@ -32,9 +28,10 @@ const store = createStore({
       state.refreshToken = "";
       state.accessToken = "";
       state.isAuthenticated = false;
-      localStorage.clear();
+      // localStorage.clear();
     },
     refreshToken: function (state, accessToken) {
+      // state.accessToken = accessToken;
       state.user = { ...state.user, accessToken: accessToken };
     },
   },

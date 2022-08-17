@@ -126,7 +126,7 @@ exports.updateCommunity = async (req, res, next) => {
           .status(401)
           .json({ error: { msg: "Couldn´t edit image community" } });
       }
-      
+
       result
         .update(req.body, { where: { id: result.id } })
         .then(() => {
@@ -331,6 +331,96 @@ exports.addModerator = (req, res, next) => {
 };
 
 //* Delete Moderator
+// exports.deleteModerator = (req, res, next) => {
+//   // Find the community to delete moderator
+//   community
+//     .findByPk(req.params.id)
+//     .then((result) => {
+//       if (!result) {
+//         return res.status(404).json({ message: "Community not found" });
+//       }
+
+//       // TODO : Check if the current user is the owner of this community
+//       if (result.userId != req.auth.userID)
+//         throw new Error(
+//           "You do not have permission to manage community roles."
+//         );
+
+//       // TODO : Find a user
+//       user
+//         .findOne({ where: { id: req.body.id } })
+//         .then((resultUser) => {
+//           result.addUser(resultUser);
+
+//           // TODO : delete this user to the moderator list
+//           community_moderator.destroy({
+//             where: { userId: resultUser.id, communityId: result.id },
+//           });
+//           return res.status(200).json({
+//             status: 200,
+//             message:
+//               "You have been desappointed moderator of this community :" +
+//               " " +
+//               result.title,
+//           });
+//         })
+//         .catch((err) => {
+//           return res.status(404).json({ err, message: "Moderator not found" });
+//         });
+//     })
+//     .catch((error) => {
+//       res.status(500).json({ error: error.message });
+//     });
+// };
+
+exports.readCommunityModerator = (req, res, next) => {
+  // Find the community to delete moderator
+  community
+    .findByPk(req.params.id)
+    .then((community) => {
+      if (!community) {
+        return res.status(404).json({ message: "Community not found" });
+      }
+
+      // TODO : Check if the current user is the owner of this community
+      if (community.userId != req.auth.userID)
+        throw new Error(
+          "You do not have permission to manage community roles."
+        );
+
+      user
+        .findAll()
+        .then((result) => {
+          console.log((result.id))
+          if (!result) {
+            return res
+              .status(404)
+              .json({ message: "Community Moderator Not Found." });
+          }
+
+          // TODO : Find a user in moderators list
+          community_moderator
+            .findAll({ where: { userId: result.id, communityId : community.id}})
+            .then((resultUser) => {
+              console.log("moderator list", resultUser);
+              // result.addUser(resultUser);
+            })
+            .catch((err) => {
+              return res
+                .status(404)
+                .json({ err, message: "Moderator not found" });
+            });
+        })
+        .catch((error) => {
+          res.status(500).json({ error: error.message });
+        });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
+};
+
+// Read community moderator
 exports.deleteModerator = (req, res, next) => {
   // Find the community to delete moderator
   community
@@ -346,13 +436,14 @@ exports.deleteModerator = (req, res, next) => {
           "You do not have permission to manage community roles."
         );
 
-      // TODO : Find a user
-      user
+      // TODO : Find a user in moderators list
+      community_moderator
         .findOne({ where: { id: req.body.id } })
         .then((resultUser) => {
+          console.log("moderator delete", resultUser);
           result.addUser(resultUser);
 
-          // TODO : Add this user to the moderator list
+          // TODO : delete this user to the moderator list
           community_moderator.destroy({
             where: { userId: resultUser.id, communityId: result.id },
           });

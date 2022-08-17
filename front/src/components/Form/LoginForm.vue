@@ -176,14 +176,14 @@ export default {
             this.$notify({
               type: "success",
               title: `Connexion réussi !`,
-              text: `Vous allez être redirigé vers votre profil.`,
+              text: `Bienvenue`,
             });
 
-            // redirect to user page
-            this.$router.push("/user");
+            // redirect to wall page
+            this.$router.push("/wall");
           })
           .catch((error) => {
-            console.log("erreur", error);
+            // console.log("erreur", error);
             if (error.response.status == 404) {
               const errorMessage = (this.state.apiError =
                 "Utilisateur introuvable !");

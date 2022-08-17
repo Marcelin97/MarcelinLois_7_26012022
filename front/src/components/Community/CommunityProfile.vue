@@ -45,14 +45,24 @@
               Modifier la communauté
             </router-link>
 
-            <!-- update profile -->
-            <router-link class="btn" to="/user/parameter">
+            <!-- button moderator community-->
+            <button
+              type="button"
+              class="btn"
+              @click="$refs.moderatorCommunity.openModal()"
+              text="Ajouter un modérateur"
+            >
               Ajouter un modérateur
-            </router-link>
-
-            <router-link class="btn" to="/user/parameter">
+            </button>
+            <!-- button report user -->
+            <button
+              type="button"
+              class="btn"
+              @click="$refs.deleteModeratorClick.openModal()"
+              text="Supprimer un modérateur"
+            >
               Supprimer un modérateur
-            </router-link>
+            </button>
           </div>
 
           <div class="profile-card-ctr__actions">
@@ -182,6 +192,102 @@
         <!-- gestion erreur API avec axios -->
       </template>
     </modalStructure>
+
+    <!-- modal add moderator -->
+    <modalStructure ref="moderatorCommunity">
+      <template v-slot:header>
+        <h1>Ajouter un modérateur pour cette communauté</h1>
+      </template>
+
+      <template v-slot:body>
+        <div class="container">
+          <form action="#" method="post" @submit.prevent="addModeratorClick">
+            <div>
+              <select class="vue-select" v-model="state.user.id">
+                <option class="selected-option" selected disabled value="">
+                  {{ placeholder }}
+                </option>
+                <option
+                  class="dropdown-options--cell"
+                  v-for="(user, index) in users"
+                  :user="user"
+                  :key="index"
+                >
+                  {{ user.id }} - {{ user.username }}
+                </option>
+              </select>
+              <div>Modérateur choisi: {{ state.user.id }}</div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn button"
+              title="Ajouter modérateur"
+              text="Ajouter modérateur"
+              value="Ajouter modérateur"
+            >
+              Ajouter
+            </button>
+          </form>
+        </div>
+      </template>
+
+      <template v-slot:footer>
+        <!-- gestion erreur API avec axios -->
+        <div class="error-api">
+          <p class="error-msg">{{ apiError }}</p>
+        </div>
+        <!-- gestion erreur API avec axios -->
+      </template>
+    </modalStructure>
+
+    <!-- modal delete moderator -->
+    <modalStructure ref="deleteModeratorClick">
+      <template v-slot:header>
+        <h1>Supprimer un modérateur pour cette communauté</h1>
+      </template>
+
+      <template v-slot:body>
+        <div class="container">
+          <form action="#" method="post" @submit.prevent="deleteModeratorClick">
+            <div>
+              <select class="vue-select" v-model="state.user.id">
+                <option class="selected-option" selected disabled value="">
+                  {{ placeholder }}
+                </option>
+                <option
+                  class="dropdown-options--cell"
+                  v-for="(user, index) in users"
+                  :user="user"
+                  :key="index"
+                >
+                  {{ user.id }} - {{ user.username }}
+                </option>
+              </select>
+              <div>Modérateur supprimé: {{ state.user.id }}</div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn button"
+              title="Supprimer un modérateur"
+              text="Supprimer un modérateur"
+              value="Supprimer un modérateur"
+            >
+              Supprimer
+            </button>
+          </form>
+        </div>
+      </template>
+
+      <template v-slot:footer>
+        <!-- gestion erreur API avec axios -->
+        <div class="error-api">
+          <p class="error-msg">{{ apiError }}</p>
+        </div>
+        <!-- gestion erreur API avec axios -->
+      </template>
+    </modalStructure>
   </div>
 </template>
 <script>
@@ -205,6 +311,9 @@ export default {
     const state = reactive({
       community: {
         content: "",
+      },
+      user: {
+        id: "",
       },
     });
 
@@ -241,15 +350,35 @@ export default {
     return {
       apiErrors: "",
       communityId: "",
+      users: [],
+      selectValue: "",
+      placeholder: "Choisi un modérateur",
     };
   },
-  mounted() {
+  async mounted() {
     this.communityId = this.$route.params.id;
+
+    axiosInstance
+      .get("/auth/readAll")
+      .then((response) => {
+        this.users = response.data.data;
+      })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          const errorMessage = (this.apiError = "Utilisateurs introuvable !");
+          this.errorMessage = errorMessage;
+
+          // notification d'erreur
+          this.$notify({
+            type: "error",
+            title: `Erreur de l'api`,
+            text: `Erreur reporté : ${errorMessage}`,
+          });
+        }
+      });
   },
   methods: {
     async deleteAccountClick() {
-    //   this.communityId = this.$route.params.id;
-
       if (
         window.confirm(
           "Attention, vous êtes sur le point de supprimer cette communauté. Cette action est irréversible. Souhaitez-vous tout de même continuer ?"
@@ -282,8 +411,6 @@ export default {
       }
     },
     reportAccountClick() {
-    //   this.communityId = this.$route.params.id;
-
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
         // if ANY fail validation
@@ -365,7 +492,7 @@ export default {
         });
       }
     },
-      async unfollowCommunityClick() {
+    async unfollowCommunityClick() {
       try {
         await communitiesApi.unfollowCommunity(this.communityId);
 
@@ -384,6 +511,123 @@ export default {
           duration: 2500,
           type: "error",
           title: `Erreur lors du téléchargement des données`,
+          text: `Erreur reporté : ${errorMessage}`,
+        });
+      }
+    },
+    async addModeratorClick() {
+      try {
+        // await communitiesApi.addModeratorCommunity(this.communityId);
+
+        axiosInstance
+          .post(`/community/${this.communityId}/moderator`, this.state.user)
+          .then(() => {
+            // notification de succès
+            this.$notify({
+              type: "success",
+              title: "Modérateur",
+              text: "Vous venez d'ajouter un nouveau modérateur",
+            });
+
+            // force refresh page
+            this.$router.go(0);
+          })
+          .catch((error) => {
+            if (error.response.status == 500) {
+              console.log(error.response.data.error);
+              const errorMessage = (this.apiErrors =
+                "Vous n'êtes pas autorisé à gérer les rôles de communauté !");
+              this.errorMessage = errorMessage;
+
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors de l'ajoute du modérateur`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            } else if (error.response) {
+              const errorMessage = (this.state.apiError = error.response);
+              this.errorMessage = errorMessage;
+
+              // error notification
+              this.$notify({
+                type: "error",
+                title: `Erreur lors de l'ajoute du modérateur`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            }
+          });
+      } catch (error) {
+        console.log(error);
+        console.log(error.response.data);
+        const errorMessage = (this.apiError = error.response.data.error);
+        this.errorMessage = errorMessage;
+
+        // notification d'erreur
+        this.$notify({
+          duration: 2500,
+          type: "error",
+          title: `Erreur lors de l'ajoute du modérateur`,
+          text: `Erreur reporté : ${errorMessage}`,
+        });
+      }
+    },
+    async deleteModeratorClick() {
+      try {
+        // await communitiesApi.addModeratorCommunity(this.communityId);
+
+        axiosInstance
+          .delete(
+            `/community/${this.communityId}/moderator/delete`,
+            this.state.user
+          )
+          .then(() => {
+            // notification de succès
+            this.$notify({
+              type: "success",
+              title: "Modérateur supprimer",
+              text: "Vous venez de supprimer un  modérateur",
+            });
+
+            // force refresh page
+            this.$router.go(0);
+          })
+          .catch((error) => {
+            if (error.response.status == 403) {
+              console.log(error.response.data.error);
+              const errorMessage = (this.apiErrors =
+                "Vous n'êtes pas autorisé à gérer les rôles de communauté !");
+              this.errorMessage = errorMessage;
+
+              // notification d'erreur
+              this.$notify({
+                type: "error",
+                title: `Erreur lors de la supprésion du modérateur`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            } else if (error.response) {
+              const errorMessage = (this.state.apiError = error.response);
+              this.errorMessage = errorMessage;
+
+              // error notification
+              this.$notify({
+                type: "error",
+                title: `Erreur lors de la supprésion du modérateur`,
+                text: `Erreur reporté : ${errorMessage}`,
+              });
+            }
+          });
+      } catch (error) {
+        console.log(error);
+        console.log(error.response.data);
+        const errorMessage = (this.apiError = error.response.data.error);
+        this.errorMessage = errorMessage;
+
+        // notification d'erreur
+        this.$notify({
+          duration: 2500,
+          type: "error",
+          title: `Erreur lors de l'ajoute du modérateur`,
           text: `Erreur reporté : ${errorMessage}`,
         });
       }
@@ -518,5 +762,52 @@ img {
     outline: none;
     border-color: #b44ff6;
   }
+}
+
+// modal moderatorCommunity
+@mixin ellipsis() {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vue-select {
+  width: 100%;
+  height: 2rem;
+  background-color: #fff;
+  margin: 45px auto;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.06);
+  border: none;
+  transition: all 200ms linear;
+
+  .selected-option {
+    @include ellipsis();
+    display: inline-block;
+    padding: 15px 50px 15px 15px;
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    transition: all 200ms linear;
+
+    &:hover {
+      color: red;
+    }
+  }
+}
+
+.dropdown-options-container {
+  overflow-y: scroll;
+  height: 150px;
+}
+
+.dropdown-options--cell {
+  padding: 15px;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: none;
 }
 </style>

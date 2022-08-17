@@ -59,6 +59,11 @@ router.post("/:id/unfollow", isLoggedIn, communityCtrl.unfollowCommunity);
 router.post("/:id/report", isLoggedIn, communityCtrl.reportCommunity);
 
 //=================================>
+// * READ MODERATOR BY COMMUNITY
+//=================================>
+router.get("/:id/moderator/list", isLoggedIn, communityCtrl.readCommunityModerator);
+
+//=================================>
 // * ADD MODERATOR COMMUNITY
 //=================================>
 router.post("/:id/moderator", isLoggedIn, communityCtrl.addModerator);
