@@ -89,6 +89,7 @@ export default {
   font-size: 0.9rem;
   line-height: 1.5;
   margin-bottom: 1rem;
+  word-break: break-all;
 }
 
 .bottomRow {

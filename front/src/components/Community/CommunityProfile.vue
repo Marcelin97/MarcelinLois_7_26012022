@@ -355,7 +355,7 @@ export default {
       placeholder: "Choisi un modérateur",
     };
   },
-  async mounted() {
+   mounted() {
     this.communityId = this.$route.params.id;
 
     axiosInstance
@@ -395,15 +395,15 @@ export default {
           });
           await this.$router.push("/communities");
         } catch (error) {
-          console.error(error.data);
+          console.error(error.data.error);
 
-          const errorMessage = (this.apiErrors = error.response);
+          const errorMessage = (this.apiErrors = error.data.error);
           this.errorMessage = errorMessage;
 
           // notification error message
           this.$notify({
             type: "error",
-            title: `Erreur lors du changement de la communauté`,
+            title: `Accès refusé:`,
             text: `Erreur reporté : ${errorMessage}`,
             duration: 30000,
           });
@@ -693,6 +693,7 @@ export default {
     align-items: flex-start;
     margin: 2rem 0 0;
     background: transparent;
+    word-break: break-all;
   }
 
   &-ctr {

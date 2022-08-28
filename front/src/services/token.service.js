@@ -14,10 +14,7 @@ class TokenService {
     return user;
   }
   updateLocalAccessToken(token) {
-    // let user = JSON.parse(localStorage.getItem("vuex")) || {};
-    let user = store.state.accessToken;
-    user = token;
-    localStorage.setItem("vuex", JSON.stringify(user));
+    store.commit("refreshToken", token); 
   }
   getUser() {
     // const user = JSON.parse(localStorage.getItem("vuex")) || {};

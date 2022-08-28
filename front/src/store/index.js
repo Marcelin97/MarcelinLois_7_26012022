@@ -31,16 +31,7 @@ const store = createStore({
       // localStorage.clear();
     },
     refreshToken: function (state, accessToken) {
-      // state.accessToken = accessToken;
-      state.user = { ...state.user, accessToken: accessToken };
-    },
-  },
-  actions: {
-    refreshToken({ commit }, accessToken) {
-      commit("refreshToken", accessToken);
-      console.info(
-        "Access token updated, you can ignore the previous 401 error"
-      );
+      state.accessToken = accessToken;
     },
   },
 });

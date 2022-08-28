@@ -74,7 +74,7 @@ export default {
           this.$notify({
             type: "info",
             title: `Information de l'api`,
-            text: `Erreur reporté : ${errorMessage}`,
+            text: `${errorMessage}`,
           });
         }
       });
