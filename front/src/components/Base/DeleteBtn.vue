@@ -1,174 +1,150 @@
 <template>
-  <div class="animation-btn">
-    <button>
-      <span class="paper-wrapper">
-        <span class="paper"></span>
-      </span>
-
-      <span class="shredded-wrapper">
-        <span class="shredded"></span>
-      </span>
-
-      <span class="lid"></span>
-
-      <span class="can">
-        <span class="filler"></span>
-      </span>
-    </button>
-  </div>
+<a href="#delete" class="delete">Delete</a>
 </template>
 
 <style lang="scss" scoped>
-.animation-btn {
-  display: flex;
-  align-items: center;
-}
-
-.animation-btn :hover {
-  .paper,
-  .shredded {
-    background: #ffd7d7;
-    animation: move 2.25s linear infinite;
-  }
-  .filler {
-    animation: fill 4.5s infinite;
-  }
-}
-
-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.delete {
+  color: #FFF;
+  // width: 75px;
+  height: 35px;
+  display: block;
+  text-align: center;
+  text-indent: 20px;
+  padding: 0 10px;
+  border-radius: 3px;
+  line-height: 35px;
+  text-decoration: none;
+  font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, sans-serif;
+  box-shadow: 0px 0px 1px #213741;
+  background: #f34642 url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNTEycHgiIGhlaWdodD0iNTEycHgiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA1MTIgNTEyIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cGF0aCBkPSJNNDI0LjU2MiA3OC4wMjJ2NDAuMDMySDg3LjQzOFY3OC4wMjJoOTQuOTM4YzE1LjQ2NCAwIDI4LTEyLjU0NiAyOC0yOC4wMjJoOTEuMjUgYzAgMTUuNSAxMi41IDI4IDI4IDI4LjAyMkg0MjQuNTYyeiBNNDA2LjMzNCAxNDguMDc5VjQ2MkgxMDUuNjY2VjE0OC4wNzlINDA2LjMzNHogTTE5Ny4zMzMgMjEwLjUgYzAtOC4yOTEtNi43MTYtMTUuMDEyLTE1LTE1LjAxMnMtMTUgNi43MjEtMTUgMTUuMDEydjE5MC4xNTNjMCA4LjMgNi43IDE1IDE1IDE1LjAxMnMxNS02LjcyMSAxNS0xNS4wMTJWMjEwLjQ2MnogTTI3MSAyMTAuNDYyYzAtOC4yOTEtNi43MTYtMTUuMDEyLTE1LTE1LjAxMnMtMTUgNi43MjEtMTUgMTUuMDEydjE5MC4xNTNjMCA4LjMgNi43IDE1IDE1IDE1LjAxMnMxNS02LjcyMSAxNS0xNS4wMTIgVjIxMC40NjJ6IE0zNDQuNjY3IDIxMC40NjJjMC04LjI5MS02LjcxNi0xNS4wMTItMTUtMTUuMDEycy0xNSA2LjcyMS0xNSAxNS4wMTJ2MTkwLjE1M2MwIDguMyA2LjcgMTUgMTUgMTUgczE1LTYuNzIxIDE1LTE1LjAxMlYyMTAuNDYyeiIgc3R5bGU9ImZpbGw6ICNGRkY7Ii8+PC9zdmc+") no-repeat 10px center;
+  background-size: 17px;
   position: relative;
-  width: 4rem;
-  height: 4rem;
-  border-radius: 0.8rem;
-  cursor: pointer;
-  color: #f7f7f7;
-  border: 2px solid #ffff;
-  background: transparent;
-  transition: color, background 0.35s;
-  &:hover {
-    border: 2px solid #fd2d01;
-  }
+  -webkit-transition: background 0.3s;
+  -moz-transition: background 0.3s;
+  -o-transition: background 0.3s;
+  transition: background 0.3s;
 }
-
-.paper-wrapper,
-.shredded-wrapper {
-  overflow: hidden;
+.delete:hover {
+  background-color: #713031;
+}
+.delete.selected {
+  background-color: #713031;
+}
+.delete.selected .deleteBox {
+  opacity: 1;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$opacityIE)";
+  filter: alpha(opacity=100);
+  top: -110px;
+  width: 275px;
+  height: 100px;
+  overflow: visible;
+  -webkit-transition: opacity 0.3s, top 0.3s, width 0s, height 0s;
+  -webkit-transition-delay: 0s, 0s, 0s, 0s;
+  -moz-transition: opacity 0.3s, top 0.3s, width 0s 0s, height 0s 0s;
+  -o-transition: opacity 0.3s, top 0.3s, width 0s 0s, height 0s 0s;
+  transition: opacity 0.3s, top 0.3s, width 0s 0s, height 0s 0s;
+}
+.delete .deleteBox {
   position: absolute;
-  top: -20px;
+  top: -90px;
+  left: 50%;
+  margin-left: -137px;
+  overflow: hidden;
+  background: #1C242B;
+  width: 0px;
+  height: 0px;
+  border-radius: 5px;
+  text-indent: 0px;
+  cursor: default;
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$opacityIE)";
+  filter: alpha(opacity=0);
+  -webkit-transition: opacity 0.3s, top 0.3s, width 0s, height 0s;
+  -webkit-transition-delay: 0s, 0s, 0.3s, 0.3s;
+  -moz-transition: opacity 0.3s, top 0.3s, width 0s 0.3s, height 0s 0.3s;
+  -o-transition: opacity 0.3s, top 0.3s, width 0s 0.3s, height 0s 0.3s;
+  transition: opacity 0.3s, top 0.3s, width 0s 0.3s, height 0s 0.3s;
+  z-index: -1;
+}
+.delete .deleteBox:after {
+  content: '';
+  display: block;
+  width: 0px;
+  left: 0px;
+  border-top: 5px solid #1C242B;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  position: absolute;
+  bottom: -5px;
   left: 50%;
   margin-left: -5px;
-  width: 10px;
-  height: 64px;
-  display: flex;
 }
-
-.paper {
-  width: 10px;
+.delete .deleteBox p {
+  margin: 10px 0 3px;
 }
-
-.shredded-wrapper {
-  top: 20px;
-  height: 20px;
-  justify-content: center;
+.delete .deleteBox span {
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  zoom: 1;
+  *display: inline;
+  margin: 0 10px;
+  color: #FFF;
+  border-radius: 3px;
+  width: 80px;
+  height: 25px;
+  line-height: 25px;
+  cursor: pointer;
+  -webkit-transition: background 0.3s;
+  -moz-transition: background 0.3s;
+  -o-transition: background 0.3s;
+  transition: background 0.3s;
 }
-
-.paper,
-.shredded {
+.delete .deleteBox span.confirm {
+  background: #38B87C;
+}
+.delete .deleteBox span.confirm:hover {
+  background: #2c9162;
+}
+.delete .deleteBox span.cancel {
+  background: #696F73;
+}
+.delete .deleteBox span.cancel:hover {
+  background: #515558;
+}
+.delete .deleteBox:before {
+  content: 'Deleting...';
   display: block;
-  background: transparent;
-  height: 10px;
-  // animation: move 2.25s linear infinite;
-}
-
-.shredded {
-  margin-top: -30px;
-  width: 2px;
-}
-
-.shredded::before,
-.shredded::after {
-  content: "";
   position: absolute;
-  z-index: 1;
-  top: 0;
-  width: inherit;
-  height: inherit;
-  background: inherit;
+  top: 0px;
+  left: 0px;
+  width: 0px;
+  height: 0px;
+  text-align: center;
+  line-height: 60px;
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$opacityIE)";
+  filter: alpha(opacity=0);
+  border-radius: 5px;
+  background: #1c242b url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSJ3aGl0ZSI+CiAgPGNpcmNsZSB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4IDApIiBjeD0iMCIgY3k9IjE2IiByPSIwIj4gCiAgICA8YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJyIiB2YWx1ZXM9IjA7IDQ7IDA7IDAiIGR1cj0iMS4ycyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIGJlZ2luPSIwIgogICAgICBrZXl0aW1lcz0iMDswLjI7MC43OzEiIGtleVNwbGluZXM9IjAuMiAwLjIgMC40IDAuODswLjIgMC42IDAuNCAwLjg7MC4yIDAuNiAwLjQgMC44IiBjYWxjTW9kZT0ic3BsaW5lIiAvPgogIDwvY2lyY2xlPgogIDxjaXJjbGUgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTYgMCkiIGN4PSIwIiBjeT0iMTYiIHI9IjAiPiAKICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9InIiIHZhbHVlcz0iMDsgNDsgMDsgMCIgZHVyPSIxLjJzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgYmVnaW49IjAuMyIKICAgICAga2V5dGltZXM9IjA7MC4yOzAuNzsxIiBrZXlTcGxpbmVzPSIwLjIgMC4yIDAuNCAwLjg7MC4yIDAuNiAwLjQgMC44OzAuMiAwLjYgMC40IDAuOCIgY2FsY01vZGU9InNwbGluZSIgLz4KICA8L2NpcmNsZT4KICA8Y2lyY2xlIHRyYW5zZm9ybT0idHJhbnNsYXRlKDI0IDApIiBjeD0iMCIgY3k9IjE2IiByPSIwIj4gCiAgICA8YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJyIiB2YWx1ZXM9IjA7IDQ7IDA7IDAiIGR1cj0iMS4ycyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIGJlZ2luPSIwLjYiCiAgICAgIGtleXRpbWVzPSIwOzAuMjswLjc7MSIga2V5U3BsaW5lcz0iMC4yIDAuMiAwLjQgMC44OzAuMiAwLjYgMC40IDAuODswLjIgMC42IDAuNCAwLjgiIGNhbGNNb2RlPSJzcGxpbmUiIC8+CiAgPC9jaXJjbGU+Cjwvc3ZnPg==") no-repeat center 50px;
+  -webkit-transition: opacity 0.3s, top 0.3s, left 0.3s;
+  -moz-transition: opacity 0.3s, top 0.3s, left 0.3s;
+  -o-transition: opacity 0.3s, top 0.3s, left 0.3s;
+  transition: opacity 0.3s, top 0.3s, left 0.3s;
 }
-
-.shredded::before {
-  left: -4px;
+.delete .deleteBox.loading:before {
+  opacity: 1;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$opacityIE)";
+  filter: alpha(opacity=100);
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
 }
-
-.shredded::after {
-  right: -4px;
-}
-
-.lid {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 25px;
-  height: 3px;
-  background: #ffffff;
-}
-
-.can {
-  overflow: hidden;
-  position: relative;
-  transform: translateY(3px);
-  width: 20px;
-  height: 22px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border: 2px solid #ffffff;
-}
-
-.filler {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -32px;
-  width: 64px;
-  height: 120%;
-  background: #fd2d01;
-  // animation: fill 4.5s infinite;
-}
-
-@keyframes move {
-  0% {
-    transform: translateY(0);
-  }
-  75% {
-    transform: translateY(88px);
-  }
-  100% {
-    transform: translateY(88px);
-  }
-}
-
-@keyframes fill {
-  0% {
-    transform: translateY(0);
-  }
-  20% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-50%);
-  }
-  70% {
-    transform: translateY(-50%);
-  }
-  90% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(-100%);
-  }
+.delete .deleteBox.deleted:before {
+  content: 'Deleted.';
+  background: #1c242b url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoKCSB3aWR0aD0iNTEycHgiIGhlaWdodD0iNTEycHgiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA1MTIgNTEyIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KCjxwb2x5Z29uIGlkPSJjaGVjay1tYXJrLTctaWNvbiIgcG9pbnRzPSI1MCwyNDcuNzg3IDc3LjA5LDIxOS44MzMgMjA5Ljg1OSwyOTkuMjIyIDQzOC43ODcsODEuMjQ1IDQ2MiwxMDQuNSAyMTkuODYzLDQzMC43NTUgIiBmaWxsPSIjRkZGIi8+Cgo8L3N2Zz4=") no-repeat center 55px;
+  background-size: 20px 20px;
 }
 </style>
