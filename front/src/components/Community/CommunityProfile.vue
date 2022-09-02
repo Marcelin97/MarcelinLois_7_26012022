@@ -46,7 +46,7 @@
             </router-link>
 
             <!-- button moderator community-->
-            <button v-if="user.isAdmin == true" 
+            <button 
               type="button"
               class="btn"
               @click="$refs.moderatorCommunity.openModal()"
@@ -55,7 +55,7 @@
               Ajouter un modérateur
             </button>
             <!-- button report user -->
-            <button v-if="user.isAdmin == true" 
+            <button
               type="button"
               class="btn"
               @click="$refs.deleteModeratorClick.openModal()"
@@ -358,8 +358,27 @@ export default {
   },
   mounted() {
     this.user = this.$store.state.user;
-    console.log(this.user);
+    // console.log(this.user);
     this.communityId = this.$route.params.id;
+
+    axiosInstance
+      .get("/auth/readAll")
+      .then((response) => {
+        this.users = response.data.data;
+        console.log(this.users)
+      })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          const errorMessage = (this.apiError = "Utilisateurs introuvable !");
+          this.errorMessage = errorMessage;
+          // notification d'erreur
+          this.$notify({
+            type: "error",
+            title: `Erreur de l'api`,
+            text: `Erreur reporté : ${errorMessage}`,
+          });
+        }
+      });
   },
   methods: {
     async deleteAccountClick() {
