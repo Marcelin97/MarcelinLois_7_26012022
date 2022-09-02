@@ -88,7 +88,7 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import { minLength, maxLength } from "@vuelidate/validators";
+import { minLength} from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 import axiosInstance from "../../services/api";
 
@@ -123,7 +123,6 @@ export default {
           $autoDirty: true,
           $lazy: true,
           minLength: minLength(3),
-          maxLength: maxLength(25),
         },
 
         communityImage: {
@@ -142,7 +141,6 @@ export default {
   },
   mounted() {
     this.communityId = this.$route.params.id;
-    // console.log("bonjour",this.communityId)
   },
   methods: {
     onChangeFileUpload() {

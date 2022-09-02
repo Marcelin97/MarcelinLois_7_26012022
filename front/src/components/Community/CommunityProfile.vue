@@ -407,8 +407,8 @@ export default {
           this.$notify({
             type: "error",
             title: `Accès refusé:`,
-            text: `Erreur reporté : ${errorMessage}`,
-            duration: 30000,
+            text: `${errorMessage}`,
+            duration: 3000,
           });
         }
       }
