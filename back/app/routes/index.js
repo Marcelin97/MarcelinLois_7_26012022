@@ -12,7 +12,7 @@ const slowDown = require("../middleware/speedLimiter");
 
 // * All routes
 const userRoutes = require("./user");
-const communityRoutes = require("./community")
+const communityRoutes = require("./community");
 const postsRoutes = require("./post");
 const commentsRoutes = require("./comment");
 

@@ -5,7 +5,7 @@ const router = express.Router();
 const postsCtrl = require("../controllers/post");
 
 // * Middlewares
-const { isLoggedIn, isAdmin, isModerator } = require("../middleware/auth");
+const { isLoggedIn} = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 
 //=================================>
@@ -23,17 +23,23 @@ router.get("/:id/read", isLoggedIn, postsCtrl.readPostById);
 //=================================>
 router.get("/readAll", isLoggedIn, postsCtrl.readAllPosts);
 
+//=================================>
 // * Find all posts by community
+//=================================>
 router.get("/readAllPostByCommunity/:id", isLoggedIn, postsCtrl.readAllPostByCommunity);
 
+//=================================>
 // * Find all posts by community follow
+//=================================>
 router.get(
   "/readAllPostByCommunityFollow",
   isLoggedIn,
   postsCtrl.readAllPostByCommunityFollow
 );
 
+//=================================>
 // * Find all posts with a lot of likes
+//=================================>
 router.get("/manyLikes", isLoggedIn, postsCtrl.manyLikes);
 
 //=================================>

@@ -1,60 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { user, community_moderator } = require("../models");
-
-// * Admin middleware
-const isAdmin = async (req, res, next) => {
-  try {
-    const currentUser = await user.findOne({ where: { id: req.auth.userID } });
-    // console.log(currentUser);
-    if (!currentUser) {
-      return res.status(404).json({ error: "Logged in user not found" });
-    }
-
-    if (!currentUser.isAdmin) {
-      return res.status(403).json({ error: "Insufficient rights" });
-    }
-
-    next();
-  } catch (error) {
-    res
-      .status(401)
-      .json({ error: error.message || "Requête non authentifiée" });
-  }
-};
-
-// * Moderator middleware
-const isModerator = async (req, res, next) => {
-  try {
-    const currentUser = await user.findOne({ where: { id: req.auth.userID } });
-
-    if (!currentUser) {
-      return res.status(404).json({ error: "Logged in user not found" });
-    }
-
-    // TODO : vérifie si l'utilisateur connecté fait parti de cette communauté
-    community_moderator
-      .findOne({ where: { userId: req.auth.userID } })
-      .then((result) => {
-        if (!result) {
-          return res.status(404).json({ error: "You are not a moderator" });
-        }
-
-        // TODO : retrouve la communauté rattaché à la requête
-        // community.findOne({ where: { id: req.}})
-      })
-      .catch((err) => {
-        res
-          .status(401)
-          .json({ error: err.message });
-      });
-    
-    next();
-  } catch (error) {
-    res
-      .status(401)
-      .json({ error: error.message || "Requête non authentifiée" });
-  }
-};
+const { user, community_moderator, community } = require("../models");
 
 // * Auth middleware
 const isLoggedIn = async (req, res, next) => {
@@ -83,40 +28,97 @@ const isLoggedIn = async (req, res, next) => {
       throw "User ID non valable !";
       // sinon si tout va bien on peut passer la requête au prochain middleware
     } else {
-      console.log("test")
       next();
     }
   } catch (error) {
     console.log("error", error);
     // 401 pour une erreur d'authentification
-    res.status(401).json({ error: error || "Requête non authentifiée" });
+    res.status(401).json({ error: error || "Unauthenticated request" });
   }
 };
 
-// const isModeratorOrAdmin = (req, res, next) => {
-//   User.findByPk(req.userId).then((user) => {
-//     user.getRoles().then((roles) => {
-//       for (let i = 0; i < roles.length; i++) {
-//         if (roles[i].name === "moderator") {
-//           next();
-//           return;
-//         }
+// * Admin middleware
+const isAdmin = async (req, res, next) => {
+  try {
+    const currentUser = await user.findOne({ where: { id: req.auth.userID } });
+    if (!currentUser) {
+      return res.status(404).json({ error: "Logged in user not found" });
+    }
+    
+    // TODO Check is super admin
+    if (!currentUser.isAdmin) {
+      return res.status(403).json({ error: "Insufficient rights" });
+    }
 
-//         if (roles[i].name === "admin") {
-//           next();
-//           return;
-//         }
-//       }
+    next();
+  } catch (error) {
+    res
+      .status(401)
+      .json({ error: error.message || "Unauthenticated request" });
+  }
+};
 
-//       res.status(403).send({
-//         message: "Require Moderator or Admin Role!",
-//       });
-//     });
-//   });
-// };
+// * Is creator, admin or moderator
+const isCreatorOrAdminOrModerator = async (req, res, next) => {
+  try {
+    let communityFind = null;
+    let post = null;
+    let comment = null;
+    let isModerator = false;
+    let isAdmin = false;
+    let isAuthor = false;
+    let isOwner = false;
+
+    const currentUser = await user.findOne({ where: { id: req.auth.userID } });
+    if (currentUser == null) throw new Error("Logged in user not found");
+
+    // TODO Check is super admin
+    if (currentUser.isAdmin) isAdmin = true;
+    console.log("iciii", currentUser.id);
+
+    // TODO Check is community moderator / owner
+    // find moderator
+    let myCommunityModerators = await community_moderator.findOne({
+      where: { userId: currentUser.id },
+    });
+
+    if (!myCommunityModerators || myCommunityModerators == undefined)
+      throw new Error("Your're not on the moderator list.");
+
+    // check if the currentUser is moderator of this community
+    isModerator = myCommunityModerators.userId === currentUser.id;
+    if (isModerator == null)
+      throw new Error("Your're not the owner of this community.");
+    console.log("isModerator", isModerator);
+
+    // Find community
+    if (req.params.id) {
+      communityFind = await community.findByPk(req.params.id);
+      // console.log(communityFind);
+      if (communityFind == null)
+        throw new Error("This community does not exist.");
+    }
+
+    // check if currentUser is owner of this community
+    isOwner = communityFind.userId === currentUser.id;
+    if (isOwner == null)
+      throw new Error("Your're not the owner of this community.");
+    console.log("isOwner", isOwner);
+
+    // Access denied
+    if (!isAdmin && !isModerator && !isOwner)
+      throw new Error("You do not have permission to access this content.");
+    
+    // Access granted
+    next();
+  } catch (error) {
+    console.error(error.message);
+    res.status(403).json({ error: error.message || "Insufficient rights" });
+  }
+};
 
 module.exports = {
   isLoggedIn,
   isAdmin,
-  isModerator,
+  isCreatorOrAdminOrModerator,
 };

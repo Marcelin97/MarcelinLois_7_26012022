@@ -5,7 +5,7 @@ const router = express.Router();
 const commentsCtrl = require("../controllers/comment");
 
 // * Middlewares
-const { isLoggedIn, isAdmin } = require("../middleware/auth");
+const { isLoggedIn } = require("../middleware/auth");
 
 //=================================>
 // * CREATE A COMMENT
@@ -18,8 +18,6 @@ router.post("/", isLoggedIn, commentsCtrl.createComment);
 router.put(
   "/update/:id",
   isLoggedIn,
-  // isModerator,
-  // isAdmin
   commentsCtrl.updateComment
 );
 
@@ -29,8 +27,6 @@ router.put(
 router.delete(
   "/delete/:id",
   isLoggedIn,
-  // isModerator,
-  // isAdmin
   commentsCtrl.deleteComment
 );
 

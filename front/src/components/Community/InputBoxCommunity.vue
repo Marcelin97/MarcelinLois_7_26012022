@@ -54,7 +54,7 @@
         v-model="state.community.about"
         @blur="v$.community.about.$touch"
         :class="v$.community.about.$error === true ? 'error' : 'dirty'"
-        minlength="20"
+        minlength="10"
         required
         aria-label="à propos de votre communauté"
       ></textarea>

@@ -1,7 +1,7 @@
 module.exports = function (sequelize, Sequelize) {
   // * Model Definition
   const CommunityModerator = sequelize.define("community_moderator", {
-    isAdmin: {
+    isModerator: {
       type: Sequelize.BOOLEAN,
       unique: false,
       defaultValue: false,

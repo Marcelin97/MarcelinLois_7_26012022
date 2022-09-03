@@ -5,7 +5,7 @@ const router = express.Router();
 const userCtrl = require("../controllers/user");
 
 // * Middlewares
-const { isLoggedIn, isAdmin } = require("../middleware/auth");
+const { isLoggedIn} = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 const { inputValidation } = require("../middleware/inputValidation");
 
