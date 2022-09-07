@@ -46,7 +46,7 @@
             </router-link>
 
             <!-- button moderator community-->
-            <button 
+            <button
               type="button"
               class="btn"
               @click="$refs.moderatorCommunity.openModal()"
@@ -296,6 +296,8 @@ import deleteBtn from "../Base/DeleteBtn.vue";
 import communitiesApi from "../../api/community";
 import axiosInstance from "../../services/api";
 import useVuelidate from "@vuelidate/core";
+import roleMixin from "../../mixins/role.mixin";
+
 import {
   helpers,
   // required,
@@ -356,6 +358,7 @@ export default {
       placeholder: "Choisi un modérateur",
     };
   },
+  mixins: [roleMixin],
   mounted() {
     this.user = this.$store.state.user;
     // console.log(this.user);
@@ -365,7 +368,7 @@ export default {
       .get("/auth/readAll")
       .then((response) => {
         this.users = response.data.data;
-        console.log(this.users)
+        console.log(this.users);
       })
       .catch((error) => {
         if (error.response.status == 404) {

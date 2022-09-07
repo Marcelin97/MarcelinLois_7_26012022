@@ -3,9 +3,8 @@ import createPersistedState from "vuex-persistedstate";
 
 // Create a new store instance.
 const store = createStore({
-  plugins: [
-    createPersistedState(),
-  ],
+  plugins: [createPersistedState()],
+  namespaced: true,
   state: {
     user: [],
     accessToken: "",
@@ -32,6 +31,37 @@ const store = createStore({
     },
     refreshToken: function (state, accessToken) {
       state.accessToken = accessToken;
+    },
+  },
+  getters: {
+    isAuthenticated(state) {
+      return state.isAuthenticated === true && state.user !== null;
+    },
+    isSuperAdmin(state) {
+      return state.isAuthenticated === true && state.user.isAdmin === true;
+    },
+    // Return current user data in state
+    user(state) {
+      return state.user !== null ? state.user : false;
+    },
+    // Check if current user is moderator a specific community
+    isCommunityModerator: (state, getters) => (communityModerators) => {
+      if (getters.isAuthenticated) {
+        let moderator = communityModerators.filter(
+          (m) => m.userId === getters.user.id
+        );
+        return moderator !== null && moderator.length > 0;
+      }
+
+      return false;
+    },
+    // Check if current user is admin
+    isAdmin: (state, getters) => () => {
+      if (getters.isSuperAdmin) {
+        return true;
+      }
+
+      return false;
     },
   },
 });
