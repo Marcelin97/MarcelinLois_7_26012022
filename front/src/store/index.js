@@ -44,20 +44,20 @@ const store = createStore({
     user(state) {
       return state.user !== null ? state.user : false;
     },
-    // Check if current user is owner of a specific community
-    isCreator: (state, getters) => (communityId) => {
+    // Check if current user is moderator of a specific community
+    isModerator: (state, getters) => (communityId) => {
       if (getters.isAuthenticated) {
-        const moderators = getters.user.community_moderators;
+        const moderators = getters.user.moderators;
         for (let moderator of moderators) {
           console.log(
             "Embarquement du passager " +
-              moderator.userId +
+            moderator.community_moderator.userId +
               " qui modère la communauté " +
-              moderator.communityId
+            moderator.community_moderator.communityId
           );
           if (
-            moderator.userId === getters.user.id &&
-            moderator.communityId === communityId
+            moderator.community_moderator.userId === getters.user.id &&
+            moderator.community_moderator.communityId === parseInt(communityId)
           )
             return true;
         }

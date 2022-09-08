@@ -27,8 +27,7 @@ export default {
   computed: {
     ...mapGetters(["isAuthenticated", "isSuperAdmin"]),
     ...mapGetters({
-      // isCommunityModerator: "isCommunityModerator",
-      isCreator: "isCreator",
+      userIsModerator: "isModerator",
     }),
     ...mapState({
       authData: "user",

@@ -28,7 +28,7 @@
           <div class="profile-card-ctr__actions">
             <!-- button delete account -->
             <button
-            v-if="isCreator(this.communityId)"
+             v-if="canAdmin(this.communityRead.userId)"
               type="button"
               class="btn btn-delete"
               @click="$refs.deleteAccount.openModal()"
@@ -359,7 +359,7 @@ export default {
         id: 0,
         about: "",
         icon: "",
-        UserId: 0,
+        userId: 0,
         CommunityModerators: [],
       },
       selectValue: "",
@@ -370,9 +370,10 @@ export default {
   created() {
     this.user = this.$store.state.user;
     this.communityId = this.$route.params.id;
+    console.log(this.$route);
 
-    this.$store.getters.isCreator(this.$route.params.id);
-    console.log(this.$store.getters.isCreator(this.$route.params.id));
+    // this.$store.getters.isCreator(this.$route.params.id);
+    // console.log(this.$store.getters.isCreator(this.$route.params.id));
 
     axiosInstance
       .get("/auth/readAll")
