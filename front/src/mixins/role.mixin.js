@@ -3,19 +3,22 @@ import { mapGetters, mapState } from "vuex";
 export default {
   created: function () {
     console.log("mixin hook called");
-    this.canModerate();
   },
   methods: {
-    canModerate(moderators) {
+    // TODO: Who can do this C.R.U.D : admin  and creator only
+    canAdmin(creatorId) {
       if (this.isAuthenticated) {
-        if (this.isCommunityModerator(moderators) === true) return true;
+        if (creatorId === this.authData.id || this.isSuperAdmin === true ||
+          this.authData.isAdmin === true) return true;
         return false;
       }
       return false;
     },
-    canAdmin(ownerId) {
+    // TODO: who can do this C.R.U.D : admin and creator and moderator
+    canModerate(communityId) {
       if (this.isAuthenticated) {
-        if (ownerId === this.authData.id || this.isSuperAdmin === true) return true;
+        if (this.isCreator(communityId) === true)
+        return true;
         return false;
       }
       return false;
@@ -24,7 +27,8 @@ export default {
   computed: {
     ...mapGetters(["isAuthenticated", "isSuperAdmin"]),
     ...mapGetters({
-      isCommunityModerator: "isCommunityModerator",
+      // isCommunityModerator: "isCommunityModerator",
+      isCreator: "isCreator",
     }),
     ...mapState({
       authData: "user",

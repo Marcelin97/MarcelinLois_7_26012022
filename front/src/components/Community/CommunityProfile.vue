@@ -28,6 +28,7 @@
           <div class="profile-card-ctr__actions">
             <!-- button delete account -->
             <button
+            v-if="isCreator(this.communityId)"
               type="button"
               class="btn btn-delete"
               @click="$refs.deleteAccount.openModal()"
@@ -354,25 +355,53 @@ export default {
       apiErrors: "",
       communityId: "",
       users: [],
+      communityRead: {
+        id: 0,
+        about: "",
+        icon: "",
+        UserId: 0,
+        CommunityModerators: [],
+      },
       selectValue: "",
       placeholder: "Choisi un modérateur",
     };
   },
   mixins: [roleMixin],
-  mounted() {
+  created() {
     this.user = this.$store.state.user;
-    // console.log(this.user);
     this.communityId = this.$route.params.id;
+
+    this.$store.getters.isCreator(this.$route.params.id);
+    console.log(this.$store.getters.isCreator(this.$route.params.id));
 
     axiosInstance
       .get("/auth/readAll")
       .then((response) => {
         this.users = response.data.data;
-        console.log(this.users);
+        // console.log(this.users);
       })
       .catch((error) => {
         if (error.response.status == 404) {
           const errorMessage = (this.apiError = "Utilisateurs introuvable !");
+          this.errorMessage = errorMessage;
+          // notification d'erreur
+          this.$notify({
+            type: "error",
+            title: `Erreur de l'api`,
+            text: `Erreur reporté : ${errorMessage}`,
+          });
+        }
+      });
+
+      axiosInstance
+      .get(`/community/readOne/${this.communityId}`)
+      .then((response) => {
+        this.communityRead = response.data.datas
+        console.log("icii", this.communityRead);
+      })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          const errorMessage = (this.apiError = "Communauté introuvable !");
           this.errorMessage = errorMessage;
           // notification d'erreur
           this.$notify({
@@ -434,7 +463,6 @@ export default {
             this.$router.go(0);
           })
           .catch((error) => {
-            console.log(error.response.status);
             if (error.response.status == 404) {
               const errorMessage = (this.apiError = "Communauté introuvable !");
               this.errorMessage = errorMessage;
@@ -540,7 +568,7 @@ export default {
           })
           .catch((error) => {
             if (error.response.status == 500) {
-              console.log(error.response.data.error);
+              // console.log(error.response.data.error);
               const errorMessage = (this.apiErrors =
                 "Vous n'êtes pas autorisé à gérer les rôles de communauté !");
               this.errorMessage = errorMessage;
@@ -564,8 +592,8 @@ export default {
             }
           });
       } catch (error) {
-        console.log(error);
-        console.log(error.response.data);
+        // console.log(error);
+        // console.log(error.response.data);
         const errorMessage = (this.apiError = error.response.data.error);
         this.errorMessage = errorMessage;
 
@@ -600,7 +628,7 @@ export default {
           })
           .catch((error) => {
             if (error.response.status == 403) {
-              console.log(error.response.data.error);
+              // console.log(error.response.data.error);
               const errorMessage = (this.apiErrors =
                 "Vous n'êtes pas autorisé à gérer les rôles de communauté !");
               this.errorMessage = errorMessage;
@@ -624,8 +652,8 @@ export default {
             }
           });
       } catch (error) {
-        console.log(error);
-        console.log(error.response.data);
+        // console.log(error);
+        // console.log(error.response.data);
         const errorMessage = (this.apiError = error.response.data.error);
         this.errorMessage = errorMessage;
 

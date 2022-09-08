@@ -343,17 +343,27 @@ exports.addModerator = (req, res, next) => {
       // TODO : Find a user
       user
         .findOne({ where: { id: req.body.id } })
-        .then((resultUser) => {
+        .then(async (resultUser) => {
           if (!resultUser) {
             return res.status(404).json({ message: "Moderator not found" });
           }
-          // result.addUser(resultUser);
-          // TODO : Add this user to the moderator list
-          community_moderator.create({
-            userId: resultUser.id,
-            communityId: result.id,
-          });
 
+          // Search for moderator if exist
+          let moderator = await community_moderator.findOne({
+            where: { userId: resultUser.id, communityId: result.id },
+          });
+          if (moderator == null) {
+            // TODO : If not already moderator, add it
+            community_moderator.create({
+              userId: resultUser.id,
+              communityId: result.id,
+              isModerator: 1 ? 1 : 0
+            });
+          } else {
+            // If already moderator, update fields
+            moderator.isModerator = 1 ? 1 : 0;
+            await moderator.save();
+          }
           return res.status(200).json({
             status: 200,
             message:
@@ -401,9 +411,8 @@ exports.deleteModerator = (req, res, next) => {
       community_moderator
         .findAll({ where: { communityId: result.id } })
         .then((resultUser) => {
-          console.log("moderator list", resultUser);
-          // result.addUser(resultUser);
-
+          // console.log("moderator list", resultUser);
+          if(resultUser != null)
           // TODO : Delete this user to the moderator list
           community_moderator.destroy({
             where: { userId: resultUser.id, communityId: result.id },

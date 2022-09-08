@@ -44,17 +44,37 @@ const store = createStore({
     user(state) {
       return state.user !== null ? state.user : false;
     },
-    // Check if current user is moderator a specific community
-    isCommunityModerator: (state, getters) => (communityModerators) => {
+    // Check if current user is owner of a specific community
+    isCreator: (state, getters) => (communityId) => {
       if (getters.isAuthenticated) {
-        let moderator = communityModerators.filter(
-          (m) => m.userId === getters.user.id
-        );
-        return moderator !== null && moderator.length > 0;
+        const moderators = getters.user.community_moderators;
+        for (let moderator of moderators) {
+          console.log(
+            "Embarquement du passager " +
+              moderator.userId +
+              " qui modère la communauté " +
+              moderator.communityId
+          );
+          if (
+            moderator.userId === getters.user.id &&
+            moderator.communityId === communityId
+          )
+            return true;
+        }
       }
-
       return false;
     },
+    // Check if current user is moderator a specific community
+    // isCommunityModerator: (state, getters) => (communityModerators) => {
+    //   if (getters.isAuthenticated) {
+    //     let moderator = communityModerators.filter(
+    //       (m) => m.userId === getters.user.id
+    //     );
+    //     return moderator !== null && moderator.length > 0;
+    //   }
+
+    //   return false;
+    // },
     // Check if current user is admin
     isAdmin: (state, getters) => () => {
       if (getters.isSuperAdmin) {
