@@ -150,20 +150,17 @@ module.exports = (sequelize, Sequelize) => {
       as: "community",
       // foreignKey: "userId",
     });
-    User.hasMany(models.community_moderator, {
-      as: "community_moderators",
-      // foreignKey: "userId",
-    });
 
     // ! One user can join one or many communities
     User.belongsToMany(models.community, {
       through: "follower",
+      as: "follow"
     });
 
     // ! One user can manage one or many communities
     User.belongsToMany(models.community, {
       through: "community_moderator",
-      // as: "moderators",
+      as: "moderators",
       // foreignKey: "moderatorId", // replaces `userId`
       // otherKey: "communityId", // replaces `communityId`
     });
