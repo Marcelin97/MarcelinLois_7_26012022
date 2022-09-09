@@ -21,6 +21,7 @@ module.exports = (sequelize, Sequelize) => {
       about: {
         type: Sequelize.TEXT,
         unique: false,
+        allowNull: false,
       },
       icon: {
         type: Sequelize.STRING,
@@ -39,8 +40,12 @@ module.exports = (sequelize, Sequelize) => {
   Community.associate = (models) => {
     Community.hasMany(models.post, {
       as: "posts",
-      targetKey: "communityId",
+      foreignKey: "communityId",
     });
+    // Community.hasMany(models.community_moderator, {
+    //   as: "community_moderators",
+    //   // foreignKey: "communityId",
+    // });
 
     // * Many to Many associations
 
@@ -53,13 +58,14 @@ module.exports = (sequelize, Sequelize) => {
 
     // ! One community can be joined by 0 or many users
     Community.belongsToMany(models.user, {
+      // as: 'follower',
       through: "follower",
     });
 
     // ! One community can be managed by 0 or many users
     Community.belongsToMany(models.user, {
       through: "community_moderator",
-      as: "moderators",
+      // as: "moderators",
       // foreignKey: "communityId", // replaces `communityId`
       // otherKey: "moderatorId", // replaces `userId`
     });

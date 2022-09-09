@@ -11,10 +11,10 @@
     <nav class="nav">
       <ul class="pt-5">
         <li>
-          <router-link class="text" to="/wall">Home</router-link>
+          <router-link class="text" to="/wall" @click="closeHamburgerSheet">Home</router-link>
         </li>
         <li>
-          <router-link class="dropdown-text" to="/user">Profil</router-link>
+          <router-link class="dropdown-text" to="/user" @click="closeHamburgerSheet">Profil</router-link>
         </li>
         <li>
           <router-link class="dropdown-text" to="/">Enregistré</router-link>
@@ -31,6 +31,36 @@
     </nav>
   </div>
 </template>
+
+<script>
+export default {
+  name: "Nav-Bar",
+  data() {
+    return {
+      showHamburgerSheet: false
+    }
+  },
+  methods: {
+    logout: function () {
+      this.$store.commit("logout");
+      this.$router.push("/login");
+    },
+        toggleHamburgerSheet() {
+      if(this.showHamburgerSheet == true) {
+        this.showHamburgerSheet = false
+      } else {
+        this.showHamburgerSheet = true
+      }
+    },
+    openHamburgerSheet() {
+      this.showHamburgerSheet = true;
+    },
+    closeHamburgerSheet() {
+      this.showHamburgerSheet = false;
+    },
+  },
+};
+</script>
 
 <style lang="scss" scoped>
 .header {
@@ -87,10 +117,10 @@
   left: 0;
   border-top: 3px solid #ffd7d7;
   border-bottom: 2px solid #ffd7d7;
-  transition: border-width 100ms 1500ms ease,
-    top 100ms 1600ms cubic-bezier(0.23, 1, 0.32, 1),
-    height 100ms 1600ms cubic-bezier(0.23, 1, 0.32, 1),
-    background-color 200ms ease, transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: border-width 10ms 150ms ease,
+    top 100ms 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    height 100ms 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 20ms ease, transform 20ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .menu-icon:checked + label:after,
@@ -103,8 +133,8 @@
   right: 4px;
   background-color: #ffd7d7;
   margin-top: -1px;
-  transition: width 100ms 1750ms ease, right 100ms 1750ms ease,
-    margin-top 100ms ease, transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: width 10ms 175ms ease, right 10ms 175ms ease,
+    margin-top 10ms ease, transform 20ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .menu-icon:checked + label:before {
@@ -113,11 +143,11 @@
   height: 2px;
   background-color: #ffd7d7;
   border-width: 0;
-  transition: border-width 100ms 340ms ease,
-    top 100ms 300ms cubic-bezier(0.23, 1, 0.32, 1),
-    height 100ms 300ms cubic-bezier(0.23, 1, 0.32, 1),
-    background-color 200ms 500ms ease,
-    transform 200ms 1700ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: border-width 10ms 34ms ease,
+    top 10ms 30ms cubic-bezier(0.23, 1, 0.32, 1),
+    height 10ms 30ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 20ms 50ms ease,
+    transform 20ms 170ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .menu-icon:checked + label:after {
@@ -125,8 +155,8 @@
   margin-top: 0;
   right: 0;
   transform: rotate(-45deg);
-  transition: width 100ms ease, right 100ms ease, margin-top 100ms 500ms ease,
-    transform 200ms 1700ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: width 10ms ease, right 10ms ease, margin-top 10ms 50ms ease,
+    transform 20ms 170ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .nav {
@@ -144,11 +174,11 @@
   box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.3);
   background-color: #000;
   animation: border-transform 7s linear infinite;
-  transition: top 350ms 1100ms cubic-bezier(0.23, 1, 0.32, 1),
-    right 350ms 1100ms cubic-bezier(0.23, 1, 0.32, 1),
-    transform 250ms 1100ms ease,
-    width 650ms 400ms cubic-bezier(0.23, 1, 0.32, 1),
-    height 650ms 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: top 35ms 110ms cubic-bezier(0.23, 1, 0.32, 1),
+    right 35ms 110ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 25ms 110ms ease,
+    width 65ms 40ms cubic-bezier(0.23, 1, 0.32, 1),
+    height 65ms 40ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @keyframes border-transform {
@@ -189,10 +219,10 @@
   transform: translate(50%, -50%);
   width: 200%;
   height: 200%;
-  transition: top 350ms 700ms cubic-bezier(0.23, 1, 0.32, 1),
-    right 350ms 700ms cubic-bezier(0.23, 1, 0.32, 1), transform 250ms 700ms ease,
-    width 750ms 1000ms cubic-bezier(0.23, 1, 0.32, 1),
-    height 750ms 1000ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: top 300ms 600ms cubic-bezier(0.23, 1, 0.32, 1),
+    right 300ms 600ms cubic-bezier(0.23, 1, 0.32, 1), transform 200ms 600ms ease,
+    width 700ms 900ms cubic-bezier(0.23, 1, 0.32, 1),
+    height 700ms 900ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .nav ul {

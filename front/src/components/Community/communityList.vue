@@ -1,40 +1,49 @@
 <template>
   <div class="container">
-    <div class="community-card">
-      <h5 class="community-card__title">
-        {{ community.title }}
-      </h5>
-      <div
-        class="community-card__img box"
-        v-bind:style="{
-          backgroundImage: `url(http://localhost:3000${community.icon})`,
-        }"
-      ></div>
-      <p class="community-card__desc">{{ community.about }}</p>
+    <div class="card">
+      <img
+        class="card__img"
+        :src="`http://localhost:3000${community.icon}`"
+        :alt="'Avatar de ' + community.title"
+        aria-label="Photo d'utilisateur"
+      />
+      <div class="title">{{ community.title }}</div>
+      <div class="about">
+        {{ community.about }}
+      </div>
+      <div class="bottomRow">
+        <div class="author">Voir plus</div>
+        <router-link class="more" :to="`/communities/profil/${this.id}`">
+          <font-awesome-icon
+            class="icon"
+            :icon="['fas', 'person-walking-arrow-right']"
+          />
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "CommunityList",
-  setup() {},
+  name: "Community-List",
   props: ["community"],
   data() {
     return {
-      title: "Voici la liste de toutes les communautés",
-      bottom: false,
-      communities: [],
+      id: "",
     };
+  },
+  mounted() {
+    this.id = this.community.id;
+    // console.log(this.id);
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
 .container {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 4rem auto;
   padding: 10px 5px;
   display: flex;
   flex-direction: column;
@@ -43,49 +52,67 @@ export default {
   align-items: center;
 }
 
-.community-card {
-  margin-bottom: 50px;
-  width: 60%;
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  background: #f3f3f3;
+  width: 100%;
+  box-shadow: 8px 8px 10px #e0e0e0, -2px -2px 15px #ffffff;
+  margin-bottom: 2rem;
   opacity: 0;
   transform: translateY(-5rem);
   animation: appear-from-top 750ms ease forwards;
   animation-delay: 1s;
-
-  &__title {
-    position: relative;
-    font-size: 22px;
-    font-weight: 400;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+  @media screen and (min-width: 576px) {
+    width: 60%;
   }
-
   &__img {
-    background-position: center;
-    background-size: cover;
-    min-width: 60px;
-    width: 50%;
-    height: 60px;
-    border-radius: 0.8rem;
     margin: 0 auto;
-
-    @media only screen and (min-width: 230px) {
-      height: 170px;
-    }
-
-    @media only screen and (min-width: 576px) {
-      height: 230px;
-    }
+    max-height: 300px;
+    max-width: 100%;
+    border-radius: 0.5rem;
+    transform: translateY(-40px);
+    box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14),
+      0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -7px rgba(0, 0, 0, 0.2);
   }
+}
+.title {
+  color: #522cad;
+  font-size: 1.075rem;
+  margin-bottom: 0.5rem;
+}
 
-  &__desc {
-    margin-top: 15px;
-    font-weight: 300;
-    font-size: 14px;
-    line-height: 150%;
-    word-break: break-word;
+.about {
+  color: #888888;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  word-break: break-all;
+}
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
   }
+}
+
+.author {
+  flex: 1;
+  color: #522cad;
+}
+.icon {
+  margin: 0 0.5rem 0 1.5rem;
+  color: #522cad;
+}
+.iconText {
+  color: #888888;
 }
 
 @keyframes appear-from-top {

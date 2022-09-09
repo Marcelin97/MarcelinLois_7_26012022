@@ -1,7 +1,7 @@
 <template>
   <div id="Clouds">
     <img
-      src="../assets/img/logo.svg"
+      src="../assets/img/icon.svg"
       class="logo"
       alt="Logo de l'entreprise"
       aria-label="Logo de l'entreprise"

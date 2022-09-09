@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <div>
     <div class="scroll-down-mouse">
       <ScrollDownMouse />
     </div>
@@ -220,7 +220,7 @@
         <!-- comments structure -->
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>

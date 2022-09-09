@@ -4,10 +4,12 @@ module.exports = (sequelize, Sequelize) => {
     firstName: {
       type: Sequelize.STRING,
       required: true,
+      omitNull: true
     },
     lastName: {
       type: Sequelize.STRING,
       required: true,
+      omitNull: true
     },
     username: {
       type: Sequelize.STRING,
@@ -152,6 +154,7 @@ module.exports = (sequelize, Sequelize) => {
     // ! One user can join one or many communities
     User.belongsToMany(models.community, {
       through: "follower",
+      as: "follow"
     });
 
     // ! One user can manage one or many communities

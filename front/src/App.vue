@@ -18,7 +18,6 @@
         :duration="3000"
         :ignoreDuplicates="true"
         :reverse="true"
-        :animation-type="velocity"
       />
     </main>
 

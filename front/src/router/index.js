@@ -1,17 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "../store/index";
 
 import NotFound from "../views/NotFound.vue";
-import WelcomeView from "../views/WelcomeView.vue";
-import AccountView from "../views/AccountView.vue";
+import HomeView from "../views/HomeView.vue";
 import SignupView from "../views/SignupView.vue";
 import LoginView from "../views/LoginView.vue";
-import WallView from "../views/WallView.vue";
 import UserView from "../views/UserView";
 import UserParameterView from "../views/UserParameterView";
-import CommunityView from "../views/CommunityView";
-import CommunityProfileView from "../views/CommunityProfilView";
 import UsersView from "../views/UsersView";
 import ProfileView from "../views/ProfileView";
+import CommunitiesView from "../views/CommunitiesView";
+import CommunityProfileView from "../views/CommunityProfilView";
+import WallView from "../views/WallView.vue";
+import CommunitySettings from "../views/CommunitySettingsView";
 
 const routes = [
   {
@@ -19,19 +20,10 @@ const routes = [
     name: "NotFound",
     component: NotFound,
   },
-  // {
-  //   path: "/auth-required",
-  //   component: { render: (h) => h("div", ["Auth required!"]) },
-  // },
   {
     path: "/",
     name: "home",
-    component: WelcomeView,
-  },
-  {
-    path: "/account",
-    name: "account",
-    component: AccountView,
+    component: HomeView,
   },
   {
     path: "/signup",
@@ -72,12 +64,19 @@ const routes = [
   {
     path: "/communities",
     name: "communities",
-    component: CommunityView,
+    component: CommunitiesView,
   },
   {
     path: "/communities/profil/:id",
-    name: "communities/profil",
+    name: "communities-Target",
     component: CommunityProfileView,
+    props: true,
+  },
+  {
+    path: "/communities/profil/:id/settings",
+    name: "Community-Settings",
+    component: CommunitySettings,
+    props: true,
   },
 ];
 
@@ -94,15 +93,24 @@ const router = createRouter({
   },
 });
 
-// * Check if user is authenticated
-const isAuthenticated = () => false;
+// ? Navigation Guards
+// TODO Check if user is authenticated
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((route) => route.meta?.requiresAuth)) {
-    if (isAuthenticated()) {
-      next();
-    } else {
-      next("/auth-required");
-    }
+  const publicPages = [
+    "/NotFound",
+    "/",
+    "/account",
+    "/home",
+    "/login",
+    "/signup",
+  ];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = store.state.isAuthenticated;
+  // console.log(loggedIn); // Il will show the user loggedIn
+  // console.log(` navigation to ${to.name} from ${from.name} `); // I will log a message mentioning to which route we are navigating.
+
+  if (authRequired && !loggedIn) {
+    next("/login");
   } else {
     next();
   }

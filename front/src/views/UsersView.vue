@@ -1,5 +1,6 @@
 <template>
-  <section v-if="users.length != 0 && users.length != ''">
+  <!-- If there are users -->
+  <section v-if="users.length != 0 || users.length != ''">
     <h1>Explore des nouveaux profils !</h1>
 
     <!-- search bar -->
@@ -13,11 +14,11 @@
         v-for="(user, index) in filteredUsers"
         :key="index"
         :user="user"
-        :items="filteredArticles"
       />
     </div>
   </section>
 
+  <!-- If there are no users -->
   <section v-else>
     <h2>Il n'y a pas d'autres utilisateurs pour le moment.</h2>
   </section>
@@ -58,10 +59,11 @@ export default {
         if (error.response.status == 404) {
           const errorMessage = (this.apiError = "Utilisateurs introuvable !");
           this.errorMessage = errorMessage;
+
           // notification d'erreur
           this.$notify({
             type: "error",
-            title: `Erreur lors de la connexion`,
+            title: `Erreur de l'api`,
             text: `Erreur reporté : ${errorMessage}`,
           });
         }
@@ -92,12 +94,19 @@ h1 {
 
   input {
     width: 100%;
-    height: 100%;
+    height: 2rem;
     border: none;
-    background-color: rgb(23, 23, 23);
+    outline: none;
+    background: #4e5166;
     border-radius: 8px;
     padding: 0 40px 0 16px;
+    color: #e2dedb;
   }
+}
+
+input::placeholder {
+  color: #ffff;
+  opacity: 0.7;
 }
 
 .list_users {

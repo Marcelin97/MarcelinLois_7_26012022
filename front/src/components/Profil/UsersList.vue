@@ -18,8 +18,10 @@
         <span>identifiant: {{ user.id }}</span>
       </h3>
     </div>
+
+    <!-- link to profile page -->
     <router-link class="more" :to="`/explore/users/${this.id}`">
-      <span class="more__user">Voir le profil</span>
+      <span class="more__user">Voir le profile</span>
       <span>
         <font-awesome-icon
           class="more__icon"
@@ -32,6 +34,7 @@
 
 <script>
 export default {
+  name: "Users-List",
   props: ["user"],
   data() {
     return {

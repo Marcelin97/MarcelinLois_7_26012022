@@ -4,22 +4,13 @@
       <ul class="menu-list">
         <li class="menu-item">
           <router-link class="menu-link underline" to="/explore/users">
-            explorateur
+            Utilisateurs
           </router-link>
         </li>
         <li class="menu-item">
           <router-link class="menu-link underline" to="/communities">
             Communautés
           </router-link>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link underline" href="#">Portfolio</a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link underline" href="#">Services</a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link underline" href="#">Contact</a>
         </li>
         <li class="menu-item">
           <a class="menu-link underline" href="#" @click="logout"
@@ -37,7 +28,7 @@ export default {
   methods: {
     logout: function () {
       this.$store.commit("logout");
-      this.$router.push("/");
+      this.$router.push("/login");
     },
   },
 };
@@ -51,23 +42,19 @@ export default {
   padding-left: 1.5rem;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  @media only screen and (min-width: 576px) {
+  // flex-wrap: wrap;
     justify-content: flex-start;
-    width: min-content;
-    background-image: url(../../assets/img/sidebarNavigation.svg);
-    background-repeat: no-repeat;
-  }
+    // width: min-content;
+    // background-image: url(../../assets/img/sidebarNavigation.svg);
+
 }
 
-.menu-link {
-  @media only screen and (min-width: 576px) {
-    font-size: 1.4rem;
-    line-height: 1.4;
-  }
-}
+// .menu-link {
+//   @media only screen and (min-width: 576px) {
+//     font-size: 1.4rem;
+//     line-height: 1.4;
+//   }
+// }
 
 .menu-link::after {
   position: absolute;

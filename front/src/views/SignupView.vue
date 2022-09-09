@@ -1,6 +1,8 @@
 <template>
   <div>
-    <GoBack />
+    <nav>
+      <GoBack />
+    </nav>
     <SignupForm msg="Créer mon compte" />
   </div>
 </template>

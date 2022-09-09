@@ -1,131 +1,84 @@
 <template>
   <div class="form-input-box">
-    <form @submit.prevent="createCommunityClick" class="community-form">
-      <!-- Post form header -->
-      <div class="community-form-header">
-        <div class="community-form-header-text">
-          <span>Crée une communauté</span>
+    <h2>Crée une communauté</h2>
+    <!-- form structure-->
+    <form id="form" @submit.prevent="createCommunityClick">
+      <!-- add file -->
+      <div class="container">
+        <div class="fileUploadInput">
+          <label>✨ Upload File</label>
+          <input
+            accept=".jpeg,.jpg,png"
+            @change="onChangeFileUpload"
+            ref="image"
+            class="image"
+            type="file"
+            id="image"
+            @blur="v$.community.image.$touch"
+            :class="v$.community.image.$error === true ? 'error' : 'dirty'"
+          />
+          <button>🔗</button>
         </div>
       </div>
 
-      <!-- post form content -->
-      <div class="community-form-content">
-        <div class="community-form-top">
-          <div class="community-form-file">
-            <div>
-              <div class="wrapper">
-                <div class="split">
-                  <div class="button">
-                    <font-awesome-icon class="icon" :icon="['fas', 'upload']" />
-                    Ajoute une image
-                  </div>
-
-                  <button class="split-button">
-                    <font-awesome-icon
-                      class="icon close btn-fas"
-                      :icon="['fas', 'xmark']"
-                    />
-                  </button>
-
-                  <div class="menu">
-                    <button class="button">
-                      <font-awesome-icon
-                        class="icon close btn-fas"
-                        :icon="['fas', 'file']"
-                      />
-                      <div>
-                        <input
-                          accept=".jpeg,.jpg,png"
-                          @change="onChangeFileUpload"
-                          ref="image"
-                          class="image"
-                          type="file"
-                          id="image"
-                          @blur="v$.community.image.$touch"
-                          :class="
-                            v$.community.image.$error === true
-                              ? 'error'
-                              : 'dirty'
-                          "
-                        />
-                        <label class="community-form-label" for="image"></label>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="community-form-title">
-            <textarea
-              v-model="state.community.title"
-              blur="v$.community.title.$touch"
-              :class="v$.community.title.$error === true ? 'error' : 'dirty'"
-              required
-              minlength="3"
-              maxlength="255"
-              name="title"
-              id="title"
-              cols="30"
-              rows="10"
-              aria-label="Titre de votre communauté"
-              placeholder="Titre de votre communauté ici..."
-            ></textarea>
-            <!-- Error Message -->
-            <template v-if="v$.community.title.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.community.title.$errors"
-                :key="index"
-              >
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-            <!-- Error Message -->
-          </div>
-        </div>
-        <div class="holes-lower"></div>
-
-        <div class="community-form-body">
-          <div class="community-form-body-text">
-            <textarea
-              v-model="state.community.about"
-              @blur="v$.community.about.$touch"
-              :class="v$.community.about.$error === true ? 'error' : 'dirty'"
-              name="about"
-              id="about"
-              rows="10"
-              minlength="20"
-              required
-              aria-label="à propos de votre communauté"
-              placeholder="Écrivez quelque chose à propos de votre communauté ici..."
-            ></textarea>
-            <!-- Error Message -->
-            <template v-if="v$.community.about.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.community.about.$errors"
-                :key="index"
-              >
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-            <!-- Error Message -->
-          </div>
-        </div>
-      </div>
-
-      <!-- post form footer -->
-      <div>
-        <button
-          title="Crée une communauté"
-          class="btn-form-new-community"
-          type="submit"
-          aria-label="Crée une communauté"
+      <input
+        class="form-title"
+        id="name"
+        type="text"
+        placeholder="TITRE"
+        required
+        autocomplete="off"
+        v-model="state.community.title"
+        blur="v$.community.title.$touch"
+        :class="v$.community.title.$error === true ? 'error' : 'dirty'"
+        minlength="3"
+        maxlength="255"
+        aria-label="Titre de votre communauté"
+      />
+      <!-- Error Message -->
+      <template v-if="v$.community.title.$dirty">
+        <div
+          class="input-errors"
+          v-for="(error, index) of v$.community.title.$errors"
+          :key="index"
         >
-          Crée une communauté
-        </button>
-      </div>
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+      </template>
+      <!-- Error Message -->
+      <textarea
+        id="message"
+        type="text"
+        placeholder="À PROPOS de..."
+        autocomplete="off"
+        v-model="state.community.about"
+        @blur="v$.community.about.$touch"
+        :class="v$.community.about.$error === true ? 'error' : 'dirty'"
+        minlength="10"
+        required
+        aria-label="à propos de votre communauté"
+      ></textarea>
+      <!-- Error Message -->
+      <template v-if="v$.community.about.$dirty">
+        <div
+          class="input-errors"
+          v-for="(error, index) of v$.community.about.$errors"
+          :key="index"
+        >
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+      </template>
+      <!-- Error Message -->
+      <button
+        class="btn"
+        id="submit"
+        type="submit"
+        value="CRÉE!"
+        title="Crée une communauté"
+        aria-label="Crée une communauté"
+      >
+        CRÉE!
+      </button>
     </form>
   </div>
 </template>
@@ -154,7 +107,7 @@ export default {
       community: {
         title: {
           required: helpers.withMessage(
-            "Le titre de la communauté est obligatoire",
+            "Le titre de la communauté est obligatoire.",
             required
           ),
           $autoDirty: true,
@@ -163,11 +116,15 @@ export default {
           maxLength: maxLength(25),
         },
         image: {
-          required: helpers.withMessage("Une image est obligatoire", required),
+          required: helpers.withMessage("Une image est obligatoire.", required),
           $autoDirty: true,
           $lazy: true,
         },
         about: {
+          required: helpers.withMessage(
+            "Une description aidera à comprendre l'objet de votre communauté.",
+            required
+          ),
           $autoDirty: true,
           $lazy: true,
         },
@@ -265,214 +222,152 @@ export default {
 <style lang="scss" scoped>
 .form-input-box {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  margin-bottom: 2rem;
-}
-.community-form {
-  width: 280px;
-  @media only screen and (min-width: 576px) {
-    width: 380px;
-  }
+  box-shadow: 0 0 20px rgb(66 50 98 / 35%);
+  margin: 2rem auto 2rem auto;
+  padding: 2rem;
+  border-radius: 0.8rem;
   @media only screen and (min-width: 768px) {
-    width: 480px;
+    width: 580px;
   }
 }
 
-.community-form-header {
-  display: flex;
-  div span {
-    font-size: 0.8rem;
-    font-weight: lighter;
-    text-align: center;
-    line-height: 1.5rem;
-    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-    padding-bottom: 3vh;
-  }
+h2 {
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.5rem;
+  color: #95989a;
 }
 
-.community-form-header-text {
-  margin: auto auto 31px;
-}
-// post form contents
-.community-form-content {
-  overflow: auto;
-  // height: calc(100vh - var(-56px) - var(-72px));
+#form {
   display: flex;
   flex-direction: column;
-  border-radius: 0.5rem;
-  background: rgb(23, 23, 23);
-  overflow-wrap: break-word;
-  overflow-wrap: anywhere;
-}
-
-.community-form-top {
-  padding: 1rem 1rem;
-  background: transparent;
-}
-
-.community-form-file {
-  margin-bottom: 0.5rem;
-}
-
-.community-form-label {
-  background: transparent;
-  border: #3d3d3d;
-  border-width: 2px;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.wrapper {
-  position: relative;
-  perspective: 1000px;
-}
-
-.split {
-  display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  height: 3.5rem;
-  border: 0;
-  font-size: 0.875rem;
-  background: #17181b;
-  cursor: pointer;
 }
 
-.split-button {
+// file
+.container {
+  margin: 1rem auto;
+}
+
+.fileUploadInput {
   display: grid;
-  place-items: center;
-  width: 3.5rem;
-  height: inherit;
-  padding: 0;
-  border: 0;
-  font-size: 0.75rem;
-  background: #08708a;
-  color: #f7f7f7;
+  grid-gap: 10px;
+  position: relative;
+  z-index: 1;
 }
 
-.button {
+.fileUploadInput label {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  width: 12rem;
-  height: 3rem;
-  padding-left: 1rem;
-  border: 0;
-  font-family: Poppins;
-  text-align: left;
+  font-size: 0.8rem;
+}
+
+.fileUploadInput input {
+  position: relative;
+  z-index: 1;
+  padding: 0 gap(m);
+  width: 100%;
+  height: 50px;
+  border: 1px solid #4e5166;
+  border-radius: 0.4rem;
+  color: #95989a;
+}
+.fileUploadInput input[type="file"] {
+  padding: 0 gap(m);
+}
+.fileUploadInput input[type="file"]::-webkit-file-upload-button {
+  visibility: hidden;
+  margin-left: 10px;
+  padding: 0;
+  height: 50px;
+  width: 0px;
+}
+.fileUploadInput button {
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 50px;
+  width: 50px;
+  line-height: 0;
+  user-select: none;
+  border: none;
+  background-color: #4e5166;
+  border-radius: 0 0.4rem 0.4rem 0;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+// form
+.form-title::placeholder,
+textarea::placeholder {
+  font-size: 0.875em;
+  color: #95989a;
+}
+
+.form-title {
+  font-size: 0.875em;
+  width: 100%;
+  max-width: 20rem;
+  height: 50px;
+  padding: 0px 15px 0px 15px;
   background: transparent;
   outline: none;
+  border: solid 1px #4e5166;
+  border-radius: 0.4em 0.4rem 0 0;
+  border-bottom: none;
+  transition: all 0.3s ease-in-out;
 }
 
-.btn-fas {
-  background: transparent;
-}
-.menu {
-  position: absolute;
-  z-index: 1;
-  top: 3.5rem;
-  right: 0;
-  display: block;
+textarea {
   width: 100%;
-  padding: 0.25rem 0 1rem;
-  background: #08708a;
-  opacity: 0;
-  visibility: hidden;
-  backface-visibility: hidden;
-  transform: rotate3d(1, 0, 0, -90deg);
-  transform-origin: 0% 0%;
-  transition-property: transform, opacity, visibility;
-  transition-duration: 0.35s;
+  max-width: 20rem;
+  height: 110px;
+  max-height: 110px;
+  padding: 15px;
+  background: transparent;
+  outline: none;
+  color: #726659;
+  font-size: 0.875em;
+  border: solid 1px #4e5166;
+  transition: all 0.3s ease-in-out;
 }
-.file {
-  display: flex;
-  flex-direction: column;
+
+button#submit {
   width: 100%;
+  max-width: 20rem;
+  margin: 10px;
+  font-size: 0.875em;
 }
 
-.wrapper:hover .menu {
-  visibility: visible;
-  opacity: 1;
-  transform: rotate3d(0, 0, 0, 0);
+// error if input is invalid
+.dirty:focus {
+  border-color: #8e8;
 }
 
-.wrapper:hover .close {
-  transform: rotate(-45deg);
+.error {
+  background: #fdd;
+  border-color: #fd4444;
+  opacity: 0.7;
 }
 
-.community-form-title {
-  overflow: hidden;
-  background: transparent;
-  display: flex;
-  flex-wrap: wrap;
-  textarea {
-    min-height: 46px;
-    max-height: 46px;
-    font-weight: 700;
-    font-size: 1.075rem;
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    outline: none;
-    resize: none;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    //   white-space: nowrap;
-    flex-basis: 100%;
-    display: flex;
-    flex-wrap: nowrap;
-  }
-}
-.holes-lower {
-  position: relative;
-  margin: 0.3rem;
-  border-bottom: 1px dashed #292929;
-  background: transparent;
+.error:focus {
+  outline-color: #f99;
 }
 
-.community-form-body {
-  padding: 1rem 1rem;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  .community-form-body-text {
-    background: transparent;
-    textarea {
-      min-height: 27px;
-      max-height: 100px;
-      height: 100% !important;
-      background: transparent;
-      border: none;
-      outline: none;
-      padding: 0.5rem;
-      margin: 0;
-      resize: none;
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
-    }
-  }
-}
-
-.btn-form-new-community {
-  margin-top: 1rem;
-  background: lighten(rgb(23, 23, 23), 1%);
-  border: none;
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
   font-size: 12px;
-  padding: 0.6rem 0.6rem;
-  border-radius: 0.8rem;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-  box-shadow: inset -3px -3px 3px rgba(white, 0.025),
-    inset 3px 3px 5px rgba(black, 0.075), -3px -3px 5px rgba(white, 0.025),
-    3px 3px 5px rgba(black, 0.05);
-  &:hover {
-    background: darken(rgb(12, 19, 31), 1%);
-    box-shadow: inset -5px -5px 5px rgba(white, 0.01),
-      inset 5px 5px 5px rgba(black, 0.1), -5px -5px 5px rgba(white, 0.015),
-      5px 5px 5px rgba(black, 0.05);
+  line-height: 15px;
+  margin: 5px 0 0;
+  max-width: 15rem;
+  @media only screen and (min-width: 576px) {
+    max-width: 25rem;
   }
 }
 </style>

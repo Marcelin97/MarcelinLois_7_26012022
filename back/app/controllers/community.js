@@ -47,7 +47,9 @@ exports.readOne = async (req, res, next) => {
       }
     );
     // console.log(communityFind);
-    if (communityFind == null) throw new Error("Community not found");
+    if (communityFind == null) {
+      return res.status(404).json({ message: "Community not found" });
+    }
 
     return res.status(201).json({
       status: 201,
@@ -70,7 +72,7 @@ exports.readAllCommunity = async (req, res, next) => {
     })
     .then((communitiesActive) => {
       if (communitiesActive.length <= 0) {
-        return res.status(404).json({ message: "Communities not found" });
+        return res.status(404).json({ message: "Communities active not found" });
       }
       res.status(200).json({
         status: 200,
@@ -86,24 +88,38 @@ exports.readAllCommunity = async (req, res, next) => {
 exports.updateCommunity = async (req, res, next) => {
   community
     .findByPk(req.params.id)
-    .then((result) => {
+    .then(async (result) => {
       // console.log(result);
       // TODO : Check if community exist
       if (!result) {
         return res.status(404).json({ message: "Community not found" });
       }
 
-      // TODO : Check if current user is the owner of the community
-      if (result.userId != req.auth.userID) {
+      // TODO : Find logged in user
+      const currentUser = await user.findOne({
+        where: { id: req.auth.userID },
+      });
+      if (currentUser == null) throw new Error("Logged in user not found");
+
+      // TODO : Check if the current user is the owner of this community
+      isOwner = result.userId == currentUser.id;
+
+      // TODO : Check if the current user is admin
+      isAdmin = currentUser.isAdmin;
+
+      // ! Access denied
+      if (!isAdmin && !isOwner) {
         return res
           .status(403)
-          .json({ error: "You are not the creator of this community." });
+          .json({
+            error: "You do not have the necessary rights for this action.",
+          });
       }
-      // TODO : gestion de l'image
+
+      // TODO : Image management
       try {
         const file = req.file;
         if (file) {
-          // console.log(file);
           req.body.icon = `/images/${req.file.filename}`;
           // console.log(req.file.filename);
 
@@ -117,15 +133,14 @@ exports.updateCommunity = async (req, res, next) => {
               fs.unlinkSync(`images/${filename}`);
             }
           } catch (error) {
+            // console.log(error);
             return res.status(404).json({ message: "Image not found" });
           }
         }
       } catch (error) {
-        res
-          .status(401)
-          .json({ error: { msg: "Couldn´t edit image community" } });
+        res.status(401).json({ error: { msg: "Unable to edit image" } });
       }
-      
+
       result
         .update(req.body, { where: { id: result.id } })
         .then(() => {
@@ -149,17 +164,31 @@ exports.updateCommunity = async (req, res, next) => {
 exports.deleteCommunity = async (req, res, next) => {
   community
     .findByPk(req.params.id)
-    .then((result) => {
+    .then(async (result) => {
       // TODO : Check if community exist
       if (!result) {
         return res.status(404).json({ message: "Community not found" });
       }
 
-      // TODO : Check if current user is the owner of the community
-      if (result.userId != req.auth.userID) {
-        return res.status(403).json({
-          error: "You cannot delete a community that you did not create.",
-        });
+      // TODO : Find logged in user
+      const currentUser = await user.findOne({
+        where: { id: req.auth.userID },
+      });
+      if (currentUser == null) throw new Error("Logged in user not found");
+
+      // TODO : Check if the current user is the owner of this community
+      isOwner = result.userId == currentUser.id;
+
+      // TODO : Check if the current user is admin
+      isAdmin = currentUser.isAdmin;
+
+      // ! Access denied
+      if (!isAdmin && !isOwner) {
+        return res
+          .status(403)
+          .json({
+            error: "You do not have the necessary rights for this action.",
+          });
       }
 
       if (result.icon == null) {
@@ -285,43 +314,66 @@ exports.reportCommunity = (req, res, next) => {
 };
 
 //* Add Moderator
-// ? // Seul le propriétaire de la communauté peut accorder des autorisations de modérateur
+// ? Seul le propriétaire de la communauté ou l'admin peut accorder des autorisations de modérateur
 exports.addModerator = (req, res, next) => {
   // Find the community to add moderator
   community
     .findByPk(req.params.id)
-    .then((result) => {
+    .then(async (result) => {
       if (!result) {
         return res.status(404).json({ message: "Community not found" });
       }
 
+      // TODO : Find logged in user
+      const currentUser = await user.findOne({
+        where: { id: req.auth.userID },
+      });
+      if (currentUser == null) throw new Error("Logged in user not found");
+
       // TODO : Check if the current user is the owner of this community
-      if (result.userId != req.auth.userID)
-        throw new Error("You do not have permission to manage community roles");
+      isOwner = result.userId == currentUser.id;
+
+      // TODO : Check if the current user is admin
+      isAdmin = currentUser.isAdmin;
+
+      // ! Access denied
+      if (!isAdmin && !isOwner)
+        throw new Error("You do not have permission to access this content.");
 
       // TODO : Find a user
       user
         .findOne({ where: { id: req.body.id } })
-        .then((resultUser) => {
-          // result.addUser(resultUser);
+        .then(async (resultUser) => {
+          if (!resultUser) {
+            return res.status(404).json({ message: "Moderator not found" });
+          }
 
-          // TODO : Add this user to the moderator list
-          community_moderator.create({
-            userId: resultUser.id,
-            communityId: result.id,
-            isAdmin: true,
+          // Search for moderator if exist
+          let moderator = await community_moderator.findOne({
+            where: { userId: resultUser.id, communityId: result.id },
           });
-
+          if (moderator == null) {
+            // TODO : If not already moderator, add it
+            community_moderator.create({
+              userId: resultUser.id,
+              communityId: result.id,
+              isModerator: 1 ? 1 : 0
+            });
+          } else {
+            // If already moderator, update fields
+            moderator.isModerator = 1 ? 1 : 0;
+            await moderator.save();
+          }
           return res.status(200).json({
             status: 200,
             message:
-              "You have been appointed moderator of this community :" +
+              resultUser.username + " " +"is now moderator of this community :" +
               " " +
               result.title,
           });
         })
         .catch((err) => {
-          return res.status(404).json({ err, message: "Moderator not found" });
+          return res.status(404).json({ error : err.message, message: "Moderator not found" });
         });
     })
     .catch((error) => {
@@ -329,29 +381,39 @@ exports.addModerator = (req, res, next) => {
     });
 };
 
-//* Delete Moderator
+// Delete community moderator
 exports.deleteModerator = (req, res, next) => {
-  // Find the community to delete moderator
+  // TODO : Find the community to delete moderator
   community
     .findByPk(req.params.id)
-    .then((result) => {
+    .then(async (result) => {
       if (!result) {
         return res.status(404).json({ message: "Community not found" });
       }
 
+      // TODO : Find logged in user
+      const currentUser = await user.findOne({
+        where: { id: req.auth.userID },
+      });
+      if (currentUser == null) throw new Error("Logged in user not found");
+
       // TODO : Check if the current user is the owner of this community
-      if (result.userId != req.auth.userID)
-        throw new Error(
-          "You do not have permission to manage community roles."
-        );
+      isOwner = result.userId == currentUser.id;
 
-      // TODO : Find a user
-      user
-        .findOne({ where: { id: req.body.id } })
+      // TODO : Check if the current user is admin
+      isAdmin = currentUser.isAdmin;
+
+      // ! Access denied
+      if (!isAdmin && !isOwner)
+        throw new Error("You do not have permission to access this content.");
+
+      // TODO : Find a user in moderators list
+      community_moderator
+        .findAll({ where: { communityId: result.id } })
         .then((resultUser) => {
-          result.addUser(resultUser);
-
-          // TODO : Add this user to the moderator list
+          // console.log("moderator list", resultUser);
+          if(resultUser != null)
+          // TODO : Delete this user to the moderator list
           community_moderator.destroy({
             where: { userId: resultUser.id, communityId: result.id },
           });
@@ -365,6 +427,41 @@ exports.deleteModerator = (req, res, next) => {
         })
         .catch((err) => {
           return res.status(404).json({ err, message: "Moderator not found" });
+        });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
+};
+
+exports.readCommunityModerator = (req, res, next) => {
+  // TODO : Find the community to delete moderator
+  community
+    .findByPk(req.params.id)
+    .then((community) => {
+      if (!community) {
+        return res.status(404).json({ message: "Community not found" });
+      }
+
+      // TODO : Find a user in moderators list
+      community_moderator
+        .findAll({ where: { communityId: community.id } })
+        .then((moderatorsList) => {
+          if (moderatorsList.length == 0 || moderatorsList.length == null) {
+            return res.status(404).json({ message: "Moderators not found" });
+          }
+
+          // console.log("moderator list", moderatorsList);
+          return res.status(201).json({
+            status: 201,
+            message: "Moderator(s) found successfully",
+            datas: moderatorsList,
+          });
+        })
+        .catch((error) => {
+          return res
+            .status(404)
+            .json({ error, message: "Moderatorbgrfbf not found" });
         });
     })
     .catch((error) => {

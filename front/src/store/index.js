@@ -1,37 +1,17 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
-// import * as Cookies from "js-cookie"; // Storing Vuex State as Cookies
 
 // Create a new store instance.
 const store = createStore({
-  plugins: [
-    createPersistedState(),
-    //   {
-    //   storage: {
-    //     getItem: (key) => Cookies.get(key), // We passed in an object so that we can get the data by its key with getItem .
-    //     setItem: (key, value) => // setItem sets the data with the given key.
-    //       Cookies.set(key, value, { expires: 3, secure: true }), // expires is the expiry time in days. secure makes sure the cookie is only set over HTTPS.
-    //     removeItem: (key) => Cookies.remove(key), // removeItem removes an item by its key.
-    //   },
-    // }
-  ],
+  plugins: [createPersistedState()],
+  namespaced: true,
   state: {
-    // status: "",
     user: [],
     accessToken: "",
     refreshToken: "",
     isAuthenticated: false,
   },
   mutations: {
-    // setStatus: function (state, status) {
-    //   state.status = status;
-    // },
-    // sets state with user information and toggles
-    // isAuthenticated from false to true
-    signupUser: function (state, data) {
-      state.user = data;
-      state.isAuthenticated = true;
-    },
     logUser: function (state, datas) {
       state.user = datas.user;
       state.isAuthenticated = true;
@@ -47,18 +27,69 @@ const store = createStore({
       state.refreshToken = "";
       state.accessToken = "";
       state.isAuthenticated = false;
-      localStorage.clear();
+      // localStorage.clear();
     },
     refreshToken: function (state, accessToken) {
-      state.user = { ...state.user, accessToken: accessToken };
+      state.accessToken = accessToken;
     },
   },
-  actions: {
-    refreshToken({ commit }, accessToken) {
-      commit("refreshToken", accessToken);
-      console.info(
-        "Access token updated, you can ignore the previous 401 error"
-      );
+  getters: {
+    isAuthenticated(state) {
+      return state.isAuthenticated === true && state.user !== null;
+    },
+    isSuperAdmin(state) {
+      return state.isAuthenticated === true && state.user.isAdmin === true;
+    },
+    // Return current user data in state
+    user(state) {
+      return state.user !== null ? state.user : false;
+    },
+    // Check if current user is moderator of a specific community
+    isModerator: (state, getters) => (communityId) => {
+      if (getters.isAuthenticated) {
+        const moderators = getters.user.moderators;
+        for (let moderator of moderators) {
+          console.log(
+            "Embarquement du passager " +
+              moderator.community_moderator.userId +
+              " qui modère la communauté " +
+              moderator.community_moderator.communityId
+          );
+          if (
+            moderator.community_moderator.userId === getters.user.id &&
+            moderator.community_moderator.communityId === parseInt(communityId)
+          )
+            return true;
+        }
+      }
+      return false;
+    },
+    // Check if current user is following a specific community
+    isFollowingCommunity: (state, getters) => (communityId) => {
+      if (getters.isAuthenticated) {
+        const followers = getters.user.follow;
+        for (let follower of followers) {
+          console.log(
+            "Embarquement du passager " +
+              follower.follower.userId +
+              " qui modère la communauté " +
+              follower.follower.communityId
+          );
+          if (
+            follower.follower.userId === getters.user.id &&
+            follower.follower.communityId === parseInt(communityId)
+          )
+            return true;
+        }
+      }
+
+      return false;
+    },
+    isAdmin: (state, getters) => () => {
+      if (getters.isSuperAdmin) {
+        return true;
+      }
+      return false;
     },
   },
 });

@@ -168,6 +168,7 @@ exports.readAllPostByCommunityFollow = async (req, res, next) => {
           },
         },
       ],
+      order: [["createdAt", "DESC"]],
     })
     .then(async (result) => {
       return res.status(200).json({

@@ -34,10 +34,18 @@ export default {
 
     try {
       const response = await usersApi.readTargetUser(this.userId);
-      // console.log("utilisateur cible", response);
       this.user = response.data.data;
     } catch (error) {
-      console.log(error);
+      const errorMessage = (this.apiErrors = error.response);
+      this.errorMessage = errorMessage;
+
+      // notification error message
+      this.$notify({
+        type: "error",
+        title: `Erreur lors du changement de l'utilisateur'`,
+        text: `Erreur reporté : ${errorMessage}`,
+        duration: 30000,
+      });
     }
   },
 };

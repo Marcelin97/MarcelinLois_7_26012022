@@ -47,7 +47,7 @@ export default {
 .container__sidebar {
   width: 100%;
   @media only screen and (min-width: 576px) {
-    width: 30%;
+    width: 0%;
   }
 }
 .container__main {
