@@ -11,10 +11,10 @@
     <nav class="nav">
       <ul class="pt-5">
         <li>
-          <router-link class="text" to="/wall">Home</router-link>
+          <router-link class="text" to="/wall" @click="closeHamburgerSheet">Home</router-link>
         </li>
         <li>
-          <router-link class="dropdown-text" to="/user">Profil</router-link>
+          <router-link class="dropdown-text" to="/user" @click="closeHamburgerSheet">Profil</router-link>
         </li>
         <li>
           <router-link class="dropdown-text" to="/">Enregistré</router-link>
@@ -35,10 +35,28 @@
 <script>
 export default {
   name: "Nav-Bar",
+  data() {
+    return {
+      showHamburgerSheet: false
+    }
+  },
   methods: {
     logout: function () {
       this.$store.commit("logout");
       this.$router.push("/login");
+    },
+        toggleHamburgerSheet() {
+      if(this.showHamburgerSheet == true) {
+        this.showHamburgerSheet = false
+      } else {
+        this.showHamburgerSheet = true
+      }
+    },
+    openHamburgerSheet() {
+      this.showHamburgerSheet = true;
+    },
+    closeHamburgerSheet() {
+      this.showHamburgerSheet = false;
     },
   },
 };

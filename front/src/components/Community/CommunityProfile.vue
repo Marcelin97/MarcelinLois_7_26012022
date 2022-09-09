@@ -47,9 +47,10 @@
               Modifier la communauté
             </router-link>
 
+            v-if="canModerate(this.communityRead.userId, this.communityId)"
             <!-- button moderator community-->
             <button
-              v-if="canModerate(this.communityRead.userId, this.communityId)"
+              v-if="canAdmin(this.communityRead.userId)"
               type="button"
               class="btn"
               @click="$refs.moderatorCommunity.openModal()"
@@ -433,8 +434,10 @@ export default {
             text: `La communauté est supprimer`,
             duration: 30000,
           });
+
           // redirect to the community page
           await this.$router.push("/communities");
+
         } catch (error) {
           console.error(error.data.error);
 
