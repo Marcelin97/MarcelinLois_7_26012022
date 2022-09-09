@@ -28,7 +28,7 @@
           <div class="profile-card-ctr__actions">
             <!-- button delete account -->
             <button
-             v-if="canAdmin(this.communityRead.userId)"
+              v-if="canAdmin(this.communityRead.userId)"
               type="button"
               class="btn btn-delete"
               @click="$refs.deleteAccount.openModal()"
@@ -39,6 +39,7 @@
 
             <!-- update profile -->
             <router-link
+              v-if="canAdmin(this.communityRead.userId)"
               :communityId="communityId"
               class="btn"
               :to="'/communities/profil/' + community.id + '/settings'"
@@ -48,6 +49,7 @@
 
             <!-- button moderator community-->
             <button
+              v-if="canModerate(this.communityRead.userId, this.communityId)"
               type="button"
               class="btn"
               @click="$refs.moderatorCommunity.openModal()"
@@ -57,6 +59,7 @@
             </button>
             <!-- button report user -->
             <button
+              v-if="canAdmin(this.communityRead.userId)"
               type="button"
               class="btn"
               @click="$refs.deleteModeratorClick.openModal()"
@@ -69,6 +72,7 @@
           <div class="profile-card-ctr__actions">
             <!-- export data -->
             <button
+              v-if="isAuthenticated && !isFollowingCommunity(this.communityId)"
               type="button"
               class="btn btn-export"
               @click="followCommunityClick"
@@ -76,7 +80,9 @@
             >
               S'abonner
             </button>
+
             <button
+              v-if="isFollowingCommunity(this.communityId)"
               type="button"
               class="btn btn-export"
               @click="unfollowCommunityClick"
@@ -370,11 +376,7 @@ export default {
   created() {
     this.user = this.$store.state.user;
     this.communityId = this.$route.params.id;
-    console.log(this.$route);
-
-    // this.$store.getters.isCreator(this.$route.params.id);
-    // console.log(this.$store.getters.isCreator(this.$route.params.id));
-
+ 
     axiosInstance
       .get("/auth/readAll")
       .then((response) => {
@@ -385,6 +387,7 @@ export default {
         if (error.response.status == 404) {
           const errorMessage = (this.apiError = "Utilisateurs introuvable !");
           this.errorMessage = errorMessage;
+
           // notification d'erreur
           this.$notify({
             type: "error",
@@ -394,16 +397,16 @@ export default {
         }
       });
 
-      axiosInstance
+    axiosInstance
       .get(`/community/readOne/${this.communityId}`)
       .then((response) => {
-        this.communityRead = response.data.datas
-        console.log("icii", this.communityRead);
+        this.communityRead = response.data.datas;
       })
       .catch((error) => {
         if (error.response.status == 404) {
           const errorMessage = (this.apiError = "Communauté introuvable !");
           this.errorMessage = errorMessage;
+
           // notification d'erreur
           this.$notify({
             type: "error",
@@ -422,6 +425,7 @@ export default {
       ) {
         try {
           await communitiesApi.deleteCommunity(this.communityId);
+
           // notification success
           this.$notify({
             type: "success",
@@ -429,6 +433,7 @@ export default {
             text: `La communauté est supprimer`,
             duration: 30000,
           });
+          // redirect to the community page
           await this.$router.push("/communities");
         } catch (error) {
           console.error(error.data.error);

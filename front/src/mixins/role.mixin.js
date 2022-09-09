@@ -8,17 +8,24 @@ export default {
     // TODO: Who can do this C.R.U.D : admin  and creator only
     canAdmin(creatorId) {
       if (this.isAuthenticated) {
-        if (creatorId === this.authData.id || this.isSuperAdmin === true ||
-          this.authData.isAdmin === true) return true;
+        if (
+          creatorId === this.authData.id ||
+          this.isSuperAdmin === true ||
+          this.authData.isAdmin === true
+        )
+          return true;
         return false;
       }
       return false;
     },
     // TODO: who can do this C.R.U.D : admin and creator and moderator
-    canModerate(communityId) {
+    canModerate(creatorId, communityId) {
       if (this.isAuthenticated) {
-        if (this.isCreator(communityId) === true)
-        return true;
+        if (
+          this.canAdmin(creatorId) === true ||
+          this.isModerator(communityId) === true
+        )
+          return true;
         return false;
       }
       return false;
@@ -27,7 +34,8 @@ export default {
   computed: {
     ...mapGetters(["isAuthenticated", "isSuperAdmin"]),
     ...mapGetters({
-      userIsModerator: "isModerator",
+      isModerator: "isModerator",
+      isFollowingCommunity: "isFollowingCommunity"
     }),
     ...mapState({
       authData: "user",

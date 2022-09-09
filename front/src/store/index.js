@@ -51,9 +51,9 @@ const store = createStore({
         for (let moderator of moderators) {
           console.log(
             "Embarquement du passager " +
-            moderator.community_moderator.userId +
+              moderator.community_moderator.userId +
               " qui modère la communauté " +
-            moderator.community_moderator.communityId
+              moderator.community_moderator.communityId
           );
           if (
             moderator.community_moderator.userId === getters.user.id &&
@@ -64,23 +64,31 @@ const store = createStore({
       }
       return false;
     },
-    // Check if current user is moderator a specific community
-    // isCommunityModerator: (state, getters) => (communityModerators) => {
-    //   if (getters.isAuthenticated) {
-    //     let moderator = communityModerators.filter(
-    //       (m) => m.userId === getters.user.id
-    //     );
-    //     return moderator !== null && moderator.length > 0;
-    //   }
+    // Check if current user is following a specific community
+    isFollowingCommunity: (state, getters) => (communityId) => {
+      if (getters.isAuthenticated) {
+        const followers = getters.user.follow;
+        for (let follower of followers) {
+          console.log(
+            "Embarquement du passager " +
+              follower.follower.userId +
+              " qui modère la communauté " +
+              follower.follower.communityId
+          );
+          if (
+            follower.follower.userId === getters.user.id &&
+            follower.follower.communityId === parseInt(communityId)
+          )
+            return true;
+        }
+      }
 
-    //   return false;
-    // },
-    // Check if current user is admin
+      return false;
+    },
     isAdmin: (state, getters) => () => {
       if (getters.isSuperAdmin) {
         return true;
       }
-
       return false;
     },
   },
