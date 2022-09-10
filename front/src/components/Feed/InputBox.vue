@@ -1,87 +1,120 @@
 <template>
   <div class="container">
-  <div class="form-input-box">
-    <h2>Publié ! </h2>
-    <!-- form structure-->
-    <form id="form" @submit.prevent="createPostClick">
-      <!-- add file -->
-      <div class="container">
-        <div class="fileUploadInput">
-          <label>✨ Upload File</label>
-          <input
-            accept=".jpeg,.jpg,png"
-            @change="onChangeFileUpload"
-            ref="image"
-            class="image"
-            type="file"
-            id="image"
-            @blur="v$.community.image.$touch"
-            :class="v$.community.image.$error === true ? 'error' : 'dirty'"
-          />
-          <button>🔗</button>
-        </div>
-      </div>
-
-      <input
-        class="form-title"
-        id="name"
-        type="text"
-        placeholder="TITRE"
-        required
-        autocomplete="off"
-        v-model="state.community.title"
-        blur="v$.community.title.$touch"
-        :class="v$.community.title.$error === true ? 'error' : 'dirty'"
-        minlength="3"
-        maxlength="255"
-        aria-label="Titre de votre communauté"
-      />
-      <!-- Error Message -->
-      <template v-if="v$.community.title.$dirty">
-        <div
-          class="input-errors"
-          v-for="(error, index) of v$.community.title.$errors"
-          :key="index"
-        >
-          <div class="error-msg">{{ error.$message }}</div>
-        </div>
-      </template>
-      <!-- Error Message -->
-      <textarea
-        id="message"
-        type="text"
-        placeholder="À PROPOS de..."
-        autocomplete="off"
-        v-model="state.community.about"
-        @blur="v$.community.about.$touch"
-        :class="v$.community.about.$error === true ? 'error' : 'dirty'"
-        minlength="10"
-        required
-        aria-label="à propos de votre communauté"
-      ></textarea>
-      <!-- Error Message -->
-      <template v-if="v$.community.about.$dirty">
-        <div
-          class="input-errors"
-          v-for="(error, index) of v$.community.about.$errors"
-          :key="index"
-        >
-          <div class="error-msg">{{ error.$message }}</div>
-        </div>
-      </template>
-      <!-- Error Message -->
-      <button
-        class="btn"
-        id="submit"
-        type="submit"
-        value="CRÉE!"
-        title="Crée une communauté"
-        aria-label="Crée une communauté"
+    <div class="form-input-box">
+      <h2>Publié !</h2>
+      <!-- form structure-->
+      <form
+        id="form"
+        @submit.prevent="createPostClick"
+        enctype="multipart/form-data"
       >
-        CRÉE!
-      </button>
-    </form>
-  </div>
+        <!-- add file -->
+        <div class="container">
+          <div class="fileUploadInput">
+            <label>✨ Upload File</label>
+            <input
+              accept=".jpeg,.jpg,png"
+              @change="onChangeFileUpload"
+              ref="image"
+              class="image"
+              type="file"
+              id="image"
+              @blur="v$.post.image.$touch"
+              :class="v$.post.image.$error === true ? 'error' : 'dirty'"
+            />
+            <button>🔗</button>
+          </div>
+        </div>
+
+        <input
+          class="form-title"
+          id="name"
+          type="text"
+          placeholder="TITRE"
+          required
+          autocomplete="off"
+          v-model="state.post.title"
+          blur="v$.post.title.$touch"
+          :class="v$.post.title.$error === true ? 'error' : 'dirty'"
+          minlength="3"
+          maxlength="255"
+          aria-label="Titre de votre post"
+        />
+        <!-- Error Message -->
+        <template v-if="v$.post.title.$dirty">
+          <div
+            class="input-errors"
+            v-for="(error, index) of v$.post.title.$errors"
+            :key="index"
+          >
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
+        <!-- Error Message -->
+        <textarea
+          id="message"
+          type="text"
+          placeholder="À PROPOS de..."
+          autocomplete="off"
+          v-model="state.post.content"
+          @blur="v$.post.content.$touch"
+          :class="v$.post.content.$error === true ? 'error' : 'dirty'"
+          minlength="10"
+          required
+          aria-label="description de votre publication"
+        ></textarea>
+        <!-- Error Message -->
+        <template v-if="v$.post.content.$dirty">
+          <div
+            class="input-errors"
+            v-for="(error, index) of v$.post.content.$errors"
+            :key="index"
+          >
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
+        <!-- Error Message -->
+
+        <div>
+          <select class="vue-select" v-model="state.community.id">
+            <option class="selected-option" selected disabled value="">
+              {{ placeholder }}
+            </option>
+            <option
+              class="dropdown-options--cell"
+              v-for="(community, index) in communities"
+              :community="community"
+              :key="index"
+            >
+              {{ community.id }} - {{ community.title }}
+            </option>
+          </select>
+          <div>Modérateur choisi: {{ state.community.id }}</div>
+        </div>
+        <!-- Error Message -->
+        <template v-if="v$.post.content.$dirty">
+          <div
+            class="input-errors"
+            v-for="(error, index) of v$.post.content.$errors"
+            :key="index"
+          >
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
+        <!-- Error Message -->
+
+        <button
+          class="btn"
+          id="submit"
+          type="submit"
+          value="CRÉE!"
+          title="Crée un post"
+          aria-label="Crée un post"
+        >
+          CRÉE!
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -101,7 +134,10 @@ export default {
         title: "",
         image: "",
         content: "",
-        communityId: ""
+        // communityId: "",
+      },
+      community: {
+        id: "",
       },
       apiError: "",
     });
@@ -141,21 +177,51 @@ export default {
   validationConfig: {
     $lazy: true,
   },
+  data() {
+    return {
+      communities: [],
+      selectValue: "",
+      placeholder: "Choisi un modérateur",
+    };
+  },
+  created() {
+    // this.user = this.$store.state.user;
+    axiosInstance
+      .get("/community/readAllCommunities")
+      .then((response) => {
+        this.communities = response.data.datas;
+        // console.log(this.communities)
+      })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          const errorMessage = (this.apiError = "Communauté introuvable !");
+          this.errorMessage = errorMessage;
+
+          // notification d'erreur
+          this.$notify({
+            type: "error",
+            title: `Erreur de l'api`,
+            text: `Erreur reporté : ${errorMessage}`,
+          });
+        }
+      });
+  },
   methods: {
     onChangeFileUpload() {
-      this.state.community.image = document.querySelector("#image").files[0];
-      console.log("image upload", this.state.community.image);
+      this.state.post.image = document.querySelector("#image").files[0];
+      console.log("image upload", this.state.post.image);
     },
     createPostClick() {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
         var bodyFormData = new FormData();
-        bodyFormData.append("title", this.state.community.title);
-        bodyFormData.append("content", this.state.community.about);
-        bodyFormData.append("image", this.state.community.image);
-        // for (let value of bodyFormData.values()) {
-        //   console.log(value);
-        // }
+        bodyFormData.append("title", this.state.post.title);
+        bodyFormData.append("content", this.state.post.about);
+        bodyFormData.append("image", this.state.post.image);
+        bodyFormData.append("communityId", this.state.community.id);
+        for (let value of bodyFormData.values()) {
+          console.log(value);
+        }
 
         axiosInstance
           .post("/posts", bodyFormData, {
@@ -210,13 +276,6 @@ export default {
           );
         });
       }
-
-      // try {
-      //   const response = await communityApi.createCommunity(formData);
-      //   console.log(response)
-      // } catch (error) {
-      //   console.log(error)
-      // }
     },
   },
 };
