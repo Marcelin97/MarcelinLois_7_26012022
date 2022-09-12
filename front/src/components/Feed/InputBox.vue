@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="form-input-box">
-      <h2>Publié !</h2>
+      <h2>Publication</h2>
       <!-- form structure-->
       <form
         id="form"
@@ -59,7 +59,8 @@
           v-model="state.post.content"
           @blur="v$.post.content.$touch"
           :class="v$.post.content.$error === true ? 'error' : 'dirty'"
-          minlength="10"
+          minlength="2"
+          maxlength="400"
           required
           aria-label="description de votre publication"
         ></textarea>
@@ -89,13 +90,13 @@
               {{ community.id }} - {{ community.title }}
             </option>
           </select>
-          <div>Modérateur choisi: {{ state.community.id }}</div>
+          <div>Communauté choisi: {{ state.community.id }}</div>
         </div>
         <!-- Error Message -->
-        <template v-if="v$.post.content.$dirty">
+        <template v-if="v$.community.id.$dirty">
           <div
             class="input-errors"
-            v-for="(error, index) of v$.post.content.$errors"
+            v-for="(error, index) of v$.community.id.$errors"
             :key="index"
           >
             <div class="error-msg">{{ error.$message }}</div>
@@ -124,7 +125,6 @@ import { helpers, required, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 import axiosInstance from "../../services/api";
-// import communityApi from "../../api/community";
 
 export default {
   name: "InputBoxPost",
@@ -134,12 +134,10 @@ export default {
         title: "",
         image: "",
         content: "",
-        // communityId: "",
       },
       community: {
         id: "",
       },
-      apiError: "",
     });
 
     const rules = computed(() => ({
@@ -155,7 +153,7 @@ export default {
           maxLength: maxLength(25),
         },
         image: {
-          required: helpers.withMessage("Une image est obligatoire.", required),
+          // required: helpers.withMessage("Une image est obligatoire.", required),
           $autoDirty: true,
           $lazy: true,
         },
@@ -166,8 +164,20 @@ export default {
           ),
           $autoDirty: true,
           $lazy: true,
+          minLength: minLength(2),
+          maxLength: maxLength(400),
         },
       },
+      community:{
+        id: {
+        required: helpers.withMessage(
+            "Votre publication doit appartenir à une communauté.",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+      }
+    }
     }));
 
     const v$ = useVuelidate(rules, state);
@@ -179,13 +189,13 @@ export default {
   },
   data() {
     return {
+      apiError: "",
       communities: [],
       selectValue: "",
-      placeholder: "Choisi un modérateur",
+      placeholder: "Choisi une communauté",
     };
   },
   created() {
-    // this.user = this.$store.state.user;
     axiosInstance
       .get("/community/readAllCommunities")
       .then((response) => {
@@ -209,19 +219,19 @@ export default {
   methods: {
     onChangeFileUpload() {
       this.state.post.image = document.querySelector("#image").files[0];
-      console.log("image upload", this.state.post.image);
+      // console.log("image upload", this.state.post.image);
     },
     createPostClick() {
       this.v$.$validate(); // checks all inputs
-      if (!this.v$.$error) {
+      if (!this.v$.$error) { // if no errors
         var bodyFormData = new FormData();
         bodyFormData.append("title", this.state.post.title);
-        bodyFormData.append("content", this.state.post.about);
+        bodyFormData.append("content", this.state.post.content);
         bodyFormData.append("image", this.state.post.image);
         bodyFormData.append("communityId", this.state.community.id);
-        for (let value of bodyFormData.values()) {
-          console.log(value);
-        }
+        // for (let value of bodyFormData.values()) {
+        //   console.log(value);
+        // }
 
         axiosInstance
           .post("/posts", bodyFormData, {
@@ -233,8 +243,8 @@ export default {
             // notification de succès
             this.$notify({
               type: "success",
-              title: `Communauté crée`,
-              text: `Bravo vous venez de créer une nouvelle communauté.`,
+              title: `Publication crée`,
+              text: `Initialisation...`,
             });
 
             // force refresh page
@@ -254,7 +264,7 @@ export default {
             // error notification
             this.$notify({
               type: "error",
-              title: `❌ Erreur lors de l'inscription`,
+              title: `❌ Erreur lors de la publication`,
               text: `Erreur reporté : ${errorMessage}`,
             });
           });
