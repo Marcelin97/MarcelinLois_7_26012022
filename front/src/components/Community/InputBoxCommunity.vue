@@ -6,7 +6,7 @@
       <!-- add file -->
       <div class="container">
         <div class="fileUploadInput">
-          <label>✨ Upload File</label>
+          <label>✨ Ajouter une image</label>
           <input
             accept=".jpeg,.jpg,png"
             @change="onChangeFileUpload"

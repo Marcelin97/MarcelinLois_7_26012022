@@ -11,7 +11,7 @@
         <!-- add file -->
         <div class="container">
           <div class="fileUploadInput">
-            <label>✨ Upload File</label>
+            <label>✨ Ajouter une image ?</label>
             <input
               accept=".jpeg,.jpg,png"
               @change="onChangeFileUpload"
@@ -76,13 +76,12 @@
         </template>
         <!-- Error Message -->
 
-        <div>
-          <select class="vue-select" v-model="state.community.id">
-            <option class="selected-option" selected disabled value="">
+        <div class="select">
+          <select v-model="state.community.id">
+            <option selected disabled value="">
               {{ placeholder }}
             </option>
             <option
-              class="dropdown-options--cell"
               v-for="(community, index) in communities"
               :community="community"
               :key="index"
@@ -90,8 +89,9 @@
               {{ community.id }} - {{ community.title }}
             </option>
           </select>
-          <div>Communauté choisi: {{ state.community.id }}</div>
+          
         </div>
+        <!-- <div class="select__choice">Communauté choisi: {{ state.community.id }}</div> -->
         <!-- Error Message -->
         <template v-if="v$.community.id.$dirty">
           <div
@@ -168,16 +168,16 @@ export default {
           maxLength: maxLength(400),
         },
       },
-      community:{
+      community: {
         id: {
-        required: helpers.withMessage(
+          required: helpers.withMessage(
             "Votre publication doit appartenir à une communauté.",
             required
           ),
           $autoDirty: true,
           $lazy: true,
-      }
-    }
+        },
+      },
     }));
 
     const v$ = useVuelidate(rules, state);
@@ -223,7 +223,8 @@ export default {
     },
     createPostClick() {
       this.v$.$validate(); // checks all inputs
-      if (!this.v$.$error) { // if no errors
+      if (!this.v$.$error) {
+        // if no errors
         var bodyFormData = new FormData();
         bodyFormData.append("title", this.state.post.title);
         bodyFormData.append("content", this.state.post.content);
@@ -292,6 +293,61 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/* <select> styles */
+select {
+  appearance: none;
+  border: 0;
+  outline: 0;
+  width: 20rem;
+  height: 3rem;
+  padding: 0 4em 0 1em;
+  border-radius: 0.25em;
+  box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+  color: #fff;
+  background-color: #34495e;
+  cursor: pointer;
+  /* <option> colors */
+  option {
+    color: inherit;
+  }
+  /* Remove focus outline */
+  &:focus {
+    outline: none;
+  }
+  /* Remove IE arrow */
+  &::-ms-expand {
+    display: none;
+  }
+  /* Arrow */
+}
+
+/* Custom Select wrapper */
+.select {
+  position: relative;
+  display: flex;
+  width: 20em;
+  height: 3em;
+  border-radius: .25em;
+  overflow: hidden;
+  margin: 1rem 0 0.5rem 0
+}
+
+/* Arrow */
+.select::after {
+  content: "\25BC";
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1em;
+  background-color: #34495e;
+  transition: 0.25s all ease;
+  pointer-events: none;
+}
+/* Transition */
+.select:hover::after {
+  color: #f39c12;
+}
+
 .form-input-box {
   display: flex;
   flex-direction: column;
