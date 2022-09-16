@@ -1,81 +1,100 @@
 <template>
-  <!-- CONTAINER OF CARDS DRAGS HORIZONTAL -->
-  <div class="container-cards">
-    <div>
-      <div class="cards scroll-container">
-        <div class="card">
-          <div>
-            <img
-              src="https://img.discogs.com/Sfz2Jim0byBu1JAA7lKX2kuR7Jk=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/A-1472585-1612815883-2680.jpeg.jpg"
-              alt=""
-              class="img-card-drag"
-            />
+  <div class="main">
+    <div class="wrapper">
+      <div class="left-col">
+        <div class="status-wrapper">
+          <div class="status-card">
+            <div class="profile-pic"><img src="img/cover 1.png" alt="" /></div>
+            <p class="username">user_name_1</p>
           </div>
-          <br />
-          <p>
-            <strong>Communauté 1</strong>
-          </p>
+          <div class="status-card">
+            <div class="profile-pic"><img src="img/cover 2.png" alt="" /></div>
+            <p class="username">user_name_2</p>
+          </div>
+          <div class="status-card">
+            <div class="profile-pic"><img src="img/cover 3.png" alt="" /></div>
+            <p class="username">user_name_3</p>
+          </div>
+          // +5 more status card elements.
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.cards {
-  z-index: 1;
-  margin: 20px;
-  display: flex;
-  background-color: transparent;
-  max-width: 100%;
-  padding: 1em;
+.main{
+    width: 100%;
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
 }
 
-.card {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  margin-right: 1em;
-  padding: 10px;
-  flex: 1 0 10em;
+.wrapper{
+    width: 70%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    grid-gap: 30px;
 }
 
-.img-card-drag {
-  height: 160px;
-  width: 160px;
-  border-radius: 10px;
+.left-col{
+    display: flex;
+    flex-direction: column;
 }
 
-/* SCROLL CONTAINER */
-.scroll-container {
-  overflow: scroll;
-  height: 250px;
-  width: auto;
-  overflow-y: hidden;
-  transition: 1s;
-}
-.scroll-container::-webkit-scrollbar {
-  width: 18px;
-  cursor: pointer;
-}
-/* Track */
-.scroll-container::-webkit-scrollbar-track {
-  background: transparent;
+.status-wrapper{
+    width: 100%;
+    height: 120px;
+    background: #fff;
+    border: 1px solid #dfdfdf;
+    border-radius: 2px;
+    padding: 10px;
+    padding-right: 0;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    overflow-x: auto;
 }
 
-/* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 18px;
+.status-wrapper::-webkit-scrollbar{
+    display: none;
 }
-/* Handle */
-.scroll-container::-webkit-scrollbar-thumb {
-  background: #f16b50;
-  border-radius: 10px;
-  outline: none;
-  transition: all 0.3s ease-out;
-  // -webkit-appearance: none;
+
+.status-card{
+    flex: 0 0 auto;
+    width: 80px;
+    max-width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 15px;
 }
-.scroll-container::-webkit-scrollbar-thumb::hover {
-  transform: rotate(45deg);
+
+.profile-pic{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 3px;
+    background: linear-gradient(45deg, rgb(255, 230, 0), rgb(255, 0, 128) 80%);
+}
+
+.profile-pic img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.username{
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    font-size: 12px;
+    margin-top:5px;
+    color: rgba(0, 0, 0, 0.5)
 }
 </style>

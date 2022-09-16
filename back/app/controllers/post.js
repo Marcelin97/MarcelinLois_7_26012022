@@ -14,7 +14,7 @@ const fs = require("fs");
 
 // * Create posts
 exports.createPost = (req, res, next) => {
-  // Find the community to create post
+  // TODO: Find the community to create post
   community
     .findByPk(req.body.communityId)
     .then((result) => {
@@ -76,12 +76,12 @@ exports.readPostById = (req, res, next) => {
       include: [
         {
           model: user,
-          as: "post",
+          as: "posts",
           attributes: ["id", "username", "imageUrl"],
         },
         {
           model: community,
-          as: "category",
+          as: "posts",
           attributes: ["id", "title", "about"],
         },
         {
@@ -118,7 +118,7 @@ exports.readAllPostByCommunity = function (req, res, next) {
       include: [
         {
           model: post,
-          as: "category",
+          as: "posts",
           attributes: [
             "id",
             "title",
@@ -164,7 +164,7 @@ exports.readAllPostByCommunityFollow = async (req, res, next) => {
           include: {
             model: post,
             required: true,
-            as: "category",
+            as: "posts",
           },
         },
       ],
@@ -223,12 +223,12 @@ exports.readAllPosts = (req, res, next) => {
       include: [
         {
           model: user,
-          as: "creator",
+          as: "users",
           attributes: ["id", "username", "imageUrl"],
         },
         {
           model: community,
-          as: "category",
+          as: "posts",
           attributes: ["id", "title", "about"],
         },
       ],
