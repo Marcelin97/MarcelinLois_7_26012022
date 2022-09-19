@@ -330,7 +330,6 @@ export default {
     const rules = computed(() => ({
       community: {
         content: {
-          // required: helpers.withMessage("L'/email est obligatoire", required),
           $autoDirty: true,
           $lazy: true,
           minLength: helpers.withMessage(

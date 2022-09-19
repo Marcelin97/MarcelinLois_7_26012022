@@ -14,14 +14,10 @@
   border-radius: 3px;
   line-height: 35px;
   text-decoration: none;
-  font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, sans-serif;
   box-shadow: 0px 0px 1px #213741;
   background: #f34642 url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNTEycHgiIGhlaWdodD0iNTEycHgiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA1MTIgNTEyIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cGF0aCBkPSJNNDI0LjU2MiA3OC4wMjJ2NDAuMDMySDg3LjQzOFY3OC4wMjJoOTQuOTM4YzE1LjQ2NCAwIDI4LTEyLjU0NiAyOC0yOC4wMjJoOTEuMjUgYzAgMTUuNSAxMi41IDI4IDI4IDI4LjAyMkg0MjQuNTYyeiBNNDA2LjMzNCAxNDguMDc5VjQ2MkgxMDUuNjY2VjE0OC4wNzlINDA2LjMzNHogTTE5Ny4zMzMgMjEwLjUgYzAtOC4yOTEtNi43MTYtMTUuMDEyLTE1LTE1LjAxMnMtMTUgNi43MjEtMTUgMTUuMDEydjE5MC4xNTNjMCA4LjMgNi43IDE1IDE1IDE1LjAxMnMxNS02LjcyMSAxNS0xNS4wMTJWMjEwLjQ2MnogTTI3MSAyMTAuNDYyYzAtOC4yOTEtNi43MTYtMTUuMDEyLTE1LTE1LjAxMnMtMTUgNi43MjEtMTUgMTUuMDEydjE5MC4xNTNjMCA4LjMgNi43IDE1IDE1IDE1LjAxMnMxNS02LjcyMSAxNS0xNS4wMTIgVjIxMC40NjJ6IE0zNDQuNjY3IDIxMC40NjJjMC04LjI5MS02LjcxNi0xNS4wMTItMTUtMTUuMDEycy0xNSA2LjcyMS0xNSAxNS4wMTJ2MTkwLjE1M2MwIDguMyA2LjcgMTUgMTUgMTUgczE1LTYuNzIxIDE1LTE1LjAxMlYyMTAuNDYyeiIgc3R5bGU9ImZpbGw6ICNGRkY7Ii8+PC9zdmc+") no-repeat 10px center;
   background-size: 17px;
   position: relative;
-  -webkit-transition: background 0.3s;
-  -moz-transition: background 0.3s;
-  -o-transition: background 0.3s;
   transition: background 0.3s;
 }
 .delete:hover {
@@ -38,10 +34,6 @@
   width: 275px;
   height: 100px;
   overflow: visible;
-  -webkit-transition: opacity 0.3s, top 0.3s, width 0s, height 0s;
-  -webkit-transition-delay: 0s, 0s, 0s, 0s;
-  -moz-transition: opacity 0.3s, top 0.3s, width 0s 0s, height 0s 0s;
-  -o-transition: opacity 0.3s, top 0.3s, width 0s 0s, height 0s 0s;
   transition: opacity 0.3s, top 0.3s, width 0s 0s, height 0s 0s;
 }
 .delete .deleteBox {
@@ -57,12 +49,7 @@
   text-indent: 0px;
   cursor: default;
   opacity: 0;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$opacityIE)";
   filter: alpha(opacity=0);
-  -webkit-transition: opacity 0.3s, top 0.3s, width 0s, height 0s;
-  -webkit-transition-delay: 0s, 0s, 0.3s, 0.3s;
-  -moz-transition: opacity 0.3s, top 0.3s, width 0s 0.3s, height 0s 0.3s;
-  -o-transition: opacity 0.3s, top 0.3s, width 0s 0.3s, height 0s 0.3s;
   transition: opacity 0.3s, top 0.3s, width 0s 0.3s, height 0s 0.3s;
   z-index: -1;
 }
@@ -96,9 +83,6 @@
   height: 25px;
   line-height: 25px;
   cursor: pointer;
-  -webkit-transition: background 0.3s;
-  -moz-transition: background 0.3s;
-  -o-transition: background 0.3s;
   transition: background 0.3s;
 }
 .delete .deleteBox span.confirm {

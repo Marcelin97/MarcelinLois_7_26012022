@@ -2,19 +2,67 @@
   <div class="post">
     <!-- header card -->
     <div class="instagram-card-header">
-      <img
-        class="instagram-card-user-image"
-        src="https://pbs.twimg.com/profile_images/564682290303729665/Nl1tsx2v_400x400.jpeg"
-      />
-      <a
-        class="instagram-card-user-name"
-        href="https://twitter.com/adhamdannaway"
-        >AdhamDannaway</a
-      >
+      <div class="header">
+        <div class="header-left">
+          <div class="profile-pic">
+            <img
+              class="instagram-card-user-image"
+              v-if="creatorInfo.imageUrl"
+              :src="`http://localhost:3000${creatorInfo.imageUrl}`"
+              :alt="'Avatar de ' + creatorInfo.imageUrl"
+              aria-label="Photo d'utilisateur"
+            />
+            <img
+              class="instagram-card-user-image"
+              v-else
+              src="../../assets/img/avataaars.png"
+              alt="Avatar par défaut"
+              aria-label="Avatar par défaut"
+            />
+          </div>
+
+          <p class="instagram-card-user-name">{{ creatorInfo.username }}</p>
+        </div>
+        <div class="dropdown">
+          <button
+            class="_abl- dropdown-btn"
+            v-on:click="show = !show"
+            type="button"
+            tabindex="0"
+          >
+            <div class="_abm0">
+              <div style="height: 24px; width: 24px">
+                <svg
+                  aria-label="Plus d’options"
+                  class="_ab6-"
+                  color="#262626"
+                  fill="#262626"
+                  height="24"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="24"
+                >
+                  <circle cx="12" cy="12" r="1.5"></circle>
+                  <circle cx="6" cy="12" r="1.5"></circle>
+                  <circle cx="18" cy="12" r="1.5"></circle>
+                </svg>
+              </div>
+            </div>
+          </button>
+
+          <div class="dropdown-content" v-bind:class="{ show: show }">
+            <ul>
+              <li><a href="">Mofifier</a></li>
+              <li><a href="">Signaler</a></li>
+              <li><a href="">Supprimer</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- image card -->
     <div class="instagram-card-image">
-      <img src="https://pbs.twimg.com/media/CjLbBP7VAAAX0HP.jpg:large" />
+      <img alt="photo du post" :src="`http://localhost:3000${post.imageUrl}`" />
     </div>
     <!-- content card -->
     <div class="instagram-card-content">
@@ -27,15 +75,18 @@
         ><span class="like-count">{{ disLikesCount }}</span>
       </div>
       <p class="instagram-card-content-user">
-        10 must-read UX design books
-        fnezoifnzoejfzoipjfozj,fopzjeopfjzpojffozjoifejozijefozjeopjfozpijfjzpjfefz
+        {{ post.content }}
       </p>
       <ul class="comments">
-        <li v-for="(comment, index) in comments"
-        :key="index"
-        :comment="comment">
-
-        </li>{{comment}}</ul>
+        <li
+          v-for="(comment, index) in comments"
+          :key="index"
+          :comment="comment"
+        ></li>
+        {{
+          comment
+        }}
+      </ul>
       <p class="date">Hace 8 días</p>
       <hr />
     </div>
@@ -43,9 +94,12 @@
     <!-- add a comment -->
     <div class="instagram-card-footer">
       <input
+        type="text"
+        autocomplete="off"
         v-model="newComment"
         v-on:keyup.enter="addComment"
-        placeholder="Ajoute un commentaire..."
+        :placeholder="'Commenter en tant que' + ' ' + user.username"
+        class="task-input"
       />
     </div>
   </div>
@@ -56,40 +110,133 @@
 // import ScrollDownMouse from "@/components/Base/ScrollDownMouse.vue";
 
 export default {
+  name: "Post-Card",
+  props: ["post"],
   components: {
     // DeleteBtn,
     // ScrollDownMouse,
   },
   data() {
     return {
+      show: false,
+      user: [],
+      creatorInfo: [], // creator of the post card
       newComment: "",
       comments: ["Looks great Julianne!", "bonjour"],
       likesCount: "55",
       disLikesCount: "33",
     };
   },
+  mounted() {
+    this.creatorInfo = this.post.users;
+    console.log("icii ", this.creatorInfo);
+    this.user = this.$store.state.user;
+    console.log("currentUser ", this.user);
+  },
 };
 </script>
 <style lang="scss" scoped>
+.dropdown {
+  position: relative;
+
+  .dropdown-btn {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    font-weight: bolder;
+  }
+
+  .dropdown-content {
+    display: none;
+
+    /* Position it right below the trigger element */
+    left: 0;
+    padding-top: 4px;
+    position: absolute;
+    top: 100%;
+
+    /* It should be on the top of other elements */
+    background-color: #fff;
+    z-index: 9999;
+
+    /* Size */
+    height: 200px;
+    width: 200px;
+    ul {
+      padding: 0;
+      margin: 0;
+      li {
+        list-style: none;
+        a {
+          display: block;
+          width: 100%;
+          padding: 5px 10px;
+          text-decoration: none;
+          color: #333;
+          &:hover {
+            background-color: rgb(208, 208, 208);
+          }
+        }
+      }
+    }
+  }
+  .show {
+    display: block;
+  }
+}
+
 .post {
   max-width: 480px;
   margin: 0 auto;
   border: 1px solid #ccc;
   background: #fff;
   border-radius: 4px;
+  margin-bottom: 2rem;
 }
 
 .instagram-card-header {
-  padding: 15px;
-  padding-top: 40px;
+  // padding: 5px;
+  // display: flex;
+  // align-items: center;
+  // border-bottom : 1px solid #ccc;
+  background-color: rgb(255, 255, 255);
+}
+.header {
   display: flex;
+  align-content: stretch;
   align-items: center;
+  flex-direction: row;
+}
+
+.header-left {
+  margin: 8px 4px 8px 12px;
+  padding: unset;
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-width: calc(100% - 48px);
+  // padding: 14px 4px 14px 16px;
+  position: relative;
+}
+
+.profile-pic {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 1px;
+  background: linear-gradient(45deg, #ffd6d6, #f34642 80%);
+  margin-right: 10px;
 }
 .instagram-card-user-image {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  margin-right: 15px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #fff;
 }
 .instagram-card-user-name {
   font-size: 12px;
@@ -102,6 +249,24 @@ export default {
   width: 100%;
 }
 
+.menu {
+  justify-content: center;
+  padding-right: 4px;
+}
+._abl- {
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+}
+._abm0 {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
 .instagram-card-content {
   padding: 15px;
 }
@@ -120,12 +285,12 @@ export default {
 }
 .date {
   font-size: 10px;
-  color: #ccc;
+  color: #4e5559;
   text-transform: uppercase;
 }
 hr {
   border: none;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #4e5559;
   margin: 0;
 }
 .vote {
@@ -171,6 +336,20 @@ article:hover .like-count {
   cursor: pointer;
   margin: 0 0.125rem 0 0;
   padding: 0;
+}
+
+.task-input {
+  display: flex;
+  margin: 1rem auto;
+  width: 90%;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #4e5559;
+  color: #4e5559;
+
+  &:placeholder {
+    color: #4e5559;
+  }
 }
 
 #app {

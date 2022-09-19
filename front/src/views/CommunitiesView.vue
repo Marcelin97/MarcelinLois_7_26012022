@@ -36,7 +36,7 @@ import InputBoxCommunityVue from "../components/Community/InputBoxCommunity.vue"
 import axiosInstance from "../services/api";
 
 export default {
-  name: "Community-View",
+  name: "Communities-View",
   components: {
     CommunityList,
     InputBoxCommunityVue,

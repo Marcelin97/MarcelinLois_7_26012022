@@ -15,7 +15,6 @@
             <div class="profile-pic"><img src="img/cover 3.png" alt="" /></div>
             <p class="username">user_name_3</p>
           </div>
-          // +5 more status card elements.
         </div>
       </div>
     </div>
@@ -78,7 +77,7 @@
     border-radius: 50%;
     overflow: hidden;
     padding: 3px;
-    background: linear-gradient(45deg, rgb(255, 230, 0), rgb(255, 0, 128) 80%);
+    background: linear-gradient(45deg, #ffd7d7, #f34642  80%);
 }
 
 .profile-pic img{
