@@ -1,29 +1,43 @@
 <template>
-  <section v-if="user.length != 0">
-    <h1>Le profil de...{{ this.user.username }}</h1>
-    <UserProfile :user="user" :userLoggedIn="false" />
+  <div v-if="user.length != 0">
+    <section>
+      <h1>Profil de {{ this.user.username }}</h1>
+      <UserProfile :user="user" :userLoggedIn="false" />
 
-    <!-- gestion erreur API avec axios -->
-    <div v-if="apiErrors" class="error-api">
-      <p v-for="(apiError, i) in apiErrors" :key="i" class="error-msg">
-        {{ apiError.message }}
-      </p>
-    </div>
-    <!-- gestion erreur API avec axios -->
-  </section>
+      <!-- gestion erreur API avec axios -->
+      <div v-if="apiErrors != 0" class="error-api">
+        <p v-for="(apiError, i) in apiErrors" :key="i" class="error-msg">
+          {{ apiError.message }}
+        </p>
+      </div>
+      <!-- gestion erreur API avec axios -->
+    </section>
+
+    <!-- If there are posts -->
+    <section v-if="posts.length != 0">
+      <PostCard v-for="(post, index) in posts" :key="index" :post="post" :creatorInfo="creatorInfo" />
+    </section>
+  </div>
+  <div v-else>
+    <h2>Chargement en cours</h2>
+  </div>
 </template>
 
 <script>
 import UserProfile from "@/components/Profil/UserProfile.vue";
 import usersApi from "../api/users";
+import PostCard from "../components/Posts/PostCard.vue";
 
 export default {
   name: "User-View",
   components: {
     UserProfile,
+    PostCard,
   },
   data() {
     return {
+      creatorInfo: [],
+      posts: [], // add posts array:
       user: [],
       userId: "",
       apiErrors: false,
@@ -35,6 +49,7 @@ export default {
     try {
       const response = await usersApi.readTargetUser(this.userId);
       this.user = response.data.data;
+      // console.log(this.user , "user pointé")
     } catch (error) {
       const errorMessage = (this.apiErrors = error.response);
       this.errorMessage = errorMessage;
@@ -47,12 +62,16 @@ export default {
         duration: 30000,
       });
     }
+
+    this.posts = this.user.posts;
+    console.log("user pointé", this.posts);
+    this.creatorInfo = this.user;
   },
 };
 </script>
 
 <style lang="scss" scoped>
-h1 {
+h1, h2 {
   display: flex;
   justify-content: center;
   margin-top: 10px;

@@ -141,7 +141,7 @@ export default {
   methods: {
     onChangeFileUpload() {
       this.state.community.image = document.querySelector("#image").files[0];
-      console.log("image upload", this.state.community.image);
+      // console.log("image upload", this.state.community.image);
     },
     createCommunityClick() {
       this.v$.$validate(); // checks all inputs
@@ -178,7 +178,7 @@ export default {
             );
           })
           .catch((error) => {
-            console.log(error.response);
+            // console.log(error.response);
             const errorMessage = (this.apiError = error.response.data.error);
             this.errorMessage = errorMessage;
 

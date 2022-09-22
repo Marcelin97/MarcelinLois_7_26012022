@@ -15,7 +15,7 @@
       />
       <h3>
         <span>{{ user.username }}</span>
-        <span>identifiant: {{ user.id }}</span>
+        <span>id: {{ user.id }}</span>
       </h3>
     </div>
 
@@ -25,7 +25,7 @@
       <span>
         <font-awesome-icon
           class="more__icon"
-          :icon="['fa', 'person-walking-arrow-right']"
+          :icon="['fas', 'person-walking-arrow-right']"
         />
       </span>
     </router-link>
@@ -107,13 +107,13 @@ export default {
 
     span:first-child {
       color: #000000;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     span:last-child {
       color: #000000;
-      font-size: 0.825em;
-      font-weight: 200;
+      font-size: 0.625em;
+      font-weight: 700;
     }
   }
 }
@@ -126,13 +126,8 @@ export default {
   }
 
   &__icon {
-    background-color: #000000;
     opacity: 0.5;
     padding: 0.2rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    line-height: 1rem;
-    border-radius: 0.625rem;
 
     &:hover {
       opacity: 1;

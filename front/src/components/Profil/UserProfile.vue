@@ -82,10 +82,6 @@
     </div>
   </div>
 
-  <div>
-    <PostCard />
-  </div>
-
   <!-- modal delete account -->
   <modalStructure ref="deleteAccount">
     <template v-slot:header>
@@ -153,7 +149,6 @@
 </div>
 </template>
 <script>
-import PostCard from "../Posts/PostCard.vue";
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
 import usersApi from "../../api/users";
@@ -168,7 +163,7 @@ import { reactive, computed } from "vue";
 
 export default {
   name: "User-profile",
-  props: ["user", "userLoggedIn", "targetUser"],
+  props: ["user", "userLoggedIn"],
   setup() {
     const state = reactive({
       user: {
@@ -202,7 +197,6 @@ export default {
     $lazy: true,
   },
   components: {
-    PostCard,
     modalStructure,
     deleteBtn,
   },

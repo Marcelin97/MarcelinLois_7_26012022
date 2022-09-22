@@ -3,11 +3,17 @@
     <!-- If there are posts -->
     <h2 v-if="posts.length != 0">Dernière Publication</h2>
     <!-- If there are no communities-->
-    <h2 v-else>Il n'y a pas de post pour le moment. <router-link to="/communities">Commence par crée une communauté</router-link></h2>
+    <h2 v-else>
+      Il n'y a pas de post pour le moment.
+      <router-link to="/communities"
+        >Commence par crée une communauté</router-link
+      >
+    </h2>
     <PostCard
-      v-for="(post, index) in filteredPosts"
+      v-for="(post, index) in posts"
       :key="index"
       :post="post"
+      :creatorInfo="creatorInfo"
     />
   </section>
 </template>
@@ -16,7 +22,7 @@ import PostCard from "./PostCard.vue";
 import axiosInstance from "../../services/api";
 
 export default {
-  name: "Posts-View",
+  name: "Posts-Wall",
   components: {
     PostCard,
   },
@@ -24,16 +30,10 @@ export default {
     return {
       // add posts array:
       posts: [],
+      creatorInfo: {},
       apiError: "",
       search: "",
     };
-  },
-  computed: {
-    filteredPosts() {
-      return this.posts.filter((post) =>
-        post.title.toLowerCase().includes(this.search.toLowerCase())
-      );
-    },
   },
   mounted() {
     axiosInstance
@@ -42,6 +42,22 @@ export default {
         // console.log(response);
         this.posts = response.data.result;
         console.log("Posts", this.posts);
+        const publications = this.posts;
+        publications.forEach((el) => {
+
+          const entries = el.users;
+          console.log("lkojo", entries.username)
+          this.creatorInfo = entries;
+          console.log("creatorInfo wall", this.creatorInfo)    
+        });
+        // var obj = this.posts;
+        // for (var [i, post] of Object.entries(obj)) {
+        //   console.log(i, ":", post.users);
+        //   // let users = post.users;
+        //   // console.log("laaa", users.username);
+        //   this.creatorInfo = post.users
+        //   console.log("laaa", this.creatorInfo)
+        // }
       })
       .catch((error) => {
         console.log(error);

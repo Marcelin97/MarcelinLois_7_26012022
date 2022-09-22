@@ -30,7 +30,7 @@
             type="button"
             tabindex="0"
           >
-            <div class="_abm0">
+            <div>
               <div style="height: 24px; width: 24px">
                 <svg
                   aria-label="Plus d’options"
@@ -87,8 +87,7 @@
           comment
         }}
       </ul>
-      <p class="date">Hace 8 días</p>
-      <hr />
+      <!-- <p class="date">Hace 8 días</p> -->
     </div>
 
     <!-- add a comment -->
@@ -98,7 +97,7 @@
         autocomplete="off"
         v-model="newComment"
         v-on:keyup.enter="addComment"
-        :placeholder="'Commenter en tant que' + ' ' + user.username"
+        :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
         class="task-input"
       />
     </div>
@@ -106,100 +105,43 @@
 </template>
 
 <script>
-// import DeleteBtn from "@/components/Base/DeleteBtn.vue";
-// import ScrollDownMouse from "@/components/Base/ScrollDownMouse.vue";
 
 export default {
   name: "Post-Card",
-  props: ["post"],
+  props: ["post", "creatorInfo"],
   components: {
     // DeleteBtn,
     // ScrollDownMouse,
   },
   data() {
     return {
+      currentUser: [],
       show: false,
-      user: [],
-      creatorInfo: [], // creator of the post card
       newComment: "",
       comments: ["Looks great Julianne!", "bonjour"],
-      likesCount: "55",
-      disLikesCount: "33",
+      likesCount: "5",
+      disLikesCount: "3",
     };
   },
-  mounted() {
-    this.creatorInfo = this.post.users;
-    console.log("icii ", this.creatorInfo);
-    this.user = this.$store.state.user;
-    console.log("currentUser ", this.user);
-  },
+  mounted() { 
+   this.currentUser = this.$store.state.user;
+  }
 };
 </script>
 <style lang="scss" scoped>
-.dropdown {
-  position: relative;
-
-  .dropdown-btn {
-    background: transparent;
-    border: none;
-    font-size: 18px;
-    font-weight: bolder;
-  }
-
-  .dropdown-content {
-    display: none;
-
-    /* Position it right below the trigger element */
-    left: 0;
-    padding-top: 4px;
-    position: absolute;
-    top: 100%;
-
-    /* It should be on the top of other elements */
-    background-color: #fff;
-    z-index: 9999;
-
-    /* Size */
-    height: 200px;
-    width: 200px;
-    ul {
-      padding: 0;
-      margin: 0;
-      li {
-        list-style: none;
-        a {
-          display: block;
-          width: 100%;
-          padding: 5px 10px;
-          text-decoration: none;
-          color: #333;
-          &:hover {
-            background-color: rgb(208, 208, 208);
-          }
-        }
-      }
-    }
-  }
-  .show {
-    display: block;
-  }
-}
-
 .post {
   max-width: 480px;
   margin: 0 auto;
   border: 1px solid #ccc;
   background: #fff;
-  border-radius: 4px;
+  border-radius: 0.4rem;
   margin-bottom: 2rem;
 }
 
+// card header
 .instagram-card-header {
-  // padding: 5px;
-  // display: flex;
-  // align-items: center;
-  // border-bottom : 1px solid #ccc;
-  background-color: rgb(255, 255, 255);
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
 }
 .header {
   display: flex;
@@ -212,13 +154,11 @@ export default {
   margin: 8px 4px 8px 12px;
   padding: unset;
   align-items: center;
-  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   flex-grow: 1;
   flex-shrink: 1;
   max-width: calc(100% - 48px);
-  // padding: 14px 4px 14px 16px;
   position: relative;
 }
 
@@ -241,94 +181,81 @@ export default {
 .instagram-card-user-name {
   font-size: 12px;
   font-weight: bold;
-  text-decoration: none;
-  color: #000;
 }
 
+// dropdown menu
+.dropdown {
+  position: relative;
+
+  .dropdown-btn {
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .dropdown-content {
+    display: none;
+    right: 10px;
+    position: absolute;
+    top: 100%;
+    z-index: 9999;
+    height: auto;
+    width: 8rem;
+    padding: 4px;
+    border-radius: 0.8rem;
+    background-color: #ffff;
+    box-shadow: 0 0 20px rgb(66 50 98 / 35%);
+
+    ul {
+      padding: 0;
+      margin: 0;
+      li {
+        width: 100%;
+        height: 2rem;
+        margin-bottom: 4px;
+
+        a {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          padding: 5px 10px;
+          &:hover {
+            color: #ffd7d7;
+          }
+        }
+      }
+    }
+  }
+  .show {
+    display: block;
+  }
+}
+// card image
 .instagram-card-image img {
   width: 100%;
 }
 
-.menu {
-  justify-content: center;
-  padding-right: 4px;
-}
-._abl- {
-  align-items: center;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  padding: 8px;
-}
-._abm0 {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-}
+// card content
 .instagram-card-content {
   padding: 15px;
-}
-.instagram-card-content-user {
-  margin-bottom: 2rem;
-  word-break: break-all;
-}
-.instagram-card-icon {
-  font-size: 24px;
-  color: #000;
-  margin-right: 10px;
-}
-.instagram-bookmark {
-  float: right;
-  margin-right: 0;
-}
-.date {
-  font-size: 10px;
-  color: #4e5559;
-  text-transform: uppercase;
-}
-hr {
-  border: none;
-  border-bottom: 1px solid #4e5559;
-  margin: 0;
-}
-.vote {
-  float: right;
-  margin: -25px 0 0 20px;
-  position: relative;
-  width: 80px;
-}
-.like-count,
-.icon-rocknroll {
-  font-size: 0.75rem;
-  opacity: 1;
-}
-.like-count {
-  font-weight: 300;
-}
-.icon-rocknroll {
-  color: red;
-  font-size: 0.85rem;
-
-  &:hover {
-    opacity: 0.5;
-  }
-}
-.like-count {
-  color: red;
-
-  &:hover {
-    opacity: 0.5;
-  }
-}
-article:hover .icon-rocknroll,
-article:hover .like-count {
-  opacity: 1;
 }
 .like-data {
   float: right;
 }
+.like-count,
+.icon-rocknroll {
+  font-size: 0.75rem;
+}
+.like-count {
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
 .icon-rocknroll {
   background: none;
   border: 0;
@@ -336,92 +263,34 @@ article:hover .like-count {
   cursor: pointer;
   margin: 0 0.125rem 0 0;
   padding: 0;
+  &:hover {
+    opacity: 0.5;
+  }
 }
 
+// post title
+.instagram-card-content-user {
+  margin-bottom: 2rem;
+  word-break: break-all;
+}
+
+// .date {
+//   font-size: 10px;
+//   color: #4e5559;
+//   text-transform: uppercase;
+// }
+
+// add comment
 .task-input {
   display: flex;
   margin: 1rem auto;
   width: 90%;
   outline: none;
   border: none;
-  border-bottom: 1px solid #4e5559;
   color: #4e5559;
 
   &:placeholder {
     color: #4e5559;
   }
-}
-
-#app {
-  background: #212222;
-  color: #fff;
-  letter-spacing: 0.04em;
-  text-align: center;
-  margin: 60px;
-  width: 370px;
-  margin: 0 auto;
-  display: table;
-  padding: 20px;
-  line-height: 1.4em;
-}
-
-.name {
-  color: #ccc;
-}
-
-small {
-  color: #bbb;
-  font-size: 10px;
-}
-
-h3 {
-  margin: 5px 0 4px;
-}
-
-.main-photo {
-  width: 300px;
-}
-
-.main-profile {
-  float: left;
-  border: 3px solid white;
-  margin: -25px 0 0 20px;
-  position: relative;
-  width: 80px;
-}
-
-.main-info {
-  float: left;
-  padding: 10px 20px;
-  text-align: left;
-  margin-bottom: 15px;
-  &:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-}
-
-li {
-  list-style: none outside none;
-  text-align: left;
-  padding: 10px 0;
-  border-bottom: 1px solid #555;
-}
-
-ul {
-  width: inherit;
-  margin: 0;
-  padding: 0 35px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-input {
-  width: 280px;
-  margin: 30px 0;
-  padding: 8px 10px;
-  outline: 0;
 }
 </style>

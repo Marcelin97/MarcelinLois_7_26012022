@@ -2,16 +2,19 @@
   <section v-if="user.length != 0">
     <h1>Mon compte</h1>
     <UserProfile :user="user" :userLoggedIn="true" />
+    <PostsProfile/>
   </section>
 </template>
 
 <script>
 import UserProfile from "@/components/Profil/UserProfile.vue";
+import PostsProfile from "@/components/Posts/PostsProfile.vue";
 
 export default {
   name: "Profile-View",
   components: {
     UserProfile,
+    PostsProfile,
   },
   data() {
     return {
