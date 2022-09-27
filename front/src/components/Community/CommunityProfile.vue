@@ -34,7 +34,7 @@
               @click="$refs.deleteAccount.openModal()"
               text="Supprimer mon compte"
             >
-              Supprimer la communauté
+              Supprimer
             </button>
 
             <!-- update profile -->
@@ -44,7 +44,7 @@
               class="btn"
               :to="'/communities/profil/' + community.id + '/settings'"
             >
-              Modifier la communauté
+              Modifier
             </router-link>
 
             v-if="canModerate(this.communityRead.userId, this.communityId)"
@@ -130,7 +130,7 @@
             text="Annuler"
             @click="$refs.modalName.closeModal()"
           >
-            Cancel
+           Annuler
           </button>
           <deleteBtn @click="deleteAccountClick" />
         </div>

@@ -1,117 +1,175 @@
 <template>
-  <div class="post">
-    <!-- header card -->
-    <div class="instagram-card-header">
-      <div class="header">
-        <div class="header-left">
-          <div class="profile-pic">
-            <img
-              class="instagram-card-user-image"
-              v-if="creatorInfo.imageUrl"
-              :src="`http://localhost:3000${creatorInfo.imageUrl}`"
-              :alt="'Avatar de ' + creatorInfo.imageUrl"
-              aria-label="Photo d'utilisateur"
-            />
-            <img
-              class="instagram-card-user-image"
-              v-else
-              src="../../assets/img/avataaars.png"
-              alt="Avatar par défaut"
-              aria-label="Avatar par défaut"
-            />
-          </div>
-
-          <p class="instagram-card-user-name">{{ creatorInfo.username }}</p>
-        </div>
-        <div class="dropdown">
-          <button
-            class="_abl- dropdown-btn"
-            v-on:click="show = !show"
-            type="button"
-            tabindex="0"
-          >
-            <div>
-              <div style="height: 24px; width: 24px">
-                <svg
-                  aria-label="Plus d’options"
-                  class="_ab6-"
-                  color="#262626"
-                  fill="#262626"
-                  height="24"
-                  role="img"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <circle cx="12" cy="12" r="1.5"></circle>
-                  <circle cx="6" cy="12" r="1.5"></circle>
-                  <circle cx="18" cy="12" r="1.5"></circle>
-                </svg>
-              </div>
+  <div>
+    <div class="post">
+      <!-- header card -->
+      <div class="instagram-card-header">
+        <div class="header">
+          <div class="header-left">
+            <div class="profile-pic" v-if="post.user">
+              <img
+                v-if="post.user.imageUrl"
+                class="instagram-card-user-image"
+                :src="`http://localhost:3000${post.user.imageUrl}`"
+                :alt="'Avatar de ' + post.user.username"
+                aria-label="Photo d'utilisateur"
+              />
+              <img
+                class="instagram-card-user-image"
+                v-else
+                src="../../assets/img/avataaars.png"
+                alt="Avatar par défaut"
+                aria-label="Avatar par défaut"
+              />
             </div>
-          </button>
+            <div class="profile-pic" v-else-if="creatorInfo">
+              <img
+                v-if="creatorInfo.imageUrl"
+                class="instagram-card-user-image"
+                :src="`http://localhost:3000${creatorInfo.imageUrl}`"
+                :alt="'Avatar de ' + creatorInfo.username"
+                aria-label="Photo d'utilisateur"
+              />
+              <img
+                class="instagram-card-user-image"
+                v-else
+                src="../../assets/img/avataaars.png"
+                alt="Avatar par défaut"
+                aria-label="Avatar par défaut"
+              />
+            </div>
 
-          <div class="dropdown-content" v-bind:class="{ show: show }">
-            <ul>
-              <li><a href="">Mofifier</a></li>
-              <li><a href="">Signaler</a></li>
-              <li><a href="">Supprimer</a></li>
-            </ul>
+            <p class="instagram-card-user-name" v-if="post.user">
+              {{ post.user.username }}
+            </p>
+            <p
+              class="instagram-card-user-name"
+              v-else-if="creatorInfo.length != 0"
+            >
+              {{ creatorInfo.username }}
+            </p>
+          </div>
+          <div class="dropdown">
+            <button
+              class="_abl- dropdown-btn"
+              v-on:click="show = !show"
+              type="button"
+              tabindex="0"
+            >
+              <div>
+                <div style="height: 24px; width: 24px">
+                  <svg
+                    aria-label="Plus d’options"
+                    class="_ab6-"
+                    color="#262626"
+                    fill="#262626"
+                    height="24"
+                    role="img"
+                    viewBox="0 0 24 24"
+                    width="24"
+                  >
+                    <circle cx="12" cy="12" r="1.5"></circle>
+                    <circle cx="6" cy="12" r="1.5"></circle>
+                    <circle cx="18" cy="12" r="1.5"></circle>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            <div class="dropdown-content" v-bind:class="{ show: show }">
+              <ul>
+                <li><button >Modifier</button></li>
+                <li><button>Signaler</button></li>
+                <li><button  @click="$refs.deletePost.openModal()">Supprimer</button></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- image card -->
-    <div class="instagram-card-image">
-      <img alt="photo du post" :src="`http://localhost:3000${post.imageUrl}`" />
-    </div>
-    <!-- content card -->
-    <div class="instagram-card-content">
-      <div class="like-data">
-        <button class="icon-rocknroll">☝️</button
-        ><span class="like-count">{{ likesCount }}</span>
+      <!-- image card -->
+      <div class="instagram-card-image">
+        <img
+          alt="photo du post"
+          :src="`http://localhost:3000${post.imageUrl}`"
+        />
       </div>
-      <div class="like-data">
-        <button class="icon-rocknroll">👎</button
-        ><span class="like-count">{{ disLikesCount }}</span>
+      <!-- content card -->
+      <div class="instagram-card-content">
+        <div class="like-data">
+          <button class="icon-rocknroll">☝️</button
+          ><span class="like-count">{{ likesCount }}</span>
+        </div>
+        <div class="like-data">
+          <button class="icon-rocknroll">👎</button
+          ><span class="like-count">{{ disLikesCount }}</span>
+        </div>
+        <p class="instagram-card-content-user">
+          {{ post.content }}
+        </p>
+        <ul class="comments">
+          <li
+            v-for="(comment, index) in comments"
+            :key="index"
+            :comment="comment"
+          ></li>
+          {{
+            comment
+          }}
+        </ul>
+        <!-- <p class="date">Hace 8 días</p> -->
       </div>
-      <p class="instagram-card-content-user">
-        {{ post.content }}
-      </p>
-      <ul class="comments">
-        <li
-          v-for="(comment, index) in comments"
-          :key="index"
-          :comment="comment"
-        ></li>
-        {{
-          comment
-        }}
-      </ul>
-      <!-- <p class="date">Hace 8 días</p> -->
+
+      <!-- add a comment -->
+      <div class="instagram-card-footer">
+        <input
+          type="text"
+          autocomplete="off"
+          v-model="newComment"
+          v-on:keyup.enter="addComment"
+          :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
+          class="task-input"
+        />
+      </div>
     </div>
 
-    <!-- add a comment -->
-    <div class="instagram-card-footer">
-      <input
-        type="text"
-        autocomplete="off"
-        v-model="newComment"
-        v-on:keyup.enter="addComment"
-        :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
-        class="task-input"
-      />
-    </div>
+    <!-- modal delete account -->
+    <modalStructure ref="deletePost">
+      <template v-slot:header>
+        <h1>Supprimer la publication</h1>
+      </template>
+
+      <template v-slot:body>
+        <p>
+          Si vous ne voulez pas supprimer cette publication, vous pouvez
+          annuler.
+        </p>
+      </template>
+
+      <template v-slot:footer>
+        <div class="modal__actions">
+          <button
+            class="btn"
+            text="Annuler"
+            @click="$refs.modalName.closeModal()"
+          >
+            Annuler
+          </button>
+          <deleteBtn @click="deleteAccountClick" />
+        </div>
+      </template>
+    </modalStructure>
   </div>
 </template>
 
 <script>
+import modalStructure from "../Modal/ModalStructure.vue";
+import deleteBtn from "../Base/DeleteBtn.vue";
 
 export default {
   name: "Post-Card",
   props: ["post", "creatorInfo"],
   components: {
-    // DeleteBtn,
-    // ScrollDownMouse,
+    deleteBtn,
+    modalStructure,
   },
   data() {
     return {
@@ -123,9 +181,9 @@ export default {
       disLikesCount: "3",
     };
   },
-  mounted() { 
-   this.currentUser = this.$store.state.user;
-  }
+  mounted() {
+    this.currentUser = this.$store.state.user;
+  },
 };
 </script>
 <style lang="scss" scoped>

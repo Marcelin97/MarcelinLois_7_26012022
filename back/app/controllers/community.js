@@ -68,6 +68,7 @@ exports.readAllCommunity = async (req, res, next) => {
       where: {
         isActive: true,
       },
+      order: [["createdAt", "DESC"]],
       raw: true,
     })
     .then((communitiesActive) => {

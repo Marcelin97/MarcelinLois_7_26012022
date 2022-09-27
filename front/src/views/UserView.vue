@@ -15,11 +15,16 @@
 
     <!-- If there are posts -->
     <section v-if="posts.length != 0">
-      <PostCard v-for="(post, index) in posts" :key="index" :post="post" :creatorInfo="creatorInfo" />
+      <PostCard
+        v-for="(post, index) in posts"
+        :key="index"
+        :post="post"
+        :creatorInfo="creatorInfo"
+      />
     </section>
   </div>
   <div v-else>
-    <h2>Chargement en cours</h2>
+    <h2>Chargement en cours...</h2>
   </div>
 </template>
 
@@ -36,11 +41,11 @@ export default {
   },
   data() {
     return {
-      creatorInfo: [],
-      posts: [], // add posts array:
-      user: [],
+      creatorInfo: [], // add creatorInfo
+      posts: [], // add posts array
+      user: [], // target user info
       userId: "",
-      apiErrors: false,
+      apiErrors: "",
     };
   },
   async mounted() {
@@ -49,7 +54,6 @@ export default {
     try {
       const response = await usersApi.readTargetUser(this.userId);
       this.user = response.data.data;
-      // console.log(this.user , "user pointé")
     } catch (error) {
       const errorMessage = (this.apiErrors = error.response);
       this.errorMessage = errorMessage;
@@ -64,14 +68,15 @@ export default {
     }
 
     this.posts = this.user.posts;
-    console.log("user pointé", this.posts);
+    // console.log("Posts user pointé", this.posts);
     this.creatorInfo = this.user;
   },
 };
 </script>
 
 <style lang="scss" scoped>
-h1, h2 {
+h1,
+h2 {
   display: flex;
   justify-content: center;
   margin-top: 10px;

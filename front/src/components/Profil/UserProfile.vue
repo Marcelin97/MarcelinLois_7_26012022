@@ -18,14 +18,14 @@
 
       <!-- Profil informations -->
       <div class="profile-card__cnt js-profile-cnt">
-        <div class="profile-card__name">
+        <div class="profile-card-name">
           {{ user.username }}
         </div>
 
         <!-- Profil statistics -->
         <div class="profile-card-inf">
           <!-- Publications -->
-          <div class="profile-card-inf__item">
+          <div  v-if="user.posts != 0" class="profile-card-inf__item">
             <div class="profile-card-inf__title">
               {{ user.posts.length }}
             </div>
@@ -33,7 +33,7 @@
           </div>
 
           <!-- Commentaires -->
-          <div class="profile-card-inf__item">
+          <div v-if="user.comments != 0" class="profile-card-inf__item">
             <div class="profile-card-inf__title">
               {{ user.comments.length }}
             </div>
@@ -41,7 +41,7 @@
           </div>
 
           <!-- Communautés crées -->
-          <div class="profile-card-inf__item">
+          <div v-if="user.community != 0" class="profile-card-inf__item">
             <div class="profile-card-inf__title">
               {{ user.community.length }}
             </div>
@@ -339,7 +339,14 @@ export default {
     padding-top: 100px;
   }
 }
-
+  .profile-card-name {
+        line-height: 35px;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 0.3rem;
+        font-size: 1rem;
+        text-align: center;
+  }
 .profile-card {
   width: 100%;
   margin: auto;
@@ -371,15 +378,6 @@ export default {
     text-align: center;
     padding: 0 20px;
     transition: all 0.3s;
-  }
-
-  &__name {
-        line-height: 35px;
-        text-transform: uppercase;
-        font-weight: bold;
-        letter-spacing: 0.3rem;
-        font-size: 1rem;
-        text-align: center;
   }
 
   &-inf {

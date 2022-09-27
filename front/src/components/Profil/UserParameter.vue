@@ -296,7 +296,7 @@ export default {
           },
         })
         .then((result) => {
-          // console.log("result: ", result.data);
+          console.log("result: ", result.data);
           this.$store.commit("updateUser", result.data);
           // alert("Vos modifications sont enregistrées");
 
@@ -312,6 +312,17 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+
+          const errorMessage = (this.apiErrors = err.response);
+      this.errorMessage = errorMessage;
+
+      // notification error message
+      this.$notify({
+        type: "error",
+        title: `Erreur lors de la mise à jour de l'utilisateur'`,
+        text: `Erreur reporté : ${errorMessage}`,
+        duration: 30000,
+      });
         });
     },
   },

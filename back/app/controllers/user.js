@@ -216,7 +216,7 @@ exports.readUser = async (req, res) => {
     .findOne({
       include: {
         all: true,
-        model: follower,
+        // model: follower,
       },
       where: {
         id: req.auth.userID,
@@ -295,7 +295,12 @@ exports.update = async (req, res) => {
 
   // TODO : 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
   user
-    .findOne({ where: { id: req.auth.userID } })
+    .findOne({
+      include: {
+        all: true,
+      },
+      where: { id: req.auth.userID }
+    })
     .then(async (result) => {
       if (!result) {
         return res.status(404).json({ message: "User not found" });
@@ -313,8 +318,6 @@ exports.update = async (req, res) => {
       // TODO : Gestion password ==> req.body.password
       try {
         if (req.body.newPassword) {
-          // bcrypt
-          //   .hash(req.body.newPassword, 10)
           const hashPass = await bcrypt.hash(req.body.newPassword, 10);
           req.body.password = hashPass;
           console.log("mot de pass hash", req.body.newPassword);

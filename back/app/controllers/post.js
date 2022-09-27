@@ -220,18 +220,9 @@ exports.manyLikes = (req, res, next) => {
 exports.readAllPosts = (req, res, next) => {
   post
     .findAll({
-      include: [
-        {
-          model: user,
-          as: "users",
-          attributes: ["id", "username", "imageUrl"],
-        },
-        {
-          model: community,
-          as: "posts",
-          attributes: ["id", "title", "about"],
-        },
-      ],
+      include: {
+        all: true,
+      },
       order: [["createdAt", "DESC"]],
       limit: 6,
     })
