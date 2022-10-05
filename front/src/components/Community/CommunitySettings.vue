@@ -146,10 +146,6 @@ export default {
     onChangeFileUpload() {
       this.state.community.communityImage =
         document.querySelector("#communityImage").files[0];
-      // console.log(
-      //   "community image update",
-      //   this.state.community.communityImage
-      // );
     },
     updateAccountClick() {
       var bodyFormData = new FormData();
@@ -178,13 +174,7 @@ export default {
           });
 
           // redirect to the community page
-          setTimeout(
-            function () {
-              this.$router.push(`/communities/profil/${this.communityId}`);
-            }.bind(this),
-            2000,
-            this
-          );
+          this.$router.push(`/communities/profil/${this.communityId}`); 
         })
         .catch((err) => {
           console.log(err);
