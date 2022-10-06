@@ -88,7 +88,7 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import { minLength} from "@vuelidate/validators";
+import { minLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 import axiosInstance from "../../services/api";
 
@@ -149,12 +149,16 @@ export default {
     },
     updateAccountClick() {
       var bodyFormData = new FormData();
-      bodyFormData.append("title", this.state.community.title);
-      bodyFormData.append("about", this.state.community.about);
-      bodyFormData.append("image", this.state.community.communityImage);
-      // for (let value of bodyFormData.values()) {
-      //   console.log(value);
-      // }
+      if (this.state.community.communityImage)
+        bodyFormData.append("image", this.state.community.communityImage);
+
+      for (let key of ["title", "about"]) {
+        const param = this.state.community[key];
+        // console.log(param, key);
+        if (param) {
+          bodyFormData.append(key, param);
+        }
+      }
 
       axiosInstance
         .patch(`/community/updateCommunity/${this.communityId}`, bodyFormData, {
@@ -174,7 +178,7 @@ export default {
           });
 
           // redirect to the community page
-          this.$router.push(`/communities/profil/${this.communityId}`); 
+          this.$router.push(`/communities/profil/${this.communityId}`);
         })
         .catch((err) => {
           console.log(err);

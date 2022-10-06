@@ -284,7 +284,7 @@ export default {
         "username",
       ]) {
         const param = this.state.user[key];
-        console.log(param, key);
+        // console.log(param, key);
         if (param) {
           bodyFormData.append(key, param);
         }
@@ -297,7 +297,7 @@ export default {
           },
         })
         .then((result) => {
-          console.log("result: ", result.data);
+          // console.log("result: ", result.data);
           this.$store.commit("updateUser", result.data);
           // alert("Vos modifications sont enregistrées");
 
