@@ -275,7 +275,6 @@ export default {
       if (this.state.user.userImage)
         bodyFormData.append("image", this.state.user.userImage);
 
-
       for (let key of [
         "firstName",
         "lastName",

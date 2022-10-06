@@ -97,116 +97,10 @@
             >
               Supprimer mon compte
             </button>
-
-            <button
-              type="button"
-              class="btn btn-update"
-              @click="$refs.updatePassword.openModal()"
-              text="Modifier mon mot de passe"
-            >
-              Modifier mon mot de passe
-            </button>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- modal update password -->
-    <modalStructure ref="updatePassword">
-      <template v-slot:header>
-        <h1>Modifier mon mot de passe</h1>
-      </template>
-
-      <template v-slot:body>
-        <p>
-          Votre mot de passe doit contenir entre 8 et 16 caractères, une
-          minuscule au moins, une majuscule au moins, un chiffre au moins, un
-          caractère spécial au moins (@&/!$ ...)
-        </p>
-
-        <form action="#" method="patch" @submit.prevent="updatePasswordClick">
-          <div class="FormGroup">
-            <!-- Old Password -->
-            <div>
-              <div class="wrapper">
-                <label>
-                  <input
-                    type="password"
-                    placeholder="Ancien mot de passe"
-                    v-model="state.pass.oldPassword"
-                    ref="pass.oldPassword"
-                    @blur="v$.pass.oldPassword.$touch"
-                    :class="
-                      v$.pass.oldPassword.$error === true ? 'error' : 'dirty'
-                    "
-                  />
-                </label>
-
-                <!-- Error Message -->
-                <template v-if="v$.pass.oldPassword.$dirty">
-                  <div
-                    class="input-errors"
-                    v-for="(error, index) of v$.pass.oldPassword.$errors"
-                    :key="index"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-                <!-- Error Message -->
-              </div>
-            </div>
-
-            <!-- New Password -->
-            <div>
-              <div class="wrapper">
-                <label>
-                  <input
-                    type="password"
-                    placeholder="Nouveau mot de passe"
-                    v-model="state.pass.newPassword"
-                    ref="pass.newPassword"
-                    @blur="v$.pass.newPassword.$touch"
-                    :class="
-                      v$.pass.newPassword.$error === true ? 'error' : 'dirty'
-                    "
-                  />
-                </label>
-
-                <!-- Error Message -->
-                <template v-if="v$.pass.newPassword.$dirty">
-                  <div
-                    class="input-errors"
-                    v-for="(error, index) of v$.pass.newPassword.$errors"
-                    :key="index"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-                <!-- Error Message -->
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            class="btn button"
-            title="Modifier mot de passe"
-            text="Modifier mot de passe"
-            value="Modifier mot de passe"
-          >
-            Modifier
-          </button>
-        </form>
-      </template>
-
-      <template v-slot:footer>
-        <!-- gestion erreur API avec axios -->
-        <div class="error-api">
-          <p class="error-msg">{{ apiError }}</p>
-        </div>
-        <!-- gestion erreur API avec axios -->
-      </template>
-    </modalStructure>
 
     <!-- modal delete account -->
     <modalStructure ref="deleteAccount">
@@ -307,14 +201,6 @@ import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
-export function strongPassword(value) {
-  return (
-    /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/.test(
-      value
-    ) && value.length >= 8
-  );
-}
-
 export default {
   name: "User-profile",
   props: ["user", "userLoggedIn"],
@@ -322,10 +208,6 @@ export default {
     const state = reactive({
       user: {
         content: "",
-      },
-      pass: {
-        oldPassword: "",
-        newPassword: "",
       },
     });
 
@@ -344,22 +226,6 @@ export default {
           ),
         },
       },
-      pass: {
-                oldPassword: {
-          $autoDirty: true,
-          $lazy: true,
-        },
-        newPassword: {
-          $autoDirty: true,
-          $lazy: true,
-          password_validation: {
-            $validator: strongPassword,
-            $message:
-              "Entre 8 et 16 caractères, Une minuscule au moins, Une majuscule au moins, Un chiffre au moins, Un caractère spécial au moins (@&/!$ ...)",
-          },
-        },
-        
-      }
     }));
 
     const v$ = useVuelidate(rules, state);
@@ -471,54 +337,6 @@ export default {
                 text: `Erreur reporté : ${errorMessage}`,
               });
             }
-          });
-      } else {
-        // notification d'erreur
-        this.$notify({
-          type: "warn",
-          title: `Veuillez faire un signalement complet.`,
-        });
-
-        // montre les erreurs à l'écran
-        this.$nextTick(() => {
-          let domRect = document
-            .querySelector(".error")
-            .getBoundingClientRect();
-          window.scrollTo(
-            domRect.left + document.documentElement.scrollLeft,
-            domRect.top + document.documentElement.scrollTop
-          );
-        });
-      }
-    },
-    updatePasswordClick() {
-      this.v$.$validate(); // checks all inputs
-      if (!this.v$.$error) {
-        // if ANY fail validation
-        axiosInstance
-          .post("/auth/updateUserPassword", this.state.pass)
-          .then((result) => {
-            console.log("result: ", result.data);
-            this.$store.commit("updateUser", result.data);
-
-            // notification de succès
-            this.$notify({
-              type: "success",
-              title: `Signalement envoyé !`,
-              text: `Vous allez être redirigé vers votre profil.`,
-            });
-
-            // force refresh page
-            setTimeout(
-              function () {
-                this.$router.go(0);
-              }.bind(this),
-              100,
-              this
-            );
-          })
-          .catch((error) => {
-            console.log(error.response.status);
           });
       } else {
         // notification d'erreur
