@@ -77,9 +77,21 @@
 
             <div class="dropdown-content" v-bind:class="{ show: show }">
               <ul>
-                <li><button >Modifier</button></li>
+                <li>
+                  <router-link
+                    :postId="postId"
+                    class="btn"
+                    :to="'/posts/' + post.id + '/update'"
+                  >
+                    Modifier
+                  </router-link>
+                </li>
                 <li><button>Signaler</button></li>
-                <li><button  @click="$refs.deletePost.openModal()">Supprimer</button></li>
+                <li>
+                  <button @click="$refs.deletePost.openModal()">
+                    Supprimer
+                  </button>
+                </li>
               </ul>
             </div>
           </div>
@@ -153,7 +165,7 @@
           >
             Annuler
           </button>
-          <deleteBtn @click="deleteAccountClick" />
+          <deleteBtn @click="deletePostClick" />
         </div>
       </template>
     </modalStructure>
@@ -173,6 +185,7 @@ export default {
   },
   data() {
     return {
+      postId: "",
       currentUser: [],
       show: false,
       newComment: "",
@@ -180,6 +193,9 @@ export default {
       likesCount: "5",
       disLikesCount: "3",
     };
+  },
+  created() {
+    this.postId = this.$route.params.id;
   },
   mounted() {
     this.currentUser = this.$store.state.user;

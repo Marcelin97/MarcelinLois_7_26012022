@@ -103,7 +103,7 @@ export default {
 .menu-icon:not(:checked) + label {
   cursor: pointer;
   z-index: 10;
-  margin: 3rem;
+  margin: 3rem 3rem 3rem 0rem;
 }
 
 .menu-icon:checked + label:before,

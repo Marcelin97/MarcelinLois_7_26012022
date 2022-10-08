@@ -20,10 +20,14 @@
         />
       </div>
       <div v-else>
+        <div class="container-communities">
         <h3>Il n'y a pas de post pour le moment</h3>
-        <router-link class="link" to="/communities"
-          >Commence par crée une communauté</router-link
+        <router-link class="menu-link underline" to="/communities"
+          >Commence par crée une communauté
+          </router-link
         >
+        </div>
+
       </div>
       </div>
     </div>
@@ -59,7 +63,7 @@ export default {
         console.log("wall posts", this.posts)
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         if (error.response.status == 404) {
           const errorMessage = (this.apiError =
             "Il n'y pas encore de post(s) !");
@@ -82,21 +86,60 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  @media only screen and (min-width: 576px) {
-    flex-direction: inherit;
-  }
 }
 .container__sidebar {
-  width: 100%;
-  @media only screen and (min-width: 576px) {
-    width: 0%;
-  }
+    top: 0;
 }
 .container__main {
   /* Take the remaining width */
   flex: 1;
+}
 
-  /* Make it scrollable */
-  overflow: auto;
+.container-communities{
+  display: flex;
+ align-items: center;
+  flex-direction: column;
+}
+.menu-link::after {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  font-size: 0.75rem;
+  letter-spacing: 0.056rem;
+  padding: 0 0.25rem 0 0;
+}
+
+.menu-item {
+  margin: 1rem;
+  @for $i from 0 through 5 {
+    &:nth-child(#{1 + $i}) {
+      .menu-link::after {
+        content: "0#{1 + $i}";
+      }
+    }
+  }
+}
+
+.underline {
+  position: relative;
+}
+
+.underline::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ffd7d7;
+  transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .underline:hover::before {
+    left: 0;
+    right: auto;
+    width: 100%;
+  }
 }
 </style>

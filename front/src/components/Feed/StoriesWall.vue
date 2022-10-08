@@ -1,7 +1,7 @@
 <template>
-  <section>
-    <StoryCard
-      v-for="(community, index) in filteredCommunities"
+  <section class="stories">
+    <StoryCard 
+      v-for="(community, index) in communities"
       :key="index"
       :community="community"
     />
@@ -24,13 +24,6 @@ export default {
       search: "",
     };
   },
-  computed: {
-    filteredCommunities() {
-      return this.communities.filter((community) =>
-        community.title.toLowerCase().includes(this.search.toLowerCase())
-      );
-    },
-  },
   mounted() {
     axiosInstance
       .get("/community/readAllCommunities")
@@ -43,15 +36,19 @@ export default {
           const errorMessage = (this.apiError =
             "Il n'y pas encore de communauté(s) !");
           this.errorMessage = errorMessage;
-
-          // notification d'erreur
-          this.$notify({
-            type: "info",
-            title: `Information de l'api`,
-            text: `${errorMessage}`,
-          });
         }
       });
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.stories{
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  overflow-x: auto;
+  cursor: grabbing;
+}
+
+</style>

@@ -63,7 +63,6 @@ export default {
         this.communities = response.data.datas;
       })
       .catch((error) => {
-        // console.log(error.response.status);
         if (error.response.status == 404) {
           const errorMessage = (this.apiError =
             "Il n'y pas encore de communauté(s) !");

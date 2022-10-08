@@ -3,16 +3,18 @@
     <div class="wrapper">
       <div class="left-col">
         <div class="status-wrapper">
-          <div class="status-card">
-            <div class="profile-pic">
-              <img
-                :src="`http://localhost:3000${community.icon}`"
-                :alt="'Avatar de ' + community.title"
-                aria-label="Photo de la communauté"
-              />
+          <router-link class="more" :to="`/communities/profil/${this.id}`">
+            <div class="status-card">
+              <div class="profile-pic">
+                <img
+                  :src="`http://localhost:3000${community.icon}`"
+                  :alt="'Avatar de ' + community.title"
+                  aria-label="Photo de la communauté"
+                />
+              </div>
+              <p class="username">{{ community.title }}</p>
             </div>
-            <p class="username">{{ community.title }}</p>
-          </div>
+          </router-link>
         </div>
       </div>
     </div>
@@ -37,31 +39,24 @@ export default {
 
 <style lang="scss" scoped>
 .main {
-  width: 100%;
-  padding: 40px 0;
-  display: flex;
   justify-content: center;
-  margin-top: 50px;
+  display: flex;
+  flex-direction: row;
 }
-
 .wrapper {
   width: 70%;
   max-width: 1000px;
   display: grid;
-  grid-template-columns: 60% 40%;
+  grid-template-columns: 100% 100%;
   grid-gap: 30px;
 }
-
 .left-col {
   display: flex;
   flex-direction: column;
 }
-
 .status-wrapper {
   width: 100%;
-  height: 120px;
-  background: #fff;
-  border: 1px solid #dfdfdf;
+  // height: 120px;
   border-radius: 2px;
   padding: 10px;
   padding-right: 0;
@@ -70,11 +65,9 @@ export default {
   overflow: hidden;
   overflow-x: auto;
 }
-
 .status-wrapper::-webkit-scrollbar {
   display: none;
 }
-
 .status-card {
   flex: 0 0 auto;
   width: 80px;
@@ -84,7 +77,6 @@ export default {
   align-items: center;
   margin-right: 15px;
 }
-
 .profile-pic {
   width: 70px;
   height: 70px;
@@ -93,7 +85,6 @@ export default {
   padding: 3px;
   background: linear-gradient(45deg, #ffd7d7, #f34642 80%);
 }
-
 .profile-pic img {
   width: 100%;
   height: 100%;
@@ -101,7 +92,6 @@ export default {
   border-radius: 50%;
   border: 2px solid #fff;
 }
-
 .username {
   width: 100%;
   overflow: hidden;

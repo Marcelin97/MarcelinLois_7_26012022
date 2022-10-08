@@ -206,13 +206,6 @@ export default {
         if (error.response.status == 404) {
           const errorMessage = (this.apiError = "Communauté introuvable !");
           this.errorMessage = errorMessage;
-
-          // notification d'erreur
-          this.$notify({
-            type: "error",
-            title: `Erreur de l'api`,
-            text: `Erreur reporté : ${errorMessage}`,
-          });
         }
       });
   },
@@ -353,7 +346,7 @@ select {
   flex-direction: column;
   justify-content: center;
   box-shadow: 0 0 20px rgb(66 50 98 / 35%);
-  margin: 2rem auto 2rem auto;
+  margin: 0 auto 2rem auto;
   padding: 2rem;
   border-radius: 0.8rem;
   @media only screen and (min-width: 768px) {
