@@ -2,6 +2,7 @@
   <div>
     <div class="wrapper">
       <div class="profile-card js-profile-card">
+        
         <!-- Profil image -->
         <div>
           <div class="profile-card__img">
@@ -308,7 +309,6 @@ import roleMixin from "../../mixins/role.mixin";
 
 import {
   helpers,
-  // required,
   minLength,
   maxLength,
 } from "@vuelidate/validators";

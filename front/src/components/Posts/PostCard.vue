@@ -77,17 +77,17 @@
 
             <div class="dropdown-content" v-bind:class="{ show: show }">
               <ul>
-                <li>
+                <li v-if="canAdmin(this.post.creatorId)">
                   <router-link
                     :postId="postId"
-                    class="btn"
+                    class="btn__update"
                     :to="'/posts/' + post.id + '/update'"
                   >
                     Modifier
                   </router-link>
                 </li>
                 <li><button>Signaler</button></li>
-                <li>
+                <li v-if="canAdmin(this.post.creatorId)">
                   <button @click="$refs.deletePost.openModal()">
                     Supprimer
                   </button>
@@ -115,7 +115,13 @@
           ><span class="like-count">{{ disLikesCount }}</span>
         </div>
         <p class="instagram-card-content-user">
+          {{ post.title }}
+        </p>
+        <p class="instagram-card-content-user">
           {{ post.content }}
+        </p>
+        <p class="instagram-card-content-user">
+          {{ post.communityId }}
         </p>
         <ul class="comments">
           <li
@@ -127,7 +133,6 @@
             comment
           }}
         </ul>
-        <!-- <p class="date">Hace 8 días</p> -->
       </div>
 
       <!-- add a comment -->
@@ -175,6 +180,8 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
+import roleMixin from "../../mixins/role.mixin";
+import axiosInstance from "../../services/api";
 
 export default {
   name: "Post-Card",
@@ -188,14 +195,41 @@ export default {
       postId: "",
       currentUser: [],
       show: false,
+      postRead: {
+        id: 0,
+        title: "",
+        imageUrl: "",
+        content: "",
+        creatorId: 0,
+      },
       newComment: "",
       comments: ["Looks great Julianne!", "bonjour"],
       likesCount: "5",
       disLikesCount: "3",
     };
   },
+  mixins: [roleMixin],
   created() {
     this.postId = this.$route.params.id;
+
+    axiosInstance
+      .get(`/posts/${this.postId}/read`)
+      .then((response) => {
+        this.postRead = response.data.datas;
+      })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          const errorMessage = (this.apiError = "Communauté introuvable !");
+          this.errorMessage = errorMessage;
+
+          // notification d'erreur
+          this.$notify({
+            type: "error",
+            title: `Erreur de l'api`,
+            text: `Erreur reporté : ${errorMessage}`,
+          });
+        }
+      });
   },
   mounted() {
     this.currentUser = this.$store.state.user;
@@ -344,15 +378,9 @@ export default {
 
 // post title
 .instagram-card-content-user {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   word-break: break-all;
 }
-
-// .date {
-//   font-size: 10px;
-//   color: #4e5559;
-//   text-transform: uppercase;
-// }
 
 // add comment
 .task-input {

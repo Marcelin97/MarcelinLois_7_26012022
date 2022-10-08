@@ -154,7 +154,7 @@ export default {
   },
   methods: {
     onChangeFileUpload() {
-      this.state.post.image = document.querySelector("#postImage").files[0];
+      this.state.post.image = document.querySelector("#image").files[0];
     },
     updateAccountClick() {
       var bodyFormData = new FormData();
@@ -175,8 +175,8 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((result) => {
-          console.log("result: ", result.data);
+        .then(() => {
+          // console.log("result: ", result.data);
           // alert("Vos modifications sont enregistrées");
 
           // notification de succès

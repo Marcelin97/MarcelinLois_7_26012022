@@ -166,8 +166,8 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((result) => {
-          console.log("result: ", result);
+        .then(() => {
+          // console.log("result: ", result);
           // alert("Vos modifications sont enregistrées");
 
           // notification de succès
