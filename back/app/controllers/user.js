@@ -123,7 +123,7 @@ exports.login = (req, res) => {
     })
     .then(async (user) => {
       // console.log(user.email)
-      
+
       if (!user) {
         return res.status(404).json({ message: "User Not found." });
       }
@@ -288,10 +288,64 @@ exports.readAll = (req, res) => {
     );
 };
 
+// * Update password
+exports.updateUserPassword = (req, res) => {
+  // First, check if the user exist in the db
+  user
+    .findOne({ where: { id: req.auth.userID } })
+    .then((result) => {
+      // if not, respond with a 404 code
+      if (!result) {
+        return res.status(404).send("User not found");
+      }
+      // Then, check if the old password is valid
+      bcrypt
+        .compare(req.body.oldPassword, result.password)
+        .then((validPass) => {
+          if (!validPass) {
+            return res.status(400).send("Wrong password");
+          }
+
+          if (req.body.oldPassword === req.body.newPassword) {
+            return res
+              .status(400)
+              .json({ message: "Old and new password cannot be the same" });
+          }
+
+          // if (passwordRegex.test(newPassword) === false) {
+          //   return res.status(400).send('Please enter a strong password');
+          // }
+
+          // Then, hash the new Password
+          bcrypt
+            .hash(req.body.newPassword, 10)
+            .then((newPasswordHashed) => {
+              // Finally update the password with the new one
+              user
+                .update(
+                  { password: newPasswordHashed },
+                  {
+                    where: {
+                      id: req.auth.userID,
+                    },
+                  }
+                )
+                .then((response) =>
+                  res.status(200).json({ response, message: "Password update" })
+                )
+                .catch((error) => res.status(500).json({ error }));
+            })
+            .catch((error) => res.status(500).json({ error }));
+        })
+        .catch((error) => res.status(500).json({ error }));
+    })
+    .catch((error) => res.status(500).json({ error }));
+};
+
 //* Update
 exports.update = async (req, res) => {
-  console.log("body update : ", req.body);
   var emailEncrypted = encrypted(req.body.email);
+  const { email, username, firstName, lastName, birthday } = req.body;
 
   // TODO : 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
   user
@@ -299,43 +353,33 @@ exports.update = async (req, res) => {
       include: {
         all: true,
       },
-      where: { id: req.auth.userID }
+      where: { id: req.auth.userID },
     })
     .then(async (result) => {
+      // TODO : Check if user exist
       if (!result) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // TODO : Gestion e-mail
-      try {
-        if (req.body.email) {
-          req.body.email = encrypted(req.body.email);
-        }
-      } catch (error) {
-        console.log(error.message);
+      result.username = username || result.username;
+      result.birthday = birthday || result.birthday;
+      result.firstName = firstName || result.firstName;
+      result.lastName = lastName || result.lastName;
+
+      // TODO : E-mail management
+      if (email) {
+        result.email = encrypted(email);
       }
 
-      // TODO : Gestion password ==> req.body.password
-      try {
-        if (req.body.newPassword) {
-          const hashPass = await bcrypt.hash(req.body.newPassword, 10);
-          req.body.password = hashPass;
-          console.log("mot de pass hash", req.body.newPassword);
-          console.log("mot de pass hash", hashPass);
-
-        }
-      } catch (error) {
-        console.log(error.message);
+      // TODO : Password management
+      if (req.body?.password) {
+        result.password = await bcrypt.hash(req.body.password, 10);
       }
 
-      // TODO : Gestion image
+      // TODO : Image management
       try {
         const file = req.file;
         if (file) {
-          // console.log(file);
-          req.body.imageUrl = `/images/${req.file.filename}`;
-          // console.log(req.file.filename);
-
           // TODO : Delete the old image
           try {
             // Si je trouve une image à mon utilisateur
@@ -345,30 +389,24 @@ exports.update = async (req, res) => {
               // je supprime l'image
               fs.unlinkSync(`images/${filename}`);
             }
+            result.imageUrl = `/images/${req.file.filename}`;
           } catch (error) {
-            console.log(error);
+            return res.status(404).json({ message: "Image not found" });
           }
         }
       } catch (error) {
-        console.log(error.message);
+        res.status(401).json({ error: { msg: "Unable to edit image" } });
       }
 
-      // console.log(req.body);
-      result
-        .update(req.body, { where: { id: result.id } })
-        .then((newUser) => {
-          // todo : decrypted email
-          newUser.email = decryptEmail(emailEncrypted);
+      await result.save();
+      // TODO : Decrypted email before sending to the front
+      result.email = decryptEmail(emailEncrypted);
 
-          res.status(200).json({
-            message: " User updated",
-            status: 200,
-            user: newUser,
-          });
-        })
-        .catch((error) =>
-          res.status(500).json({ error: error.name, message: error.message })
-        );
+      res.status(200).json({
+        message: " User updated",
+        status: 200,
+        user: result,
+      });
     })
     .catch((error) => {
       const message = "User could not be changed";
@@ -459,7 +497,8 @@ exports.exportUser = async (req, res) => {
 //* Report a user
 exports.report = (req, res) => {
   // TODO : I find the user to report
-  user.findOne({ where: { id: req.params.id } })
+  user
+    .findOne({ where: { id: req.params.id } })
     .then((targetUser) => {
       if (!targetUser) {
         return res.status(404).json({ error: "Reportable user not found." });
@@ -493,13 +532,16 @@ exports.report = (req, res) => {
               });
             })
             .catch((error) =>
-              res.status(500).json({ error: error.name, message: error.message })
+              res
+                .status(500)
+                .json({ error: error.name, message: error.message })
             );
         })
         .catch((err) => {
           return res.status(500).json({ error: err.message });
         });
-    }).catch((err) => {
+    })
+    .catch((err) => {
       return res.status(500).json({ error: err.message });
-    });  
+    });
 };

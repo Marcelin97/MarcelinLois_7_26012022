@@ -73,7 +73,9 @@ exports.readAllCommunity = async (req, res, next) => {
     })
     .then((communitiesActive) => {
       if (communitiesActive.length <= 0) {
-        return res.status(404).json({ message: "Communities active not found" });
+        return res
+          .status(404)
+          .json({ message: "Communities active not found" });
       }
       res.status(200).json({
         status: 200,
@@ -87,10 +89,10 @@ exports.readAllCommunity = async (req, res, next) => {
 
 // * Update community
 exports.updateCommunity = async (req, res, next) => {
+  const { title, about } = req.body;
   community
     .findByPk(req.params.id)
     .then(async (result) => {
-      // console.log(result);
       // TODO : Check if community exist
       if (!result) {
         return res.status(404).json({ message: "Community not found" });
@@ -110,20 +112,28 @@ exports.updateCommunity = async (req, res, next) => {
 
       // ! Access denied
       if (!isAdmin && !isOwner) {
-        return res
-          .status(403)
-          .json({
-            error: "You do not have the necessary rights for this action.",
-          });
+        return res.status(403).json({
+          error: "You do not have the necessary rights for this action.",
+        });
+      }
+
+      result.title = title || result.title;
+      result.about = about || result.about;
+
+      // TODO : About management
+      if (about) {
+        result.about = about;
+      }
+
+      // TODO : Title management
+      if (title) {
+        result.title = title;
       }
 
       // TODO : Image management
       try {
         const file = req.file;
         if (file) {
-          req.body.icon = `/images/${req.file.filename}`;
-          // console.log(req.file.filename);
-
           // TODO : Delete the old image
           try {
             // Si je trouve une image à mon utilisateur
@@ -133,8 +143,8 @@ exports.updateCommunity = async (req, res, next) => {
               // je supprime l'image
               fs.unlinkSync(`images/${filename}`);
             }
+            result.icon = `/images/${req.file.filename}`;
           } catch (error) {
-            // console.log(error);
             return res.status(404).json({ message: "Image not found" });
           }
         }
@@ -142,18 +152,12 @@ exports.updateCommunity = async (req, res, next) => {
         res.status(401).json({ error: { msg: "Unable to edit image" } });
       }
 
-      result
-        .update(req.body, { where: { id: result.id } })
-        .then(() => {
-          res.status(200).json({
-            message: "Community updated",
-            status: 200,
-            data: result,
-          });
-        })
-        .catch((error) =>
-          res.status(500).json({ error: error.name, message: error.message })
-        );
+      await result.save();
+      res.status(200).json({
+        message: "Community updated",
+        status: 200,
+        data: result,
+      });
     })
     .catch((error) => {
       const message = "Community could not be edited";
@@ -185,11 +189,9 @@ exports.deleteCommunity = async (req, res, next) => {
 
       // ! Access denied
       if (!isAdmin && !isOwner) {
-        return res
-          .status(403)
-          .json({
-            error: "You do not have the necessary rights for this action.",
-          });
+        return res.status(403).json({
+          error: "You do not have the necessary rights for this action.",
+        });
       }
 
       if (result.icon == null) {
@@ -358,7 +360,7 @@ exports.addModerator = (req, res, next) => {
             community_moderator.create({
               userId: resultUser.id,
               communityId: result.id,
-              isModerator: 1 ? 1 : 0
+              isModerator: 1 ? 1 : 0,
             });
           } else {
             // If already moderator, update fields
@@ -368,13 +370,17 @@ exports.addModerator = (req, res, next) => {
           return res.status(200).json({
             status: 200,
             message:
-              resultUser.username + " " +"is now moderator of this community :" +
+              resultUser.username +
+              " " +
+              "is now moderator of this community :" +
               " " +
               result.title,
           });
         })
         .catch((err) => {
-          return res.status(404).json({ error : err.message, message: "Moderator not found" });
+          return res
+            .status(404)
+            .json({ error: err.message, message: "Moderator not found" });
         });
     })
     .catch((error) => {
@@ -383,6 +389,7 @@ exports.addModerator = (req, res, next) => {
 };
 
 // Delete community moderator
+// ? Seul le propriétaire de la communauté ou l'admin peut retirer des autorisations de modérateur
 exports.deleteModerator = (req, res, next) => {
   // TODO : Find the community to delete moderator
   community
@@ -413,11 +420,11 @@ exports.deleteModerator = (req, res, next) => {
         .findAll({ where: { communityId: result.id } })
         .then((resultUser) => {
           // console.log("moderator list", resultUser);
-          if(resultUser != null)
-          // TODO : Delete this user to the moderator list
-          community_moderator.destroy({
-            where: { userId: resultUser.id, communityId: result.id },
-          });
+          if (resultUser != null)
+            // TODO : Delete this user to the moderator list
+            community_moderator.destroy({
+              where: { userId: resultUser.id, communityId: result.id },
+            });
           return res.status(200).json({
             status: 200,
             message:
@@ -462,7 +469,7 @@ exports.readCommunityModerator = (req, res, next) => {
         .catch((error) => {
           return res
             .status(404)
-            .json({ error, message: "Moderatorbgrfbf not found" });
+            .json({ error, message: "Moderator not found" });
         });
     })
     .catch((error) => {

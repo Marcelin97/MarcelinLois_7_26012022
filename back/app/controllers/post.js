@@ -178,12 +178,10 @@ exports.readAllPostByCommunityFollow = async (req, res, next) => {
       });
     })
     .catch((err) => {
-      res
-        .status(500)
-        .json({
-          err,
-          error: { msg: "Couldn´t find posts by followed community" },
-        });
+      res.status(500).json({
+        err,
+        error: { msg: "Couldn´t find posts by followed community" },
+      });
     });
 };
 
@@ -248,26 +246,52 @@ exports.readAllPosts = (req, res, next) => {
 };
 
 // * Update a post
-exports.updatePost = (req, res, next) => {
+exports.updatePost = async (req, res, next) => {
+  const { title, content } = req.body;
   post
     .findOne({ where: { id: req.params.id } })
-    .then((result) => {
+    .then(async (result) => {
       // TODO : Check if post exist
       if (!result) {
         return res.status(404).json({ message: "Post not found" });
       }
+
+      // TODO : Find logged in user
+      const currentUser = await user.findOne({
+        where: { id: req.auth.userID },
+      });
+      if (currentUser == null) throw new Error("Logged in user not found");
+
       // TODO : Check if current user is the owner of the post
-      if (result.creatorId != req.auth.userID) {
+      isOwner = result.creatorId == currentUser.id;
+
+      // TODO : Check if the current user is admin
+      isAdmin = currentUser.isAdmin;
+
+      // ! Access denied
+      if (!isAdmin && !isOwner) {
         return res.status(403).json({
-          error:
-            "You are not the creator of this publication, you cannot modify it.",
+          error: "You do not have the necessary rights for this action.",
         });
       }
+
+      result.title = title || result.title;
+      result.content = content || result.content;
+
+      // TODO : Content management
+      if (content) {
+        result.content = content;
+      }
+
+      // TODO : Title management
+      if (title) {
+        result.title = title;
+      }
+
       // TODO : gestion de l'image
       try {
         const file = req.file;
         if (file) {
-          req.body.imageUrl = `/images/${req.file.filename}`;
           // TODO : Delete the old image
           try {
             // Si je trouve une image à mon utilisateur
@@ -277,6 +301,7 @@ exports.updatePost = (req, res, next) => {
               // je supprime l'image
               fs.unlinkSync(`images/${filename}`);
             }
+            result.imageUrl = `/images/${req.file.filename}`;
           } catch (error) {
             return res.status(404).json({ message: "Image not found" });
           }
@@ -285,19 +310,12 @@ exports.updatePost = (req, res, next) => {
         res.status(401).json({ error: { msg: "Couldn´t edit image Post" } });
       }
 
-      // TODO : gestion du text
-      result
-        .update(req.body, { where: { id: result.id } })
-        .then(() => {
-          res.status(200).json({
-            message: "Post updated",
-            status: 200,
-            datas: result,
-          });
-        })
-        .catch((err) =>
-          res.status(500).json({ error: err.name, message: err.message })
-        );
+      await result.save();
+      res.status(200).json({
+        message: "Post updated",
+        status: 200,
+        datas: result,
+      });
     })
     .catch((err) => {
       const message = "Post could not be edited";
@@ -471,25 +489,31 @@ exports.likePost = async (req, res, next) => {
 };
 
 // * Report post
-exports.reportPost = async (req, res) => {
+exports.reportPost = (req, res) => {
   // Find the community to report
   post
-    .findByPk(req.params.id)
+    .findOne({ where: { id: req.params.id } })
     .then((post) => {
       if (!post) {
         return res.status(404).json({ message: "Post not exists" });
       }
 
-      postReport.create({
-        ...req.body,
-        postId: post.id,
-        userId: req.auth.userID,
-      });
-
-      return res.status(200).json({
-        status: 200,
-        message: "Post successfully reported",
-      });
+      postReport
+        .create({
+          ...req.body,
+          postId: post.id,
+          userId: req.auth.userID,
+        })
+        .then((datas) => {
+          res.status(200).send({
+            status: 200,
+            message: "Post successfully reported",
+            datas
+          });
+        })
+        .catch((error) =>
+          res.status(500).json({ error: error.name, message: error.message })
+        );
     })
     .catch((error) => {
       res.status(500).json({ error: error.message });

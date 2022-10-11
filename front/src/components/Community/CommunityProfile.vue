@@ -2,7 +2,6 @@
   <div>
     <div class="wrapper">
       <div class="profile-card js-profile-card">
-        
         <!-- Profil image -->
         <div>
           <div class="profile-card__img">
@@ -119,8 +118,10 @@
 
       <template v-slot:body>
         <p>
-          Attention, vous êtes sur le point de supprimer cette communauté. Cette
-          action est irréversible. Souhaitez-vous tout de même continuer ?'
+          Attention, vous êtes sur le point de supprimer cette communauté.
+          <br />
+          Cette action est irréversible. Souhaitez-vous tout de même continuer
+          ?'
         </p>
       </template>
 
@@ -129,16 +130,16 @@
           <button
             class="btn"
             text="Annuler"
-            @click="$refs.modalName.closeModal()"
+            @click="$refs.deleteAccount.closeModal()"
           >
-           Annuler
+            Annuler
           </button>
-          <deleteBtn @click="deleteAccountClick" />
+          <deleteBtn @click="deleteCommunityClick" />
         </div>
       </template>
     </modalStructure>
 
-    <!-- modal report user -->
+    <!-- modal report community -->
     <modalStructure ref="reportCommunity">
       <template v-slot:header>
         <h1>Signaler ce compte</h1>
@@ -185,7 +186,6 @@
               class="btn button"
               title="Signaler"
               text="Signaler"
-              value="Signaler"
             >
               Confirmer signalement
             </button>
@@ -233,7 +233,6 @@
               class="btn button"
               title="Ajouter modérateur"
               text="Ajouter modérateur"
-              value="Ajouter modérateur"
             >
               Ajouter
             </button>
@@ -281,7 +280,6 @@
               class="btn button"
               title="Supprimer un modérateur"
               text="Supprimer un modérateur"
-              value="Supprimer un modérateur"
             >
               Supprimer
             </button>
@@ -307,11 +305,7 @@ import axiosInstance from "../../services/api";
 import useVuelidate from "@vuelidate/core";
 import roleMixin from "../../mixins/role.mixin";
 
-import {
-  helpers,
-  minLength,
-  maxLength,
-} from "@vuelidate/validators";
+import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 export default {
@@ -376,7 +370,7 @@ export default {
   created() {
     this.user = this.$store.state.user;
     this.communityId = this.$route.params.id;
- 
+
     axiosInstance
       .get("/auth/readAll")
       .then((response) => {
@@ -417,7 +411,7 @@ export default {
       });
   },
   methods: {
-    async deleteAccountClick() {
+    async deleteCommunityClick() {
       if (
         window.confirm(
           "Attention, vous êtes sur le point de supprimer cette communauté. Cette action est irréversible. Souhaitez-vous tout de même continuer ?"
@@ -436,7 +430,6 @@ export default {
 
           // redirect to the community page
           await this.$router.push("/communities");
-
         } catch (error) {
           console.error(error.data.error);
 
@@ -464,11 +457,9 @@ export default {
             this.$notify({
               type: "success",
               title: `Signalement envoyé !`,
-              text: `Vous allez être redirigé sur la communauté`,
+              text: `Merci, votre rapport a été envoyé.`,
             });
 
-            // force refresh page
-            this.$router.go(0);
           })
           .catch((error) => {
             if (error.response.status == 404) {
@@ -478,7 +469,7 @@ export default {
               // notification d'erreur
               this.$notify({
                 type: "error",
-                title: `Erreur lors du signalement`,
+                title: `Erreur lors de l'envoi du rapport`,
                 text: `Erreur reporté : ${errorMessage}`,
               });
             } else if (error.response) {
@@ -487,7 +478,7 @@ export default {
               // notification d'erreur
               this.$notify({
                 type: "error",
-                title: `Erreur lors du signalement`,
+                title: `Erreur lors de l'envoi du rapport`,
                 text: `Erreur reporté : ${errorMessage}`,
               });
             }
@@ -537,6 +528,8 @@ export default {
     async unfollowCommunityClick() {
       try {
         await communitiesApi.unfollowCommunity(this.communityId);
+        // force refresh page
+        this.$router.go(0);
 
         // notification success
         this.$notify({
@@ -628,7 +621,7 @@ export default {
             this.$notify({
               type: "success",
               title: "Modérateur supprimer",
-              text: "Vous venez de supprimer un  modérateur",
+              text: "Vous venez de supprimer un modérateur",
             });
 
             // force refresh page
@@ -644,7 +637,7 @@ export default {
               // notification d'erreur
               this.$notify({
                 type: "error",
-                title: `Erreur lors de la supprésion du modérateur`,
+                title: `Erreur lors de la suppression du modérateur`,
                 text: `Erreur reporté : ${errorMessage}`,
               });
             } else if (error.response) {
@@ -654,7 +647,7 @@ export default {
               // error notification
               this.$notify({
                 type: "error",
-                title: `Erreur lors de la supprésion du modérateur`,
+                title: `Erreur lors de la suppression du modérateur`,
                 text: `Erreur reporté : ${errorMessage}`,
               });
             }
@@ -785,6 +778,7 @@ img {
   padding: 2rem;
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-around;
 }
 

@@ -11,6 +11,16 @@ module.exports.inputValidation = (req, res, next) => {
     username: Joi.string().alphanum().min(1).max(30),
     birthday: Joi.string(),
     email: Joi.string().trim().email().min(6),
+    password: Joi.string()
+      .min(8)
+      .max(16)
+      .pattern(strongPasswordRegex)
+      .trim(),
+    oldPassword: Joi.string()
+      .min(8)
+      .max(16)
+      .pattern(strongPasswordRegex)
+      .trim(),
     newPassword: Joi.string()
       .min(8)
       .max(16)

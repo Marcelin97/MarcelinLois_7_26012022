@@ -86,9 +86,22 @@
                     Modifier
                   </router-link>
                 </li>
-                <li><button>Signaler</button></li>
+                <li v-if="this.$store.state.user.id != this.post.creatorId">
+                  <button 
+                    type="button"
+                    @click="$refs.reportPost.openModal()"
+                    text="Signaler ce post"
+                    aria-label="Signaler ce post"
+                  >
+                    Signaler
+                  </button>
+                </li>
                 <li v-if="canAdmin(this.post.creatorId)">
-                  <button @click="$refs.deletePost.openModal()">
+                  <button
+                    @click="$refs.deletePost.openModal()"
+                    text="Supprimer ce post"
+                    aria-label="Supprimer ce post"
+                  >
                     Supprimer
                   </button>
                 </li>
@@ -148,6 +161,68 @@
       </div>
     </div>
 
+    <!-- modal report community -->
+    <modalStructure ref="reportPost">
+      <template v-slot:header>
+        <h1>Signaler ce post</h1>
+      </template>
+
+      <template v-slot:body>
+        <div class="container">
+          <form action="#" method="post" @submit.prevent="reportPostClick">
+            <div class="FormGroup">
+              <label class="FormGroupLabel" for=""
+                >Pourquoi signalez-vous ce post ?</label
+              >
+              <div class="FormTextboxWrapper">
+                <textarea
+                  cols="50"
+                  rows="5"
+                  required
+                  class="FormTextbox"
+                  type="text"
+                  placeholder="Explique nous les raisons de ce signalement."
+                  v-model="state.post.content"
+                  @blur="v$.post.content.$touch"
+                  :class="v$.post.content.$error === true ? 'error' : 'dirty'"
+                />
+              </div>
+
+              <!-- Error Message -->
+              <template v-if="v$.post.content.$dirty">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.post.content.$errors"
+                  :key="index"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <!-- Error Message -->
+            </div>
+
+            <button
+              type="submit"
+              class="btn button"
+              title="Signaler"
+              text="Signaler"
+              @click="reportPostClick(index, id)"
+            >
+              Confirmer signalement
+            </button>
+          </form>
+        </div>
+      </template>
+
+      <template v-slot:footer>
+        <!-- gestion erreur API avec axios -->
+        <div class="error-api">
+          <p class="error-msg">{{ apiError }}</p>
+        </div>
+        <!-- gestion erreur API avec axios -->
+      </template>
+    </modalStructure>
+
     <!-- modal delete account -->
     <modalStructure ref="deletePost">
       <template v-slot:header>
@@ -166,11 +241,11 @@
           <button
             class="btn"
             text="Annuler"
-            @click="$refs.modalName.closeModal()"
+            @click="$refs.deletePost.closeModal()"
           >
             Annuler
           </button>
-          <deleteBtn @click="deletePostClick" />
+          <deleteBtn @click="deletePostClick(index, id)" />
         </div>
       </template>
     </modalStructure>
@@ -180,12 +255,17 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
+
+import useVuelidate from "@vuelidate/core";
+import { helpers, minLength, maxLength } from "@vuelidate/validators";
+import { reactive, computed } from "vue";
+import postsApi from "../../api/posts";
+
 import roleMixin from "../../mixins/role.mixin";
-import axiosInstance from "../../services/api";
 
 export default {
   name: "Post-Card",
-  props: ["post", "creatorInfo"],
+  props: ["post", "id", "index", "creatorInfo"],
   components: {
     deleteBtn,
     modalStructure,
@@ -195,50 +275,117 @@ export default {
       postId: "",
       currentUser: [],
       show: false,
-      postRead: {
-        id: 0,
-        title: "",
-        imageUrl: "",
-        content: "",
-        creatorId: 0,
-      },
-      newComment: "",
-      comments: ["Looks great Julianne!", "bonjour"],
+      apiErrors: "",
       likesCount: "5",
       disLikesCount: "3",
+      newComment: "",
+      comments: ["Looks great Julianne!", "bonjour"],
+
     };
   },
   mixins: [roleMixin],
+  setup() {
+    const state = reactive({
+      post: {
+        content: "",
+      },
+    });
+
+    const rules = computed(() => ({
+      post: {
+        content: {
+          $autoDirty: true,
+          $lazy: true,
+          minLength: helpers.withMessage(
+            "Ce champ doit être long d'au moins 5",
+            minLength(5)
+          ),
+          maxLength: helpers.withMessage(
+            "La longueur maximale autorisée est de 255",
+            maxLength(255)
+          ),
+        },
+      },
+    }));
+
+    const v$ = useVuelidate(rules, state);
+
+    return { state, v$ };
+  },
+  validationConfig: {
+    $lazy: true,
+  },
   created() {
     this.postId = this.$route.params.id;
-
-    axiosInstance
-      .get(`/posts/${this.postId}/read`)
-      .then((response) => {
-        this.postRead = response.data.datas;
-      })
-      .catch((error) => {
-        if (error.response.status == 404) {
-          const errorMessage = (this.apiError = "Communauté introuvable !");
-          this.errorMessage = errorMessage;
-
-          // notification d'erreur
-          this.$notify({
-            type: "error",
-            title: `Erreur de l'api`,
-            text: `Erreur reporté : ${errorMessage}`,
-          });
-        }
-      });
   },
   mounted() {
     this.currentUser = this.$store.state.user;
+  },
+  methods: {
+    async deletePostClick(index, id) {
+      this.$emit("deletePostClick", index, id);
+
+      //  close delete modal
+      this.$refs.deletePost.closeModal();
+
+      // notification success
+      this.$notify({
+        type: "success",
+        title: `Suppression`,
+        text: `La publication est supprimer`,
+        duration: 30000,
+      });
+    },
+    async reportPostClick(index, id) {
+      try {
+        await postsApi.reportPost(`${id}`, this.state.post)
+        // // force refresh page
+            this.$router.go(0);
+        
+          // notification success
+          this.$notify({
+            type: "success",
+            title: `Signalement`,
+            text: `Merci, votre rapport a été envoyé.`,
+            duration: 30000,
+          });
+      } catch (error) {
+        console.log("icii", error)
+        // const errorMessage = (this.apiErrors = error.data.error);
+        //   this.errorMessage = errorMessage;
+
+        //   // notification error message
+        //   this.$notify({
+        //     type: "error",
+        //     title: `Erreur lors de l'envoi du rapport`,
+        //     text: `${errorMessage}`,
+        //     duration: 3000,
+        //   });
+      }
+      // axiosInstance
+      //   .post(`/posts/${id}/reports`, this.state.post)
+      //   .then(() => {
+      //     //  close report modal
+      //     this.$refs.reportPost.closeModal();
+
+      //     // notification success
+      //     this.$notify({
+      //       type: "success",
+      //       title: `Signalement`,
+      //       text: `La publication est signaler`,
+      //       duration: 30000,
+      //     });
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 .post {
-  max-width: 480px;
+  max-width: 350px;
   margin: 0 auto;
   border: 1px solid #ccc;
   background: #fff;
@@ -326,11 +473,17 @@ export default {
         height: 2rem;
         margin-bottom: 4px;
 
-        a {
+        a,
+        button {
+          font-size: 1rem;
+          background: none;
+          border: none;
+          outline: none;
           display: flex;
           flex-direction: column;
           width: 100%;
           padding: 5px 10px;
+          cursor: pointer;
           &:hover {
             color: #ffd7d7;
           }
@@ -342,6 +495,7 @@ export default {
     display: block;
   }
 }
+
 // card image
 .instagram-card-image img {
   width: 100%;
@@ -393,6 +547,13 @@ export default {
 
   &:placeholder {
     color: #4e5559;
+  }
+}
+
+.modal {
+  &__actions {
+    display: flex;
+    justify-content: space-around;
   }
 }
 </style>
