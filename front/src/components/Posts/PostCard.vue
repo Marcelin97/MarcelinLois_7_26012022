@@ -87,7 +87,7 @@
                   </router-link>
                 </li>
                 <li v-if="this.$store.state.user.id != this.post.creatorId">
-                  <button 
+                  <button
                     type="button"
                     @click="$refs.reportPost.openModal()"
                     text="Signaler ce post"
@@ -119,14 +119,37 @@
       </div>
       <!-- content card -->
       <div class="instagram-card-content">
+        <!-- btn dislike -->
         <div class="like-data">
-          <button class="icon-rocknroll">☝️</button
-          ><span class="like-count">{{ likesCount }}</span>
+          <!-- <button class="icon-rocknroll">👎</button> -->
+          <button
+            aria-label="Dislike"
+            class="dislike icon-rocknroll"
+            @click="sendLike(-1, id)"
+          >
+            <i
+              class="fa-solid fa-thumbs-down"
+              v-bind:class="{ redLike: vote === -1 }"
+            ></i>
+          </button>
+          <span class="like-count">{{ disLikesCount }}</span>
         </div>
+        <!-- btn like -->
         <div class="like-data">
-          <button class="icon-rocknroll">👎</button
-          ><span class="like-count">{{ disLikesCount }}</span>
+          <!-- <button class="icon-rocknroll">☝️</button> -->
+          <button
+            aria-label="Like"
+            class="like icon-rocknroll"
+            @click="sendLike(1, id)"
+          >
+            <i
+              class="fa-solid fa-thumbs-up"
+              v-bind:class="{ blueLike: vote === 1 }"
+            ></i>
+          </button>
+          <span class="like-count">{{ likesCount }}</span>
         </div>
+
         <p class="instagram-card-content-user">
           {{ post.title }}
         </p>
@@ -259,6 +282,8 @@ import deleteBtn from "../Base/DeleteBtn.vue";
 import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
+
+import axiosInstance from "../../services/api";
 import postsApi from "../../api/posts";
 
 import roleMixin from "../../mixins/role.mixin";
@@ -276,11 +301,11 @@ export default {
       currentUser: [],
       show: false,
       apiErrors: "",
+      like: 0,
       likesCount: "5",
       disLikesCount: "3",
       newComment: "",
       comments: ["Looks great Julianne!", "bonjour"],
-
     };
   },
   mixins: [roleMixin],
@@ -338,19 +363,19 @@ export default {
     },
     async reportPostClick(index, id) {
       try {
-        await postsApi.reportPost(`${id}`, this.state.post)
+        await postsApi.reportPost(`${id}`, this.state.post);
         // // force refresh page
-            this.$router.go(0);
-        
-          // notification success
-          this.$notify({
-            type: "success",
-            title: `Signalement`,
-            text: `Merci, votre rapport a été envoyé.`,
-            duration: 30000,
-          });
+        this.$router.go(0);
+
+        // notification success
+        this.$notify({
+          type: "success",
+          title: `Signalement`,
+          text: `Merci, votre rapport a été envoyé.`,
+          duration: 30000,
+        });
       } catch (error) {
-        console.log("icii", error)
+        console.log("icii", error);
         // const errorMessage = (this.apiErrors = error.data.error);
         //   this.errorMessage = errorMessage;
 
@@ -379,6 +404,39 @@ export default {
       //   .catch((error) => {
       //     console.log(error);
       //   });
+    },
+    sendLike(valeurLike, id) {
+      if (this.like == undefined || this.like == null || this.like === 0) {
+        this.like = valeurLike;
+      } //si l'utilisateur à déjà (dis)liké le post
+      else {
+        if (this.like === valeurLike) {
+          //l'utilisateur souhaite être neutre
+          valeurLike = 0; //on défini valeurLike à -1, ce qui implique la suppression du statut du like côté API
+          this.like = 0;
+        }
+        if (this.like === 1 && valeurLike === 0) {
+          // l'utilisateur aimé le like et le dislike
+          this.like = 0;
+        }
+        if (this.like === 0 && valeurLike === 1) {
+          //si l'utilisateur like plutôt que dislike un post.
+          this.like = 1;
+        }
+      }
+      const infoLike = {
+        vote: valeurLike,
+        postId: id,
+        userId: this.currentUser.id,
+      };
+      axiosInstance
+        .post(`posts/${id}/likes`, infoLike)
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
