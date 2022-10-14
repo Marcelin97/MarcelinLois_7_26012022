@@ -126,6 +126,7 @@
             aria-label="Dislike"
             class="dislike icon-rocknroll"
             @click="sendLike(-1, id)"
+            title="Enlever mon j'aime"
           >
             <i
               class="fa-solid fa-thumbs-down"
@@ -141,6 +142,7 @@
             aria-label="Like"
             class="like icon-rocknroll"
             @click="sendLike(1, id)"
+            title="Mettre un j'aime"
           >
             <i
               class="fa-solid fa-thumbs-up"
@@ -387,25 +389,8 @@ export default {
         //     duration: 3000,
         //   });
       }
-      // axiosInstance
-      //   .post(`/posts/${id}/reports`, this.state.post)
-      //   .then(() => {
-      //     //  close report modal
-      //     this.$refs.reportPost.closeModal();
-
-      //     // notification success
-      //     this.$notify({
-      //       type: "success",
-      //       title: `Signalement`,
-      //       text: `La publication est signaler`,
-      //       duration: 30000,
-      //     });
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
     },
-    sendLike(valeurLike, id) {
+    async sendLike(valeurLike, id) {
       if (this.like == undefined || this.like == null || this.like === 0) {
         this.like = valeurLike;
       } //si l'utilisateur à déjà (dis)liké le post
@@ -431,11 +416,46 @@ export default {
       };
       axiosInstance
         .post(`posts/${id}/likes`, infoLike)
-        .then((result) => {
-          console.log(result);
+        .then((res) => {
+
+          if (res.ok) {
+            if (valeurLike == 1) {
+              this.$notify({
+                type: "success",
+                title: `Vote enregistré !`,
+                text: "J'aime enregistré !",
+                duration: 5000,
+              });
+            }
+            if (valeurLike == -1) {
+              this.$notify({
+                type: "success",
+                title: `Vote enregistré !`,
+                text: "Je n'aime pas enregistré !",
+                duration: 5000,
+              });
+            }
+            if (valeurLike == 0) {
+              this.$notify({
+                type: "success",
+                title: `Vote enregistré !`,
+                text: "Vote enlevé !",
+                duration: 5000,
+              });
+            }
+          }
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((error) => {
+          console.log(error);
+          // const errorMessage = (this.apiErrors = error);
+          // this.errorMessage = errorMessage;
+
+          // this.$notify({
+          //   type: "error",
+          //   title: `Erreur lors de l'ajout du vote`,
+          //   text: `Erreur reporté : ${errorMessage}`,
+          //   duration: 30000,
+          // });
         });
     },
   },
