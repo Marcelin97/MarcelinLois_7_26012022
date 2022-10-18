@@ -125,15 +125,15 @@
           <button
             aria-label="Dislike"
             class="dislike icon-rocknroll"
-            @click="sendLike(-1, id)"
             title="Enlever mon j'aime"
+            @click="sendLike(-1, id)"
           >
             <i
-              class="fa-solid fa-thumbs-down"
-              v-bind:class="{ redLike: vote === -1 }"
+              class="fa fa-thumbs-down like"
+              :class="{ disabled: downvoted }"
             ></i>
           </button>
-          <span class="like-count">{{ disLikesCount }}</span>
+          <span class="like-count">{{ dislikesCount }}</span>
         </div>
         <!-- btn like -->
         <div class="like-data">
@@ -141,13 +141,10 @@
           <button
             aria-label="Like"
             class="like icon-rocknroll"
-            @click="sendLike(1, id)"
             title="Mettre un j'aime"
+            @click="sendLike(1, id)"
           >
-            <i
-              class="fa-solid fa-thumbs-up"
-              v-bind:class="{ blueLike: vote === 1 }"
-            ></i>
+            <i class="fa fa-thumbs-up like" :class="{ disabled: upvoted }"></i>
           </button>
           <span class="like-count">{{ likesCount }}</span>
         </div>
@@ -303,11 +300,10 @@ export default {
       currentUser: [],
       show: false,
       apiErrors: "",
-      like: 0,
-      likesCount: "5",
-      disLikesCount: "3",
+      vote: 0,
+      likesCount: 0,
+      disLikesCount: 0,
       newComment: "",
-      comments: ["Looks great Julianne!", "bonjour"],
     };
   },
   mixins: [roleMixin],
@@ -377,37 +373,63 @@ export default {
           duration: 30000,
         });
       } catch (error) {
-        console.log("icii", error);
-        // const errorMessage = (this.apiErrors = error.data.error);
-        //   this.errorMessage = errorMessage;
+        // console.log("icii", error);
+        const errorMessage = (this.apiErrors = error);
+          this.errorMessage = errorMessage;
 
-        //   // notification error message
-        //   this.$notify({
-        //     type: "error",
-        //     title: `Erreur lors de l'envoi du rapport`,
-        //     text: `${errorMessage}`,
-        //     duration: 3000,
-        //   });
+          // notification error message
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de l'envoi du rapport`,
+            text: `${errorMessage}`,
+            duration: 3000,
+          });
       }
     },
-    async sendLike(valeurLike, id) {
-      if (this.like == undefined || this.like == null || this.like === 0) {
-        this.like = valeurLike;
+    sendLike(valeurLike, id) {
+      if (this.vote == undefined || this.vote == null || this.vote === 0) {
+        this.vote = valeurLike;
       } //si l'utilisateur à déjà (dis)liké le post
       else {
-        if (this.like === valeurLike) {
+        if (this.vote === valeurLike) {
           //l'utilisateur souhaite être neutre
-          valeurLike = 0; //on défini valeurLike à -1, ce qui implique la suppression du statut du like côté API
-          this.like = 0;
+          valeurLike = 0;
+          this.vote = 0;
         }
-        if (this.like === 1 && valeurLike === 0) {
-          // l'utilisateur aimé le like et le dislike
-          this.like = 0;
+        if (this.vote === 1 && valeurLike === 0) {
+          this.vote = -1;
         }
-        if (this.like === 0 && valeurLike === 1) {
+        if (this.vote === 0 && valeurLike === 1) {
           //si l'utilisateur like plutôt que dislike un post.
-          this.like = 1;
+          this.vote = 1;
         }
+        if (this.vote === 1 && valeurLike === -1) {
+          this.vote = -1;
+        }
+        if (this.vote === -1 && valeurLike === 1) {
+          this.vote = 1;
+        }
+      }
+      if (valeurLike === 1) {
+        this.$notify({
+          type: "success",
+          title: `J'aime enregistré !`,
+          duration: 5000,
+        });
+      }
+      if (valeurLike === -1) {
+        this.$notify({
+          type: "success",
+          title: `Je n'aime pas enregistré !`,
+          duration: 5000,
+        });
+      }
+      if (valeurLike === 0) {
+        this.$notify({
+          type: "success",
+          title: `Vote enlevé !`,
+          duration: 5000,
+        });
       }
       const infoLike = {
         vote: valeurLike,
@@ -417,45 +439,23 @@ export default {
       axiosInstance
         .post(`posts/${id}/likes`, infoLike)
         .then((res) => {
+          console.log("likePost", res.data);
 
-          if (res.ok) {
-            if (valeurLike == 1) {
-              this.$notify({
-                type: "success",
-                title: `Vote enregistré !`,
-                text: "J'aime enregistré !",
-                duration: 5000,
-              });
-            }
-            if (valeurLike == -1) {
-              this.$notify({
-                type: "success",
-                title: `Vote enregistré !`,
-                text: "Je n'aime pas enregistré !",
-                duration: 5000,
-              });
-            }
-            if (valeurLike == 0) {
-              this.$notify({
-                type: "success",
-                title: `Vote enregistré !`,
-                text: "Vote enlevé !",
-                duration: 5000,
-              });
-            }
-          }
+          //  if (res) {
+          //   return res.json
+          // }
         })
         .catch((error) => {
           console.log(error);
-          // const errorMessage = (this.apiErrors = error);
-          // this.errorMessage = errorMessage;
+          const errorMessage = (this.apiErrors = error);
+          this.errorMessage = errorMessage;
 
-          // this.$notify({
-          //   type: "error",
-          //   title: `Erreur lors de l'ajout du vote`,
-          //   text: `Erreur reporté : ${errorMessage}`,
-          //   duration: 30000,
-          // });
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de l'ajout du vote`,
+            text: `Erreur reporté : ${errorMessage}`,
+            duration: 30000,
+          });
         });
     },
   },
@@ -606,6 +606,14 @@ export default {
   &:hover {
     opacity: 0.5;
   }
+}
+
+.disabled {
+  color: orange;
+}
+
+.disabled {
+  color: orange;
 }
 
 // post title
