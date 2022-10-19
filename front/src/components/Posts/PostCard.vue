@@ -1,937 +1,665 @@
 <template>
   <div>
-    <div class="scroll-down-mouse">
-      <ScrollDownMouse />
-    </div>
-
-    <div class="container">
-      <div>
-        <!-- Dropdown button -->
-        <div class="wrapper">
-          <input type="checkbox" id="input" />
-          <label for="input" class="button-dropdown">
-            <div class="menu__item--meatball">
-              <div class="circle"></div>
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-          </label>
-          <div class="menu">
-            <ul>
-              <li><a href="#">Signaler</a></li>
-              <!-- <li><a href="#">S'abonner</a></li> -->
-              <li><router-link to="#">Voir le profil</router-link></li>
-            </ul>
-          </div>
-        </div>
-        <!-- Dropdown button -->
-
-        <!-- Post -->
-        <div class="card">
-          <h2>Post 1</h2>
-          <h3>Community</h3>
-          <font-awesome-icon
-            class="icon fas fa-arrow-right"
-            :icon="['fas', 'arrow-right']"
-          />
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum hic
-            suscipit soluta nobis laudantium, autem eum dolor adipisci tempora
-            odit ratione vero assumenda nisi magni cupiditate cum. Pariatur,
-            aperiam sapiente.
-          </p>
-          <div class="pic"></div>
-          <div class="icons">
-            <font-awesome-icon
-              v-on:click="like()"
-              counter
-              value="1"
-              position="top-right"
-              class="icon icon-1"
-              :icon="['fas', 'thumbs-up']"
-            />
-            <span class="icon icon-1">{{ loveCount }}</span>
-            <font-awesome-icon
-              v-on:click="Dislike()"
-              counter
-              value="1"
-              position="top-right"
-              class="icon icon-2"
-              :icon="['fas', 'thumbs-down']"
-            />
-            <span class="icon icon-2">{{ dislikeCount }}</span>
-            <font-awesome-icon
-              class="icon icon-4"
-              :icon="['fas', 'bookmark']"
-            />
-          </div>
-
-          <!-- author of the post -->
-          <div class="author">
-            <h4>author</h4>
-            <img
-              src="https://images.unsplash.com/photo-1508247967583-7d982ea01526?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
-              alt=""
-              class="profile-cover"
-              loading="lazy"
-            />
-          </div>
-
-          <!-- view profil of the author -->
-          <button></button>
-        </div>
-
-        <!-- comments structure -->
-        <div class="container-comments">
-          <div class="comments-header">
-            <font-awesome-icon
-              class="icon-comment"
-              :icon="['fas', 'comment']"
-            />
-            <p>
-              {{ message }}
-            </p>
-
-            <!-- typing indicator -->
-            <div class="typing-indicator">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <!-- typing indicator -->
-          </div>
-
-          <!-- comments -->
-          <div class="comment-list">
-            <ul class="comment-wrapper">
-              <li
-                class="comment"
-                v-bind:title="message"
-                v-for="comment in comments"
-                :key="comment.id"
-                :comment="comment"
-                :user="user"
-                @comment-updated="updateComment($event)"
-                @comment-deleted="deleteComment($event)"
-              >
-                <font-awesome-icon
-                  class="comment-icon-plus"
-                  :class="{ active: likedComment }"
-                  v-on:click="upvote()"
-                  counter
-                  value="1"
-                  :icon="['fas', 'thumbs-up']"
-                />
-                <span>{{ loveCommentCount }}</span>
-
-                <font-awesome-icon
-                  class="comment-icon-minus"
-                  :class="{ active: dislikedComment }"
-                  v-on:click="downvote()"
-                  counter
-                  value="1"
-                  :icon="['fas', 'thumbs-down']"
-                />
-                <span>{{ dislikeCommentCount }}</span>
-
-                <!-- Comment items -->
-                <div class="comment-item" v-show="state === 'default'">
-                  <div v-if="!edit" class="comment-text">
-                    <p>{{ comment.body }}</p>
-                    <button class="btn-edit-1" @click="state = 'editing'">
-                      <font-awesome-icon
-                        class="xmark"
-                        :icon="['fas', 'pencil']"
-                      />
-                    </button>
-                  </div>
-                  <div class="holes-lower"></div>
-                  <div class="comment-author">
-                    <p>
-                      {{ comment.author.name }} <span>&bull;</span
-                      >{{ comment.created_at }}
-                    </p>
-                  </div>
-                </div>
-                <div class="editing" v-show="state === 'editing'">
-                  <div>
-                    <h3>Update Comment</h3>
-                  </div>
-                  <div class="wrapper-update">
-                    <input
-                      v-model="data.body"
-                      type="text"
-                      maxlength="250"
-                      required="true"
-                      id="updateComment"
-                    />
-                    <label class="placeholder" for="updateComment"
-                      >Update your comment</label
-                    >
-                  </div>
-
-                  <!-- btn comment -->
-                  <div class="btn-editing">
-                    <button class="btn-edit btn-update" @click="saveEdit">
-                      <font-awesome-icon
-                        class="xmark"
-                        :icon="['fas', 'pencil']"
-                      />
-                    </button>
-                    <button class="btn-edit btn-cancel" @click="resetEdit">
-                      <font-awesome-icon
-                        class="xmark"
-                        :icon="['fas', 'xmark']"
-                      />
-                    </button>
-                    <!-- <button @click="deleteComment">Delete</button> -->
-                    <DeleteBtn class="btn-edit-delete" @click="deleteComment" />
-                  </div>
-                  <!-- btn comment -->
-                </div>
-                <!-- Comment items -->
-              </li>
-            </ul>
-
-            <!-- write a new comment -->
-            <div class="wrapper-update">
-              <input
-                type="text"
-                maxlength="250"
-                required="true"
-                id="writeComment"
-                v-model="data.body"
-                @keyup.enter="submitComment"
+    <div class="post">
+      <!-- header card -->
+      <div class="instagram-card-header">
+        <div class="header">
+          <div class="header-left">
+            <div class="profile-pic" v-if="post.user">
+              <img
+                v-if="post.user.imageUrl"
+                class="instagram-card-user-image"
+                :src="`http://localhost:3000${post.user.imageUrl}`"
+                :alt="'Avatar de ' + post.user.username"
+                aria-label="Photo d'utilisateur"
               />
-              <label class="placeholder" for="writeComment"
-                >Ajouter un commentaire...</label
-              >
+              <img
+                class="instagram-card-user-image"
+                v-else
+                src="../../assets/img/avataaars.png"
+                alt="Avatar par défaut"
+                aria-label="Avatar par défaut"
+              />
+            </div>
+            <div class="profile-pic" v-else-if="creatorInfo">
+              <img
+                v-if="creatorInfo.imageUrl"
+                class="instagram-card-user-image"
+                :src="`http://localhost:3000${creatorInfo.imageUrl}`"
+                :alt="'Avatar de ' + creatorInfo.username"
+                aria-label="Photo d'utilisateur"
+              />
+              <img
+                class="instagram-card-user-image"
+                v-else
+                src="../../assets/img/avataaars.png"
+                alt="Avatar par défaut"
+                aria-label="Avatar par défaut"
+              />
             </div>
 
-            <!-- BTN submit new comment -->
-            <div class="btn-submit">
-              <button class="btn" type="button" @click="saveComment">
-                Publier
-              </button>
+            <p class="instagram-card-user-name" v-if="post.user">
+              {{ post.user.username }}
+            </p>
+            <p
+              class="instagram-card-user-name"
+              v-else-if="creatorInfo.length != 0"
+            >
+              {{ creatorInfo.username }}
+            </p>
+          </div>
+          <div class="dropdown">
+            <button
+              class="_abl- dropdown-btn"
+              v-on:click="show = !show"
+              type="button"
+              tabindex="0"
+            >
+              <div>
+                <div style="height: 24px; width: 24px">
+                  <svg
+                    aria-label="Plus d’options"
+                    class="_ab6-"
+                    color="#262626"
+                    fill="#262626"
+                    height="24"
+                    role="img"
+                    viewBox="0 0 24 24"
+                    width="24"
+                  >
+                    <circle cx="12" cy="12" r="1.5"></circle>
+                    <circle cx="6" cy="12" r="1.5"></circle>
+                    <circle cx="18" cy="12" r="1.5"></circle>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            <div class="dropdown-content" v-bind:class="{ show: show }">
+              <ul>
+                <li v-if="canAdmin(this.post.creatorId)">
+                  <router-link
+                    :postId="postId"
+                    class="btn__update"
+                    :to="'/posts/' + post.id + '/update'"
+                  >
+                    Modifier
+                  </router-link>
+                </li>
+                <li v-if="this.$store.state.user.id != this.post.creatorId">
+                  <button
+                    type="button"
+                    @click="$refs.reportPost.openModal()"
+                    text="Signaler ce post"
+                    aria-label="Signaler ce post"
+                  >
+                    Signaler
+                  </button>
+                </li>
+                <li v-if="canAdmin(this.post.creatorId)">
+                  <button
+                    @click="$refs.deletePost.openModal()"
+                    text="Supprimer ce post"
+                    aria-label="Supprimer ce post"
+                  >
+                    Supprimer
+                  </button>
+                </li>
+              </ul>
             </div>
           </div>
-          <!-- comments -->
         </div>
-        <!-- comments structure -->
+      </div>
+      <!-- image card -->
+      <div class="instagram-card-image">
+        <img
+          alt="photo du post"
+          :src="`http://localhost:3000${post.imageUrl}`"
+        />
+      </div>
+      <!-- content card -->
+      <div class="instagram-card-content">
+        <!-- btn dislike -->
+        <div class="like-data">
+          <!-- <button class="icon-rocknroll">👎</button> -->
+          <button
+            aria-label="Dislike"
+            class="dislike icon-rocknroll"
+            title="Enlever mon j'aime"
+            @click="sendLike(-1, id)"
+          >
+            <i
+              class="fa fa-thumbs-down like"
+              :class="{ disabled: downvoted }"
+            ></i>
+          </button>
+          <span class="like-count">{{ dislikesCount }}</span>
+        </div>
+        <!-- btn like -->
+        <div class="like-data">
+          <!-- <button class="icon-rocknroll">☝️</button> -->
+          <button
+            aria-label="Like"
+            class="like icon-rocknroll"
+            title="Mettre un j'aime"
+            @click="sendLike(1, id)"
+          >
+            <i class="fa fa-thumbs-up like" :class="{ disabled: upvoted }"></i>
+          </button>
+          <span class="like-count">{{ likesCount }}</span>
+        </div>
+
+        <p class="instagram-card-content-user">
+          {{ post.title }}
+        </p>
+        <p class="instagram-card-content-user">
+          {{ post.content }}
+        </p>
+        <p class="instagram-card-content-user">
+          {{ post.communityId }}
+        </p>
+        <ul class="comments">
+          <li
+            v-for="(comment, index) in comments"
+            :key="index"
+            :comment="comment"
+          ></li>
+          {{
+            comment
+          }}
+        </ul>
+      </div>
+
+      <!-- add a comment -->
+      <div class="instagram-card-footer">
+        <PostComments />
+        <AddComment @add-comment="onAddComment" />
+
+
+        <!-- <input
+          type="text"
+          autocomplete="off"
+          v-model="newComment"
+          v-on:keyup.enter="addComment"
+          :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
+          class="task-input"
+        /> -->
+
       </div>
     </div>
+
+    <!-- modal report community -->
+    <modalStructure ref="reportPost">
+      <template v-slot:header>
+        <h1>Signaler ce post</h1>
+      </template>
+
+      <template v-slot:body>
+        <div class="container">
+          <form action="#" method="post" @submit.prevent="reportPostClick">
+            <div class="FormGroup">
+              <label class="FormGroupLabel" for=""
+                >Pourquoi signalez-vous ce post ?</label
+              >
+              <div class="FormTextboxWrapper">
+                <textarea
+                  cols="50"
+                  rows="5"
+                  required
+                  class="FormTextbox"
+                  type="text"
+                  placeholder="Explique nous les raisons de ce signalement."
+                  v-model="state.post.content"
+                  @blur="v$.post.content.$touch"
+                  :class="v$.post.content.$error === true ? 'error' : 'dirty'"
+                />
+              </div>
+
+              <!-- Error Message -->
+              <template v-if="v$.post.content.$dirty">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.post.content.$errors"
+                  :key="index"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <!-- Error Message -->
+            </div>
+
+            <button
+              type="submit"
+              class="btn button"
+              title="Signaler"
+              text="Signaler"
+              @click="reportPostClick(index, id)"
+            >
+              Confirmer signalement
+            </button>
+          </form>
+        </div>
+      </template>
+
+      <template v-slot:footer>
+        <!-- gestion erreur API avec axios -->
+        <div class="error-api">
+          <p class="error-msg">{{ apiError }}</p>
+        </div>
+        <!-- gestion erreur API avec axios -->
+      </template>
+    </modalStructure>
+
+    <!-- modal delete account -->
+    <modalStructure ref="deletePost">
+      <template v-slot:header>
+        <h1>Supprimer la publication</h1>
+      </template>
+
+      <template v-slot:body>
+        <p>
+          Si vous ne voulez pas supprimer cette publication, vous pouvez
+          annuler.
+        </p>
+      </template>
+
+      <template v-slot:footer>
+        <div class="modal__actions">
+          <button
+            class="btn"
+            text="Annuler"
+            @click="$refs.deletePost.closeModal()"
+          >
+            Annuler
+          </button>
+          <deleteBtn @click="deletePostClick(index, id)" />
+        </div>
+      </template>
+    </modalStructure>
   </div>
 </template>
 
 <script>
-// import comment from "./CommentItem";
-import DeleteBtn from "@/components/Base/DeleteBtn.vue";
-import ScrollDownMouse from "@/components/Base/ScrollDownMouse.vue";
+import modalStructure from "../Modal/ModalStructure.vue";
+import deleteBtn from "../Base/DeleteBtn.vue";
+
+import PostComments from "@/components/Comments/PostComments";
+import AddComment from '@/components/Comments/AddComment'
+
+import useVuelidate from "@vuelidate/core";
+import { helpers, minLength, maxLength } from "@vuelidate/validators";
+import { reactive, computed } from "vue";
+
+import axiosInstance from "@/services/api";
+import postsApi from "@/api/posts";
+import commentsApi from '@/api/comments'
+
+import roleMixin from "../../mixins/role.mixin";
 
 export default {
+  name: "Post-Card",
+  props: ["post", "id", "index", "creatorInfo"],
   components: {
-    DeleteBtn,
-    ScrollDownMouse,
+    deleteBtn,
+    modalStructure,
+    PostComments,
+    AddComment
   },
-  props: {
-    // user: {
-    //   required: true,
-    //   type: Object,
-    // },
-    comment: {
-      required: true,
-      type: Object,
-    },
-  },
-  data: function () {
+  data() {
     return {
-      state: "default",
-      data: {
-        edit: false,
-        body: this.newComment,
-      },
-      message: "Commentaires",
-      loveCount: 0,
-      liked: false,
-      dislikeCount: 0,
-      disliked: false,
-      loveCommentCount: 0,
-      likedComment: false,
-      dislikeCommentCount: 0,
-      dislikeComment: false,
+      postId: "",
+      currentUser: [],
+      show: false,
+      apiErrors: "",
+      vote: 0,
+      likesCount: 0,
+      disLikesCount: 0,
       newComment: "",
-      user: {
-        id: 3,
-        name: "example",
-      },
-      comments: [
-        {
-          id: 1,
-          body: "How's it going?",
-          edited: false,
-          created_at: new Date().toLocaleString(),
-          author: {
-            id: 1,
-            name: "Nick Basile",
-          },
-        },
-        {
-          id: 2,
-          body: "Pretty good. Just making a painting.",
-          edited: false,
-          created_at: new Date().toLocaleString(),
-          author: {
-            id: 2,
-            name: "Bob Ross",
-          },
-        },
-      ],
     };
   },
-  computed: {
-    editable() {
-      return this.user.id === this.comments.id;
-    },
+  mixins: [roleMixin],
+  setup() {
+    const state = reactive({
+      post: {
+        content: "",
+      },
+    });
+
+    const rules = computed(() => ({
+      post: {
+        content: {
+          $autoDirty: true,
+          $lazy: true,
+          minLength: helpers.withMessage(
+            "Ce champ doit être long d'au moins 5",
+            minLength(5)
+          ),
+          maxLength: helpers.withMessage(
+            "La longueur maximale autorisée est de 255",
+            maxLength(255)
+          ),
+        },
+      },
+    }));
+
+    const v$ = useVuelidate(rules, state);
+
+    return { state, v$ };
+  },
+  validationConfig: {
+    $lazy: true,
+  },
+  created() {
+    this.postId = this.$route.params.id;
+  },
+  mounted() {
+    this.currentUser = this.$store.state.user;
   },
   methods: {
-    like() {
-      // this.love++;
-      // if (this.dislike != 0) this.dislike--;
-      this.liked = !this.liked && !0;
-      this.liked ? this.loveCount++ : this.loveCount--;
-    },
-    Dislike() {
-      // this.dislike++;
-      // if (this.love != 0) this.love--;
-      this.disliked = !this.disliked && !0;
-      this.disliked ? this.dislikeCount++ : this.dislikeCount--;
-    },
-    postComment: function () {
-      this.comments.push({
-        edit: false,
-        body: this.newComment,
-        created_at: new Date().toLocaleString(),
-        author: {
-          id: this.current_user.id,
-          name: this.current_user.name,
-        },
-        votes: 0,
-      });
-      this.newComment = "";
-    },
-    upvote() {
-      this.likedComment = !this.likedComment && !0;
-      this.likedComment ? this.loveCommentCount++ : this.loveCommentCount--;
-    },
-    downvote() {
-      this.dislikedComment = !this.dislikedComment && !0;
-      this.dislikedComment
-        ? this.dislikeCommentCount++
-        : this.dislikeCommentCount--;
-    },
-    resetEdit() {
-      this.state = "default";
-      this.data.body = this.comment.body;
-    },
-    saveEdit() {
-      this.state = "default";
-      this.$emit("comment-updated", {
-        id: this.comment.id,
-        body: this.data.body,
-      });
-    },
+    async deletePostClick(index, id) {
+      this.$emit("deletePostClick", index, id);
 
-    updateComment($event) {
-      let index = this.comments.findIndex((element) => {
-        return element.id === $event.id;
+      //  close delete modal
+      this.$refs.deletePost.closeModal();
+
+      // notification success
+      this.$notify({
+        type: "success",
+        title: `Suppression`,
+        text: `La publication est supprimer`,
+        duration: 30000,
       });
-      this.comments[index].body = $event.body;
     },
-    deleteComment($event) {
-      let index = this.comments.findIndex((element) => {
-        return element.id === $event.id;
-      });
-      this.comments.splice(index, 1);
+    async reportPostClick(index, id) {
+      try {
+        await postsApi.reportPost(`${id}`, this.state.post);
+        // // force refresh page
+        this.$router.go(0);
+
+        // notification success
+        this.$notify({
+          type: "success",
+          title: `Signalement`,
+          text: `Merci, votre rapport a été envoyé.`,
+          duration: 30000,
+        });
+      } catch (error) {
+        const errorMessage = (this.apiErrors = error);
+          this.errorMessage = errorMessage;
+
+          // notification error message
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de l'envoi du rapport`,
+            text: `${errorMessage}`,
+            duration: 3000,
+          });
+      }
     },
-    saveComment() {
-      let newComment = {
-        id: this.comments[this.comments.length - 1].id + 1,
-        body: this.data.body,
-        edited: false,
-        created_at: new Date().toLocaleString(),
-        author: {
-          id: this.user.id,
-          name: this.user.name,
-        },
+    sendLike(valeurLike, id) {
+      if (this.vote == undefined || this.vote == null || this.vote === 0) {
+        this.vote = valeurLike;
+      } //si l'utilisateur à déjà (dis)liké le post
+      else {
+        if (this.vote === valeurLike) {
+          //l'utilisateur souhaite être neutre
+          valeurLike = 0;
+          this.vote = 0;
+        }
+        if (this.vote === 1 && valeurLike === 0) {
+          this.vote = -1;
+        }
+        if (this.vote === 0 && valeurLike === 1) {
+          //si l'utilisateur like plutôt que dislike un post.
+          this.vote = 1;
+        }
+        if (this.vote === 1 && valeurLike === -1) {
+          this.vote = -1;
+        }
+        if (this.vote === -1 && valeurLike === 1) {
+          this.vote = 1;
+        }
+      }
+      if (valeurLike === 1) {
+        this.$notify({
+          type: "success",
+          title: `J'aime enregistré !`,
+          duration: 5000,
+        });
+      }
+      if (valeurLike === -1) {
+        this.$notify({
+          type: "success",
+          title: `Je n'aime pas enregistré !`,
+          duration: 5000,
+        });
+      }
+      if (valeurLike === 0) {
+        this.$notify({
+          type: "success",
+          title: `Vote enlevé !`,
+          duration: 5000,
+        });
+      }
+      const infoLike = {
+        vote: valeurLike,
+        postId: id,
+        userId: this.currentUser.id,
       };
-      this.comments.push(newComment);
-      this.data.body = "";
+      axiosInstance
+        .post(`posts/${id}/likes`, infoLike)
+        .then((res) => {
+          console.log("likePost", res.data);
+
+          //  if (res) {
+          //   return res.json
+          // }
+        })
+        .catch((error) => {
+          console.log(error);
+          const errorMessage = (this.apiErrors = error);
+          this.errorMessage = errorMessage;
+
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de l'ajout du vote`,
+            text: `Erreur reporté : ${errorMessage}`,
+            duration: 30000,
+          });
+        });
+    },
+    // Comment
+    async onAddComment ({ content }) {
+      try {
+        const response = await commentsApi.addComment(this.post.id, content)
+        this.comments.push(response)
+      } catch (e) {
+        console.error(e.data)
+        this.errors = e.data
+      }
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-// Mouse scroll down
-.scroll-down-mouse {
-  visibility: hidden;
-  background: transparent;
-  @media only screen and (min-width: 675px) {
-    visibility: visible;
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    display: none;
-    z-index: 98;
-    display: flex;
-    justify-content: flex-end;
-  }
+.post {
+  max-width: 350px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 0.4rem;
+  margin-bottom: 2rem;
 }
 
-$img-url2: "https://images.unsplash.com/photo-1528785198459-ec50485704c7?ixlib=rb-0.3.5&s=3a2fc3039516555bbb2e9cd2967bd321&auto=format&fit=crop&w=1537&q=80";
+// card header
+.instagram-card-header {
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
+}
+.header {
+  display: flex;
+  align-content: stretch;
+  align-items: center;
+  flex-direction: row;
+}
 
-.container {
+.header-left {
+  margin: 8px 4px 8px 12px;
+  padding: unset;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-width: calc(100% - 48px);
+  position: relative;
+}
+
+.profile-pic {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 1px;
+  background: linear-gradient(45deg, #ffd6d6, #f34642 80%);
+  margin-right: 10px;
+}
+.instagram-card-user-image {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
-  .card {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    width: 300px;
-    height: 300px;
-    overflow: hidden;
-    margin-top: 20px;
-    background: transparent;
-    @media only screen and (min-width: 576px) {
-      width: 530px;
-    }
-
-    h2 {
-      background-color: transparent;
-      z-index: 100;
-      position: absolute;
-      bottom: 0;
-      right: 6rem;
-      font-size: 1.2rem;
-      pointer-events: none;
-      @media only screen and (min-width: 576px) {
-        right: 10rem;
-      }
-    }
-
-    .fa-arrow-right {
-      background-color: transparent;
-      z-index: 100;
-      position: absolute;
-      right: 35px;
-      bottom: 25px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    p {
-      display: flex;
-      height: 100px;
-      align-items: center;
-      background-color: transparent;
-      z-index: 99;
-      opacity: 0.7;
-      font-size: 0.7rem;
-      transition: all 0.2s ease;
-      @media only screen and (min-width: 576px) {
-        position: absolute;
-        width: 125px;
-        right: 35px;
-        top: 54px;
-        // height: 75%;
-        // writing-mode: vertical-rl;
-      }
-    }
-    .pic {
-      object-fit: cover;
-      width: 300px;
-      height: 200px;
-      border-radius: 20px 4px;
-      background-image: url($img-url2);
-      background-size: 100% 100%;
-      filter: grayscale(100%);
-      @media only screen and (min-width: 576px) {
-        width: 400px;
-        height: 300px;
-      }
-    }
-
-    .icons {
-      width: 180px;
-      height: 64px;
-      left: 60px;
-      top: 7rem;
-      background-color: transparent;
-      position: absolute;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      @media only screen and (min-width: 576px) {
-        top: 0.5rem;
-      }
-    }
-
-    .icon-1 {
-      transition-delay: 0.7s;
-    }
-
-    .icon-2 {
-      transition-delay: 0.6s;
-    }
-
-    .icon-3 {
-      transition-delay: 0.5s;
-    }
-    .icon-4 {
-      transition-delay: 0.4s;
-    }
-
-    &:hover .icon {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    button {
-      position: absolute;
-      right: 14px;
-      bottom: 14px;
-      width: 30px;
-      height: 30px;
-      background-color: red;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      outline: none;
-      transition: all 0.3s ease;
-      mix-blend-mode: hard-light;
-    }
-
-    &:hover button {
-      transform: scale(4.2);
-      @media only screen and (min-width: 576px) {
-        transform: scale(16.5);
-      }
-    }
-
-    &:hover .pic {
-      filter: grayscale(0);
-    }
-  }
-}
-
-// meatball buttons
-.menu__item--meatball {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  background: transparent;
-  cursor: pointer;
-  transition: all 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  &:hover,
-  &:focus {
-    transform: rotate(45deg);
-  }
-}
-
-.circle {
-  width: 6px;
-  height: 6px;
-  margin: 3px;
-  background: #08708a;
-  border-radius: 50%;
-}
-// end meatball button
-
-// Dropdown button
-.wrapper {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-  background: transparent;
-}
-
-.button-dropdown {
-  position: relative;
-  // z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 10px;
-}
-
-#input {
-  position: absolute;
-  transform: scale(0);
-}
-
-.menu {
-  overflow: hidden;
-  position: absolute;
-  z-index: 999;
-  background: transparent;
-  border-radius: 8px;
-  margin-top: 25px;
-  ul {
-    width: 100%;
-    margin: 0;
-    transform: translateY(-100%);
-    list-style: none;
-    transition: all 0.3s;
-    background: #08708a;
-    li {
-      display: flex;
-      align-items: center;
-      width: inherit;
-      padding: 0 10px;
-      background: #08708a;
-    }
-  }
-}
-
-.menu li:not(:last-child) {
-  margin-bottom: 6px;
-}
-
-.menu li > a {
-  display: flex;
-  align-items: center;
-  width: inherit;
-  height: 44px;
-  padding: 0 20px;
-  border-radius: 8px;
-  font-size: 17px;
-  color: #f7f7f7;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-#input:checked ~ .menu ul {
-  transform: translateY(0);
-}
-
-#input:checked ~ .menu ul li a {
-  background: #08708a;
-}
-// End Dropdown button
-
-h3 {
-  width: 100%;
-  font-size: 1.075rem;
-  background: transparent;
-}
-.author {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 70px;
-  @media only screen and (min-width: 576px) {
-    width: 100px;
-  }
-  h4 {
-    background-color: transparent;
-    z-index: 100;
-    position: absolute;
-    bottom: 0;
-    font-size: 0.8rem;
-    pointer-events: none;
-  }
-  .profile-cover {
-    margin-bottom: 0.5rem;
-    // z-index: 100;
-    position: absolute;
-    bottom: 1rem;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    @media only screen and (min-width: 576px) {
-      width: 34px;
-      height: 34px;
-    }
-  }
-}
-.pic-author {
-  position: absolute;
-  z-index: 100;
-  height: 30px;
-  width: 30px;
   object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+.instagram-card-user-name {
+  font-size: 12px;
+  font-weight: bold;
 }
 
-// comment structure
-.container-comments {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-top: 1rem;
-  background: transparent;
+// dropdown menu
+.dropdown {
   position: relative;
-}
 
-.comments-header {
-  display: flex;
-  flex-direction: row;
-  padding: 0.3rem;
-  background: transparent;
-  p {
-    font-weight: bold;
-    background: transparent;
-  }
-}
-
-.icon-comment {
-  margin-right: 0.3rem;
-  background: transparent;
-}
-
-// typing indicator
-.typing-indicator {
-  width: auto;
-  margin-left: 0.3rem;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  background: transparent;
-  span {
-    height: 4px;
-    width: 4px;
-    margin: 0 1px;
-    background-color: #8de8fe;
-    border-radius: 50%;
-    opacity: 0.4;
-    @for $i from 1 through 3 {
-      &:nth-of-type(#{$i}) {
-        animation: 1s blink infinite ($i * 0.3333s);
-      }
-    }
-  }
-}
-
-@keyframes blink {
-  50% {
-    opacity: 1;
-  }
-}
-
-// comments
-.comment-list {
-  display: flex;
-  flex-direction: column;
-  background: transparent;
-}
-.comment-wrapper {
-  flex-direction: column;
-  justify-content: center;
-  width: 300px;
-  background: transparent;
-
-  @media only screen and (min-width: 576px) {
-    width: 530px;
-  }
-}
-.comment {
-  display: flex;
-  flex-direction: row;
-  margin-top: 1rem;
-  padding: 0.3rem;
-  border-bottom: 1px solid #8de8fe;
-  background: transparent;
-  span {
-    background: transparent;
-  }
-}
-
-.comment-icon-plus,
-.comment-icon-minus {
-  margin: 0 0.3rem;
-  background: transparent;
-}
-
-// v-show="state === 'default'"
-.comment-item {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 0.8rem;
-  background: transparent;
-}
-.comment-text {
-  flex-direction: column;
-  font-size: 0.8rem;
-  background: transparent;
-
-  p {
-    margin-bottom: 0.2rem;
-    max-width: 8rem;
-    background: transparent;
-  }
-}
-
-.btn-edit-1 {
-  border: none;
-  height: 2rem;
-  cursor: pointer;
-  outline: none;
-  background: transparent;
-}
-
-.xmark {
-  background: transparent;
-}
-.holes-lower {
-  position: relative;
-  margin: 0.3rem;
-  // border: 1px dashed #8de8fe;
-  border-bottom: 1px dashed #292929;
-  background: transparent;
-}
-
-.comment-author {
-  font-size: 0.5rem;
-  background: transparent;
-  p {
-    background: transparent;
-  }
-}
-
-// v-show="state === 'editing'"
-.editing {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-bottom: 0.8rem;
-  margin-left: 0.3rem;
-  background: transparent;
-
-  h3 {
-    margin-bottom: 0.8rem;
-    background: transparent;
-  }
-  @media only screen and (min-width: 576px) {
-    margin-left: 6rem;
-  }
-}
-
-.wrapper-update {
-  position: relative;
-  height: 56px;
-  width: 200px;
-  border-radius: 0.5rem;
-  border: 1px solid #292929;
-  background: transparent;
-  margin-bottom: 0.5rem;
-  margin-top: 0.8rem;
-  @media only screen and (min-width: 576px) {
-    width: 300px;
-  }
-  input {
-    position: relative;
-    width: 200px;
-    height: 56px;
+  .dropdown-btn {
+    align-items: center;
     background: transparent;
     border: none;
-    font-weight: 700;
-    text-indent: 0.75rem;
-    color: rgba(#fff, 0.875);
-    &:focus {
-      outline: none;
-    }
-    &:focus ~ label,
-    &:valid ~ label {
-      top: -20px;
-      background: rgb(12, 19, 31);
-      // transform: translate(0.625rem, -10px) scale(0.5);
-    }
-    @media only screen and (min-width: 576px) {
-      width: 300px;
-    }
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
   }
-  .placeholder {
-    color: rgba(white, 0.875);
+
+  .dropdown-content {
+    display: none;
+    right: 10px;
     position: absolute;
-    z-index: 0;
-    top: 5px;
-    left: 5px;
-    padding: 0 0.25rem;
-    font-weight: 700;
-    font-size: 0.8rem;
-    transform: translate(0.5rem, 15px);
-    transform-origin: 0% 0%;
-    background: transparent;
-    pointer-events: none;
-    transition: 300ms ease all;
+    top: 100%;
+    z-index: 9999;
+    height: auto;
+    width: 8rem;
+    padding: 4px;
+    border-radius: 0.8rem;
+    background-color: #ffff;
+    box-shadow: 0 0 20px rgb(66 50 98 / 35%);
+
+    ul {
+      padding: 0;
+      margin: 0;
+      li {
+        width: 100%;
+        height: 2rem;
+        margin-bottom: 4px;
+
+        a,
+        button {
+          font-size: 1rem;
+          background: none;
+          border: none;
+          outline: none;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          padding: 5px 10px;
+          cursor: pointer;
+          &:hover {
+            color: #ffd7d7;
+          }
+        }
+      }
+    }
+  }
+  .show {
+    display: block;
   }
 }
 
-.btn-submit {
-  background: transparent;
-}
-.btn-editing {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  @media only screen and (min-width: 576px) {
-    flex-direction: row;
-  }
+// card image
+.instagram-card-image img {
+  width: 100%;
 }
 
-.btn-edit-delete {
-  margin-bottom: 1.3rem;
+// card content
+.instagram-card-content {
+  padding: 15px;
 }
-.btn-edit {
-  color: mix(white, #424242, 70%);
-  border: none;
-  margin-right: 0.4rem;
-  margin-bottom: 1.3rem;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.4rem;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+.like-data {
+  float: right;
+}
+.like-count,
+.icon-rocknroll {
+  font-size: 0.75rem;
+}
+.like-count {
   &:hover {
-    color: mix(black, mix(white, #424242, 70%), 30%);
-    // box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
-  }
-  &.btn-update {
-    background: #2196f3;
-    color: mix(white, #2196f3, 70%);
-    &:hover {
-      background: darken(#2196f3, 10%);
-      color: mix(white, #2196f3, 85%);
-    }
-  }
-  &.btn-cancel {
-    background: #eee;
-    &:hover {
-      background: darken(#eee, 10%);
-      color: mix(black, mix(white, #424242, 70%), 30%);
-    }
-  }
-  @media only screen and (min-width: 576px) {
-    // width: 6rem;
-    padding: 0 10px;
-    margin-right: 1.4rem;
+    opacity: 0.5;
   }
 }
 
-// common to several icon
-.icon {
-  background: transparent;
-  opacity: 0;
-  font-size: 18px;
-  will-change: transform;
-  transform: scale(0.1);
-  transition: all 0.2s ease;
+.icon-rocknroll {
+  background: none;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  margin: 0 0.125rem 0 0;
+  padding: 0;
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.disabled {
+  color: orange;
+}
+
+.disabled {
+  color: orange;
+}
+
+// post title
+.instagram-card-content-user {
+  margin-bottom: 1rem;
+  word-break: break-all;
+}
+
+// add comment
+.task-input {
+  display: flex;
+  margin: 1rem auto;
+  width: 90%;
+  outline: none;
+  border: none;
+  color: #4e5559;
+
+  &:placeholder {
+    color: #4e5559;
+  }
+}
+
+.modal {
+  &__actions {
+    display: flex;
+    justify-content: space-around;
+  }
 }
 </style>

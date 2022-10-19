@@ -55,7 +55,7 @@ module.exports = (sequelize, Sequelize) => {
   Post.associate = (models) => {
     // is linked to
     Post.belongsTo(models.user, {
-      as: "users",
+      as: "user",
       foreignKey: "creatorId",
       onDelete: "CASCADE",
     });

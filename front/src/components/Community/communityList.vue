@@ -5,7 +5,7 @@
         class="card__img"
         :src="`http://localhost:3000${community.icon}`"
         :alt="'Avatar de ' + community.title"
-        aria-label="Photo d'utilisateur"
+        aria-label="Photo de la communauté"
       />
       <div class="title">{{ community.title }}</div>
       <div class="about">

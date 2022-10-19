@@ -1,87 +1,121 @@
 <template>
   <div class="container">
-  <div class="form-input-box">
-    <h2>Publié ! </h2>
-    <!-- form structure-->
-    <form id="form" @submit.prevent="createPostClick">
-      <!-- add file -->
-      <div class="container">
-        <div class="fileUploadInput">
-          <label>✨ Upload File</label>
-          <input
-            accept=".jpeg,.jpg,png"
-            @change="onChangeFileUpload"
-            ref="image"
-            class="image"
-            type="file"
-            id="image"
-            @blur="v$.community.image.$touch"
-            :class="v$.community.image.$error === true ? 'error' : 'dirty'"
-          />
-          <button>🔗</button>
-        </div>
-      </div>
-
-      <input
-        class="form-title"
-        id="name"
-        type="text"
-        placeholder="TITRE"
-        required
-        autocomplete="off"
-        v-model="state.community.title"
-        blur="v$.community.title.$touch"
-        :class="v$.community.title.$error === true ? 'error' : 'dirty'"
-        minlength="3"
-        maxlength="255"
-        aria-label="Titre de votre communauté"
-      />
-      <!-- Error Message -->
-      <template v-if="v$.community.title.$dirty">
-        <div
-          class="input-errors"
-          v-for="(error, index) of v$.community.title.$errors"
-          :key="index"
-        >
-          <div class="error-msg">{{ error.$message }}</div>
-        </div>
-      </template>
-      <!-- Error Message -->
-      <textarea
-        id="message"
-        type="text"
-        placeholder="À PROPOS de..."
-        autocomplete="off"
-        v-model="state.community.about"
-        @blur="v$.community.about.$touch"
-        :class="v$.community.about.$error === true ? 'error' : 'dirty'"
-        minlength="10"
-        required
-        aria-label="à propos de votre communauté"
-      ></textarea>
-      <!-- Error Message -->
-      <template v-if="v$.community.about.$dirty">
-        <div
-          class="input-errors"
-          v-for="(error, index) of v$.community.about.$errors"
-          :key="index"
-        >
-          <div class="error-msg">{{ error.$message }}</div>
-        </div>
-      </template>
-      <!-- Error Message -->
-      <button
-        class="btn"
-        id="submit"
-        type="submit"
-        value="CRÉE!"
-        title="Crée une communauté"
-        aria-label="Crée une communauté"
+    <div class="form-input-box">
+      <h2>Publication</h2>
+      <!-- form structure-->
+      <form
+        id="form"
+        @submit.prevent="createPostClick"
+        enctype="multipart/form-data"
       >
-        CRÉE!
-      </button>
-    </form>
-  </div>
+        <!-- add file -->
+        <div class="container">
+          <div class="fileUploadInput">
+            <label>✨ Ajouter une image ?</label>
+            <input
+              accept=".jpeg,.jpg,png"
+              @change="onChangeFileUpload"
+              ref="image"
+              class="image"
+              type="file"
+              id="image"
+              @blur="v$.post.image.$touch"
+              :class="v$.post.image.$error === true ? 'error' : 'dirty'"
+            />
+            <button>🔗</button>
+          </div>
+        </div>
+
+        <input
+          class="form-title"
+          id="name"
+          type="text"
+          placeholder="TITRE"
+          required
+          autocomplete="off"
+          v-model="state.post.title"
+          blur="v$.post.title.$touch"
+          :class="v$.post.title.$error === true ? 'error' : 'dirty'"
+          minlength="3"
+          maxlength="255"
+          aria-label="Titre de votre post"
+        />
+        <!-- Error Message -->
+        <template v-if="v$.post.title.$dirty">
+          <div
+            class="input-errors"
+            v-for="(error, index) of v$.post.title.$errors"
+            :key="index"
+          >
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
+        <!-- Error Message -->
+        <textarea
+          id="message"
+          type="text"
+          placeholder="À PROPOS de..."
+          autocomplete="off"
+          v-model="state.post.content"
+          @blur="v$.post.content.$touch"
+          :class="v$.post.content.$error === true ? 'error' : 'dirty'"
+          minlength="2"
+          maxlength="400"
+          required
+          aria-label="description de votre publication"
+        ></textarea>
+        <!-- Error Message -->
+        <template v-if="v$.post.content.$dirty">
+          <div
+            class="input-errors"
+            v-for="(error, index) of v$.post.content.$errors"
+            :key="index"
+          >
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
+        <!-- Error Message -->
+
+        <div class="select">
+          <select v-model="state.community.id">
+            <option selected disabled value="">
+              {{ placeholder }}
+            </option>
+            <option
+              v-for="(community, index) in communities"
+              :community="community"
+              :key="index"
+            >
+              {{ community.id }} - {{ community.title }}
+            </option>
+          </select>
+          
+        </div>
+        <!-- <div class="select__choice">Communauté choisi: {{ state.community.id }}</div> -->
+        <!-- Error Message -->
+        <template v-if="v$.community.id.$dirty">
+          <div
+            class="input-errors"
+            v-for="(error, index) of v$.community.id.$errors"
+            :key="index"
+          >
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
+        <!-- Error Message -->
+
+        <button
+          class="btn"
+          id="submit"
+          type="submit"
+          value="CRÉE!"
+          title="Crée un post"
+          aria-label="Crée un post"
+        >
+          CRÉE!
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -91,7 +125,6 @@ import { helpers, required, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 import axiosInstance from "../../services/api";
-// import communityApi from "../../api/community";
 
 export default {
   name: "InputBoxPost",
@@ -101,9 +134,10 @@ export default {
         title: "",
         image: "",
         content: "",
-        communityId: ""
       },
-      apiError: "",
+      community: {
+        id: "",
+      },
     });
 
     const rules = computed(() => ({
@@ -119,13 +153,25 @@ export default {
           maxLength: maxLength(25),
         },
         image: {
-          required: helpers.withMessage("Une image est obligatoire.", required),
+          // required: helpers.withMessage("Une image est obligatoire.", required),
           $autoDirty: true,
           $lazy: true,
         },
         content: {
           required: helpers.withMessage(
             "Un text aidera à comprendre votre publication.",
+            required
+          ),
+          $autoDirty: true,
+          $lazy: true,
+          minLength: minLength(2),
+          maxLength: maxLength(400),
+        },
+      },
+      community: {
+        id: {
+          required: helpers.withMessage(
+            "Votre publication doit appartenir à une communauté.",
             required
           ),
           $autoDirty: true,
@@ -141,18 +187,42 @@ export default {
   validationConfig: {
     $lazy: true,
   },
+  data() {
+    return {
+      apiError: "",
+      communities: [],
+      selectValue: "",
+      placeholder: "Choisi une communauté",
+    };
+  },
+  created() {
+    axiosInstance
+      .get("/community/readAllCommunities")
+      .then((response) => {
+        this.communities = response.data.datas;
+        // console.log(this.communities)
+      })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          const errorMessage = (this.apiError = "Communauté introuvable !");
+          this.errorMessage = errorMessage;
+        }
+      });
+  },
   methods: {
     onChangeFileUpload() {
-      this.state.community.image = document.querySelector("#image").files[0];
-      console.log("image upload", this.state.community.image);
+      this.state.post.image = document.querySelector("#image").files[0];
+      // console.log("image upload", this.state.post.image);
     },
     createPostClick() {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
+        // if no errors
         var bodyFormData = new FormData();
-        bodyFormData.append("title", this.state.community.title);
-        bodyFormData.append("content", this.state.community.about);
-        bodyFormData.append("image", this.state.community.image);
+        bodyFormData.append("title", this.state.post.title);
+        bodyFormData.append("content", this.state.post.content);
+        bodyFormData.append("image", this.state.post.image);
+        bodyFormData.append("communityId", this.state.community.id);
         // for (let value of bodyFormData.values()) {
         //   console.log(value);
         // }
@@ -167,8 +237,8 @@ export default {
             // notification de succès
             this.$notify({
               type: "success",
-              title: `Communauté crée`,
-              text: `Bravo vous venez de créer une nouvelle communauté.`,
+              title: `Publication crée`,
+              text: `Initialisation...`,
             });
 
             // force refresh page
@@ -188,7 +258,7 @@ export default {
             // error notification
             this.$notify({
               type: "error",
-              title: `❌ Erreur lors de l'inscription`,
+              title: `❌ Erreur lors de la publication`,
               text: `Erreur reporté : ${errorMessage}`,
             });
           });
@@ -210,25 +280,73 @@ export default {
           );
         });
       }
-
-      // try {
-      //   const response = await communityApi.createCommunity(formData);
-      //   console.log(response)
-      // } catch (error) {
-      //   console.log(error)
-      // }
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+/* <select> styles */
+select {
+  appearance: none;
+  border: 0;
+  outline: 0;
+  width: 20rem;
+  height: 3rem;
+  padding: 0 4em 0 1em;
+  border-radius: 0.25em;
+  box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+  color: #fff;
+  background-color: #34495e;
+  cursor: pointer;
+  /* <option> colors */
+  option {
+    color: inherit;
+  }
+  /* Remove focus outline */
+  &:focus {
+    outline: none;
+  }
+  /* Remove IE arrow */
+  &::-ms-expand {
+    display: none;
+  }
+  /* Arrow */
+}
+
+/* Custom Select wrapper */
+.select {
+  position: relative;
+  display: flex;
+  width: 20em;
+  height: 3em;
+  border-radius: .25em;
+  overflow: hidden;
+  margin: 1rem 0 0.5rem 0
+}
+
+/* Arrow */
+.select::after {
+  content: "\25BC";
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1em;
+  background-color: #34495e;
+  transition: 0.25s all ease;
+  pointer-events: none;
+}
+/* Transition */
+.select:hover::after {
+  color: #f39c12;
+}
+
 .form-input-box {
   display: flex;
   flex-direction: column;
   justify-content: center;
   box-shadow: 0 0 20px rgb(66 50 98 / 35%);
-  margin: 2rem auto 2rem auto;
+  margin: 0 auto 2rem auto;
   padding: 2rem;
   border-radius: 0.8rem;
   @media only screen and (min-width: 768px) {

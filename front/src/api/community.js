@@ -2,23 +2,10 @@ import axiosInstance from "../services/api";
 
 export default {
   /**
-   * Export logged user's data in a csv format
+   * Read one community
+   * @param id
    * @return {Promise<any>}
    */
-  async createCommunity(data) {
-    try {
-      const response = await axiosInstance.post("/community", {
-        title: data.title,
-        about: data.about,
-        icon: data.icon,
-      });
-      console.log(response);
-      return response.data;
-    } catch (e) {
-      console.error(e.response);
-      throw e.response;
-    }
-  },
   async readTargetCommunity(id) {
     try {
       return await axiosInstance.get(`/community/readOne/${id}`);
@@ -27,14 +14,24 @@ export default {
       throw e.response;
     }
   },
+  /**
+   * Delete community
+   * @param id
+   * @return {Promise<any>}
+   */
   async deleteCommunity(id) {
     try {
-      return await axiosInstance.delete(`/community/deleteCommunity/${id}`)
+      return await axiosInstance.delete(`/community/deleteCommunity/${id}`);
     } catch (e) {
-      console.error(e.response)
-      throw e.response
+      console.error(e.response);
+      throw e.response;
     }
   },
+  /**
+   * Follow community
+   * @param id
+   * @return {Promise<any>}
+   */
   async followCommunity(id) {
     try {
       return await axiosInstance.post(`community/${id}/follow`);
@@ -42,6 +39,11 @@ export default {
       throw e.response;
     }
   },
+  /**
+   * Unfollow community
+   * @param id
+   * @return {Promise<any>}
+   */
   async unfollowCommunity(id) {
     try {
       return await axiosInstance.post(`community/${id}/unfollow`);
@@ -49,6 +51,11 @@ export default {
       throw e.response;
     }
   },
+  /**
+   * Add a moderator community
+   * @param id
+   * @return {Promise<any>}
+   */
   async addModeratorCommunity(id) {
     try {
       return await axiosInstance.post(`community/${id}/moderator`);

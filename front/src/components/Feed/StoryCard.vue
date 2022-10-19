@@ -1,81 +1,103 @@
 <template>
-  <!-- CONTAINER OF CARDS DRAGS HORIZONTAL -->
-  <div class="container-cards">
-    <div>
-      <div class="cards scroll-container">
-        <div class="card">
-          <div>
-            <img
-              src="https://img.discogs.com/Sfz2Jim0byBu1JAA7lKX2kuR7Jk=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/A-1472585-1612815883-2680.jpeg.jpg"
-              alt=""
-              class="img-card-drag"
-            />
-          </div>
-          <br />
-          <p>
-            <strong>Communauté 1</strong>
-          </p>
+  <div class="main">
+    <div class="wrapper">
+      <div class="left-col">
+        <div class="status-wrapper">
+          <router-link class="more" :to="`/communities/profil/${this.id}`">
+            <div class="status-card">
+              <div class="profile-pic">
+                <img
+                  :src="`http://localhost:3000${community.icon}`"
+                  :alt="'Avatar de ' + community.title"
+                  aria-label="Photo de la communauté"
+                />
+              </div>
+              <p class="username">{{ community.title }}</p>
+            </div>
+          </router-link>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
+<script>
+export default {
+  name: "Community-List",
+  props: ["community"],
+  data() {
+    return {
+      id: "",
+    };
+  },
+  mounted() {
+    this.id = this.community.id;
+    // console.log(this.id);
+  },
+};
+</script>
+
 <style lang="scss" scoped>
-.cards {
-  z-index: 1;
-  margin: 20px;
+.main {
+  justify-content: center;
   display: flex;
-  background-color: transparent;
-  max-width: 100%;
-  padding: 1em;
+  flex-direction: row;
 }
-
-.card {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  margin-right: 1em;
+.wrapper {
+  width: 70%;
+  max-width: 1000px;
+  display: grid;
+  grid-template-columns: 100% 100%;
+  grid-gap: 30px;
+}
+.left-col {
+  display: flex;
+  flex-direction: column;
+}
+.status-wrapper {
+  width: 100%;
+  // height: 120px;
+  border-radius: 2px;
   padding: 10px;
-  flex: 1 0 10em;
+  padding-right: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  overflow-x: auto;
 }
-
-.img-card-drag {
-  height: 160px;
-  width: 160px;
-  border-radius: 10px;
+.status-wrapper::-webkit-scrollbar {
+  display: none;
 }
-
-/* SCROLL CONTAINER */
-.scroll-container {
-  overflow: scroll;
-  height: 250px;
-  width: auto;
-  overflow-y: hidden;
-  transition: 1s;
+.status-card {
+  flex: 0 0 auto;
+  width: 80px;
+  max-width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 15px;
 }
-.scroll-container::-webkit-scrollbar {
-  width: 18px;
-  cursor: pointer;
+.profile-pic {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 3px;
+  background: linear-gradient(45deg, #ffd7d7, #f34642 80%);
 }
-/* Track */
-.scroll-container::-webkit-scrollbar-track {
-  background: transparent;
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #fff;
 }
-
-/* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 18px;
-}
-/* Handle */
-.scroll-container::-webkit-scrollbar-thumb {
-  background: #f16b50;
-  border-radius: 10px;
-  outline: none;
-  transition: all 0.3s ease-out;
-  // -webkit-appearance: none;
-}
-.scroll-container::-webkit-scrollbar-thumb::hover {
-  transform: rotate(45deg);
+.username {
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+  font-size: 12px;
+  margin-top: 5px;
+  color: rgba(0, 0, 0, 0.5);
 }
 </style>

@@ -1,7 +1,7 @@
 import axiosInstance from "./api";
 import TokenService from "./token.service";
 
-const setup = (store) => {
+const setup = () => {
   axiosInstance.interceptors.request.use(
     (config) => {
       const token = TokenService.getLocalAccessToken();
@@ -37,8 +37,7 @@ const setup = (store) => {
             const { accessToken } = rs.data;
 
             TokenService.updateLocalAccessToken(accessToken);
-            store.dispatch("auth/refreshToken", accessToken);
-
+            
             return axiosInstance(originalConfig);
           } catch (_error) {
             return Promise.reject(_error);

@@ -6,7 +6,7 @@
       <!-- add file -->
       <div class="container">
         <div class="fileUploadInput">
-          <label>✨ Upload File</label>
+          <label>✨ Ajouter une image</label>
           <input
             accept=".jpeg,.jpg,png"
             @change="onChangeFileUpload"
@@ -141,7 +141,7 @@ export default {
   methods: {
     onChangeFileUpload() {
       this.state.community.image = document.querySelector("#image").files[0];
-      console.log("image upload", this.state.community.image);
+      // console.log("image upload", this.state.community.image);
     },
     createCommunityClick() {
       this.v$.$validate(); // checks all inputs
@@ -178,7 +178,7 @@ export default {
             );
           })
           .catch((error) => {
-            console.log(error.response);
+            // console.log(error.response);
             const errorMessage = (this.apiError = error.response.data.error);
             this.errorMessage = errorMessage;
 
@@ -207,13 +207,6 @@ export default {
           );
         });
       }
-
-      // try {
-      //   const response = await communityApi.createCommunity(formData);
-      //   console.log(response)
-      // } catch (error) {
-      //   console.log(error)
-      // }
     },
   },
 };

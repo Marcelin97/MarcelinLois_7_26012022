@@ -1,32 +1,64 @@
 <template>
-  <section v-if="user.length != 0">
-    <h1>Mon compte</h1>
-    <UserProfile :user="user" :userLoggedIn="true" />
-  </section>
+  <div v-if="user.length != 0">
+    <section>
+      <h1>Mon compte</h1>
+      <UserProfile :user="user" :userLoggedIn="true" />
+    </section>
+    
+    <!-- If there are posts -->
+    <section>
+      <div v-if="posts.length != 0">
+        <PostCard
+          v-for="(post, index) in posts"
+          :key="index"
+          :post="post"
+        />
+      </div>
+      <div v-else>
+        <h3>Tu n'as pas de post pour le moment</h3>
+        <router-link class="link" to="/communities"
+          >Commence par crée une communauté</router-link
+        >
+      </div>
+    </section>
+  </div>
+  <div v-else>
+    <h2>Chargement en cours...</h2>
+  </div>
 </template>
 
 <script>
 import UserProfile from "@/components/Profil/UserProfile.vue";
+import PostCard from "../components/Posts/PostCard.vue";
 
 export default {
   name: "Profile-View",
   components: {
     UserProfile,
+    PostCard,
   },
   data() {
     return {
-      user: [],
+      posts: [], // add posts array
+      user: [], // current user
     };
   },
   mounted() {
-    this.user = this.$store.state.user;
-    // console.log(this.$store.state.user);
+    const user = this.$store.state.user;
+    this.user = this.$store.state.user; // current user
+    this.posts = this.$store.state.user.posts.map((post) => {
+      post.user = user;
+      return post;
+    });
   },
 };
 </script>
 
 <style lang="scss" scoped>
-h1 {
+h1,
+h2,
+h3,
+.link {
   display: flex;
   justify-content: center;
   margin-top: 35px;
@@ -37,7 +69,7 @@ h1 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
   text-align: center;
-  @media only screen and (min-width: 768px) { 
+  @media only screen and (min-width: 768px) {
     margin-top: 0px;
   }
 }

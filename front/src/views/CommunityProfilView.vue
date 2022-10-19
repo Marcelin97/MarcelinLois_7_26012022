@@ -33,14 +33,9 @@ export default {
     this.communityId = this.$route.params.id;
 
     try {
-      const response = await communitiesApi.readTargetCommunity(
-        this.communityId
-      );
-      // console.log("Target Community", response);
+      const response = await communitiesApi.readTargetCommunity(this.communityId);
       this.community = response.data.datas;
     } catch (error) {
-      console.log(error);
-
       const errorMessage = (this.apiErrors = error.response);
       this.errorMessage = errorMessage;
 

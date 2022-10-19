@@ -144,7 +144,7 @@
           <!-- Error Message -->
         </div>
 
-        <div class="form-group  fileUploadInput">
+        <div class="form-group fileUploadInput">
           <label for="userImage">Photo de profil</label>
           <input
             class="input-file"
@@ -180,12 +180,7 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import {
-  minLength,
-  email,
-  maxLength,
-  alphaNum,
-} from "@vuelidate/validators";
+import { minLength, email, maxLength, alphaNum } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 import axiosInstance from "../../services/api";
 
@@ -274,20 +269,26 @@ export default {
   methods: {
     onChangeFileUpload() {
       this.state.user.userImage = document.querySelector("#userImage").files[0];
-      // console.log("image update", this.state.user.userImage);
     },
     updateAccountClick() {
       var bodyFormData = new FormData();
-      bodyFormData.append("firstName", this.state.user.firstName);
-      bodyFormData.append("lastName", this.state.user.lastName);
-      bodyFormData.append("birthday", this.state.user.birthday);
-      bodyFormData.append("email", this.state.user.email);
-      bodyFormData.append("newPassword", this.state.user.newPassword);
-      bodyFormData.append("username", this.state.user.username);
-      bodyFormData.append("image", this.state.user.userImage);
-      // for (let value of bodyFormData.values()) {
-      //   console.log(value);
-      // }
+      if (this.state.user.userImage)
+        bodyFormData.append("image", this.state.user.userImage);
+
+      for (let key of [
+        "firstName",
+        "lastName",
+        "birthday",
+        "email",
+        "newPassword",
+        "username",
+      ]) {
+        const param = this.state.user[key];
+        // console.log(param, key);
+        if (param) {
+          bodyFormData.append(key, param);
+        }
+      }
 
       axiosInstance
         .patch("/auth/update", bodyFormData, {
@@ -312,6 +313,17 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+
+          const errorMessage = (this.apiErrors = err.response);
+          this.errorMessage = errorMessage;
+
+          // notification error message
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de la mise à jour de l'utilisateur'`,
+            text: `Erreur reporté : ${errorMessage}`,
+            duration: 30000,
+          });
         });
     },
   },
@@ -419,7 +431,7 @@ input {
 }
 
 // submit button
-.button-container{
+.button-container {
   margin-top: 2rem;
 }
 // error if input is invalid

@@ -42,19 +42,8 @@ export default {
   padding-left: 1.5rem;
   display: flex;
   flex-direction: row;
-  // flex-wrap: wrap;
-    justify-content: flex-start;
-    // width: min-content;
-    // background-image: url(../../assets/img/sidebarNavigation.svg);
-
+  justify-content: flex-start;
 }
-
-// .menu-link {
-//   @media only screen and (min-width: 576px) {
-//     font-size: 1.4rem;
-//     line-height: 1.4;
-//   }
-// }
 
 .menu-link::after {
   position: absolute;

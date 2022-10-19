@@ -12,7 +12,10 @@ export default {
       throw e.response;
     }
   },
-
+  /**
+   * Delete user
+   * @return {Promise<any>}
+   */
   async deleteUser() {
     try {
       return await axiosInstance.delete("auth/delete");
@@ -20,30 +23,17 @@ export default {
       throw e.response;
     }
   },
-
-  // async updateAccount() {
-  //   try {
-  //     const response = await axiosInstance.patch("/auth/update");
-  //     return response.data;
-  //   } catch (e) {
-  //     throw e.response;
-  //   }
-  // },
-
-  // async userReport(userId) {
-  //   try {
-  //     return await axiosInstance.post(`/auth/report/${userId}`);
-  //   } catch (e) {
-  //     console.error(e.response);
-  //     throw e.response;
-  //   }
-  // },
+  /**
+   * Delete a post
+   * @param id
+   * @return {Promise<any>}
+   */
   async readTargetUser(id) {
     try {
-      return await axiosInstance.get(`/auth/readByName/${id}`)
+      return await axiosInstance.get(`/auth/readByName/${id}`);
     } catch (e) {
-      console.error(e.response)
-      throw e.response
+      console.error(e.response);
+      throw e.response;
     }
-  }
+  },
 };

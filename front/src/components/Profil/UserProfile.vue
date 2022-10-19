@@ -1,174 +1,209 @@
 <template>
-<div>
-  <div class="wrapper" >
-    <div class="profile-card js-profile-card">
-
-      <!-- Profil image -->
-      <div>
-        <div class="profile-card__img">
-          <img v-if="user.imageUrl" :src="`http://localhost:3000${user.imageUrl}`" :alt="'Avatar de ' + user.imageUrl"
-            aria-label="Photo d'utilisateur" />
-          <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
-        </div>
-
-        <div v-if="user.isAdmin == true" class="ribbon">
-          <span>Admin</span>
-        </div>
-      </div>
-
-      <!-- Profil informations -->
-      <div class="profile-card__cnt js-profile-cnt">
-        <div class="profile-card__name">
-          {{ user.username }}
-        </div>
-
-        <!-- Profil statistics -->
-        <div class="profile-card-inf">
-          <!-- Publications -->
-          <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              {{ user.posts.length }}
-            </div>
-            <div class="profile-card-inf__txt">Publications</div>
+  <div>
+    <div class="wrapper">
+      <div class="profile-card js-profile-card">
+        <!-- Profil image -->
+        <div>
+          <div class="profile-card__img">
+            <img
+              v-if="user.imageUrl"
+              :src="`http://localhost:3000${user.imageUrl}`"
+              :alt="'Avatar de ' + user.imageUrl"
+              aria-label="Photo d'utilisateur"
+            />
+            <img
+              v-else
+              src="../../assets/img/avataaars.png"
+              alt="Avatar par défaut"
+              aria-label="Avatar par défaut"
+            />
           </div>
 
-          <!-- Commentaires -->
-          <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              {{ user.comments.length }}
-            </div>
-            <div class="profile-card-inf__txt">Commentaires</div>
-          </div>
-
-          <!-- Communautés crées -->
-          <div class="profile-card-inf__item">
-            <div class="profile-card-inf__title">
-              {{ user.community.length }}
-            </div>
-            <div class="profile-card-inf__txt">Communautés crées</div>
+          <div v-if="user.isAdmin == true" class="ribbon">
+            <span>Admin</span>
           </div>
         </div>
-      </div>
 
-      <!-- button actions -->
-      <div class="profile-card-ctr">
+        <!-- Profil informations -->
+        <div class="profile-card__cnt js-profile-cnt">
+          <div class="profile-card-name">
+            {{ user.username }}
+          </div>
 
-        <div v-if="userLoggedIn == false" class="profile-card-ctr__actions">
-          <!-- button report user -->
-          <button type="button" class="btn" @click="$refs.reportUser.openModal()" text="Signaler ce compte">
-            Signaler...
-          </button>
+          <!-- Profil statistics -->
+          <div class="profile-card-inf">
+            <!-- Publications -->
+            <div v-if="user.posts != 0" class="profile-card-inf__item">
+              <div class="profile-card-inf__title">
+                {{ user.posts.length }}
+              </div>
+              <div class="profile-card-inf__txt">Publications</div>
+            </div>
+
+            <!-- Commentaires -->
+            <div v-if="user.comments != 0" class="profile-card-inf__item">
+              <div class="profile-card-inf__title">
+                {{ user.comments.length }}
+              </div>
+              <div class="profile-card-inf__txt">Commentaires</div>
+            </div>
+
+            <!-- Communautés crées -->
+            <div v-if="user.community != 0" class="profile-card-inf__item">
+              <div class="profile-card-inf__title">
+                {{ user.community.length }}
+              </div>
+              <div class="profile-card-inf__txt">Communautés crées</div>
+            </div>
+          </div>
         </div>
 
-        <div v-else class="profile-card-ctr__actions">
-          <!-- update profile -->
-          <router-link class="btn" to="/user/parameter">
-            Modifier mon profil
-          </router-link>
+        <!-- button actions -->
+        <div class="profile-card-ctr">
+          <div v-if="userLoggedIn == false" class="profile-card-ctr__actions">
+            <!-- button report user -->
+            <button
+              type="button"
+              class="btn"
+              @click="$refs.reportUser.openModal()"
+              text="Signaler ce compte"
+            >
+              Signaler...
+            </button>
+          </div>
 
-          <!-- export data -->
-          <button type="button" class="btn btn-export" @click="exportDataClick" text="Exporter mes données">
-            Exporter mes données
-          </button>
+          <div v-else class="profile-card-ctr__actions">
+            <!-- update profile -->
+            <router-link class="btn" to="/user/parameter">
+              Modifier mon profil
+            </router-link>
 
-          <!-- button delete account -->
-          <button type="button" class="btn btn-delete" @click="$refs.deleteAccount.openModal()"
-            text="Supprimer mon compte">
-            Supprimer mon compte
-          </button>
+            <!-- export data -->
+            <button
+              type="button"
+              class="btn btn-export"
+              @click="exportDataClick"
+              text="Exporter mes données"
+            >
+              Exporter mes données
+            </button>
+
+            <!-- button delete account -->
+            <button
+              type="button"
+              class="btn btn-delete"
+              @click="$refs.deleteAccount.openModal()"
+              text="Supprimer mon compte"
+            >
+              Supprimer mon compte
+            </button>
+          </div>
         </div>
-
       </div>
     </div>
-  </div>
 
-  <div>
-    <PostCard />
-  </div>
+    <!-- modal delete account -->
+    <modalStructure ref="deleteAccount">
+      <template v-slot:header>
+        <h1>Supprimer mon compte</h1>
+      </template>
 
-  <!-- modal delete account -->
-  <modalStructure ref="deleteAccount">
-    <template v-slot:header>
-      <h1>Supprimer mon compte</h1>
-    </template>
+      <template v-slot:body>
+        <p>
+          Attention, vous êtes sur le point de supprimer votre compte. Cette
+          action est irréversible. Souhaitez-vous tout de même continuer ?'
+        </p>
+      </template>
 
-    <template v-slot:body>
-      <p>
-        Attention, vous êtes sur le point de supprimer votre compte. Cette
-        action est irréversible. Souhaitez-vous tout de même continuer ?'
-      </p>
-    </template>
+      <template v-slot:footer>
+        <div class="modal__actions">
+          <button
+            class="btn"
+            text="Annuler"
+            @click="$refs.deleteAccount.closeModal()"
+          >
+            Cancel
+          </button>
+          <deleteBtn @click="deleteAccountClick" />
+        </div>
+      </template>
+    </modalStructure>
 
-    <template v-slot:footer>
-      <div class="modal__actions">
-        <button class="btn" text="Annuler" @click="$refs.modalName.closeModal()">
-          Cancel
-        </button>
-        <deleteBtn @click="deleteAccountClick" />
-      </div>
-    </template>
-  </modalStructure>
+    <!-- modal report user -->
+    <modalStructure ref="reportUser">
+      <template v-slot:header>
+        <h1>Signaler ce compte</h1>
+      </template>
 
-  <!-- modal report user -->
-  <modalStructure ref="reportUser">
-    <template v-slot:header>
-      <h1>Signaler ce compte</h1>
-    </template>
+      <template v-slot:body>
+        <div class="container">
+          <form action="#" method="post" @submit.prevent="reportAccountClick">
+            <div class="FormGroup">
+              <label class="FormGroupLabel" for=""
+                >Pourquoi signalez-vous ce compte ?</label
+              >
+              <div class="FormTextboxWrapper">
+                <textarea
+                  cols="50"
+                  rows="5"
+                  required
+                  class="FormTextbox"
+                  type="text"
+                  placeholder="Explique nous les raisons de ce signalement."
+                  v-model="state.user.content"
+                  @blur="v$.user.content.$touch"
+                  :class="v$.user.content.$error === true ? 'error' : 'dirty'"
+                />
+              </div>
 
-    <template v-slot:body>
-      <div class="container">
-        <form action="#" method="post" @submit.prevent="reportAccountClick">
-          <div class="FormGroup">
-            <label class="FormGroupLabel" for="">Pourquoi signalez-vous ce compte ?</label>
-            <div class="FormTextboxWrapper">
-              <textarea cols="50" rows="5" required class="FormTextbox" type="text"
-                placeholder="Explique nous les raisons de ce signalement." v-model="state.user.content"
-                @blur="v$.user.content.$touch" :class="v$.user.content.$error === true ? 'error' : 'dirty'" />
+              <!-- Error Message -->
+              <template v-if="v$.user.content.$dirty">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.user.content.$errors"
+                  :key="index"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <!-- Error Message -->
             </div>
 
-            <!-- Error Message -->
-            <template v-if="v$.user.content.$dirty">
-              <div class="input-errors" v-for="(error, index) of v$.user.content.$errors" :key="index">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-            <!-- Error Message -->
-          </div>
+            <button
+              type="submit"
+              class="btn button"
+              title="Signaler"
+              text="Signaler"
+              value="Signaler"
+            >
+              Confirmer signalement
+            </button>
+          </form>
+        </div>
+      </template>
 
-          <button type="submit" class="btn button" title="Signaler" text="Signaler" value="Signaler">
-            Confirmer signalement
-          </button>
-        </form>
-      </div>
-    </template>
-
-    <template v-slot:footer>
-      <!-- gestion erreur API avec axios -->
-      <div class="error-api">
-        <p class="error-msg">{{ apiError }}</p>
-      </div>
-      <!-- gestion erreur API avec axios -->
-    </template>
-  </modalStructure>
-</div>
+      <template v-slot:footer>
+        <!-- gestion erreur API avec axios -->
+        <div class="error-api">
+          <p class="error-msg">{{ apiError }}</p>
+        </div>
+        <!-- gestion erreur API avec axios -->
+      </template>
+    </modalStructure>
+  </div>
 </template>
 <script>
-import PostCard from "../Posts/PostCard.vue";
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
 import usersApi from "../../api/users";
 import axiosInstance from "../../services/api";
 import useVuelidate from "@vuelidate/core";
-import {
-  helpers,
-  minLength,
-  maxLength,
-} from "@vuelidate/validators";
+import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 export default {
   name: "User-profile",
-  props: ["user", "userLoggedIn", "targetUser"],
+  props: ["user", "userLoggedIn"],
   setup() {
     const state = reactive({
       user: {
@@ -179,7 +214,6 @@ export default {
     const rules = computed(() => ({
       user: {
         content: {
-          // required: helpers.withMessage("L'/email est obligatoire", required),
           $autoDirty: true,
           $lazy: true,
           minLength: helpers.withMessage(
@@ -202,7 +236,6 @@ export default {
     $lazy: true,
   },
   components: {
-    PostCard,
     modalStructure,
     deleteBtn,
   },
@@ -273,13 +306,8 @@ export default {
             });
 
             // force refresh page
-            setTimeout(
-              function () {
                 this.$router.go(0);
-              }.bind(this),
-              1000,
-              this
-            );
+
           })
           .catch((error) => {
             console.log(error.response.status);
@@ -345,7 +373,14 @@ export default {
     padding-top: 100px;
   }
 }
-
+.profile-card-name {
+  line-height: 35px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.3rem;
+  font-size: 1rem;
+  text-align: center;
+}
 .profile-card {
   width: 100%;
   margin: auto;
@@ -377,15 +412,6 @@ export default {
     text-align: center;
     padding: 0 20px;
     transition: all 0.3s;
-  }
-
-  &__name {
-        line-height: 35px;
-        text-transform: uppercase;
-        font-weight: bold;
-        letter-spacing: 0.3rem;
-        font-size: 1rem;
-        text-align: center;
   }
 
   &-inf {
@@ -434,11 +460,11 @@ export default {
   }
 }
 
-.profile-card-ctr__actions{
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          align-items: center;
+.profile-card-ctr__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 img {
   width: 100%;

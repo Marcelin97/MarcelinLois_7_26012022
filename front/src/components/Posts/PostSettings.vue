@@ -3,24 +3,29 @@
     <h1>{{ msg }}</h1>
 
     <div class="container-update">
-      <h2 class="title">Modifier la communauté</h2>
+      <h2 class="title">Modifier la publication</h2>
 
       <form @submit.prevent="updateAccountClick" enctype="multipart/form-data">
         <div class="form-group">
-          <label for="title">Nouveau titre de la communauté</label>
+          <label for="title">Nouveau titre de la publication</label>
           <input
+            placeholder="TITRE"
+            autocomplete="off"
+            minlength="3"
+            maxlength="255"
+            aria-label="Titre de votre post"
             id="title"
             type="text"
-            v-model="state.community.title"
-            @blur="v$.community.title.$touch"
-            :class="v$.community.title.$error === true ? 'error' : 'dirty'"
+            v-model="state.post.title"
+            @blur="v$.post.title.$touch"
+            :class="v$.post.title.$error === true ? 'error' : 'dirty'"
           />
 
           <!-- Error Message -->
-          <template v-if="v$.community.title.$dirty">
+          <template v-if="v$.post.title.$dirty">
             <div
               class="input-errors"
-              v-for="(error, index) of v$.community.title.$errors"
+              v-for="(error, index) of v$.post.title.$errors"
               :key="index"
             >
               <div class="error-msg">{{ error.$message }}</div>
@@ -30,20 +35,24 @@
         </div>
 
         <div class="form-group">
-          <label for="about">Nouvelle description de la communauté</label>
+          <label for="content">Nouvelle description de la publication</label>
           <input
-            id="about"
+            id="content"
             type="text"
-            v-model="state.community.about"
-            @blur="v$.community.about.$touch"
-            :class="v$.community.about.$error === true ? 'error' : 'dirty'"
+            placeholder="À PROPOS de..."
+            minlength="2"
+            maxlength="400"
+            aria-label="description de votre publication"
+            v-model="state.post.content"
+            @blur="v$.post.content.$touch"
+            :class="v$.post.content.$error === true ? 'error' : 'dirty'"
           />
 
           <!-- Error Message -->
-          <template v-if="v$.community.about.$dirty">
+          <template v-if="v$.post.content.$dirty">
             <div
               class="input-errors"
-              v-for="(error, index) of v$.community.about.$errors"
+              v-for="(error, index) of v$.post.content.$errors"
               :key="index"
             >
               <div class="error-msg">{{ error.$message }}</div>
@@ -53,11 +62,11 @@
         </div>
 
         <div class="form-group">
-          <label for="communityImage">Nouvelle photo de la communauté</label>
+          <label for="PostImage">Nouvelle photo de la publication</label>
           <input
             class="input-file"
-            v-on="state.community.communityImage"
-            id="communityImage"
+            v-on="state.post.image"
+            id="image"
             type="file"
             accept=".jpeg,.jpg,png"
             @change="onChangeFileUpload"
@@ -65,10 +74,10 @@
           />
 
           <!-- Error Message -->
-          <template v-if="v$.community.communityImage.$dirty">
+          <template v-if="v$.post.image.$dirty">
             <div
               class="input-errors"
-              v-for="(error, index) of v$.community.communityImage.$errors"
+              v-for="(error, index) of v$.post.image.$errors"
               :key="index"
             >
               <div class="error-msg">{{ error.$message }}</div>
@@ -88,7 +97,7 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import { minLength } from "@vuelidate/validators";
+import { minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 import axiosInstance from "../../services/api";
 
@@ -97,37 +106,32 @@ export default {
   props: {
     msg: String,
   },
-  data() {
-    return {
-      community: [],
-      communityId: "",
-    };
-  },
   setup() {
     const state = reactive({
-      community: {
+      post: {
         title: "",
-        about: "",
-        communityImage: "",
+        image: "",
+        content: "",
       },
-      apiError: "",
     });
 
     const rules = computed(() => ({
-      community: {
+      post: {
         title: {
           $autoDirty: true,
           $lazy: true,
-        },
-        about: {
-          $autoDirty: true,
-          $lazy: true,
           minLength: minLength(3),
+          maxLength: maxLength(25),
         },
-
-        communityImage: {
+        image: {
           $autoDirty: true,
           $lazy: true,
+        },
+        content: {
+          $autoDirty: true,
+          $lazy: true,
+          minLength: minLength(2),
+          maxLength: maxLength(400),
         },
       },
     }));
@@ -139,46 +143,51 @@ export default {
   validationConfig: {
     $lazy: true,
   },
+  data() {
+    return {
+      postId: "",
+      apiError: "",
+    };
+  },
   mounted() {
-    this.communityId = this.$route.params.id;
+    this.postId = this.$route.params.id;
   },
   methods: {
     onChangeFileUpload() {
-      this.state.community.communityImage =
-        document.querySelector("#communityImage").files[0];
+      this.state.post.image = document.querySelector("#image").files[0];
     },
     updateAccountClick() {
       var bodyFormData = new FormData();
-      if (this.state.community.communityImage)
-        bodyFormData.append("image", this.state.community.communityImage);
+      if (this.state.post.image)
+        bodyFormData.append("image", this.state.post.image);
 
-      for (let key of ["title", "about"]) {
-        const param = this.state.community[key];
-        // console.log(param, key);
+      for (let key of ["title", "content"]) {
+        const param = this.state.post[key];
+        console.log(param, key);
         if (param) {
           bodyFormData.append(key, param);
         }
       }
 
       axiosInstance
-        .patch(`/community/updateCommunity/${this.communityId}`, bodyFormData, {
+        .patch(`/posts/${this.postId}/update`, bodyFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then(() => {
-          // console.log("result: ", result);
+          // console.log("result: ", result.data);
           // alert("Vos modifications sont enregistrées");
 
           // notification de succès
           this.$notify({
             type: "success",
-            title: `Communauté mise à jour`,
-            text: `Vous allez être redirigé vers la communauté.`,
+            title: `Post mis à jour`,
+            text: `Vous allez être redirigé vers le fil d'actualité.`,
           });
 
-          // redirect to the community page
-          this.$router.push(`/communities/profil/${this.communityId}`);
+          // redirect to the feed
+          this.$router.push("/wall");
         })
         .catch((err) => {
           console.log(err);
