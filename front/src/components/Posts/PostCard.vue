@@ -283,16 +283,16 @@
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
 
-import PostComments from "@/components/Comments/PostComments";
-import AddComment from '@/components/Comments/AddComment'
+import PostComments from "../Comments/PostComments";
+import AddComment from '../Comments/AddComment.vue'
 
 import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
-import axiosInstance from "@/services/api";
-import postsApi from "@/api/posts";
-import commentsApi from '@/api/comments'
+import axiosInstance from "../../services/api";
+import postsApi from "../../api/posts";
+import commentsApi from '../../api/comments'
 
 import roleMixin from "../../mixins/role.mixin";
 
