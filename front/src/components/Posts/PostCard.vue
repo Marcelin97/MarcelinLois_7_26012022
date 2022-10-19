@@ -158,31 +158,19 @@
         <p class="instagram-card-content-user">
           {{ post.communityId }}
         </p>
-        <ul class="comments">
-          <li
-            v-for="(comment, index) in comments"
-            :key="index"
-            :comment="comment"
-          ></li>
-          {{
-            comment
-          }}
-        </ul>
+
+        <PostComments
+          v-for="(comment, i) in this.comments"
+          :key="i"
+          :comment="comment"
+          v-bind="comment"
+          @delete-comment="onDeleteComment"
+        />
       </div>
 
       <!-- add a comment -->
       <div class="instagram-card-footer">
-        <PostComments v-for="(comment, i) in this.comments" :key="i" :comment="comment" @delete-comment="onDeleteComment" />
         <AddComment @onAddComment="onAddComment" />
-
-        <!-- <input
-          type="text"
-          autocomplete="off"
-          v-model="newComment"
-          v-on:keyup.enter="addComment"
-          :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
-          class="task-input"
-        /> -->
       </div>
     </div>
 
@@ -312,7 +300,7 @@ export default {
       vote: 0,
       likesCount: 0,
       disLikesCount: 0,
-      comments: []
+      comments: [],
     };
   },
   mixins: [roleMixin],
@@ -349,7 +337,8 @@ export default {
   },
   async created() {
     this.postId = this.$route.params.id;
-    this.comments = await commentsApi.getPostComments(this.postId)
+
+    this.comments = await commentsApi.getPostComments(this.id);
   },
   mounted() {
     this.currentUser = this.$store.state.user;
@@ -470,7 +459,11 @@ export default {
     // Comment
     async onAddComment({ content }) {
       try {
-        const response = await commentsApi.addComment(this.postId, this.currentUser.id,  content);
+        const response = await commentsApi.addComment(
+          this.postId,
+          this.currentUser.id,
+          content
+        );
         this.comments.push(response);
       } catch (e) {
         console.error(e.data);
@@ -478,7 +471,6 @@ export default {
       }
     },
   },
-  
 };
 </script>
 <style lang="scss" scoped>

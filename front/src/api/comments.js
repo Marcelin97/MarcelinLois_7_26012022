@@ -25,7 +25,8 @@ export default {
      */
     async getPostComments(postId) {
         try {
-            const response = await axiosInstance.get(`/posts/${postId}/comments`)
+            const response = await axiosInstance.get(`/comments/readAll/${postId}`)
+            console.log(response.data)
             return response.data
         } catch (e) {
             console.error(e.response)
