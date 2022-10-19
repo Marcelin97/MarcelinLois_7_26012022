@@ -47,7 +47,7 @@
               Modifier
             </router-link>
 
-            v-if="canModerate(this.communityRead.userId, this.communityId)"
+            <!-- v-if="canModerate(this.communityRead.userId, this.communityId)" -->
             <!-- button moderator community-->
             <button
               v-if="canAdmin(this.communityRead.userId)"
@@ -505,11 +505,13 @@ export default {
     async followCommunityClick() {
       try {
         await communitiesApi.followCommunity(this.communityId);
+        // force refresh page
+        this.$router.go(0);
 
         // notification success
         this.$notify({
           type: "success",
-          text: "Vous suivez désormais cette communauté",
+          text: "Vous suivez cette communauté",
         });
       } catch (error) {
         const errorMessage = (this.apiError = error.response);

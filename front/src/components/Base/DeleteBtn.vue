@@ -1,5 +1,5 @@
 <template>
-  <button class="delete">Delete</button>
+  <button class="delete">Supprimer</button>
 </template>
 
 <style lang="scss" scoped>

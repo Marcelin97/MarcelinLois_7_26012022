@@ -207,13 +207,6 @@ export default {
           );
         });
       }
-
-      // try {
-      //   const response = await communityApi.createCommunity(formData);
-      //   console.log(response)
-      // } catch (error) {
-      //   console.log(error)
-      // }
     },
   },
 };

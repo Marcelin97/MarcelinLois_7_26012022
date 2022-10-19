@@ -172,14 +172,19 @@
 
       <!-- add a comment -->
       <div class="instagram-card-footer">
-        <input
+        <PostComments />
+        <AddComment @add-comment="onAddComment" />
+
+
+        <!-- <input
           type="text"
           autocomplete="off"
           v-model="newComment"
           v-on:keyup.enter="addComment"
           :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
           class="task-input"
-        />
+        /> -->
+
       </div>
     </div>
 
@@ -278,12 +283,16 @@
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
 
+import PostComments from "@/components/Comments/PostComments";
+import AddComment from '@/components/Comments/AddComment'
+
 import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
-import axiosInstance from "../../services/api";
-import postsApi from "../../api/posts";
+import axiosInstance from "@/services/api";
+import postsApi from "@/api/posts";
+import commentsApi from '@/api/comments'
 
 import roleMixin from "../../mixins/role.mixin";
 
@@ -293,6 +302,8 @@ export default {
   components: {
     deleteBtn,
     modalStructure,
+    PostComments,
+    AddComment
   },
   data() {
     return {
@@ -373,7 +384,6 @@ export default {
           duration: 30000,
         });
       } catch (error) {
-        // console.log("icii", error);
         const errorMessage = (this.apiErrors = error);
           this.errorMessage = errorMessage;
 
@@ -457,6 +467,16 @@ export default {
             duration: 30000,
           });
         });
+    },
+    // Comment
+    async onAddComment ({ content }) {
+      try {
+        const response = await commentsApi.addComment(this.post.id, content)
+        this.comments.push(response)
+      } catch (e) {
+        console.error(e.data)
+        this.errors = e.data
+      }
     },
   },
 };
