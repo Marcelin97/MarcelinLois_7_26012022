@@ -172,9 +172,8 @@
 
       <!-- add a comment -->
       <div class="instagram-card-footer">
-        <PostComments />
-        <AddComment @add-comment="onAddComment" />
-
+        <PostComments v-for="(comment, i) in this.comments" :key="i" :comment="comment" @delete-comment="onDeleteComment" />
+        <AddComment @onAddComment="onAddComment" />
 
         <!-- <input
           type="text"
@@ -184,7 +183,6 @@
           :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
           class="task-input"
         /> -->
-
       </div>
     </div>
 
@@ -284,7 +282,7 @@ import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
 
 import PostComments from "../Comments/PostComments";
-import AddComment from '../Comments/AddComment.vue'
+import AddComment from "../Comments/AddComment.vue";
 
 import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
@@ -292,7 +290,7 @@ import { reactive, computed } from "vue";
 
 import axiosInstance from "../../services/api";
 import postsApi from "../../api/posts";
-import commentsApi from '../../api/comments'
+import commentsApi from "../../api/comments";
 
 import roleMixin from "../../mixins/role.mixin";
 
@@ -303,7 +301,7 @@ export default {
     deleteBtn,
     modalStructure,
     PostComments,
-    AddComment
+    AddComment,
   },
   data() {
     return {
@@ -314,7 +312,7 @@ export default {
       vote: 0,
       likesCount: 0,
       disLikesCount: 0,
-      newComment: "",
+      comments: []
     };
   },
   mixins: [roleMixin],
@@ -349,8 +347,9 @@ export default {
   validationConfig: {
     $lazy: true,
   },
-  created() {
+  async created() {
     this.postId = this.$route.params.id;
+    this.comments = await commentsApi.getPostComments(this.postId)
   },
   mounted() {
     this.currentUser = this.$store.state.user;
@@ -385,15 +384,15 @@ export default {
         });
       } catch (error) {
         const errorMessage = (this.apiErrors = error);
-          this.errorMessage = errorMessage;
+        this.errorMessage = errorMessage;
 
-          // notification error message
-          this.$notify({
-            type: "error",
-            title: `Erreur lors de l'envoi du rapport`,
-            text: `${errorMessage}`,
-            duration: 3000,
-          });
+        // notification error message
+        this.$notify({
+          type: "error",
+          title: `Erreur lors de l'envoi du rapport`,
+          text: `${errorMessage}`,
+          duration: 3000,
+        });
       }
     },
     sendLike(valeurLike, id) {
@@ -469,16 +468,17 @@ export default {
         });
     },
     // Comment
-    async onAddComment ({ content }) {
+    async onAddComment({ content }) {
       try {
-        const response = await commentsApi.addComment(this.post.id, content)
-        this.comments.push(response)
+        const response = await commentsApi.addComment(this.postId, this.currentUser.id,  content);
+        this.comments.push(response);
       } catch (e) {
-        console.error(e.data)
-        this.errors = e.data
+        console.error(e.data);
+        this.errors = e.data;
       }
     },
   },
+  
 };
 </script>
 <style lang="scss" scoped>
