@@ -288,60 +288,6 @@ exports.readAll = (req, res) => {
     );
 };
 
-// * Update password
-exports.updateUserPassword = (req, res) => {
-  // First, check if the user exist in the db
-  user
-    .findOne({ where: { id: req.auth.userID } })
-    .then((result) => {
-      // if not, respond with a 404 code
-      if (!result) {
-        return res.status(404).send("User not found");
-      }
-      // Then, check if the old password is valid
-      bcrypt
-        .compare(req.body.oldPassword, result.password)
-        .then((validPass) => {
-          if (!validPass) {
-            return res.status(400).send("Wrong password");
-          }
-
-          if (req.body.oldPassword === req.body.newPassword) {
-            return res
-              .status(400)
-              .json({ message: "Old and new password cannot be the same" });
-          }
-
-          // if (passwordRegex.test(newPassword) === false) {
-          //   return res.status(400).send('Please enter a strong password');
-          // }
-
-          // Then, hash the new Password
-          bcrypt
-            .hash(req.body.newPassword, 10)
-            .then((newPasswordHashed) => {
-              // Finally update the password with the new one
-              user
-                .update(
-                  { password: newPasswordHashed },
-                  {
-                    where: {
-                      id: req.auth.userID,
-                    },
-                  }
-                )
-                .then((response) =>
-                  res.status(200).json({ response, message: "Password update" })
-                )
-                .catch((error) => res.status(500).json({ error }));
-            })
-            .catch((error) => res.status(500).json({ error }));
-        })
-        .catch((error) => res.status(500).json({ error }));
-    })
-    .catch((error) => res.status(500).json({ error }));
-};
-
 //* Update
 exports.update = async (req, res) => {
   var emailEncrypted = encrypted(req.body.email);

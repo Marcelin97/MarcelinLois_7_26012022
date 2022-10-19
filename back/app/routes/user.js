@@ -45,11 +45,6 @@ router.get("/readAll", isLoggedIn, userCtrl.readAll);
 router.patch("/update", isLoggedIn, inputValidation, multer, userCtrl.update);
 
 //=================================>
-// * UPDATE PASSWORD
-//=================================>
-router.patch("/updateUserPassword", isLoggedIn, inputValidation, userCtrl.updateUserPassword);
-
-//=================================>
 // * DELETE
 //=================================>
 router.delete("/delete", isLoggedIn, userCtrl.delete);

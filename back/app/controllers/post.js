@@ -402,8 +402,8 @@ exports.likePost = async (req, res, next) => {
                   },
                 })
                 .then((datas) => {
-                  return res.status(200).json({
-                    status: 200,
+                  return res.status(201).json({
+                    status: 201,
                     message: "You disliked this post",
                     data: datas,
                   });
@@ -412,11 +412,20 @@ exports.likePost = async (req, res, next) => {
             } else {
               // Create row and set vote to -1
               // INSERT
-              likePost.create({
-                vote: -1,
-                userId,
-                postId,
-              });
+              likePost
+                .create({
+                  vote: -1,
+                  userId,
+                  postId,
+                })
+                .then((datas) => {
+                  return res.status(201).json({
+                    status: 201,
+                    message: "You disliked this post",
+                    data: datas,
+                  });
+                })
+                .catch(next);
             }
             break;
 
@@ -425,7 +434,6 @@ exports.likePost = async (req, res, next) => {
             return res
               .status(200)
               .json({ message: "you removed your like or your dislike" });
-            break;
 
           case 1:
             if (likePostFind) {
@@ -439,8 +447,8 @@ exports.likePost = async (req, res, next) => {
                   },
                 })
                 .then((datas) => {
-                  return res.status(200).json({
-                    status: 200,
+                  return res.status(201).json({
+                    status: 201,
                     message: "You loved this post",
                     data: datas,
                   });
@@ -449,11 +457,20 @@ exports.likePost = async (req, res, next) => {
             } else {
               // Create row and set vote to 1
               // INSERT
-              likePost.create({
-                vote: 1,
-                userId,
-                postId,
-              });
+              likePost
+                .create({
+                  vote: 1,
+                  userId,
+                  postId,
+                })
+                .then((datas) => {
+                  return res.status(201).json({
+                    status: 201,
+                    message: "You loved this post",
+                    data: datas,
+                  });
+                })
+                .catch(next);
             }
             break;
         }
@@ -465,19 +482,19 @@ exports.likePost = async (req, res, next) => {
         // If it is a like
         case 1:
           changeLike(req.auth.userID, result.id, 1);
-          // return res.status(200).json({ message: "You loved this post" });
+          // res.status(200).json({ message: "You loved this post" });
           break;
 
         // if it's nolike/nodislike
         case 0:
           changeLike(req.auth.userID, result.id, 0);
-          // return res.status(200).json({ message: "you removed your like or your dislike" });
+          // res.status(200).json({ message: "you removed your like or your dislike" });
           break;
 
         // if it's a dislike
         case -1:
           changeLike(req.auth.userID, result.id, -1);
-          // return res.status(200).json({ message: "You disliked this post" });
+          // res.status(200).json({ message: "You disliked this post" });
           break;
         default:
           break;
@@ -508,7 +525,7 @@ exports.reportPost = (req, res) => {
           res.status(200).send({
             status: 200,
             message: "Post successfully reported",
-            datas
+            datas,
           });
         })
         .catch((error) =>
