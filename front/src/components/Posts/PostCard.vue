@@ -48,6 +48,8 @@
               {{ creatorInfo.username }}
             </p>
           </div>
+
+          <!-- Menu dropdown -->
           <div class="dropdown">
             <button
               class="_abl- dropdown-btn"
@@ -110,6 +112,7 @@
           </div>
         </div>
       </div>
+
       <!-- image card -->
       <div class="instagram-card-image">
         <img
@@ -149,6 +152,8 @@
           <span class="like-count">{{ likesCount }}</span>
         </div>
 
+        <!-- section data of post -->
+        <div></div>
         <p class="instagram-card-content-user">
           {{ post.title }}
         </p>
@@ -156,22 +161,34 @@
           {{ post.content }}
         </p>
         <p class="instagram-card-content-user">
-          {{ post.communityId }}
+          Communauté : {{ post.communityId }}
         </p>
 
-        <PostComments
-          v-for="(comment, i) in this.comments"
-          :key="i"
-          :comment="comment"
-          v-bind="comment"
-          @delete-comment="onDeleteComment"
-        />
+        <!-- section comment(s) -->
+        <div>
+          <div v-if="this.comments.length != 0">
+            {{ showCommentsCount }} <span> commentaires</span>
+          </div>
+          <!-- comment(s) list -->
+          <PostComments
+            v-for="(comment, index) in this.comments"
+            :key="index"
+            :comment="comment"
+            v-bind:content="comment.content"
+            v-bind:index="index"
+            @delete-comment="onDeleteComment"
+          />
+          <!-- add a comment -->
+          <div class="instagram-card-footer">
+            <AddComment @onAddComment="onAddComment" />
+          </div>
+        </div>
       </div>
 
-      <!-- add a comment -->
-      <div class="instagram-card-footer">
-        <AddComment @onAddComment="onAddComment" />
-      </div>
+      <!-- publication date -->
+      <p class="card-createdat">
+        {{ showDate }}<font-awesome-icon icon="fa-solid fa-user-secret" />
+      </p>
     </div>
 
     <!-- modal report community -->
@@ -282,6 +299,8 @@ import commentsApi from "../../api/comments";
 
 import roleMixin from "../../mixins/role.mixin";
 
+import timeAgo from "@/services/timeAgo";
+
 export default {
   name: "Post-Card",
   props: ["post", "id", "index", "creatorInfo"],
@@ -335,9 +354,21 @@ export default {
   validationConfig: {
     $lazy: true,
   },
+  computed: {
+    showCommentsCount() {
+      return this.comments.length;
+    },
+    showDate() {
+      if (this.post.createdAt !== this.post.updatedAt) {
+        return `Mis à jour ${timeAgo.format(new Date(this.post.updatedAt))}`;
+      }
+      return `Posté ${timeAgo.format(new Date(this.post.createdAt))}`;
+    },
+  },
   async created() {
     this.postId = this.$route.params.id;
 
+    // I get all my comments by post
     this.comments = await commentsApi.getPostComments(this.id);
   },
   mounted() {
@@ -437,14 +468,14 @@ export default {
       axiosInstance
         .post(`posts/${id}/likes`, infoLike)
         .then((res) => {
-          console.log("likePost", res.data);
+          // console.log("likePost", res.data);
 
-          //  if (res) {
-          //   return res.json
-          // }
+          if (res) {
+            return res.json;
+          }
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
           const errorMessage = (this.apiErrors = error);
           this.errorMessage = errorMessage;
 
@@ -473,6 +504,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" scoped>
 .post {
   max-width: 350px;
