@@ -12,8 +12,9 @@
         <!-- Input Box -->
         <InputBox />
         <!-- Posts -->
-        <div v-if="posts.length != 0">
+        <div v-if="posts.length != 0" class="post">
           <PostCard
+          class="post__card"
             v-for="(post, index) in posts"
             :key="index"
             :post="post"
@@ -23,7 +24,7 @@
           />
         </div>
         <div v-else>
-          <div class="container-communities">
+          <div class="container-communities ">
             <h3>Il n'y a pas de post pour le moment</h3>
             <router-link class="menu-link underline" to="/communities"
               >Commence par crée une communauté
@@ -113,13 +114,13 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-}
-.container__sidebar {
+  &_sidebar{
   top: 0;
-}
-.container__main {
+  }
+  &_main{
   /* Take the remaining width */
   flex: 1;
+  }
 }
 
 .container-communities {
@@ -127,7 +128,7 @@ export default {
   align-items: center;
   flex-direction: column;
 }
-.menu-link::after {
+.post::after {
   position: absolute;
   top: 0;
   right: 100%;
@@ -136,11 +137,11 @@ export default {
   padding: 0 0.25rem 0 0;
 }
 
-.menu-item {
+.post {
   margin: 1rem;
-  @for $i from 0 through 5 {
+  @for $i from 0 through 6 {
     &:nth-child(#{1 + $i}) {
-      .menu-link::after {
+      .post__card::after {
         content: "0#{1 + $i}";
       }
     }

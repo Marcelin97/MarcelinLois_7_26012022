@@ -33,6 +33,7 @@ module.exports = (sequelize, Sequelize) => {
     Comment.belongsTo(models.post, {
       foreignKey: "postId",
       as: "posts",
+      onDelete: "CASCADE",
     });
     // Reply a comment
     Comment.hasMany(models.commentReplies, {
@@ -44,6 +45,7 @@ module.exports = (sequelize, Sequelize) => {
     // Like a comment
     Comment.hasMany(models.likeComment, {
       as: "likeComments",
+      onDelete: "CASCADE",
     });
   };
 

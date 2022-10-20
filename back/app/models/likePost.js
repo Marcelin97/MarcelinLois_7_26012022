@@ -11,8 +11,12 @@ module.exports = (sequelize, Sequelize) => {
   // * Sequelize associations
   LikePost.associate = (models) => {
     // is linked to
-    LikePost.belongsTo(models.post);
-    LikePost.belongsTo(models.user);
+    LikePost.belongsTo(models.post, {
+      onDelete: "CASCADE",
+    });
+    LikePost.belongsTo(models.user, {
+      onDelete: "CASCADE",
+    });
   };
 
   return LikePost;

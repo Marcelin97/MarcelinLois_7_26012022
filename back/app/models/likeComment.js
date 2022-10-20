@@ -14,10 +14,12 @@ module.exports = (sequelize, Sequelize) => {
     LikeComment.belongsTo(models.comment, {
       foreignKey: "commentId",
       as: "comments",
+      onDelete: "CASCADE",
     });
     LikeComment.belongsTo(models.user, {
       foreignKey: "userId",
       as: "users",
+      onDelete: "CASCADE",
     });
   };
 
