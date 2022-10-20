@@ -73,23 +73,9 @@ exports.readPostById = (req, res, next) => {
       where: {
         id: req.params.id,
       },
-      include: [
-        {
-          model: user,
-          as: "posts",
-          attributes: ["id", "username", "imageUrl"],
-        },
-        {
-          model: community,
-          as: "posts",
-          attributes: ["id", "title", "about"],
-        },
-        {
-          model: comment,
-          as: "comments",
-          attributes: ["id", "content", "likes"],
-        },
-      ],
+      include: {
+        all: true,
+      },
     })
     .then((result) => {
       // TODO : Check if post exist
@@ -109,7 +95,7 @@ exports.readPostById = (req, res, next) => {
 };
 
 // * Read all post by community
-exports.readAllPostByCommunity = function (req, res, next) {
+exports.readAllPostByCommunity =  (req, res, next) => {
   community
     .findOne({
       where: {
@@ -124,7 +110,6 @@ exports.readAllPostByCommunity = function (req, res, next) {
             "title",
             "imageUrl",
             "content",
-            "likes",
             "communityId",
             "creatorId",
           ],
@@ -170,12 +155,18 @@ exports.readAllPostByCommunityFollow = async (req, res, next) => {
       ],
       order: [["createdAt", "DESC"]],
     })
-    .then(async (result) => {
-      return res.status(200).json({
-        status: 200,
-        message: "Followed community posts are found",
-        result,
-      });
+    .then((result) => {
+      if (result.length <= 0) {
+        return res.status(404).json({ message: "Post by community follow is empty" });
+      }
+      if (result) {
+        return res.status(200).json({
+          status: 200,
+          message: "Followed community posts are found",
+          result,
+        });
+      }
+
     })
     .catch((err) => {
       res.status(500).json({
@@ -192,11 +183,14 @@ exports.manyLikes = (req, res, next) => {
       where: {
         vote: [1],
       },
+      include: {
+        all: true,
+      },
       limit: 6,
     })
     .then((result) => {
       // TODO : Check if i find post by community
-      if (!result) {
+      if (result.length <= 0) {
         return res
           .status(404)
           .json({ message: "Any post found with lot of likes" });

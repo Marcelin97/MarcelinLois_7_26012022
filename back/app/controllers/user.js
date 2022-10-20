@@ -216,7 +216,6 @@ exports.readUser = async (req, res) => {
     .findOne({
       include: {
         all: true,
-        // model: follower,
       },
       where: {
         id: req.auth.userID,

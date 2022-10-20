@@ -46,6 +46,39 @@ exports.createComment = (req, res, next) => {
     });
 };
 
+// * Read a comment by post
+exports.readAllComments = (req, res, next) => {
+  post
+    .findByPk(req.params.id)
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({ message: "Post not exists" });
+      }
+      // console.log(post);
+      comment
+        .findAll({ where: { postId: post.id } })
+        .then((commentFind) => {
+          console.log("commentaire", commentFind);
+          if (commentFind.length <= 0 ) {
+            return res.status(404).json({ message: "Comment(s) not exists" });
+          }
+
+          res.status(200).json({
+            status: 200,
+            message: "Comment(s) find with success",
+            commentFind,
+          });
+        })
+        .catch((err) => {
+          return res.status(404).json({ err, message: "Comment not found" });
+        });
+    })
+    .catch((err) => {
+      const message = "Could not read all comments by post";
+      res.status(500).json({ error: err.message, message });
+    });
+};
+
 // * Update a comment
 exports.updateComment = (req, res, next) => {
   // TODO : Find the comment to update
