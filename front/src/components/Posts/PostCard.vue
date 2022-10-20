@@ -153,21 +153,23 @@
         </div>
 
         <!-- section data of post -->
-        <div></div>
-        <p class="instagram-card-content-user">
+        <div>
+          <p class="instagram-card-content-user">
           {{ post.title }}
         </p>
         <p class="instagram-card-content-user">
           {{ post.content }}
         </p>
-        <p class="instagram-card-content-user">
+        <!-- <p class="instagram-card-content-user">
           Communauté : {{ post.communityId }}
-        </p>
+        </p> -->
+        </div>
+
 
         <!-- section comment(s) -->
         <div>
           <div v-if="this.comments.length != 0">
-            {{ showCommentsCount }} <span> commentaires</span>
+            {{ showCommentsCount }} <span> <font-awesome-icon icon="fa-regular fa-comments" /></span>
           </div>
           <!-- comment(s) list -->
           <PostComments
@@ -187,7 +189,7 @@
 
       <!-- publication date -->
       <p class="card-createdat">
-        {{ showDate }}<font-awesome-icon icon="fa-solid fa-user-secret" />
+        {{ showDate }}<font-awesome-icon icon="fa-regular fa-clock" />
       </p>
     </div>
 
@@ -655,11 +657,6 @@ export default {
 .disabled {
   color: orange;
 }
-
-.disabled {
-  color: orange;
-}
-
 // post title
 .instagram-card-content-user {
   margin-bottom: 1rem;
@@ -680,6 +677,13 @@ export default {
   }
 }
 
+// Date of publication
+.card-createdat{
+  font-size : 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  margin-left: 1rem;
+}
 .modal {
   &__actions {
     display: flex;
