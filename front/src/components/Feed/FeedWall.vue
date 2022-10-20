@@ -14,7 +14,7 @@
         <!-- Posts -->
         <div v-if="posts.length != 0" class="post">
           <PostCard
-          class="post__card"
+            class="post__card"
             v-for="(post, index) in posts"
             :key="index"
             :post="post"
@@ -24,7 +24,7 @@
           />
         </div>
         <div v-else>
-          <div class="container-communities ">
+          <div class="container-communities">
             <h3>Il n'y a pas de post pour le moment</h3>
             <router-link class="menu-link underline" to="/communities"
               >Commence par crée une communauté
@@ -87,23 +87,22 @@ export default {
         if (!confirm("Êtes-vous sûr de vouloir supprimer ce poste ?")) return;
         await postsApi.deletePost(`${id}`);
 
-          // force refresh page
-            this.$router.go(0);
+        // force refresh page
+        this.$router.go(0);
+      } catch (error) {
+        console.error(error.data.error);
 
-        } catch (error) {
-          console.error(error.data.error);
+        const errorMessage = (this.apiErrors = error.data.error);
+        this.errorMessage = errorMessage;
 
-          const errorMessage = (this.apiErrors = error.data.error);
-          this.errorMessage = errorMessage;
-
-          // notification error message
-          this.$notify({
-            type: "error",
-            title: `Accès refusé:`,
-            text: `${errorMessage}`,
-            duration: 3000,
-          });
-        }
+        // notification error message
+        this.$notify({
+          type: "error",
+          title: `Accès refusé:`,
+          text: `${errorMessage}`,
+          duration: 3000,
+        });
+      }
     },
   },
 };
@@ -114,12 +113,12 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  &_sidebar{
-  top: 0;
+  &_sidebar {
+    top: 0;
   }
-  &_main{
-  /* Take the remaining width */
-  flex: 1;
+  &_main {
+    /* Take the remaining width */
+    flex: 1;
   }
 }
 

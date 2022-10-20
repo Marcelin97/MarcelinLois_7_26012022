@@ -2,6 +2,7 @@
   <div class="container">
     <div class="form-input-box">
       <h2>Publication</h2>
+
       <!-- form structure-->
       <form
         id="form"
@@ -9,11 +10,11 @@
         enctype="multipart/form-data"
       >
         <!-- add file -->
-        <div class="container">
+        <div class="container__file">
           <div class="fileUploadInput">
-            <label>✨ Ajouter une image ?</label>
+            <label>✨ Ajouter une image</label>
             <input
-              accept=".jpeg,.jpg,png"
+              accept=".jpeg,.jpg,.png"
               @change="onChangeFileUpload"
               ref="image"
               class="image"
@@ -40,6 +41,7 @@
           maxlength="255"
           aria-label="Titre de votre post"
         />
+
         <!-- Error Message -->
         <template v-if="v$.post.title.$dirty">
           <div
@@ -51,6 +53,7 @@
           </div>
         </template>
         <!-- Error Message -->
+
         <textarea
           id="message"
           type="text"
@@ -64,6 +67,7 @@
           required
           aria-label="description de votre publication"
         ></textarea>
+
         <!-- Error Message -->
         <template v-if="v$.post.content.$dirty">
           <div
@@ -89,9 +93,9 @@
               {{ community.id }} - {{ community.title }}
             </option>
           </select>
-          
         </div>
         <!-- <div class="select__choice">Communauté choisi: {{ state.community.id }}</div> -->
+
         <!-- Error Message -->
         <template v-if="v$.community.id.$dirty">
           <div
@@ -127,7 +131,7 @@ import { reactive, computed } from "vue";
 import axiosInstance from "../../services/api";
 
 export default {
-  name: "InputBoxPost",
+  name: "InputBox-Post",
   setup() {
     const state = reactive({
       post: {
@@ -189,8 +193,8 @@ export default {
   },
   data() {
     return {
-      apiError: "",
-      communities: [],
+      apiErrors: "",
+      communities: [], // add communities  array
       selectValue: "",
       placeholder: "Choisi une communauté",
     };
@@ -204,7 +208,7 @@ export default {
       })
       .catch((error) => {
         if (error.response.status == 404) {
-          const errorMessage = (this.apiError = "Communauté introuvable !");
+          const errorMessage = (this.apiErrors = "Communauté introuvable !");
           this.errorMessage = errorMessage;
         }
       });
@@ -252,7 +256,7 @@ export default {
           })
           .catch((error) => {
             console.log(error.response);
-            const errorMessage = (this.apiError = error.response.data.error);
+            const errorMessage = (this.apiErrors = error.response.data.error);
             this.errorMessage = errorMessage;
 
             // error notification
@@ -286,61 +290,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/* <select> styles */
-select {
-  appearance: none;
-  border: 0;
-  outline: 0;
-  width: 20rem;
-  height: 3rem;
-  padding: 0 4em 0 1em;
-  border-radius: 0.25em;
-  box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
-  color: #fff;
-  background-color: #34495e;
-  cursor: pointer;
-  /* <option> colors */
-  option {
-    color: inherit;
+.container {
+  &_file {
+    margin: 1rem auto;
   }
-  /* Remove focus outline */
-  &:focus {
-    outline: none;
-  }
-  /* Remove IE arrow */
-  &::-ms-expand {
-    display: none;
-  }
-  /* Arrow */
 }
-
-/* Custom Select wrapper */
-.select {
-  position: relative;
-  display: flex;
-  width: 20em;
-  height: 3em;
-  border-radius: .25em;
-  overflow: hidden;
-  margin: 1rem 0 0.5rem 0
-}
-
-/* Arrow */
-.select::after {
-  content: "\25BC";
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1em;
-  background-color: #34495e;
-  transition: 0.25s all ease;
-  pointer-events: none;
-}
-/* Transition */
-.select:hover::after {
-  color: #f39c12;
-}
-
 .form-input-box {
   display: flex;
   flex-direction: column;
@@ -368,16 +322,13 @@ h2 {
   align-items: center;
 }
 
-// file
-.container {
-  margin: 1rem auto;
-}
-
+// File
 .fileUploadInput {
   display: grid;
   grid-gap: 10px;
   position: relative;
   z-index: 1;
+  margin: 1rem 0;
 }
 
 .fileUploadInput label {
@@ -422,7 +373,6 @@ h2 {
   font-weight: 800;
 }
 
-// form
 .form-title::placeholder,
 textarea::placeholder {
   font-size: 0.875em;
@@ -457,6 +407,56 @@ textarea {
   transition: all 0.3s ease-in-out;
 }
 
+/* <select> styles */
+select {
+  appearance: none;
+  border: 0;
+  outline: 0;
+  width: 20rem;
+  height: 3rem;
+  padding: 0 4em 0 1em;
+  border-radius: 0.25em;
+  box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+  color: #fff;
+  background-color: #34495e;
+  cursor: pointer;
+  /* <option> colors */
+  option {
+    color: inherit;
+  }
+  /* Remove focus outline */
+  &:focus {
+    outline: none;
+  }
+}
+
+/* Custom Select wrapper */
+.select {
+  position: relative;
+  display: flex;
+  width: 20em;
+  height: 3em;
+  border-radius: 0.25em;
+  overflow: hidden;
+  margin: 1rem 0 0.5rem 0;
+}
+
+/* Arrow */
+.select::after {
+  content: "\25BC";
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1em;
+  background-color: #34495e;
+  transition: 0.25s all ease;
+  pointer-events: none;
+}
+/* Transition */
+.select:hover::after {
+  color: #f39c12;
+}
+
 button#submit {
   width: 100%;
   max-width: 20rem;
@@ -479,7 +479,6 @@ button#submit {
   outline-color: #f99;
 }
 
-// error message
 .error-msg {
   color: #cc0033;
   display: inline-block;

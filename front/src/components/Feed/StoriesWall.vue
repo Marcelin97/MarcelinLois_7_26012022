@@ -1,6 +1,6 @@
 <template>
   <section class="stories">
-    <StoryCard 
+    <StoryCard
       v-for="(community, index) in communities"
       :key="index"
       :community="community"
@@ -18,9 +18,8 @@ export default {
   },
   data() {
     return {
-      // add communities array:
-      communities: [],
-      apiError: "",
+      communities: [], // add communities array
+      apiErrors: "",
       search: "",
     };
   },
@@ -33,7 +32,7 @@ export default {
       .catch((error) => {
         // console.log(error.response.status);
         if (error.response.status == 404) {
-          const errorMessage = (this.apiError =
+          const errorMessage = (this.apiErrors =
             "Il n'y pas encore de communauté(s) !");
           this.errorMessage = errorMessage;
         }
@@ -43,12 +42,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.stories{
+.stories {
   display: flex;
   flex-direction: row;
   overflow: hidden;
   overflow-x: auto;
   cursor: grabbing;
+  justify-content: space-evenly;
 }
-
 </style>
