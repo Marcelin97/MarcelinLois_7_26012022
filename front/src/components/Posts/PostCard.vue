@@ -1,20 +1,20 @@
 <template>
   <div>
-    <div class="post">
+    <div class="post-card">
       <!-- header card -->
-      <div class="instagram-card-header">
+      <div class="post-card__header">
         <div class="header">
-          <div class="header-left">
+          <div class="header__left">
             <div class="profile-pic" v-if="post.user">
               <img
                 v-if="post.user.imageUrl"
-                class="instagram-card-user-image"
+                class="profile-pic__user"
                 :src="`http://localhost:3000${post.user.imageUrl}`"
                 :alt="'Avatar de ' + post.user.username"
                 aria-label="Photo d'utilisateur"
               />
               <img
-                class="instagram-card-user-image"
+                class="profile-pic__user"
                 v-else
                 src="../../assets/img/avataaars.png"
                 alt="Avatar par défaut"
@@ -24,13 +24,13 @@
             <div class="profile-pic" v-else-if="creatorInfo">
               <img
                 v-if="creatorInfo.imageUrl"
-                class="instagram-card-user-image"
+                class="profile-pic__user"
                 :src="`http://localhost:3000${creatorInfo.imageUrl}`"
                 :alt="'Avatar de ' + creatorInfo.username"
                 aria-label="Photo d'utilisateur"
               />
               <img
-                class="instagram-card-user-image"
+                class="profile-pic__user"
                 v-else
                 src="../../assets/img/avataaars.png"
                 alt="Avatar par défaut"
@@ -38,11 +38,11 @@
               />
             </div>
 
-            <p class="instagram-card-user-name" v-if="post.user">
+            <p class="profile-pic__username" v-if="post.user">
               {{ post.user.username }}
             </p>
             <p
-              class="instagram-card-user-name"
+              class="profile-pic__username"
               v-else-if="creatorInfo.length != 0"
             >
               {{ creatorInfo.username }}
@@ -52,7 +52,7 @@
           <!-- Menu dropdown -->
           <div class="dropdown">
             <button
-              class="_abl- dropdown-btn"
+              class="dropdown-btn"
               v-on:click="show = !show"
               type="button"
               tabindex="0"
@@ -114,20 +114,20 @@
       </div>
 
       <!-- image card -->
-      <div class="instagram-card-image">
+      <div class="post-image">
         <img
           alt="photo du post"
           :src="`http://localhost:3000${post.imageUrl}`"
         />
       </div>
       <!-- content card -->
-      <div class="instagram-card-content">
+      <div class="post-content">
         <!-- btn dislike -->
-        <div class="like-data">
+        <div class="vote-data">
           <!-- <button class="icon-rocknroll">👎</button> -->
           <button
             aria-label="Dislike"
-            class="dislike icon-rocknroll"
+            class="dislike icon-vote"
             title="Enlever mon j'aime"
             @click="sendLike(-1, id)"
           >
@@ -136,40 +136,40 @@
               :class="{ disabled: downvoted }"
             ></i>
           </button>
-          <span class="like-count">{{ dislikesCount }}</span>
+          <span class="vote-count">{{ dislikesCount }}</span>
         </div>
         <!-- btn like -->
-        <div class="like-data">
+        <div class="vote-data">
           <!-- <button class="icon-rocknroll">☝️</button> -->
           <button
             aria-label="Like"
-            class="like icon-rocknroll"
+            class="like icon-vote"
             title="Mettre un j'aime"
             @click="sendLike(1, id)"
           >
             <i class="fa fa-thumbs-up like" :class="{ disabled: upvoted }"></i>
           </button>
-          <span class="like-count">{{ likesCount }}</span>
+          <span class="vote-count">{{ likesCount }}</span>
         </div>
 
         <!-- section data of post -->
         <div>
-          <p class="instagram-card-content-user">
-          {{ post.title }}
-        </p>
-        <p class="instagram-card-content-user">
-          {{ post.content }}
-        </p>
-        <!-- <p class="instagram-card-content-user">
+          <p class="post__content">
+            {{ post.title }}
+          </p>
+          <p class="post__content">
+            {{ post.content }}
+          </p>
+          <!-- <p class="instagram-card-content-user">
           Communauté : {{ post.communityId }}
         </p> -->
         </div>
 
-
         <!-- section comment(s) -->
         <div>
           <div v-if="this.comments.length != 0">
-            {{ showCommentsCount }} <span> <font-awesome-icon icon="fa-regular fa-comments" /></span>
+            {{ showCommentsCount }}
+            <span> <font-awesome-icon icon="fa-regular fa-comments" /></span>
           </div>
           <!-- comment(s) list -->
           <PostComments
@@ -181,14 +181,14 @@
             @delete-comment="onDeleteComment"
           />
           <!-- add a comment -->
-          <div class="instagram-card-footer">
+          <div class="post-comment">
             <AddComment @onAddComment="onAddComment" />
           </div>
         </div>
       </div>
 
       <!-- publication date -->
-      <p class="card-createdat">
+      <p class="post-createdat">
         {{ showDate }}<font-awesome-icon icon="fa-regular fa-clock" />
       </p>
     </div>
@@ -380,7 +380,7 @@ export default {
     async deletePostClick(index, id) {
       this.$emit("deletePostClick", index, id);
 
-      //  close delete modal
+      // close delete modal
       this.$refs.deletePost.closeModal();
 
       // notification success
@@ -394,7 +394,7 @@ export default {
     async reportPostClick(index, id) {
       try {
         await postsApi.reportPost(`${id}`, this.state.post);
-        // // force refresh page
+        // force refresh page
         this.$router.go(0);
 
         // notification success
@@ -423,7 +423,6 @@ export default {
       } //si l'utilisateur à déjà (dis)liké le post
       else {
         if (this.vote === valeurLike) {
-          //l'utilisateur souhaite être neutre
           valeurLike = 0;
           this.vote = 0;
         }
@@ -431,7 +430,6 @@ export default {
           this.vote = -1;
         }
         if (this.vote === 0 && valeurLike === 1) {
-          //si l'utilisateur like plutôt que dislike un post.
           this.vote = 1;
         }
         if (this.vote === 1 && valeurLike === -1) {
@@ -462,6 +460,7 @@ export default {
           duration: 5000,
         });
       }
+      // data send to axios request
       const infoLike = {
         vote: valeurLike,
         postId: id,
@@ -471,7 +470,6 @@ export default {
         .post(`posts/${id}/likes`, infoLike)
         .then((res) => {
           // console.log("likePost", res.data);
-
           if (res) {
             return res.json;
           }
@@ -515,30 +513,28 @@ export default {
   background: #fff;
   border-radius: 0.4rem;
   margin-bottom: 2rem;
+  &_header {
+    border-bottom: 1px solid #ccc;
+    background-color: transparent;
+  }
 }
 
-// card header
-.instagram-card-header {
-  border-bottom: 1px solid #ccc;
-  background-color: transparent;
-}
 .header {
   display: flex;
   align-content: stretch;
   align-items: center;
   flex-direction: row;
-}
-
-.header-left {
-  margin: 8px 4px 8px 12px;
-  padding: unset;
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  flex-shrink: 1;
-  max-width: calc(100% - 48px);
-  position: relative;
+  &_left {
+    margin: 8px 4px 8px 12px;
+    padding: unset;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: calc(100% - 48px);
+    position: relative;
+  }
 }
 
 .profile-pic {
@@ -549,17 +545,17 @@ export default {
   padding: 1px;
   background: linear-gradient(45deg, #ffd6d6, #f34642 80%);
   margin-right: 10px;
-}
-.instagram-card-user-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid #fff;
-}
-.instagram-card-user-name {
-  font-size: 12px;
-  font-weight: bold;
+  &_user {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+  &_username {
+    font-size: 12px;
+    font-weight: bold;
+  }
 }
 
 // dropdown menu
@@ -621,28 +617,25 @@ export default {
 }
 
 // card image
-.instagram-card-image img {
+.post-image img {
   width: 100%;
 }
 
 // card content
-.instagram-card-content {
+.post-content {
   padding: 15px;
 }
-.like-data {
+
+// btn like or dislike
+.vote-data {
   float: right;
 }
-.like-count,
-.icon-rocknroll {
+.vote-count,
+.icon-vote {
   font-size: 0.75rem;
 }
-.like-count {
-  &:hover {
-    opacity: 0.5;
-  }
-}
 
-.icon-rocknroll {
+.icon-vote {
   background: none;
   border: 0;
   outline: none;
@@ -654,36 +647,35 @@ export default {
   }
 }
 
+// btn disable
 .disabled {
   color: orange;
 }
-// post title
-.instagram-card-content-user {
+// post content info
+.post__content {
   margin-bottom: 1rem;
   word-break: break-all;
 }
 
-// add comment
-.task-input {
+// Comment
+.post-comment {
   display: flex;
   margin: 1rem auto;
   width: 90%;
   outline: none;
   border: none;
   color: #4e5559;
-
-  &:placeholder {
-    color: #4e5559;
-  }
 }
 
 // Date of publication
-.card-createdat{
-  font-size : 0.5rem;
+.post-createdat {
+  font-size: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.2rem;
   margin-left: 1rem;
 }
+
+// Section modal
 .modal {
   &__actions {
     display: flex;
