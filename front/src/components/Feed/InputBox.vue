@@ -291,7 +291,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  &_file {
+  &__file {
     margin: 1rem auto;
   }
 }

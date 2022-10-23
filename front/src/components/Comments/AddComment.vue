@@ -6,9 +6,9 @@
       <div class="form-group col-12">
         <label for="content" class="form-label"></label>
         <input
-          v-model="state.comment.content"
-          @blur="v$.comment.content.$touch"
-          :class="v$.comment.content.$error === true ? 'error' : 'dirty'"
+          v-model="state.content"
+          @blur="v$.content.$touch"
+          :class="v$.content.$error === true ? 'error' : 'dirty'"
           name="content"
           type="text"
           class="form-control form-control-lg"
@@ -18,10 +18,10 @@
         />
 
         <!-- Error Message -->
-        <template v-if="v$.comment.content.$dirty">
+        <template v-if="v$.content.$dirty">
           <div
             class="input-errors"
-            v-for="(error, index) of v$.comment.content.$errors"
+            v-for="(error, index) of v$.content.$errors"
             :key="index"
           >
             <div class="error-msg">{{ error.$message }}</div>
@@ -63,13 +63,10 @@ export default {
   mixins: [roleMixin],
   setup() {
     const state = reactive({
-      comment: {
         content: "",
-      },
     });
 
     const rules = computed(() => ({
-      comment: {
         content: {
           $autoDirty: true,
           $lazy: true,
@@ -82,7 +79,6 @@ export default {
             maxLength(255)
           ),
         },
-      },
     }));
 
     const v$ = useVuelidate(rules, state);
@@ -96,8 +92,8 @@ export default {
     this.currentUser = this.$store.state.user;
   },
   methods: {
-    onAddComment(formData) {
-      this.$emit("onAddComment", formData);
+    onAddComment(content) {
+      this.$emit("onAddComment", content);
     },
   },
 };

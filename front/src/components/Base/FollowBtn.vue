@@ -1,7 +1,6 @@
 <template>
   <button class="btn-follow">
     <span class="background"></span>
-    <!-- <span class="icon uil uil-instagram"></span> -->
     <font-awesome-icon class="icon" :icon="['fas', 'hashtag']" />
     <span class="content"> S'abonner </span>
   </button>

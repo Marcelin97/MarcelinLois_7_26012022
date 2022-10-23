@@ -490,11 +490,7 @@ export default {
     // Comment
     async onAddComment({ content }) {
       try {
-        const response = await commentsApi.addComment(
-          this.postId,
-          this.currentUser.id,
-          content
-        );
+        const response = await commentsApi.addComment(content, this.currentUser.id, this.post.id);
         this.comments.push(response);
       } catch (e) {
         console.error(e.data);
@@ -506,14 +502,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.post {
+.post-card {
   max-width: 350px;
   margin: 0 auto;
   border: 1px solid #ccc;
   background: #fff;
   border-radius: 0.4rem;
   margin-bottom: 2rem;
-  &_header {
+  &__header {
     border-bottom: 1px solid #ccc;
     background-color: transparent;
   }
@@ -524,8 +520,8 @@ export default {
   align-content: stretch;
   align-items: center;
   flex-direction: row;
-  &_left {
-    margin: 8px 4px 8px 12px;
+&__left{
+        margin: 8px 4px 8px 12px;
     padding: unset;
     align-items: center;
     display: flex;
@@ -534,7 +530,7 @@ export default {
     flex-shrink: 1;
     max-width: calc(100% - 48px);
     position: relative;
-  }
+}
 }
 
 .profile-pic {
@@ -545,14 +541,14 @@ export default {
   padding: 1px;
   background: linear-gradient(45deg, #ffd6d6, #f34642 80%);
   margin-right: 10px;
-  &_user {
+  &__user {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid #fff;
   }
-  &_username {
+  &__username {
     font-size: 12px;
     font-weight: bold;
   }

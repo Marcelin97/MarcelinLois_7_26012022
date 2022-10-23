@@ -113,10 +113,10 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  &_sidebar {
+  &__sidebar {
     top: 0;
   }
-  &_main {
+  &__main {
     /* Take the remaining width */
     flex: 1;
   }
@@ -127,24 +127,12 @@ export default {
   align-items: center;
   flex-direction: column;
 }
-.post::after {
-  position: absolute;
-  top: 0;
-  right: 100%;
-  font-size: 0.75rem;
-  letter-spacing: 0.056rem;
-  padding: 0 0.25rem 0 0;
-}
 
 .post {
-  margin: 1rem;
-  @for $i from 0 through 6 {
-    &:nth-child(#{1 + $i}) {
-      .post__card::after {
-        content: "0#{1 + $i}";
-      }
-    }
-  }
+    margin: auto;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
 }
 
 .underline {
