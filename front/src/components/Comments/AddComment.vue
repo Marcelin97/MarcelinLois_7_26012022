@@ -37,7 +37,6 @@
           title="Commenter"
           text="Commenter"
           :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
-          @click="onAddComment(content)"
         >Commenter</button>
       </div>
     </Form>
@@ -92,9 +91,9 @@ export default {
     this.currentUser = this.$store.state.user;
   },
   methods: {
-    onAddComment(content) {
-      this.$emit("onAddComment", content);
-    },
+    onSubmit () {
+      this.$emit('add-comment', { content: this.state.content })
+    }
   },
 };
 </script>

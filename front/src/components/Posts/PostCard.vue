@@ -182,7 +182,7 @@
           />
           <!-- add a comment -->
           <div class="post-comment">
-            <AddComment @onAddComment="onAddComment" />
+            <AddComment  @add-comment="onAddComment"/>
           </div>
         </div>
       </div>
@@ -490,7 +490,7 @@ export default {
     // Comment
     async onAddComment({ content }) {
       try {
-        const response = await commentsApi.addComment(content, this.currentUser.id, this.post.id);
+        const response = await commentsApi.addComment(this.post.id, content);
         this.comments.push(response);
       } catch (e) {
         console.error(e.data);

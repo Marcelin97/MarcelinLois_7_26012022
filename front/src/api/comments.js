@@ -10,7 +10,7 @@ export default {
        */
     async addComment(postId, comment, userId) {
         try {
-            const response = await axiosInstance.post('/', { postId, userId, content: comment })
+            const response = await axiosInstance.post('/comments', { postId, userId, content: comment })
             return response.data
         } catch (e) {
             console.error(e.response)
