@@ -1,9 +1,9 @@
 <template>
-  <section class="mt-3 py-4" aria-labelledby="comments-title">
+  <section aria-labelledby="comments-title">
     <h2 id="comments-title">Ajouter un commentaire</h2>
 
-    <Form class="add-comments mt-4 row" @submit="onSubmit">
-      <div class="form-group col-12">
+    <Form @submit="onSubmit">
+      <div>
         <label for="content" class="form-label"></label>
         <input
           v-model="state.content"
@@ -30,14 +30,16 @@
         <!-- Error Message -->
       </div>
 
-      <div class="col-12 form-actions">
+      <div>
         <button
           type="submit"
           class="btn"
           title="Commenter"
           text="Commenter"
           :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
-        >Commenter</button>
+        >
+          Commenter
+        </button>
       </div>
     </Form>
   </section>
@@ -52,7 +54,6 @@ import roleMixin from "../../mixins/role.mixin";
 
 export default {
   name: "Add-Comment",
-
   data() {
     return {
       currentUser: [],
@@ -62,22 +63,22 @@ export default {
   mixins: [roleMixin],
   setup() {
     const state = reactive({
-        content: "",
+      content: "",
     });
 
     const rules = computed(() => ({
-        content: {
-          $autoDirty: true,
-          $lazy: true,
-          minLength: helpers.withMessage(
-            "Ce champ doit être long d'au moins 5",
-            minLength(5)
-          ),
-          maxLength: helpers.withMessage(
-            "La longueur maximale autorisée est de 255",
-            maxLength(255)
-          ),
-        },
+      content: {
+        $autoDirty: true,
+        $lazy: true,
+        minLength: helpers.withMessage(
+          "Ce champ doit être long d'au moins 5",
+          minLength(5)
+        ),
+        maxLength: helpers.withMessage(
+          "La longueur maximale autorisée est de 255",
+          maxLength(255)
+        ),
+      },
     }));
 
     const v$ = useVuelidate(rules, state);
@@ -91,9 +92,12 @@ export default {
     this.currentUser = this.$store.state.user;
   },
   methods: {
-    onSubmit () {
-      this.$emit('add-comment', { content: this.state.content })
-    }
+    onSubmit() {
+      this.$emit("add-comment", { content: this.state.content });
+    },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+</style>

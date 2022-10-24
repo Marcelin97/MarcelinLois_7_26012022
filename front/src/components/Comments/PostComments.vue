@@ -4,6 +4,11 @@
       <p class="comments-createdAt">{{ showDate }}</p>
       <p class="comments-text">{{ content }}</p>
     </div>
+    <div class="comments-report d-flex justify-content-end">
+      <a href="#" 
+         @click.prevent.stop="$emit('delete-comment', this.comment.id)">Supprimer</a>
+      <a href="#" class="btn btn-link warning" @click.prevent.stop="onCommentReport">Signaler</a>
+    </div>
   </div>
 </template>
 
@@ -50,4 +55,19 @@ export default {
   color: #95989a;
   padding-top: 0.3rem;
 }
+
+.comments-content{
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px #ccc dashed;
+  margin-bottom: 1rem;
+}
+
+.comments-createdAt{
+  font-size: 0.4rem;
+  text-transform: uppercase;
+}
+// .comments-text{
+//   margin-bottom: 1rem;
+// }
 </style>

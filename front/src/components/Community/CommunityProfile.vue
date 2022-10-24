@@ -459,7 +459,6 @@ export default {
               title: `Signalement envoyé !`,
               text: `Merci, votre rapport a été envoyé.`,
             });
-
           })
           .catch((error) => {
             if (error.response.status == 404) {
@@ -848,5 +847,37 @@ img {
   overflow: hidden;
   text-overflow: ellipsis;
   border: none;
+}
+
+// error if input is invalid
+.dirty {
+  border-color: #8de8fe;
+}
+
+.dirty:focus {
+  outline-color: #8e8;
+}
+
+.error {
+  background: #fdd;
+  border-color: #fd4444;
+  opacity: 0.7;
+}
+
+.error:focus {
+  outline-color: #f99;
+}
+
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
+  max-width: 15rem;
+  @media only screen and (min-width: 576px) {
+    max-width: 25rem;
+  }
 }
 </style>

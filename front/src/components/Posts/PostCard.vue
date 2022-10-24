@@ -132,8 +132,8 @@
             @click="sendLike(-1, id)"
           >
             <i
-              class="fa fa-thumbs-down like"
-              :class="{ disabled: downvoted }"
+              class="fa fa-thumbs-down"
+              v-bind:class="{ redLike: vote === -1 }"
             ></i>
           </button>
           <span class="vote-count">{{ dislikesCount }}</span>
@@ -147,7 +147,20 @@
             title="Mettre un j'aime"
             @click="sendLike(1, id)"
           >
-            <i class="fa fa-thumbs-up like" :class="{ disabled: upvoted }"></i>
+            <!-- <i class="fa fa-thumbs-up blueLike" v-bind:class="{ blueLike: vote === 1 }"></i> -->
+
+            <svg
+              class="icon icon-thumbs-up"
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 1000 1000"
+            >
+              <title>thumbs-up</title>
+              <path
+                d="M141.62 478.51v416.58H58.38V478.51h83.24M200 420.14H0v533.33h200zM600 91.71a8.3 8.3 0 0 1 8.29 8.29v153.05a75.15 75.15 0 0 1-16.54 47l-24.18 30.08-76.35 95H900a41.63 41.63 0 0 1 31 69.36l-34.85 38.93L931 572.27a41.65 41.65 0 0 1-20 67.9l-63 17.15L872.06 718a41.72 41.72 0 0 1-23.54 54.1l-1.31.49-38.92 13.76v47a78.14 78.14 0 0 1-.67 10.14l-1.12 8.35 1.29 8.34a43 43 0 0 1 .5 6.51 41.68 41.68 0 0 1-41.62 41.62H400a75 75 0 0 1-75-75V393.44l151.11-130.06 8.64-7.44 5.25-10.15 64.84-126.49A50.54 50.54 0 0 1 600 91.71m0-58.38a109.15 109.15 0 0 0-97.1 59.32L438 219.15 266.67 366.67v466.66A133.33 133.33 0 0 0 400 966.67h366.67a100.07 100.07 0 0 0 98.81-115.46 135.37 135.37 0 0 0 1.19-17.88v-5.69a100.11 100.11 0 0 0 60.9-127.81c-.39-1.12-.81-2.22-1.24-3.32a100 100 0 0 0 48.21-163.17A100 100 0 0 0 900 366.67H613.07l24.18-30.08a133.31 133.31 0 0 0 29.42-83.54V100A66.67 66.67 0 0 0 600 33.33z"
+              />
+            </svg>
           </button>
           <span class="vote-count">{{ likesCount }}</span>
         </div>
@@ -182,7 +195,7 @@
           />
           <!-- add a comment -->
           <div class="post-comment">
-            <AddComment  @add-comment="onAddComment"/>
+            <AddComment @add-comment="onAddComment" />
           </div>
         </div>
       </div>
@@ -395,7 +408,7 @@ export default {
       try {
         await postsApi.reportPost(`${id}`, this.state.post);
         // force refresh page
-        this.$router.go(0);
+        // this.$router.go(0);
 
         // notification success
         this.$notify({
@@ -497,11 +510,27 @@ export default {
         this.errors = e.data;
       }
     },
+    async onDeleteComment(commentId) {
+      try {
+        if (confirm('Souhaitez-vous vraiment supprimer ce commentaire ?')) {
+          await commentsApi.deleteComment(commentId)
+          this.comments = this.comments.filter((comment) => comment.id !== commentId)
+        }
+      } catch (e) {
+        alert(e.data.message)
+      }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.icon-thumbs-up {
+  fill: black;
+  &:active {
+    fill: green;
+  }
+}
 .post-card {
   max-width: 350px;
   margin: 0 auto;
@@ -520,8 +549,8 @@ export default {
   align-content: stretch;
   align-items: center;
   flex-direction: row;
-&__left{
-        margin: 8px 4px 8px 12px;
+  &__left {
+    margin: 8px 4px 8px 12px;
     padding: unset;
     align-items: center;
     display: flex;
@@ -530,7 +559,7 @@ export default {
     flex-shrink: 1;
     max-width: calc(100% - 48px);
     position: relative;
-}
+  }
 }
 
 .profile-pic {
@@ -638,9 +667,14 @@ export default {
   cursor: pointer;
   margin: 0 0.125rem 0 0;
   padding: 0;
-  &:hover {
-    opacity: 0.5;
-  }
+}
+
+.blueLike {
+  color: blue;
+}
+
+.redLike {
+  color: red;
 }
 
 // btn disable
@@ -656,11 +690,6 @@ export default {
 // Comment
 .post-comment {
   display: flex;
-  margin: 1rem auto;
-  width: 90%;
-  outline: none;
-  border: none;
-  color: #4e5559;
 }
 
 // Date of publication
@@ -676,6 +705,38 @@ export default {
   &__actions {
     display: flex;
     justify-content: space-around;
+  }
+}
+
+// error if input is invalid
+.dirty {
+  border-color: #8de8fe;
+}
+
+.dirty:focus {
+  outline-color: #8e8;
+}
+
+.error {
+  background: #fdd;
+  border-color: #fd4444;
+  opacity: 0.7;
+}
+
+.error:focus {
+  outline-color: #f99;
+}
+
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
+  max-width: 15rem;
+  @media only screen and (min-width: 576px) {
+    max-width: 25rem;
   }
 }
 </style>

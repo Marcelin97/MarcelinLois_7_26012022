@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1>{{ this.community.title }}</h1>
-    <CommunityProfile :community="community" :communityId = "communityId"/>
+    <CommunityProfile :community="community" :communityId="communityId" />
 
     <!-- gestion erreur API avec axios -->
     <div v-if="apiErrors" class="error-api">
@@ -10,6 +10,7 @@
       </p>
     </div>
     <!-- gestion erreur API avec axios -->
+    
   </section>
 </template>
 
@@ -33,7 +34,9 @@ export default {
     this.communityId = this.$route.params.id;
 
     try {
-      const response = await communitiesApi.readTargetCommunity(this.communityId);
+      const response = await communitiesApi.readTargetCommunity(
+        this.communityId
+      );
       this.community = response.data.datas;
     } catch (error) {
       const errorMessage = (this.apiErrors = error.response);
@@ -64,13 +67,22 @@ h1 {
   margin-bottom: 1rem;
   margin-right: 1rem;
   text-align: center;
+  font-size: 1.4rem;
+  line-height: 1.4rem;
+  letter-spacing: 0.3rem;
+  font-weight: bolder;
+  text-align: center;
+  margin: 2rem 0 0;
+  padding-bottom: 3vh;
+}
 
-      font-size: 1.4rem;
-    line-height: 1.4rem;
-    letter-spacing: 0.3rem;
-    font-weight: bolder;
-    text-align: center;
-    margin: 2rem 0 0;
-    padding-bottom: 3vh;
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
+  max-width: 15rem;
 }
 </style>

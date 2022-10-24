@@ -90,7 +90,7 @@ export default {
         // force refresh page
         this.$router.go(0);
       } catch (error) {
-        console.error(error.data.error);
+        // console.error(error.data.error);
 
         const errorMessage = (this.apiErrors = error.data.error);
         this.errorMessage = errorMessage;
