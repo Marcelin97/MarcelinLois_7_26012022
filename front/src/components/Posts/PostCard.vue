@@ -122,47 +122,64 @@
       </div>
       <!-- content card -->
       <div class="post-content">
-        <!-- btn dislike -->
-        <div class="vote-data">
-          <!-- <button class="icon-rocknroll">👎</button> -->
-          <button
-            aria-label="Dislike"
-            class="dislike icon-vote"
-            title="Enlever mon j'aime"
-            @click="sendLike(-1, id)"
-          >
-            <i
-              class="fa fa-thumbs-down"
-              v-bind:class="{ redLike: vote === -1 }"
-            ></i>
-          </button>
-          <span class="vote-count">{{ dislikesCount }}</span>
-        </div>
         <!-- btn like -->
         <div class="vote-data">
-          <!-- <button class="icon-rocknroll">☝️</button> -->
           <button
             aria-label="Like"
             class="like icon-vote"
             title="Mettre un j'aime"
             @click="sendLike(1, id)"
           >
-            <!-- <i class="fa fa-thumbs-up blueLike" v-bind:class="{ blueLike: vote === 1 }"></i> -->
-
             <svg
-              class="icon icon-thumbs-up"
+              class="heart"
+              id="heart"
               xmlns="http://www.w3.org/2000/svg"
               width="15"
-              height="15"
-              viewBox="0 0 1000 1000"
+              viewBox="0 0 32 31"
             >
-              <title>thumbs-up</title>
-              <path
-                d="M141.62 478.51v416.58H58.38V478.51h83.24M200 420.14H0v533.33h200zM600 91.71a8.3 8.3 0 0 1 8.29 8.29v153.05a75.15 75.15 0 0 1-16.54 47l-24.18 30.08-76.35 95H900a41.63 41.63 0 0 1 31 69.36l-34.85 38.93L931 572.27a41.65 41.65 0 0 1-20 67.9l-63 17.15L872.06 718a41.72 41.72 0 0 1-23.54 54.1l-1.31.49-38.92 13.76v47a78.14 78.14 0 0 1-.67 10.14l-1.12 8.35 1.29 8.34a43 43 0 0 1 .5 6.51 41.68 41.68 0 0 1-41.62 41.62H400a75 75 0 0 1-75-75V393.44l151.11-130.06 8.64-7.44 5.25-10.15 64.84-126.49A50.54 50.54 0 0 1 600 91.71m0-58.38a109.15 109.15 0 0 0-97.1 59.32L438 219.15 266.67 366.67v466.66A133.33 133.33 0 0 0 400 966.67h366.67a100.07 100.07 0 0 0 98.81-115.46 135.37 135.37 0 0 0 1.19-17.88v-5.69a100.11 100.11 0 0 0 60.9-127.81c-.39-1.12-.81-2.22-1.24-3.32a100 100 0 0 0 48.21-163.17A100 100 0 0 0 900 366.67H613.07l24.18-30.08a133.31 133.31 0 0 0 29.42-83.54V100A66.67 66.67 0 0 0 600 33.33z"
-              />
+              <title>J'aime</title>
+              <g stroke-width="2">
+                <path
+                  id="heart"
+                  d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  v-bind:fill="like_color"
+                ></path>
+              </g>
             </svg>
           </button>
           <span class="vote-count">{{ likesCount }}</span>
+        </div>
+
+        <!-- btn dislike -->
+        <div class="vote-data">
+          <button
+            aria-label="Dislike"
+            class="dislike icon-vote"
+            title="Enlever mon j'aime"
+            @click="sendLike(-1, id)"
+          >
+            <svg
+              class="heart"
+              id="heart"
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              viewBox="0 0 32 31"
+            >
+              <title>Enlever mon j'aime</title>
+              <g stroke-width="2">
+                <path
+                  id="heart"
+                  d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  v-bind:fill="dislike_color"
+                ></path>
+              </g>
+            </svg>
+          </button>
+          <span class="vote-count">{{ dislikesCount }}</span>
         </div>
 
         <!-- section data of post -->
@@ -206,7 +223,7 @@
       </p>
     </div>
 
-    <!-- modal report community -->
+    <!-- modal report post -->
     <modalStructure ref="reportPost">
       <template v-slot:header>
         <h1>Signaler ce post</h1>
@@ -262,13 +279,13 @@
       <template v-slot:footer>
         <!-- gestion erreur API avec axios -->
         <div class="error-api">
-          <p class="error-msg">{{ apiError }}</p>
+          <p class="error-msg">{{ apiErrors }}</p>
         </div>
         <!-- gestion erreur API avec axios -->
       </template>
     </modalStructure>
 
-    <!-- modal delete account -->
+    <!-- modal delete post -->
     <modalStructure ref="deletePost">
       <template v-slot:header>
         <h1>Supprimer la publication</h1>
@@ -335,6 +352,8 @@ export default {
       likesCount: 0,
       disLikesCount: 0,
       comments: [],
+      like_color: "",
+      dislike_color: "",
     };
   },
   mixins: [roleMixin],
@@ -405,29 +424,35 @@ export default {
       });
     },
     async reportPostClick(index, id) {
-      try {
-        await postsApi.reportPost(`${id}`, this.state.post);
-        // force refresh page
-        // this.$router.go(0);
+      if (
+        confirm(
+          "L'administrateur et le modérateur seront notifié, souhaitez-vous signaler ce commentaire ?"
+        )
+      ) {
+        try {
+          await postsApi.reportPost(`${id}`, this.state.post);
+          // force refresh page
+          // this.$router.go(0);
 
-        // notification success
-        this.$notify({
-          type: "success",
-          title: `Signalement`,
-          text: `Merci, votre rapport a été envoyé.`,
-          duration: 30000,
-        });
-      } catch (error) {
-        const errorMessage = (this.apiErrors = error);
-        this.errorMessage = errorMessage;
+          // notification success
+          this.$notify({
+            type: "success",
+            title: `Signalement`,
+            text: `Merci, votre rapport a été envoyé.`,
+            duration: 30000,
+          });
+        } catch (error) {
+          const errorMessage = (this.apiErrors = error);
+          this.errorMessage = errorMessage;
 
-        // notification error message
-        this.$notify({
-          type: "error",
-          title: `Erreur lors de l'envoi du rapport`,
-          text: `${errorMessage}`,
-          duration: 3000,
-        });
+          // notification error message
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de l'envoi du rapport`,
+            text: `${errorMessage}`,
+            duration: 3000,
+          });
+        }
       }
     },
     sendLike(valeurLike, id) {
@@ -438,6 +463,8 @@ export default {
         if (this.vote === valeurLike) {
           valeurLike = 0;
           this.vote = 0;
+          this.like_color = "rgb(255,255,255)";
+          this.dislike_color = "rgb(255,255,255)";
         }
         if (this.vote === 1 && valeurLike === 0) {
           this.vote = -1;
@@ -447,12 +474,18 @@ export default {
         }
         if (this.vote === 1 && valeurLike === -1) {
           this.vote = -1;
+          this.like_color = "rgb(255,255,255)";
+          this.dislike_color = "rgb(255,255,255)";
         }
         if (this.vote === -1 && valeurLike === 1) {
           this.vote = 1;
+          this.like_color = "rgb(255,255,255)";
+          this.dislike_color = "rgb(255,255,255)";
         }
       }
       if (valeurLike === 1) {
+        this.like_color = "rgb(255, 54, 54)";
+
         this.$notify({
           type: "success",
           title: `J'aime enregistré !`,
@@ -460,6 +493,8 @@ export default {
         });
       }
       if (valeurLike === -1) {
+        this.dislike_color = "rgb(0,0,204)";
+
         this.$notify({
           type: "success",
           title: `Je n'aime pas enregistré !`,
@@ -512,12 +547,14 @@ export default {
     },
     async onDeleteComment(commentId) {
       try {
-        if (confirm('Souhaitez-vous vraiment supprimer ce commentaire ?')) {
-          await commentsApi.deleteComment(commentId)
-          this.comments = this.comments.filter((comment) => comment.id !== commentId)
+        if (confirm("Souhaitez-vous vraiment supprimer ce commentaire ?")) {
+          await commentsApi.deleteComment(commentId);
+          this.comments = this.comments.filter(
+            (comment) => comment.id !== commentId
+          );
         }
       } catch (e) {
-        alert(e.data.message)
+        alert(e.data.message);
       }
     },
   },
@@ -525,11 +562,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.icon-thumbs-up {
-  fill: black;
-  &:active {
-    fill: green;
-  }
+a,
+button {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+button {
+  background: none;
+  border: solid 1px;
+  border-radius: 2em;
+  font: inherit;
+  padding: 0.75em 2em;
+  display: flex;
+  align-items: center;
+  transision: 0.1s ease;
+}
+
+button:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+}
+
+.heart {
+  transition: all 0.1s ease;
+  stroke: #ff3636;
+  fill: none;
+  margin-right: 10px;
+}
+
+button:active .heart {
+  transform: scale(0.9);
 }
 .post-card {
   max-width: 350px;

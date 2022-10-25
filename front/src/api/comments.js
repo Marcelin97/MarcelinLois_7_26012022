@@ -33,7 +33,7 @@ export default {
       // console.log(response.data.commentFind)
       return response.data.commentFind;
     } catch (e) {
-      // console.error(e.response)
+      console.error(e.response)
       throw e.response;
     }
   },
@@ -51,27 +51,31 @@ export default {
     }
   },
 
-  /**
-   * Get reported comments
-   * @returns {Promise<any>}
-   */
-  async getReportedComments() {
-    try {
-      const response = await axiosInstance.get("/comments/reports");
-      return response.data;
-    } catch (e) {
-      throw e.response;
-    }
-  },
+  // /**
+  //  * Get reported comments
+  //  * @returns {Promise<any>}
+  //  */
+  // async getReportedComments() {
+  //   try {
+  //     const response = await axiosInstance.get("/comments/reports");
+  //     return response.data;
+  //   } catch (e) {
+  //     throw e.response;
+  //   }
+  // },
 
   /**
    * Report a comment
    * @param commentId
+   * @param content
    * @return {Promise<AxiosResponse<any>>}
    */
-  async commentReport(commentId) {
+  async commentReport(commentId, content) {
     try {
-      return await axiosInstance.post(`/comments/${commentId}/reports`);
+      return await axiosInstance.post(
+        `/comments/reports/${commentId}`,
+        content
+      );
     } catch (e) {
       console.error(e.response);
       throw e.response;
