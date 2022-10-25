@@ -56,6 +56,7 @@
               v-on:click="show = !show"
               type="button"
               tabindex="0"
+              aria-label="Menu déroulant"
             >
               <div>
                 <div style="height: 24px; width: 24px">
@@ -120,6 +121,7 @@
           :src="`http://localhost:3000${post.imageUrl}`"
         />
       </div>
+
       <!-- content card -->
       <div class="post-content">
         <!-- btn like -->
@@ -161,7 +163,7 @@
             @click="sendLike(-1, id)"
           >
             <svg
-              class="heart"
+              class="disheart"
               id="heart"
               xmlns="http://www.w3.org/2000/svg"
               width="15"
@@ -190,9 +192,6 @@
           <p class="post__content">
             {{ post.content }}
           </p>
-          <!-- <p class="instagram-card-content-user">
-          Communauté : {{ post.communityId }}
-        </p> -->
         </div>
 
         <!-- section comment(s) -->
@@ -268,6 +267,7 @@
               class="btn button"
               title="Signaler"
               text="Signaler"
+              aria-label="Confirmer signalement"
               @click="reportPostClick(index, id)"
             >
               Confirmer signalement
@@ -303,6 +303,8 @@
           <button
             class="btn"
             text="Annuler"
+            title="Annuler"
+            aria-label="Annuler la suppression"
             @click="$refs.deletePost.closeModal()"
           >
             Annuler
@@ -350,7 +352,7 @@ export default {
       apiErrors: "",
       vote: 0,
       likesCount: 0,
-      disLikesCount: 0,
+      dislikesCount: 0,
       comments: [],
       like_color: "",
       dislike_color: "",
@@ -535,7 +537,6 @@ export default {
           });
         });
     },
-    // Comment
     async onAddComment({ content }) {
       try {
         const response = await commentsApi.addComment(this.post.id, content);
@@ -562,46 +563,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-a,
-button {
-  color: rgba(0, 0, 0, 0.7);
-}
-
-button {
-  background: none;
-  border: solid 1px;
-  border-radius: 2em;
-  font: inherit;
-  padding: 0.75em 2em;
-  display: flex;
-  align-items: center;
-  transision: 0.1s ease;
-}
-
-button:hover {
-  background: rgba(0, 0, 0, 0.03);
-}
-
-.container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transform: translate(-50%, -50%);
-}
-
-.heart {
-  transition: all 0.1s ease;
-  stroke: #ff3636;
-  fill: none;
-  margin-right: 10px;
-}
-
-button:active .heart {
-  transform: scale(0.9);
-}
 .post-card {
   max-width: 350px;
   margin: 0 auto;
@@ -725,6 +686,9 @@ button:active .heart {
 // btn like or dislike
 .vote-data {
   float: right;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .vote-count,
 .icon-vote {
@@ -736,22 +700,27 @@ button:active .heart {
   border: 0;
   outline: none;
   cursor: pointer;
-  margin: 0 0.125rem 0 0;
-  padding: 0;
 }
 
-.blueLike {
-  color: blue;
+.heart,
+.disheart {
+  transition: all 0.1s ease;
+  stroke: #ff3636;
+  fill: none;
 }
 
-.redLike {
-  color: red;
+.heart {
+  stroke: #ff3636;
+}
+.disheart {
+  stroke: #1530de;
 }
 
-// btn disable
-.disabled {
-  color: orange;
+button:active .heart,
+.disheart {
+  transform: scale(0.9);
 }
+
 // post content info
 .post__content {
   margin-bottom: 1rem;
