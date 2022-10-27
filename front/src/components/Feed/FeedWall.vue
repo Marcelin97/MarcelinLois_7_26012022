@@ -129,10 +129,10 @@ export default {
 }
 
 .post {
-    margin: auto;
-    width: 350px;
-    display: flex;
-    flex-direction: column;
+  margin: auto;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
 }
 
 .underline {

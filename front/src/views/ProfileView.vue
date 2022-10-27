@@ -2,9 +2,9 @@
   <div v-if="user.length != 0">
     <section>
       <h1>Mon compte</h1>
-      <UserProfile :user="user" :userLoggedIn="true" />
+      <UserProfile :user="user" :userId="user.id" :userLoggedIn="true" />
     </section>
-    
+
     <!-- If there are posts -->
     <section>
       <div v-if="posts.length != 0">
@@ -12,6 +12,7 @@
           v-for="(post, index) in posts"
           :key="index"
           :post="post"
+          v-bind:id="post.id"
         />
       </div>
       <div v-else>

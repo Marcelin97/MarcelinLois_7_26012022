@@ -218,11 +218,12 @@ export default {
   flex-direction: column;
   justify-content: center;
   box-shadow: 0 0 20px rgb(66 50 98 / 35%);
-  margin: 2rem auto 2rem auto;
+  margin: 0 auto 2rem auto;
   padding: 2rem;
   border-radius: 0.8rem;
+  max-width: 400px;
   @media only screen and (min-width: 768px) {
-    width: 580px;
+    max-width: 580px;
   }
 }
 

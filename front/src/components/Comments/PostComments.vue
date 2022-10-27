@@ -5,10 +5,19 @@
       <p class="comments-text">{{ content }}</p>
     </div>
     <div class="actions">
-      <deleteBtn class="btn-danger" @click.prevent.stop="$emit('delete-comment', this.comment.id)"
-/>
       <button
         type="button"
+        text="Supprimer ce commentaire"
+        aria-label="Supprimer ce commentaire"
+        class="btn-danger"
+        @click.prevent.stop="$emit('delete-comment', this.comment.id)"
+      >
+        Supprimer
+      </button>
+
+      <button
+        type="button"
+        class="btn-report"
         @click="$refs.reportComment.openModal()"
         text="Signaler ce commentaire"
         aria-label="Signaler ce commentaire"
@@ -85,7 +94,6 @@
 
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
-import deleteBtn from "../Base/DeleteBtn.vue";
 
 import commentsApi from "@/api/comments";
 
@@ -102,7 +110,6 @@ export default {
   props: ["comment", "content", "index"],
   components: {
     modalStructure,
-    deleteBtn
   },
   data() {
     return {
@@ -165,6 +172,10 @@ export default {
               this.comment.id,
               this.state.comment
             );
+
+            // close delete modal
+            this.$refs.reportComment.closeModal();
+
             // notification success
             this.$notify({
               type: "success",
@@ -207,34 +218,61 @@ export default {
   font-size: 0.8rem;
   color: #95989a;
   padding-top: 0.3rem;
+  &:hover {
+    .actions {
+      opacity: 1;
+    }
+  }
 }
 
 .comments-content {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px #ccc dashed;
-  margin-bottom: 1rem;
+  // border-bottom: 1px #ccc dashed;
 }
 
 .comments-createdAt {
   font-size: 0.4rem;
   text-transform: uppercase;
 }
-// .comments-text{
-//   margin-bottom: 1rem;
-// }
+.comments-text {
+  margin-bottom: 0.3rem;
+}
 
-// Actions 
-.actions{
+// Actions
+.comments:hover,
+.actions {
+  transition: 0.25s opacity linear;
+}
+.actions {
   display: flex;
   flex-direction: row;
-  justify-content:flex-start;
+  justify-content: flex-start;
+  opacity: 0;
 }
-.btn-danger{
-  width: 5rem;
-  height: auto;
-  font-size: 0.4rem;
+.btn-danger {
+  color: #cc0033;
 }
+
+.btn-report {
+  color: rgb(0, 149, 246);
+}
+.btn-report,
+.btn-danger {
+  opacity: 0.3;
+  border: none;
+  cursor: pointer;
+  font-size: 0.5rem;
+  text-align: center;
+  text-overflow: ellipsis;
+  width: auto;
+  background: transparent;
+  transition: opacity 0.5s;
+  &:hover {
+    opacity: initial;
+  }
+}
+
 // error if input is invalid
 .dirty {
   border-color: #8de8fe;

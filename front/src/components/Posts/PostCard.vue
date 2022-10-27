@@ -159,7 +159,7 @@
           <button
             aria-label="Dislike"
             class="dislike icon-vote"
-            title="Enlever mon j'aime"
+            title="j'aime pas"
             @click="sendLike(-1, id)"
           >
             <svg
@@ -208,7 +208,14 @@
             v-bind:content="comment.content"
             v-bind:index="index"
             @delete-comment="onDeleteComment"
+            class="comments-list"
           />
+
+          <!-- if no comment(s) -->
+          <p v-if="comments.length === 0" class="noComment">
+            Il n'y a aucun commentaire pour le moment. Soyez le premier !
+          </p>
+
           <!-- add a comment -->
           <div class="post-comment">
             <AddComment @add-comment="onAddComment" />
@@ -230,7 +237,7 @@
 
       <template v-slot:body>
         <div class="container">
-          <form action="#" method="post" @submit.prevent="reportPostClick">
+          <form action="#" method="post" @closed="v$.$reset()">
             <div class="FormGroup">
               <label class="FormGroupLabel" for=""
                 >Pourquoi signalez-vous ce post ?</label
@@ -268,7 +275,7 @@
               title="Signaler"
               text="Signaler"
               aria-label="Confirmer signalement"
-              @click="reportPostClick(index, id)"
+              @click.prevent.stop="reportPostClick(index, id)"
             >
               Confirmer signalement
             </button>
@@ -309,7 +316,7 @@
           >
             Annuler
           </button>
-          <deleteBtn @click="deletePostClick(index, id)" />
+          <deleteBtn @click.prevent.stop="deletePostClick(index, id)" />
         </div>
       </template>
     </modalStructure>
@@ -425,36 +432,32 @@ export default {
         duration: 30000,
       });
     },
-    async reportPostClick(index, id) {
-      if (
-        confirm(
-          "L'administrateur et le modérateur seront notifié, souhaitez-vous signaler ce commentaire ?"
-        )
-      ) {
-        try {
-          await postsApi.reportPost(`${id}`, this.state.post);
-          // force refresh page
-          // this.$router.go(0);
+    async reportPostClick(index, postId) {
+      try {
+        await postsApi.reportPost(`${postId}`, this.state.post);
 
-          // notification success
-          this.$notify({
-            type: "success",
-            title: `Signalement`,
-            text: `Merci, votre rapport a été envoyé.`,
-            duration: 30000,
-          });
-        } catch (error) {
-          const errorMessage = (this.apiErrors = error);
-          this.errorMessage = errorMessage;
+        // close report modal
+        this.$refs.reportPost.closeModal();
+        this.v$.$reset();
 
-          // notification error message
-          this.$notify({
-            type: "error",
-            title: `Erreur lors de l'envoi du rapport`,
-            text: `${errorMessage}`,
-            duration: 3000,
-          });
-        }
+        // notification success
+        this.$notify({
+          type: "success",
+          title: `Signalement`,
+          text: `Merci, votre rapport a été envoyé.`,
+          duration: 30000,
+        });
+      } catch (error) {
+        const errorMessage = (this.apiErrors = error);
+        this.errorMessage = errorMessage;
+
+        // notification error message
+        this.$notify({
+          type: "error",
+          title: `Erreur lors de l'envoi du rapport`,
+          text: `${errorMessage}`,
+          duration: 3000,
+        });
       }
     },
     sendLike(valeurLike, id) {
@@ -680,7 +683,8 @@ export default {
 
 // card content
 .post-content {
-  padding: 15px;
+  margin: 0 0 auto;
+  padding: 0 12px;
 }
 
 // btn like or dislike
@@ -723,21 +727,29 @@ button:active .heart,
 
 // post content info
 .post__content {
-  margin-bottom: 1rem;
+  margin-bottom: calc((8px) * 2);
   word-break: break-all;
 }
 
 // Comment
+.comments-list {
+  margin-bottom: calc((5px) * 2);
+}
 .post-comment {
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: calc((5px) * 2);
 }
 
 // Date of publication
-.post-createdat {
+.post-createdat,
+.noComment {
   font-size: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.2rem;
   margin-left: 1rem;
+  line-height: 1rem;
 }
 
 // Section modal

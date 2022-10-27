@@ -19,6 +19,7 @@
         v-for="(post, index) in posts"
         :key="index"
         :post="post"
+        v-bind:id="post.id"
         :creatorInfo="creatorInfo"
       />
     </section>
