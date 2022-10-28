@@ -257,8 +257,8 @@ export default {
     async exportDataClick() {
       try {
         const response = await usersApi.exportMyData();
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement("a");
+        let fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        let fileLink = document.createElement("a");
 
         fileLink.href = fileURL;
         fileLink.setAttribute("download", "file.txt");

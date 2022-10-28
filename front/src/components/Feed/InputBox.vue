@@ -222,7 +222,7 @@ export default {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
         // if no errors
-        var bodyFormData = new FormData();
+        let bodyFormData = new FormData();
         bodyFormData.append("title", this.state.post.title);
         bodyFormData.append("content", this.state.post.content);
         bodyFormData.append("image", this.state.post.image);

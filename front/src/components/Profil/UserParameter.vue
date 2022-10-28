@@ -271,7 +271,7 @@ export default {
       this.state.user.userImage = document.querySelector("#userImage").files[0];
     },
     updateAccountClick() {
-      var bodyFormData = new FormData();
+      let bodyFormData = new FormData();
       if (this.state.user.userImage)
         bodyFormData.append("image", this.state.user.userImage);
 

@@ -157,7 +157,7 @@ export default {
       this.state.post.image = document.querySelector("#image").files[0];
     },
     updateAccountClick() {
-      var bodyFormData = new FormData();
+      let bodyFormData = new FormData();
       if (this.state.post.image)
         bodyFormData.append("image", this.state.post.image);
 

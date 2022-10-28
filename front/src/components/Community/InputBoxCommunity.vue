@@ -146,7 +146,7 @@ export default {
     createCommunityClick() {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
-        var bodyFormData = new FormData();
+        let bodyFormData = new FormData();
         bodyFormData.append("title", this.state.community.title);
         bodyFormData.append("about", this.state.community.about);
         bodyFormData.append("image", this.state.community.image);
