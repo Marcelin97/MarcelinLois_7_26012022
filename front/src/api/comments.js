@@ -33,7 +33,7 @@ export default {
       // console.log(response.data.commentFind)
       return response.data.commentFind;
     } catch (e) {
-      console.error(e.response);
+      console.error(e.response)
       throw e.response;
     }
   },

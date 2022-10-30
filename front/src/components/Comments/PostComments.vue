@@ -6,6 +6,7 @@
     </div>
     <div class="actions">
       <button
+        v-if="canAdmin(this.comment.userId)"
         type="button"
         text="Supprimer ce commentaire"
         aria-label="Supprimer ce commentaire"
@@ -16,6 +17,18 @@
       </button>
 
       <button
+        v-if="canAdmin(this.comment.userId)"
+        type="button"
+        class="btn-update"
+        @click="$refs.updateComment.openModal()"
+        text="Modifier ce commentaire"
+        aria-label="Modifier ce commentaire"
+      >
+        Modifier
+      </button>
+
+      <button
+        v-if="this.$store.state.user.id != this.comment.userId"
         type="button"
         class="btn-report"
         @click="$refs.reportComment.openModal()"
@@ -25,6 +38,68 @@
         Signaler
       </button>
     </div>
+
+    <!-- modal update comment -->
+    <modalStructure ref="updateComment">
+      <template v-slot:header>
+        <h1>Modifier ce commentaire</h1>
+      </template>
+
+      <template v-slot:body>
+        <div class="container">
+          <form action="#" method="put">
+            <div class="form-group">
+              <label for="content">Nouveau commentaire</label>
+              <input
+                placeholder="Nouveau commentaire"
+                autocomplete="off"
+                minlength="3"
+                maxlength="255"
+                aria-label="Nouveau commentaire"
+                id="content"
+                type="text"
+                v-model="state.commentUpdate.content"
+                @blur="v$.commentUpdate.content.$touch"
+                :class="
+                  v$.commentUpdate.content.$error === true ? 'error' : 'dirty'
+                "
+              />
+
+              <!-- Error Message -->
+              <template v-if="v$.commentUpdate.content.$dirty">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.commentUpdate.content.$errors"
+                  :key="index"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <!-- Error Message -->
+            </div>
+
+            <!-- button submit -->
+            <div class="button-container">
+              <button
+                type="submit"
+                class="btn"
+                @click.prevent.stop="onUpdateComment"
+              >
+                Modifier
+              </button>
+            </div>
+          </form>
+        </div>
+      </template>
+
+      <template v-slot:footer>
+        <!-- gestion erreur API avec axios -->
+        <div class="error-api">
+          <p class="error-msg">{{ apiErrors }}</p>
+        </div>
+        <!-- gestion erreur API avec axios -->
+      </template>
+    </modalStructure>
 
     <!-- modal report comment -->
     <modalStructure ref="reportComment">
@@ -84,7 +159,7 @@
       <template v-slot:footer>
         <!-- gestion erreur API avec axios -->
         <div class="error-api">
-          <p class="error-msg">{{ apiError }}</p>
+          <p class="error-msg">{{ apiErrors }}</p>
         </div>
         <!-- gestion erreur API avec axios -->
       </template>
@@ -96,6 +171,7 @@
 import modalStructure from "../Modal/ModalStructure.vue";
 
 import commentsApi from "@/api/comments";
+import axiosInstance from "@/services/api";
 
 import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
@@ -123,10 +199,27 @@ export default {
       comment: {
         content: "",
       },
+      commentUpdate: {
+        content: "",
+      },
     });
 
     const rules = computed(() => ({
       comment: {
+        content: {
+          $autoDirty: true,
+          $lazy: true,
+          minLength: helpers.withMessage(
+            "Ce champ doit être long d'au moins 5",
+            minLength(5)
+          ),
+          maxLength: helpers.withMessage(
+            "La longueur maximale autorisée est de 255",
+            maxLength(255)
+          ),
+        },
+      },
+      commentUpdate: {
         content: {
           $autoDirty: true,
           $lazy: true,
@@ -204,6 +297,41 @@ export default {
             domRect.top + document.documentElement.scrollTop
           );
         });
+      }
+    },
+    async onUpdateComment() {
+      this.v$.$validate(); // checks all inputs
+      if (!this.v$.$error) {
+        // if ANY fail validation
+        axiosInstance
+          .put(`/comments/update/${this.comment.id}`,this.state.commentUpdate)
+          .then(() => {
+            // close delete modal
+            this.$refs.updateComment.closeModal();
+
+            // force refresh page
+            this.$router.go(0);
+
+            // notification de succès
+            this.$notify({
+              type: "success",
+              title: `Commentaire mis à jour`,
+              text: `Vous allez être redirigé vers le fil d'actualité.`,
+            });
+          })
+          .catch((error) => {
+            console.log(error)
+            const errorMessage = (this.apiErrors = error);
+            this.errorMessage = errorMessage;
+
+            // notification error message
+            this.$notify({
+              type: "error",
+              title: `Erreur lors de l'envoi du rapport`,
+              text: `${errorMessage}`,
+              duration: 3000,
+            });
+          });
       }
     },
   },

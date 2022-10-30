@@ -101,6 +101,7 @@
                 </li>
                 <li v-if="canAdmin(this.post.creatorId)">
                   <button
+                  type="button"
                     @click="$refs.deletePost.openModal()"
                     text="Supprimer ce post"
                     aria-label="Supprimer ce post"

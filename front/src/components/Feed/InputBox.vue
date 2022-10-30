@@ -246,13 +246,7 @@ export default {
             });
 
             // force refresh page
-            setTimeout(
-              function () {
-                this.$router.go(0);
-              }.bind(this),
-              1000,
-              this
-            );
+            this.$router.go(0);
           })
           .catch((error) => {
             console.log(error.response);

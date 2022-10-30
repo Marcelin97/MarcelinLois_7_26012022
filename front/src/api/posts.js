@@ -18,7 +18,7 @@ export default {
    * Report a post
    * @param postId
    * @param content
-   * @return {Promise<void>}
+ ,  * @return {Promise<void>}
    */
   async reportPost(postId, content) {
     try {
@@ -27,5 +27,5 @@ export default {
       console.error(e.response);
       throw e.response;
     }
-  },
+  }
 };
