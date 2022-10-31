@@ -43,7 +43,7 @@
         class="like icon-vote"
         title="Mettre un j'aime"
         @click="like()"
-        :class="hasLiked ? 'comment__liked' : ''"
+        :class="addClass ? 'liked' : 'unliked'"
         v-text="love"
       ></button>
       <!-- <span :class="addClass"> {{ likeCount }}</span> -->
@@ -59,8 +59,11 @@
         <div class="container">
           <form action="#" method="put">
             <div class="form-group">
-              <label for="content">Nouveau commentaire</label>
+              <label class="title-newcomment" for="content"
+                >Nouveau commentaire</label
+              >
               <input
+                class="content-newcomment"
                 placeholder="Nouveau commentaire"
                 autocomplete="off"
                 minlength="3"
@@ -360,10 +363,10 @@ export default {
         if (this.hasLiked) {
           // this.likeCount++;
           this.love = "UnLike";
-        } else{
+        } else {
           // this.likeCount--;
-        this.love = "Like";
-        } 
+          this.love = "Like";
+        }
       } catch (error) {
         const errorMessage = (this.apiErrors = error);
         this.errorMessage = errorMessage;
@@ -380,10 +383,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.liked {
-  color: rgb(255, 54, 54);
-  font-weight: bold;
-}
 .comments {
   display: flex;
   flex-direction: column;
@@ -401,7 +400,6 @@ export default {
 .comments-content {
   display: flex;
   flex-direction: column;
-  // border-bottom: 1px #ccc dashed;
 }
 
 .comments-createdAt {
@@ -430,6 +428,10 @@ export default {
 .btn-report {
   color: rgb(0, 149, 246);
 }
+
+.liked,
+.unliked,
+.btn-update,
 .btn-report,
 .btn-danger {
   opacity: 0.3;
@@ -476,5 +478,26 @@ export default {
   @media only screen and (min-width: 576px) {
     max-width: 25rem;
   }
+}
+
+// button like or dislike a comment
+
+.liked {
+  color: rgb(0, 0, 204);
+}
+
+.unliked {
+  color: rgb(255, 54, 54);
+}
+
+// modal update a comment
+.title-newcomment {
+  display: flex;
+}
+
+.content-newcomment {
+  width: 100%;
+  padding: 0.2rem;
+  margin: 1rem auto;
 }
 </style>
