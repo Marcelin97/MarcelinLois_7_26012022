@@ -167,63 +167,97 @@ exports.deleteComment = (req, res, next) => {
       res.status(500).json({ error: err.name, message: err.message });
     });
 };
+exports.likeDislikeComment = async (req, res) => {
+  try {
+    let commentFind = await comment.findOne({ where: { id: req.params.id } });
+    if (commentFind == null) throw new Error("Ce commentaire n'existe pas.");
 
-// * Like a comment
-exports.likeDislikeComment = (req, res, next) => {
-  let vote = req.body.vote;
-  let transaction;
-  // TODO : Find the post to be like
-  comment
-    .findOne({ where: { id: req.params.id } })
-    .then((comment) => {
-      if (!comment) {
-        return res.status(404).json({ message: "Post not exists" });
-      }
-      // console.log(post)
-      // TODO : Check if the current user is in the list of liked posts
-      likeComment
-        .findOne({
-          where: { userId: req.auth.userID, commentId: comment.id },
-        })
-        .then((result) => {
-          // TODO : If no like and If user want to like
-          if (!result && vote == true) {
-            likeComment.create({
-              vote: true,
-              commentId: comment.id,
-              userId: req.auth.userID,
-            });
-            // ! Must be add to the post
-            comment.increment("likes", { by: 1, transaction });
-
-            return res.status(200).json({ message: "You liked this comment" });
-          }
-
-          // TODO : If user want to unlike
-          if (result && vote == false) {
-            likeComment.destroy({
-              where: { userId: req.auth.userID, commentId: comment.id },
-            });
-
-            // ! Must be delete to the post
-            comment.decrement("likes", { by: 1, transaction });
-
-            return res.json({
-              message: "You removed your like from the comment",
-            });
-          }
-
-          // ! Save the post to update likes count
-          comment.save({ where: { id: req.params.id } });
-        })
-        .catch((err) => {
-          res.status(500).json({ error: err.name, message: err.message });
-        });
-    })
-    .catch((err) => {
-      res.status(500).json({ err, error: { msg: "Couldn´t like post" } });
+    let like = req.body.vote;
+    let liked = await likeComment.findOne({
+      where: { userId: req.auth.userID, commentId: commentFind.id },
     });
+
+    // If user want to like
+    if (liked == null && like == 1) {
+      await likeComment.create({
+        vote: true,
+        userId: req.auth.userID,
+        commentId: commentFind.id,
+      });
+
+      commentFind.likes += 1;
+    }
+
+    // If user want to unlike
+    if (liked != null && like == 0) {
+      await liked.destroy();
+      commentFind.likes -= 1;
+    }
+
+    // Save Comment model to update likes count
+    await commentFind.save();
+
+    return res.status(200).json({ message: "super" })
+  } catch (error) {
+    console.error(error);
+    // return Helper.errorResponse(req, res, error.message);
+  }
 };
+// * Like a comment
+// exports.likeDislikeComment = (req, res, next) => {
+//   let vote = req.body;
+//   let transaction;
+//   // TODO : Find the post to be like
+//   comment
+//     .findOne({ where: { id: req.params.id } })
+//     .then(async (commentFind) => {
+//       if (!commentFind) {
+//         return res.status(404).json({ message: "Post not exists" });
+//       }
+//       // console.log(post)
+//       // TODO : Check if the current user is in the list of liked posts
+//       likeComment
+//         .findOne({
+//           where: { userId: req.auth.userID, commentId: commentFind.id },
+//         })
+//         .then(async(result) => {
+//           // TODO : If no like and If user want to like
+//           if (!result && vote == true) {
+//             likeComment.create({
+//               vote: true,
+//               commentId: commentFind.id,
+//               userId: req.auth.userID,
+//             });
+//             // ! Must be add to the post
+//             comment.increment("likes", { by: 1, transaction });
+
+//             return res.status(200).json({ message: "You liked this comment" });
+//           }
+
+//           // TODO : If user want to unlike
+//           if (result && vote == false) {
+//             likeComment.destroy({
+//               where: { userId: req.auth.userID, commentId: commentFind.id },
+//             });
+
+//             // ! Must be delete to the post
+//             comment.decrement("likes", { by: 1, transaction });
+
+//             return res.json({
+//               message: "You removed your like from the comment",
+//             });
+//           }
+
+//           // ! Save the post to update likes count
+//         })
+//         .catch((err) => {
+//           res.status(500).json({ error: err.name, message: err.message });
+//         });
+//     })
+//     .catch((err) => {
+//       res.status(500).json({ err, error: { msg: "Couldn´t like post" } });
+//     });
+// };
 
 // * Report a comment
 exports.reportComment = (req, res, next) => {
