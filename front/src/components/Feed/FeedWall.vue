@@ -13,21 +13,13 @@
         <InputBox />
         <!-- Posts -->
         <div v-if="posts.length != 0" class="post">
-          <PostCard
-            class="post__card"
-            v-for="(post, index) in posts"
-            :key="index"
-            :post="post"
-            v-bind:index="index"
-            v-bind:id="post.id"
-            @deletePostClick="deletePostClick"
-          />
+          <PostCard class="post__card" v-for="(post, index) in posts" :key="index" :post="post" v-bind:index="index"
+            v-bind:id="post.id" @deletePostClick="deletePostClick" />
         </div>
         <div v-else>
           <div class="container-communities">
             <h3>Il n'y a pas de post pour le moment</h3>
-            <router-link class="menu-link underline" to="/communities"
-              >Commence par crée une communauté
+            <router-link class="menu-link underline" to="/communities">Tu peux aussi crée une communauté
             </router-link>
           </div>
         </div>
@@ -113,9 +105,11 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 1rem;
+
   &__sidebar {
     top: 0;
   }
+
   &__main {
     /* Take the remaining width */
     flex: 1;

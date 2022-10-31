@@ -5,47 +5,24 @@
       <p class="comments-text">{{ content }}</p>
     </div>
     <div class="actions">
-      <button
-        v-if="canModerate(this.comment.userId, this.communityId)"
-        type="button"
-        text="Supprimer ce commentaire"
-        aria-label="Supprimer ce commentaire"
-        class="btn-danger"
-        @click.prevent.stop="$emit('delete-comment', this.comment.id)"
-      >
+      <button v-if="canModerate(this.comment.userId, this.communityId)" type="button" text="Supprimer ce commentaire"
+        aria-label="Supprimer ce commentaire" class="btn-danger"
+        @click.prevent.stop="$emit('delete-comment', this.comment.id)">
         Supprimer
       </button>
 
-      <button
-        v-if="canAdmin(this.comment.userId)"
-        type="button"
-        class="btn-update"
-        @click="$refs.updateComment.openModal()"
-        text="Modifier ce commentaire"
-        aria-label="Modifier ce commentaire"
-      >
+      <button v-if="canAdmin(this.comment.userId)" type="button" class="btn-update"
+        @click="$refs.updateComment.openModal()" text="Modifier ce commentaire" aria-label="Modifier ce commentaire">
         Modifier
       </button>
 
-      <button
-        v-if="this.$store.state.user.id != this.comment.userId"
-        type="button"
-        class="btn-report"
-        @click="$refs.reportComment.openModal()"
-        text="Signaler ce commentaire"
-        aria-label="Signaler ce commentaire"
-      >
+      <button v-if="this.$store.state.user.id != this.comment.userId" type="button" class="btn-report"
+        @click="$refs.reportComment.openModal()" text="Signaler ce commentaire" aria-label="Signaler ce commentaire">
         Signaler
       </button>
 
-      <button
-        aria-label="Like"
-        class="like icon-vote"
-        title="Mettre un j'aime"
-        @click="like()"
-        :class="addClass ? 'liked' : 'unliked'"
-        v-text="love"
-      ></button>
+      <button aria-label="Like" class="like icon-vote" title="Mettre un j'aime" @click="like()"
+        :class="addClass ? 'liked' : 'unliked'" v-text="love"></button>
       <!-- <span :class="addClass"> {{ likeCount }}</span> -->
     </div>
 
@@ -59,32 +36,16 @@
         <div class="container">
           <form action="#" method="put">
             <div class="form-group">
-              <label class="title-newcomment" for="content"
-                >Nouveau commentaire</label
-              >
-              <input
-                class="content-newcomment"
-                placeholder="Nouveau commentaire"
-                autocomplete="off"
-                minlength="3"
-                maxlength="255"
-                aria-label="Nouveau commentaire"
-                id="content"
-                type="text"
-                v-model="state.commentUpdate.content"
-                @blur="v$.commentUpdate.content.$touch"
-                :class="
+              <label class="title-newcomment" for="content">Nouveau commentaire</label>
+              <input class="content-newcomment" placeholder="Nouveau commentaire" autocomplete="off" minlength="3"
+                maxlength="255" aria-label="Nouveau commentaire" id="content" type="text"
+                v-model="state.commentUpdate.content" @blur="v$.commentUpdate.content.$touch" :class="
                   v$.commentUpdate.content.$error === true ? 'error' : 'dirty'
-                "
-              />
+                " />
 
               <!-- Error Message -->
               <template v-if="v$.commentUpdate.content.$dirty">
-                <div
-                  class="input-errors"
-                  v-for="(error, index) of v$.commentUpdate.content.$errors"
-                  :key="index"
-                >
+                <div class="input-errors" v-for="(error, index) of v$.commentUpdate.content.$errors" :key="index">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -93,11 +54,7 @@
 
             <!-- button submit -->
             <div class="button-container">
-              <button
-                type="submit"
-                class="btn"
-                @click.prevent.stop="onUpdateComment"
-              >
+              <button type="submit" class="btn" @click.prevent.stop="onUpdateComment">
                 Modifier
               </button>
             </div>
@@ -124,45 +81,26 @@
         <div class="container">
           <form action="#" method="post">
             <div class="FormGroup">
-              <label class="FormGroupLabel" for=""
-                >Pourquoi signalez-vous ce commentaire ?</label
-              >
+              <label class="FormGroupLabel" for="">Pourquoi signalez-vous ce commentaire ?</label>
               <div class="FormTextboxWrapper">
-                <textarea
-                  cols="50"
-                  rows="5"
-                  required
-                  class="FormTextbox"
-                  type="text"
-                  placeholder="Explique nous les raisons de ce signalement."
-                  v-model="state.comment.content"
-                  @blur="v$.comment.content.$touch"
-                  :class="
+                <textarea cols="50" rows="5" required class="FormTextbox" type="text"
+                  placeholder="Explique nous les raisons de ce signalement." v-model="state.comment.content"
+                  @blur="v$.comment.content.$touch" :class="
                     v$.comment.content.$error === true ? 'error' : 'dirty'
-                  "
-                />
+                  " />
               </div>
 
               <!-- Error Message -->
               <template v-if="v$.comment.content.$dirty">
-                <div
-                  class="input-errors"
-                  v-for="(error, index) of v$.comment.content.$errors"
-                  :key="index"
-                >
+                <div class="input-errors" v-for="(error, index) of v$.comment.content.$errors" :key="index">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <!-- Error Message -->
             </div>
 
-            <button
-              type="submit"
-              class="btn button"
-              title="Signaler"
-              text="Signaler"
-              @click.prevent.stop="onCommentReport"
-            >
+            <button type="submit" class="btn button" title="Signaler" text="Signaler"
+              @click.prevent.stop="onCommentReport">
               Confirmer signalement
             </button>
           </form>
@@ -390,6 +328,7 @@ export default {
   font-size: 0.8rem;
   color: #95989a;
   padding-top: 0.3rem;
+
   &:hover {
     .actions {
       opacity: 1;
@@ -406,6 +345,7 @@ export default {
   font-size: 0.4rem;
   text-transform: uppercase;
 }
+
 .comments-text {
   margin-bottom: 0.3rem;
 }
@@ -415,12 +355,14 @@ export default {
 .actions {
   transition: 0.25s opacity linear;
 }
+
 .actions {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   opacity: 0;
 }
+
 .btn-danger {
   color: #cc0033;
 }
@@ -443,6 +385,7 @@ export default {
   width: auto;
   background: transparent;
   transition: opacity 0.5s;
+
   &:hover {
     opacity: initial;
   }
@@ -475,6 +418,7 @@ export default {
   line-height: 15px;
   margin: 5px 0 0;
   max-width: 15rem;
+
   @media only screen and (min-width: 576px) {
     max-width: 25rem;
   }

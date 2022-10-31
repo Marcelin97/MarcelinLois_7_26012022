@@ -538,7 +538,7 @@ export default {
         this.$notify({
           type: "success",
           title: `J'aime enregistré !`,
-          duration: 5000,
+          duration: 2000,
         });
       }
       if (valeurLike === -1) {
@@ -547,14 +547,14 @@ export default {
         this.$notify({
           type: "success",
           title: `Je n'aime pas enregistré !`,
-          duration: 5000,
+          duration: 2000,
         });
       }
       if (valeurLike === 0) {
         this.$notify({
           type: "success",
           title: `Vote enlevé !`,
-          duration: 5000,
+          duration: 2000,
         });
       }
       // data send to axios request
@@ -580,7 +580,7 @@ export default {
             type: "error",
             title: `Erreur lors de l'ajout du vote`,
             text: `Erreur reporté : ${errorMessage}`,
-            duration: 30000,
+            duration: 3000,
           });
         });
     },
@@ -588,6 +588,12 @@ export default {
       try {
         const response = await commentsApi.addComment(this.post.id, content);
         this.comments.push(response);
+
+        this.$notify({
+          type: "success",
+          title: `Commentaire posté`,
+          duration: 2000,
+        });
       } catch (e) {
         // console.error(e.data);
         this.apiErrors = e.data;
@@ -601,6 +607,11 @@ export default {
           this.comments = this.comments.filter(
             (comment) => comment.id !== commentId
           );
+          this.$notify({
+          type: "success",
+          title: `Commentaire supprimé`,
+          duration: 2000,
+        });
         }
       } catch (e) {
         this.apiErrors = e.data;
