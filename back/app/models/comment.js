@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     likes: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.BOOLEAN,
       unique: false,
       allowNull: false,
       defaultValue: 0,

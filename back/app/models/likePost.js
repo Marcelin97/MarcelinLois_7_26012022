@@ -2,9 +2,8 @@ module.exports = (sequelize, Sequelize) => {
   // * Model Definition
   const LikePost = sequelize.define("likePost", {
     vote: {
-      type: Sequelize.BOOLEAN,
-      unique: false,
-      defaultValue: false,
+      type: Sequelize.INTEGER,
+      allowNull: true 
     },
   });
 

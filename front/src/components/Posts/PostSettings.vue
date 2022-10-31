@@ -164,7 +164,7 @@ export default {
 
       for (let key of ["title", "content"]) {
         const param = this.state.post[key];
-        console.log(param, key);
+        // console.log(param, key);
         if (param) {
           bodyFormData.append(key, param);
         }

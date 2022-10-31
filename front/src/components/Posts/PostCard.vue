@@ -99,9 +99,11 @@
                     Signaler
                   </button>
                 </li>
-                <li v-if="canAdmin(this.post.creatorId)">
+                <li
+                  v-if="canModerate(this.post.creatorId, this.post.communityId)"
+                >
                   <button
-                  type="button"
+                    type="button"
                     @click="$refs.deletePost.openModal()"
                     text="Supprimer ce post"
                     aria-label="Supprimer ce post"
@@ -152,7 +154,7 @@
               </g>
             </svg>
           </button>
-          <span class="vote-count">{{ likesCount }}</span>
+          <span class="vote-count">{{ showLikesCount }}</span>
         </div>
 
         <!-- btn dislike -->
@@ -182,7 +184,7 @@
               </g>
             </svg>
           </button>
-          <span class="vote-count">{{ dislikesCount }}</span>
+          <span class="vote-count">{{ showDislikesCount }}</span>
         </div>
 
         <!-- section data of post -->
@@ -208,6 +210,7 @@
             :comment="comment"
             v-bind:content="comment.content"
             v-bind:index="index"
+            v-bind:communityId="post.communityId"
             @delete-comment="onDeleteComment"
             class="comments-list"
           />
@@ -345,7 +348,7 @@ import timeAgo from "@/services/timeAgo";
 
 export default {
   name: "Post-Card",
-  props: ["post", "id", "index", "creatorInfo"],
+  props: ["post", "id", "index", "creatorInfo", "posts"],
   components: {
     deleteBtn,
     modalStructure,
@@ -408,6 +411,12 @@ export default {
       }
       return `Posté ${timeAgo.format(new Date(this.post.createdAt))}`;
     },
+    showLikesCount() {
+      return this.likesCount
+    },
+    showDislikesCount() {
+      return this.dislikesCount
+    },
   },
   async created() {
     this.postId = this.$route.params.id;
@@ -417,6 +426,40 @@ export default {
   },
   mounted() {
     this.currentUser = this.$store.state.user;
+
+    axiosInstance
+      .get(`posts/${this.id}/likesByPost`)
+      .then((response) => {
+        // console.log("likePost", response.data.result);
+
+        let voteLike = response.data.result.filter((item) => {
+          return item.vote == 1;
+        });
+        // console.log("là", voteLike.length);
+        this.likesCount = voteLike.length;
+
+        let voteDislike = response.data.result.filter((item) => {
+          return item.vote == -1;
+        });
+        this.dislikesCount = voteDislike.length;
+
+        // for (const iterator of response.data.result) {
+        //   console.log(iterator)
+        // }
+      })
+
+      .catch((error) => {
+        // console.log(error);
+        const errorMessage = (this.apiErrors = error);
+        this.errorMessage = errorMessage;
+
+        this.$notify({
+          type: "error",
+          title: `Erreur lors de l'ajout du vote`,
+          text: `Erreur reporté : ${errorMessage}`,
+          duration: 30000,
+        });
+      });
   },
   methods: {
     async deletePostClick(index, id) {
@@ -546,8 +589,9 @@ export default {
         const response = await commentsApi.addComment(this.post.id, content);
         this.comments.push(response);
       } catch (e) {
-        console.error(e.data);
-        this.errors = e.data;
+        // console.error(e.data);
+        this.apiErrors = e.data;
+        alert(e.data.message);
       }
     },
     async onDeleteComment(commentId) {
@@ -559,6 +603,7 @@ export default {
           );
         }
       } catch (e) {
+        this.apiErrors = e.data;
         alert(e.data.message);
       }
     },

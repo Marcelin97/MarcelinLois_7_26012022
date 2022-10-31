@@ -6,7 +6,7 @@
     </div>
     <div class="actions">
       <button
-        v-if="canAdmin(this.comment.userId)"
+        v-if="canModerate(this.comment.userId, this.communityId)"
         type="button"
         text="Supprimer ce commentaire"
         aria-label="Supprimer ce commentaire"
@@ -37,6 +37,32 @@
       >
         Signaler
       </button>
+
+      <button
+            aria-label="Like"
+            class="like icon-vote"
+            title="Mettre un j'aime"
+            @click="like()"
+          >
+            <svg
+              class="heart"
+              id="heart"
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              viewBox="0 0 32 31"
+            >
+              <title>J'aime</title>
+              <g stroke-width="2">
+                <path
+                  id="heart"
+                  d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  v-bind:fill="like_color"
+                ></path>
+              </g>
+            </svg>
+          </button>
     </div>
 
     <!-- modal update comment -->
@@ -183,7 +209,7 @@ import timeAgo from "@/services/timeAgo";
 
 export default {
   name: "List-Comment",
-  props: ["comment", "content", "index"],
+  props: ["comment", "content", "index", "communityId"],
   components: {
     modalStructure,
   },

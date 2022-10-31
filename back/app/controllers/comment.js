@@ -24,7 +24,7 @@ exports.createComment = (req, res, next) => {
       post.createComment({
         content: req.body.content,
         userId: req.auth.userID,
-        PostId: post.id,
+        postId: post.id,
       });
 
       // ! Must be added to the post
@@ -58,7 +58,7 @@ exports.readAllComments = (req, res, next) => {
       comment
         .findAll({ where: { postId: post.id } })
         .then((commentFind) => {
-          console.log("commentaire", commentFind);
+          // console.log("commentaire", commentFind);
           if (commentFind.length <= 0 ) {
             return res.status(404).json({ message: "Comment(s) not exists" });
           }
@@ -82,38 +82,52 @@ exports.readAllComments = (req, res, next) => {
 // * Update a comment
 exports.updateComment = (req, res, next) => {
   // TODO : Find the comment to update
+  const { content } = req.body;
+
   comment
     .findByPk(req.params.id)
-    .then((result) => {
+    .then(async(result) => {
       if (!result) {
         return res.status(404).json({ message: "Comment not exists" });
       }
 
-      // ! Must be the owner to be able to edit the comment
-      if (result.userId != req.auth.userID) {
-        return res.status(401).send({
-          message: "Can't edit another users post",
+      // TODO : Find logged in user
+      const currentUser = await user.findOne({
+        where: { id: req.auth.userID },
+      });
+      if (currentUser == null) throw new Error("Logged in user not found");
+
+      //! TODO : Check if current user is the owner of the post
+      isOwner = result.userId == currentUser.id;
+
+      //! TODO : Check if the current user is admin
+      isAdmin = currentUser.isAdmin;
+
+      // ! Access denied
+      if (!isAdmin && !isOwner) {
+        return res.status(403).json({
+          error: "You do not have the necessary rights for this action.",
         });
       }
 
-      result
-        .update(req.body, { where: { id: result.id } })
-        .then((datas) => {
-          res.status(200).send({
-            status: 200,
-            message: "Comment Edited Successfully",
-            datas,
-          });
-        })
-        .catch((err) =>
-          res.status(500).json({ error: err.name, message: err.message })
-        );
+      result.content = content || result.content;
+
+      // TODO : Content management
+      if (content) {
+        result.content = content;
+      }
+
+      await result.save();
+      res.status(200).json({
+        message: "Comment updated",
+        status: 200,
+        datas: result,
+      });
+
     })
     .catch((err) => {
-      res.status(500).json({
-        message: "Something went wrong",
-        err,
-      });
+      const message = "Comment could not be edited";
+      res.status(500).json({ error: err.message, message });
     });
 };
 
