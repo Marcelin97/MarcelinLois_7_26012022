@@ -43,29 +43,10 @@
         class="like icon-vote"
         title="Mettre un j'aime"
         @click="like()"
-                  :class="hasLiked ? 'comment__liked' : ''"
-
-      >
-        <svg
-          class="heart"
-          id="heart"
-          xmlns="http://www.w3.org/2000/svg"
-          width="15"
-          viewBox="0 0 32 31"
-        >
-          <title>J'aime</title>
-          <g stroke-width="2">
-            <path
-              id="heart"
-              d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              v-bind:fill="like_color"
-            ></path>
-          </g>
-        </svg>
-      </button>
-      <span :class="addClass"> {{ likeCount }}</span>
+        :class="hasLiked ? 'comment__liked' : ''"
+        v-text="love"
+      ></button>
+      <!-- <span :class="addClass"> {{ likeCount }}</span> -->
     </div>
 
     <!-- modal update comment -->
@@ -212,7 +193,7 @@ import timeAgo from "@/services/timeAgo";
 
 export default {
   name: "List-Comment",
-  props: ["comment", "content", "index", "communityId", "CommentLikes"],
+  props: ["comment", "content", "index", "communityId"],
   components: {
     modalStructure,
   },
@@ -221,7 +202,8 @@ export default {
       currentUser: [],
       apiErrors: "",
       hasLiked: false,
-      likeCount: 0,
+      // likeCount: 0,
+      love: "like",
     };
   },
   mixins: [roleMixin],
@@ -273,17 +255,6 @@ export default {
   validationConfig: {
     $lazy: true,
   },
-    mounted() {
-    this.hasLiked = this.isLiked;
-    this.likeCount = this.likes;
-    this.$watch(
-      () => this.isLiked + this.likes,
-      () => {
-        this.hasLiked = this.isLiked;
-        this.likeCount = this.likes;
-      }
-    );
-  },
   computed: {
     showDate() {
       if (this.comment.createdAt !== this.comment.updatedAt) {
@@ -294,20 +265,6 @@ export default {
     addClass() {
       return this.hasLiked ? "liked" : "";
     },
-      computed: {
-    // Check if the comment is liked
-    isLiked() {
-      if (this.isAuthenticated && this.CommentLikes) {
-        for (let i = 0; i < this.CommentLikes.length; i++) {
-          let elem = this.CommentLikes[i];
-          if (this.authData.id === elem.UserId) {
-            return true;
-          }
-        }
-      }
-      return false;
-    },
-  },
   },
   methods: {
     async onCommentReport() {
@@ -397,11 +354,16 @@ export default {
     async like() {
       try {
         await axiosInstance.post(`/comments/likes/${this.comment.id}`, {
-          like: !this.hasLiked,
+          vote: !this.hasLiked,
         });
         this.hasLiked = !this.hasLiked;
-        if (this.hasLiked) this.likeCount++;
-        else this.likeCount--;
+        if (this.hasLiked) {
+          // this.likeCount++;
+          this.love = "UnLike";
+        } else{
+          // this.likeCount--;
+        this.love = "Like";
+        } 
       } catch (error) {
         const errorMessage = (this.apiErrors = error);
         this.errorMessage = errorMessage;
@@ -418,9 +380,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.liked{
-  color:#00f;
-  font-weight:bold
+.liked {
+  color: rgb(255, 54, 54);
+  font-weight: bold;
 }
 .comments {
   display: flex;
