@@ -363,7 +363,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// Profil
 .wrapper {
   width: 100%;
   width: 100%;
@@ -501,6 +500,9 @@ img {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  .btn {
+  margin: 0rem;
+}
 }
 
 // modal report user

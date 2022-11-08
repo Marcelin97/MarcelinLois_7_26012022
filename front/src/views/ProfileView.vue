@@ -51,6 +51,7 @@ export default {
       post.user = user;
       return post;
     });
+    console.log("mon compte", this.posts);
   },
 };
 </script>

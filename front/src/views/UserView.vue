@@ -69,7 +69,7 @@ export default {
     }
 
     this.posts = this.user.posts;
-    // console.log("Posts user pointé", this.posts);
+    console.log("Posts user pointé", this.posts);
     this.creatorInfo = this.user;
   },
 };

@@ -91,6 +91,7 @@
                 </li>
                 <li v-if="this.$store.state.user.id != this.post.creatorId">
                   <button
+                  title="Signaler ce post"
                     type="button"
                     @click="$refs.reportPost.openModal()"
                     text="Signaler ce post"
@@ -103,6 +104,7 @@
                   v-if="canModerate(this.post.creatorId, this.post.communityId)"
                 >
                   <button
+                  title="Supprimer ce post"
                     type="button"
                     @click="$refs.deletePost.openModal()"
                     text="Supprimer ce post"
@@ -130,6 +132,7 @@
         <!-- btn like -->
         <div class="vote-data">
           <button
+          type="button"
             aria-label="Like"
             class="like icon-vote"
             title="Mettre un j'aime"
@@ -160,6 +163,7 @@
         <!-- btn dislike -->
         <div class="vote-data">
           <button
+          type="button"
             aria-label="Dislike"
             class="dislike icon-vote"
             title="j'aime pas"
@@ -448,17 +452,10 @@ export default {
         // }
       })
 
-      .catch((error) => {
+      .catch((e) => {
         // console.log(error);
-        const errorMessage = (this.apiErrors = error);
-        this.errorMessage = errorMessage;
-
-        this.$notify({
-          type: "error",
-          title: `Erreur lors de l'ajout du vote`,
-          text: `Erreur reporté : ${errorMessage}`,
-          duration: 30000,
-        });
+        this.apiErrors = e.data;
+        alert(e.data.message);
       });
   },
   methods: {

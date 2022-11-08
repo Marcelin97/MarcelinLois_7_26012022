@@ -13,9 +13,7 @@
           </router-link>
         </li>
         <li class="menu-item">
-          <a class="menu-link underline" href="#" @click="logout"
-            >Déconnexion</a
-          >
+          <a class="menu-link underline" href="#" @click="logout">Déconnexion</a>
         </li>
       </ul>
     </nav>
@@ -24,7 +22,7 @@
 
 <script>
 export default {
-  setup() {},
+  setup() { },
   methods: {
     logout: function () {
       this.$store.commit("logout");
@@ -56,6 +54,7 @@ export default {
 
 .menu-item {
   margin: 1rem;
+
   @for $i from 0 through 5 {
     &:nth-child(#{1 + $i}) {
       .menu-link::after {

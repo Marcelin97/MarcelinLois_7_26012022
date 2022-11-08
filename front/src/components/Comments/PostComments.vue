@@ -6,22 +6,22 @@
     </div>
     <div class="actions">
       <button v-if="canModerate(this.comment.userId, this.communityId)" type="button" text="Supprimer ce commentaire"
-        aria-label="Supprimer ce commentaire" class="btn-danger"
+        aria-label="Supprimer ce commentaire" class="btn-danger" title="Supprimer ce commentaire"
         @click.prevent.stop="$emit('delete-comment', this.comment.id)">
         Supprimer
       </button>
 
-      <button v-if="canAdmin(this.comment.userId)" type="button" class="btn-update"
+      <button v-if="canAdmin(this.comment.userId)" type="button" class="btn-update" title="Modifier ce commentaire"
         @click="$refs.updateComment.openModal()" text="Modifier ce commentaire" aria-label="Modifier ce commentaire">
         Modifier
       </button>
 
-      <button v-if="this.$store.state.user.id != this.comment.userId" type="button" class="btn-report"
+      <button v-if="this.$store.state.user.id != this.comment.userId" type="button" class="btn-report" title="Signaler ce commentaire"
         @click="$refs.reportComment.openModal()" text="Signaler ce commentaire" aria-label="Signaler ce commentaire">
         Signaler
       </button>
 
-      <button aria-label="Like" class="like icon-vote" title="Mettre un j'aime" @click="like()"
+      <button aria-label="Like" class="like icon-vote" type="button" title="Mettre un j'aime" @click="like()"
         :class="addClass ? 'liked' : 'unliked'" v-text="love"></button>
       <!-- <span :class="addClass"> {{ likeCount }}</span> -->
     </div>
@@ -54,7 +54,7 @@
 
             <!-- button submit -->
             <div class="button-container">
-              <button type="submit" class="btn" @click.prevent.stop="onUpdateComment">
+              <button aria-label="Modifier" title="Modifier" type="submit" class="btn" @click.prevent.stop="onUpdateComment">
                 Modifier
               </button>
             </div>
@@ -99,7 +99,7 @@
               <!-- Error Message -->
             </div>
 
-            <button type="submit" class="btn button" title="Signaler" text="Signaler"
+            <button type="submit" class="btn button" title="Signaler" text="Signaler" aria-label="Confirmer signalement"
               @click.prevent.stop="onCommentReport">
               Confirmer signalement
             </button>
@@ -299,10 +299,8 @@ export default {
         });
         this.hasLiked = !this.hasLiked;
         if (this.hasLiked) {
-          // this.likeCount++;
           this.love = "UnLike";
         } else {
-          // this.likeCount--;
           this.love = "Like";
         }
       } catch (error) {
