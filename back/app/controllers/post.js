@@ -597,7 +597,9 @@ exports.readLikeByPost = (req, res) => {
         .findAll({ where: { postId: post.id } })
         .then((result) => {
           if (result.length <= 0) {
-            return res.status(404).json({ message: "Like or dislike not exists" });
+            return res
+              .status(404)
+              .json({ message: "Like or dislike not exists" });
           }
 
           // for (let key of result) {
