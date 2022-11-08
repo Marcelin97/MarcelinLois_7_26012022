@@ -1,8 +1,8 @@
 <template>
   <center>
-    <h1>Not Found!</h1>
+    <h1>Cette page n'existe pas !</h1>
     <p>
-      <a href="/">Go home?</a>
+      <router-link to="/wall">Retour sur le fil d'actualité ?</router-link>
     </p>
   </center>
 </template>

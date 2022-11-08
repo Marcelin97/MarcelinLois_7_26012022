@@ -19,6 +19,7 @@
         v-for="(post, index) in posts"
         :key="index"
         :post="post"
+        v-bind:id="post.id"
         :creatorInfo="creatorInfo"
       />
     </section>
@@ -68,7 +69,7 @@ export default {
     }
 
     this.posts = this.user.posts;
-    // console.log("Posts user pointé", this.posts);
+    console.log("Posts user pointé", this.posts);
     this.creatorInfo = this.user;
   },
 };

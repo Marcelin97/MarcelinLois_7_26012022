@@ -1,31 +1,25 @@
 <template>
   <div class="header">
-    <!-- backgroundimage -->
     <router-link to="/wall" class="logo">
-      <img src="../../assets/img/icon.svg" alt="" />
+      <img src="../../assets/img/icon.svg" alt="Logo de l'entreprise Groupomania" />
     </router-link>
 
     <input class="menu-icon" type="checkbox" id="menu-icon" name="menu-icon" />
     <label for="menu-icon"></label>
 
     <nav class="nav">
-      <ul class="pt-5">
+      <ul>
         <li>
-          <router-link class="text" to="/wall" @click="closeHamburgerSheet">Home</router-link>
+          <router-link to="/wall">Accueil</router-link>
         </li>
         <li>
-          <router-link class="dropdown-text" to="/user" @click="closeHamburgerSheet">Profil</router-link>
+          <router-link to="/user">Profil</router-link>
         </li>
         <li>
-          <router-link class="dropdown-text" to="/">Enregistré</router-link>
+          <router-link to="/user/parameter">Paramètres</router-link>
         </li>
         <li>
-          <router-link class="dropdown-text" to="/user/parameter"
-            >Paramètres</router-link
-          >
-        </li>
-        <li>
-          <button class="logout" @click="logout">Déconnexion</button>
+          <button @click="logout">Déconnexion</button>
         </li>
       </ul>
     </nav>
@@ -35,28 +29,10 @@
 <script>
 export default {
   name: "Nav-Bar",
-  data() {
-    return {
-      showHamburgerSheet: false
-    }
-  },
   methods: {
     logout: function () {
       this.$store.commit("logout");
       this.$router.push("/login");
-    },
-        toggleHamburgerSheet() {
-      if(this.showHamburgerSheet == true) {
-        this.showHamburgerSheet = false
-      } else {
-        this.showHamburgerSheet = true
-      }
-    },
-    openHamburgerSheet() {
-      this.showHamburgerSheet = true;
-    },
-    closeHamburgerSheet() {
-      this.showHamburgerSheet = false;
     },
   },
 };
@@ -96,18 +72,19 @@ export default {
   left: -9999px;
 }
 
-.menu-icon:checked + label {
+.menu-icon:checked+label {
   position: relative;
 }
-.menu-icon:checked + label,
-.menu-icon:not(:checked) + label {
+
+.menu-icon:checked+label,
+.menu-icon:not(:checked)+label {
   cursor: pointer;
   z-index: 10;
   margin: 3rem 3rem 3rem 0rem;
 }
 
-.menu-icon:checked + label:before,
-.menu-icon:not(:checked) + label:before {
+.menu-icon:checked+label:before,
+.menu-icon:not(:checked)+label:before {
   content: "";
   display: block;
   width: 30px;
@@ -123,8 +100,8 @@ export default {
     background-color 20ms ease, transform 20ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.menu-icon:checked + label:after,
-.menu-icon:not(:checked) + label:after {
+.menu-icon:checked+label:after,
+.menu-icon:not(:checked)+label:after {
   content: "";
   display: block;
   height: 2px;
@@ -137,7 +114,7 @@ export default {
     margin-top 10ms ease, transform 20ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.menu-icon:checked + label:before {
+.menu-icon:checked+label:before {
   top: 10px;
   transform: rotate(45deg);
   height: 2px;
@@ -150,7 +127,7 @@ export default {
     transform 20ms 170ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.menu-icon:checked + label:after {
+.menu-icon:checked+label:after {
   width: 30px;
   margin-top: 0;
   right: 0;
@@ -182,6 +159,7 @@ export default {
 }
 
 @keyframes border-transform {
+
   0%,
   100% {
     border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
@@ -212,7 +190,7 @@ export default {
   }
 }
 
-.menu-icon:checked ~ .nav {
+.menu-icon:checked~.nav {
   animation-play-state: paused;
   top: 50%;
   right: 50%;
@@ -285,10 +263,12 @@ export default {
   cursor: pointer;
   border: none;
   background: #ffd7d7;
+
   &:hover {
     background: #95989a;
   }
 }
+
 .nav ul li a:hover {
   color: #ffd7d7;
 }
@@ -311,7 +291,7 @@ export default {
   width: 100%;
 }
 
-.menu-icon:checked ~ .nav ul li {
+.menu-icon:checked~.nav ul li {
   pointer-events: auto;
   visibility: visible;
   opacity: 1;
@@ -319,19 +299,19 @@ export default {
   transition: opacity 350ms ease, transform 250ms ease;
 }
 
-.menu-icon:checked ~ .nav ul li:nth-child(1) {
+.menu-icon:checked~.nav ul li:nth-child(1) {
   transition-delay: 1400ms;
 }
 
-.menu-icon:checked ~ .nav ul li:nth-child(2) {
+.menu-icon:checked~.nav ul li:nth-child(2) {
   transition-delay: 1480ms;
 }
 
-.menu-icon:checked ~ .nav ul li:nth-child(3) {
+.menu-icon:checked~.nav ul li:nth-child(3) {
   transition-delay: 1560ms;
 }
 
-.menu-icon:checked ~ .nav ul li:nth-child(4) {
+.menu-icon:checked~.nav ul li:nth-child(4) {
   transition-delay: 1640ms;
 }
 

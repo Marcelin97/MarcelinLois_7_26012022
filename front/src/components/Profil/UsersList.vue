@@ -1,5 +1,5 @@
 <template>
-  <article class="tile">
+  <article v-if="!isOwner" class="tile">
     <div class="tile-header">
       <img
         :src="`http://localhost:3000${user.imageUrl}`"
@@ -43,8 +43,12 @@ export default {
   },
   mounted() {
     this.id = this.user.id;
-    // console.log(this.id);
   },
+  computed: {
+     isOwner () {
+      return this.user.id === this.$store.state.user.id
+    }
+  }
 };
 </script>
 

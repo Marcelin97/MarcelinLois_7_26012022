@@ -12,8 +12,12 @@ module.exports = function (sequelize, Sequelize) {
   // * Sequelize associations
   CommunityModerator.associate = (models) => {
     // is linked to
-    CommunityModerator.belongsTo(models.user);
-    CommunityModerator.belongsTo(models.community);
+    CommunityModerator.belongsTo(models.user, {
+      onDelete: "CASCADE",
+    });
+    CommunityModerator.belongsTo(models.community, {
+      onDelete: "CASCADE",
+    });
   };
 
   // Return the CommunityModerator model

@@ -67,6 +67,7 @@
               class="btn"
               @click="$refs.reportUser.openModal()"
               text="Signaler ce compte"
+              aria-label="Signaler ce compte"
             >
               Signaler...
             </button>
@@ -84,6 +85,7 @@
               class="btn btn-export"
               @click="exportDataClick"
               text="Exporter mes données"
+              aria-label="Exporter mes données"
             >
               Exporter mes données
             </button>
@@ -94,6 +96,7 @@
               class="btn btn-delete"
               @click="$refs.deleteAccount.openModal()"
               text="Supprimer mon compte"
+              aria-label="Supprimer mon compte"
             >
               Supprimer mon compte
             </button>
@@ -120,9 +123,11 @@
           <button
             class="btn"
             text="Annuler"
+            type="button"
+            aria-label="Annuler la suppression"
             @click="$refs.deleteAccount.closeModal()"
           >
-            Cancel
+            Annuler
           </button>
           <deleteBtn @click="deleteAccountClick" />
         </div>
@@ -137,7 +142,11 @@
 
       <template v-slot:body>
         <div class="container">
-          <form action="#" method="post" @submit.prevent="reportAccountClick">
+          <form
+            action="#"
+            method="post"
+            @submit.prevent.stop="reportAccountClick"
+          >
             <div class="FormGroup">
               <label class="FormGroupLabel" for=""
                 >Pourquoi signalez-vous ce compte ?</label
@@ -159,7 +168,6 @@
               <!-- Error Message -->
               <template v-if="v$.user.content.$dirty">
                 <div
-                  class="input-errors"
                   v-for="(error, index) of v$.user.content.$errors"
                   :key="index"
                 >
@@ -175,6 +183,7 @@
               title="Signaler"
               text="Signaler"
               value="Signaler"
+              aria-label="Signaler un utilisateur"
             >
               Confirmer signalement
             </button>
@@ -248,8 +257,8 @@ export default {
     async exportDataClick() {
       try {
         const response = await usersApi.exportMyData();
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement("a");
+        let fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        let fileLink = document.createElement("a");
 
         fileLink.href = fileURL;
         fileLink.setAttribute("download", "file.txt");
@@ -284,7 +293,6 @@ export default {
         try {
           await usersApi.deleteUser();
           await this.$store.commit("logout");
-          // await this.$store.commit("setStatus", "logout");
           await this.$router.push("/");
         } catch (e) {
           console.error(e.data);
@@ -296,7 +304,7 @@ export default {
       if (!this.v$.$error) {
         // if ANY fail validation
         axiosInstance
-          .post(`/auth/report/${this.userId}`, this.state.user)
+          .post(`/auth/report/${this.user.id}`, this.state.user)
           .then(() => {
             // notification de succès
             this.$notify({
@@ -304,13 +312,11 @@ export default {
               title: `Signalement envoyé !`,
               text: `Vous allez être redirigé vers votre profil.`,
             });
-
-            // force refresh page
-                this.$router.go(0);
-
+            // close report user modal
+            this.$refs.reportUser.closeModal();
           })
           .catch((error) => {
-            console.log(error.response.status);
+            // console.log(error.response.status);
             if (error.response.status == 404) {
               const errorMessage = (this.apiError =
                 "Utilisateur introuvable !");
@@ -357,7 +363,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// Profil
 .wrapper {
   width: 100%;
   width: 100%;
@@ -495,6 +500,9 @@ img {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  .btn {
+  margin: 0rem;
+}
 }
 
 // modal report user
@@ -569,5 +577,37 @@ img {
   border-right: 3px solid #79a70a;
   border-bottom: 3px solid transparent;
   border-top: 3px solid #79a70a;
+}
+
+// error if input is invalid
+.dirty {
+  border-color: #8de8fe;
+}
+
+.dirty:focus {
+  outline-color: #8e8;
+}
+
+.error {
+  background: #fdd;
+  border-color: #fd4444;
+  opacity: 0.7;
+}
+
+.error:focus {
+  outline-color: #f99;
+}
+
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
+  max-width: 15rem;
+  @media only screen and (min-width: 576px) {
+    max-width: 25rem;
+  }
 }
 </style>

@@ -32,7 +32,6 @@ export default {
   },
   mounted() {
     this.id = this.community.id;
-    // console.log(this.id);
   },
 };
 </script>
@@ -56,7 +55,6 @@ export default {
 }
 .status-wrapper {
   width: 100%;
-  // height: 120px;
   border-radius: 2px;
   padding: 10px;
   padding-right: 0;

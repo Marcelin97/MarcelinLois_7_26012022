@@ -29,7 +29,7 @@ function encrypted(email) {
 //* DECRYPT EMAIL
 //=================================>
 function decryptEmail(email) {
-  var bytes = CryptoJS.AES.decrypt(
+  let bytes = CryptoJS.AES.decrypt(
     email,
     CryptoJS.enc.Base64.parse(process.env.PASSPHRASE),
     {
@@ -111,7 +111,7 @@ exports.signup = async (req, res, next) => {
 
 //* Connected a user
 exports.login = (req, res) => {
-  var emailEncrypted = encrypted(req.body.email);
+  let emailEncrypted = encrypted(req.body.email);
   user
     .findOne({
       include: {
@@ -131,7 +131,7 @@ exports.login = (req, res) => {
       // todo : decrypted email
       user.email = decryptEmail(emailEncrypted);
 
-      var passwordIsValid = bcrypt.compareSync(
+      let passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
       );
@@ -216,7 +216,6 @@ exports.readUser = async (req, res) => {
     .findOne({
       include: {
         all: true,
-        // model: follower,
       },
       where: {
         id: req.auth.userID,
@@ -224,7 +223,7 @@ exports.readUser = async (req, res) => {
     })
     .then((data) => {
       // console.log(data);
-      var emailEncrypted = data.email;
+      let emailEncrypted = data.email;
       data.email = decryptEmail(emailEncrypted);
       res.status(200).json({
         status: 200,
@@ -290,7 +289,7 @@ exports.readAll = (req, res) => {
 
 //* Update
 exports.update = async (req, res) => {
-  var emailEncrypted = encrypted(req.body.email);
+  let emailEncrypted = encrypted(req.body.email);
   const { email, username, firstName, lastName, birthday } = req.body;
 
   // TODO : 1 formulaire - 1 Body avec firstName, lastName, username, email, password, imageUrl
@@ -424,9 +423,9 @@ exports.exportUser = async (req, res) => {
       },
     })
     .then((datas) => {
-      var emailEncrypted = datas.email;
+      let emailEncrypted = datas.email;
       datas.email = decryptEmail(emailEncrypted);
-      var text = JSON.stringify(datas, null, 2);
+      let text = JSON.stringify(datas, null, 2);
       res.attachment("user-datas.txt");
       res.type("txt");
 

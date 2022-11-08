@@ -1,36 +1,36 @@
 <template>
   <div>
-    <div class="wrapper">
-      <div class="profile-card js-profile-card">
+    <div class="container-community">
+      <div class="community-profile-card">
         <!-- Profil image -->
         <div>
-          <div class="profile-card__img">
+          <div class="community-profile-card__img">
             <img
               v-if="community.icon"
               :src="`http://localhost:3000${community.icon}`"
               :alt="'Avatar de ' + community.icon"
               aria-label="Photo de la communauté"
             />
-            <!-- <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" /> -->
           </div>
         </div>
 
         <!-- Profil informations -->
-        <div class="profile-card__cnt js-profile-cnt">
+        <div class="community-profile-card__info">
           <!-- Profil statistics -->
-          <div class="profile-card-inf">
+          <div class="community-profile-card__about">
             {{ community.about }}
           </div>
         </div>
 
         <!-- button actions -->
-        <div class="profile-card-ctr">
-          <div class="profile-card-ctr__actions">
+        <div class="community-profile-actions">
+          <div class="community-profile-actions__btn">
             <!-- button delete account -->
             <button
               v-if="canAdmin(this.communityRead.userId)"
               type="button"
               class="btn btn-delete"
+              aria-label="Supprimer ma communauté"
               @click="$refs.deleteAccount.openModal()"
               text="Supprimer mon compte"
             >
@@ -53,6 +53,7 @@
               v-if="canAdmin(this.communityRead.userId)"
               type="button"
               class="btn"
+              aria-label="Ajouter un modérateur"
               @click="$refs.moderatorCommunity.openModal()"
               text="Ajouter un modérateur"
             >
@@ -63,6 +64,7 @@
               v-if="canAdmin(this.communityRead.userId)"
               type="button"
               class="btn"
+              aria-label="Supprimer un modérateur"
               @click="$refs.deleteModeratorClick.openModal()"
               text="Supprimer un modérateur"
             >
@@ -70,12 +72,13 @@
             </button>
           </div>
 
-          <div class="profile-card-ctr__actions">
+          <div class="community-profile-actions__btn">
             <!-- export data -->
             <button
               v-if="isAuthenticated && !isFollowingCommunity(this.communityId)"
               type="button"
               class="btn btn-export"
+              aria-label="S'abonner"
               @click="followCommunityClick"
               text="S'abonner"
             >
@@ -86,6 +89,7 @@
               v-if="isFollowingCommunity(this.communityId)"
               type="button"
               class="btn btn-export"
+              aria-label="Se désabonner"
               @click="unfollowCommunityClick"
               text="Se désabonner"
             >
@@ -96,8 +100,10 @@
             <button
               type="button"
               class="btn"
+              aria-label="Signaler cette communauté"
               @click="$refs.reportCommunity.openModal()"
               text="Signaler ce compte"
+              v-if="!isOwner"
             >
               Signaler...
             </button>
@@ -130,6 +136,7 @@
           <button
             class="btn"
             text="Annuler"
+            aria-label="Annuler la supression"
             @click="$refs.deleteAccount.closeModal()"
           >
             Annuler
@@ -142,7 +149,7 @@
     <!-- modal report community -->
     <modalStructure ref="reportCommunity">
       <template v-slot:header>
-        <h1>Signaler ce compte</h1>
+        <h1>Signaler cette communauté</h1>
       </template>
 
       <template v-slot:body>
@@ -150,7 +157,7 @@
           <form action="#" method="post" @submit.prevent="reportAccountClick">
             <div class="FormGroup">
               <label class="FormGroupLabel" for=""
-                >Pourquoi signalez-vous ce compte ?</label
+                >Pourquoi signalez-vous cette communauté ?</label
               >
               <div class="FormTextboxWrapper">
                 <textarea
@@ -186,6 +193,7 @@
               class="btn button"
               title="Signaler"
               text="Signaler"
+              aria-label="Signaler cette communauté"
             >
               Confirmer signalement
             </button>
@@ -196,7 +204,7 @@
       <template v-slot:footer>
         <!-- gestion erreur API avec axios -->
         <div class="error-api">
-          <p class="error-msg">{{ apiError }}</p>
+          <p class="error-msg">{{ apiErrors }}</p>
         </div>
         <!-- gestion erreur API avec axios -->
       </template>
@@ -233,6 +241,7 @@
               class="btn button"
               title="Ajouter modérateur"
               text="Ajouter modérateur"
+              aria-label="Ajouter un modérateur"
             >
               Ajouter
             </button>
@@ -243,7 +252,7 @@
       <template v-slot:footer>
         <!-- gestion erreur API avec axios -->
         <div class="error-api">
-          <p class="error-msg">{{ apiError }}</p>
+          <p class="error-msg">{{ apiErrors }}</p>
         </div>
         <!-- gestion erreur API avec axios -->
       </template>
@@ -280,6 +289,7 @@
               class="btn button"
               title="Supprimer un modérateur"
               text="Supprimer un modérateur"
+              aria-label="Supprimer un modérateur"
             >
               Supprimer
             </button>
@@ -290,7 +300,7 @@
       <template v-slot:footer>
         <!-- gestion erreur API avec axios -->
         <div class="error-api">
-          <p class="error-msg">{{ apiError }}</p>
+          <p class="error-msg">{{ apiErrors }}</p>
         </div>
         <!-- gestion erreur API avec axios -->
       </template>
@@ -300,13 +310,15 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
+
 import communitiesApi from "../../api/community";
 import axiosInstance from "../../services/api";
-import useVuelidate from "@vuelidate/core";
-import roleMixin from "../../mixins/role.mixin";
 
+import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
+
+import roleMixin from "../../mixins/role.mixin";
 
 export default {
   name: "Community-profile",
@@ -367,6 +379,11 @@ export default {
     };
   },
   mixins: [roleMixin],
+  computed: {
+    isOwner() {
+      return this.community.userId === this.$store.state.user.id;
+    },
+  },
   created() {
     this.user = this.$store.state.user;
     this.communityId = this.$route.params.id;
@@ -375,11 +392,10 @@ export default {
       .get("/auth/readAll")
       .then((response) => {
         this.users = response.data.data;
-        // console.log(this.users);
       })
       .catch((error) => {
         if (error.response.status == 404) {
-          const errorMessage = (this.apiError = "Utilisateurs introuvable !");
+          const errorMessage = (this.apiErrors = "Utilisateurs introuvable !");
           this.errorMessage = errorMessage;
 
           // notification d'erreur
@@ -398,7 +414,7 @@ export default {
       })
       .catch((error) => {
         if (error.response.status == 404) {
-          const errorMessage = (this.apiError = "Communauté introuvable !");
+          const errorMessage = (this.apiErrors = "Communauté introuvable !");
           this.errorMessage = errorMessage;
 
           // notification d'erreur
@@ -429,7 +445,7 @@ export default {
           });
 
           // redirect to the community page
-          await this.$router.push("/communities");
+          this.$router.push("/communities");
         } catch (error) {
           console.error(error.data.error);
 
@@ -459,11 +475,11 @@ export default {
               title: `Signalement envoyé !`,
               text: `Merci, votre rapport a été envoyé.`,
             });
-
           })
           .catch((error) => {
             if (error.response.status == 404) {
-              const errorMessage = (this.apiError = "Communauté introuvable !");
+              const errorMessage = (this.apiErrors =
+                "Communauté introuvable !");
               this.errorMessage = errorMessage;
 
               // notification d'erreur
@@ -506,7 +522,7 @@ export default {
       try {
         await communitiesApi.followCommunity(this.communityId);
         // force refresh page
-        this.$router.go(0);
+        // this.$router.go(0);
 
         // notification success
         this.$notify({
@@ -514,9 +530,8 @@ export default {
           text: "Vous suivez cette communauté",
         });
       } catch (error) {
-        const errorMessage = (this.apiError = error.response);
+        const errorMessage = (this.apiErrors = error.response);
         this.errorMessage = errorMessage;
-        // console.log("apiError", error);
 
         // notification d'erreur
         this.$notify({
@@ -531,7 +546,7 @@ export default {
       try {
         await communitiesApi.unfollowCommunity(this.communityId);
         // force refresh page
-        this.$router.go(0);
+        // this.$router.go(0);
 
         // notification success
         this.$notify({
@@ -539,9 +554,8 @@ export default {
           text: "Vous ne suivez plus cette communauté",
         });
       } catch (error) {
-        const errorMessage = (this.apiError = error.response);
+        const errorMessage = (this.apiErrors = error.response);
         this.errorMessage = errorMessage;
-        // console.log("apiError", error);
 
         // notification d'erreur
         this.$notify({
@@ -554,8 +568,6 @@ export default {
     },
     async addModeratorClick() {
       try {
-        // await communitiesApi.addModeratorCommunity(this.communityId);
-
         axiosInstance
           .post(`/community/${this.communityId}/moderator`, this.state.user)
           .then(() => {
@@ -583,7 +595,7 @@ export default {
                 text: `Erreur reporté : ${errorMessage}`,
               });
             } else if (error.response) {
-              const errorMessage = (this.state.apiError = error.response);
+              const errorMessage = (this.state.apiErrors = error.response);
               this.errorMessage = errorMessage;
 
               // error notification
@@ -595,9 +607,7 @@ export default {
             }
           });
       } catch (error) {
-        // console.log(error);
-        // console.log(error.response.data);
-        const errorMessage = (this.apiError = error.response.data.error);
+        const errorMessage = (this.apiErrors = error.response.data.error);
         this.errorMessage = errorMessage;
 
         // notification d'erreur
@@ -611,8 +621,6 @@ export default {
     },
     async deleteModeratorClick() {
       try {
-        // await communitiesApi.addModeratorCommunity(this.communityId);
-
         axiosInstance
           .delete(
             `/community/${this.communityId}/moderator/delete`,
@@ -631,7 +639,6 @@ export default {
           })
           .catch((error) => {
             if (error.response.status == 403) {
-              // console.log(error.response.data.error);
               const errorMessage = (this.apiErrors =
                 "Vous n'êtes pas autorisé à gérer les rôles de communauté !");
               this.errorMessage = errorMessage;
@@ -643,7 +650,7 @@ export default {
                 text: `Erreur reporté : ${errorMessage}`,
               });
             } else if (error.response) {
-              const errorMessage = (this.state.apiError = error.response);
+              const errorMessage = (this.state.apiErrors = error.response);
               this.errorMessage = errorMessage;
 
               // error notification
@@ -655,9 +662,7 @@ export default {
             }
           });
       } catch (error) {
-        // console.log(error);
-        // console.log(error.response.data);
-        const errorMessage = (this.apiError = error.response.data.error);
+        const errorMessage = (this.apiErrors = error.response.data.error);
         this.errorMessage = errorMessage;
 
         // notification d'erreur
@@ -674,7 +679,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
+.container-community {
   width: 100%;
   width: 100%;
   height: auto;
@@ -690,7 +695,7 @@ export default {
   }
 }
 
-.profile-card {
+.community-profile-card {
   width: 100%;
   margin: auto;
   max-width: 700px;
@@ -716,14 +721,14 @@ export default {
     }
   }
 
-  &__cnt {
+  &__info {
     margin-top: -35px;
     text-align: center;
     padding: 0 20px;
     transition: all 0.3s;
   }
 
-  &-inf {
+  &__about {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -732,31 +737,30 @@ export default {
     background: transparent;
     word-break: break-all;
   }
-
-  &-ctr {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 40px;
-    border-radius: 0.8rem;
-
-    @media screen and (max-width: 800px) {
-      flex-wrap: wrap;
-    }
-  }
 }
 
-.profile-card-ctr__actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
 img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 50% 40%;
+}
+.community-profile-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  border-radius: 0.8rem;
+
+  @media screen and (max-width: 800px) {
+    flex-wrap: wrap;
+  }
+  &__btn {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .btn {
@@ -848,5 +852,37 @@ img {
   overflow: hidden;
   text-overflow: ellipsis;
   border: none;
+}
+
+// error if input is invalid
+.dirty {
+  border-color: #8de8fe;
+}
+
+.dirty:focus {
+  outline-color: #8e8;
+}
+
+.error {
+  background: #fdd;
+  border-color: #fd4444;
+  opacity: 0.7;
+}
+
+.error:focus {
+  outline-color: #f99;
+}
+
+// error message
+.error-msg {
+  color: #cc0033;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 5px 0 0;
+  max-width: 15rem;
+  @media only screen and (min-width: 576px) {
+    max-width: 25rem;
+  }
 }
 </style>

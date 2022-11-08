@@ -43,12 +43,6 @@ module.exports = (sequelize, Sequelize) => {
         min: 0,
       },
     },
-    // isRead: {
-    //   type: Sequelize.BOOLEAN,
-    //   unique: false,
-    //   allowNull: false,
-    //   defaultValue: false,
-    // },
   });
 
   // * Sequelize associations

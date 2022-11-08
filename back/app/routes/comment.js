@@ -12,6 +12,16 @@ const { isLoggedIn } = require("../middleware/auth");
 //=================================>
 router.post("/", isLoggedIn, commentsCtrl.createComment);
 
+// //=================================>
+// // * READ A COMMENT
+// //=================================>
+// router.get("/readOne/:id", isLoggedIn, commentsCtrl.readComment);
+
+//=================================>
+// * READ ALL COMMENT BY POST
+//=================================>
+router.get("/readAll/:id", isLoggedIn, commentsCtrl.readAllComments);
+
 //=================================>
 // * UPDATE A COMMENT
 //=================================>
