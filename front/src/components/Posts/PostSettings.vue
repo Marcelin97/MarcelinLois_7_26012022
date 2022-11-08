@@ -99,6 +99,7 @@
 import useVuelidate from "@vuelidate/core";
 import { minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
+
 import axiosInstance from "../../services/api";
 
 export default {
@@ -157,13 +158,13 @@ export default {
       this.state.post.image = document.querySelector("#image").files[0];
     },
     updateAccountClick() {
-      var bodyFormData = new FormData();
+      let bodyFormData = new FormData();
       if (this.state.post.image)
         bodyFormData.append("image", this.state.post.image);
 
       for (let key of ["title", "content"]) {
         const param = this.state.post[key];
-        console.log(param, key);
+        // console.log(param, key);
         if (param) {
           bodyFormData.append(key, param);
         }

@@ -1,100 +1,98 @@
 <template>
   <div class="card">
     <div>
-      <div>
-        <h1>{{ msg }}</h1>
+      <h1>{{ msg }}</h1>
 
-        <div class="container">
-          <form action="#" method="post" @submit.prevent="login">
-            <div class="FormGroup">
-              <label class="FormGroupLabel" for="">User</label>
-              <div class="FormTextboxWrapper">
-                <input
-                  class="FormTextbox"
-                  type="text"
-                  placeholder="E-mail"
-                  v-model="state.user.email"
-                  @blur="v$.user.email.$touch"
-                  :class="v$.user.email.$error === true ? 'error' : 'dirty'"
-                />
-                <span class="FormTextboxIcon">
-                  <font-awesome-icon :icon="['fas', 'user']" />
-                </span>
+      <div class="container">
+        <form action="#" method="post" @submit.prevent="login">
+          <div class="FormGroup">
+            <label class="FormGroupLabel" for="">User</label>
+            <div class="FormTextboxWrapper">
+              <input
+                class="FormTextbox"
+                type="text"
+                placeholder="E-mail"
+                v-model="state.user.email"
+                @blur="v$.user.email.$touch"
+                :class="v$.user.email.$error === true ? 'error' : 'dirty'"
+              />
+              <span class="FormTextboxIcon">
+                <font-awesome-icon :icon="['fas', 'user']" />
+              </span>
+            </div>
+
+            <!-- Error Message -->
+            <template v-if="v$.user.email.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.user.email.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
               </div>
+            </template>
+            <!-- Error Message -->
+          </div>
 
-              <!-- Error Message -->
-              <template v-if="v$.user.email.$dirty">
-                <div
-                  class="input-errors"
-                  v-for="(error, index) of v$.user.email.$errors"
-                  :key="index"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <!-- Error Message -->
+          <div class="FormGroup">
+            <label class="FormGroupLabel" for="">Pass</label>
+            <div class="FormTextboxWrapper">
+              <input
+                class="FormTextbox"
+                type="password"
+                placeholder="Mot de passe"
+                v-model="state.user.password"
+                @blur="v$.user.password.$touch"
+                :class="v$.user.password.$error === true ? 'error' : 'dirty'"
+              />
+              <span class="FormTextboxIcon">
+                <font-awesome-icon :icon="['fas', 'lock']" />
+              </span>
             </div>
 
-            <div class="FormGroup">
-              <label class="FormGroupLabel" for="">Pass</label>
-              <div class="FormTextboxWrapper">
-                <input
-                  class="FormTextbox"
-                  type="password"
-                  placeholder="Mot de passe"
-                  v-model="state.user.password"
-                  @blur="v$.user.password.$touch"
-                  :class="v$.user.password.$error === true ? 'error' : 'dirty'"
-                />
-                <span class="FormTextboxIcon">
-                  <font-awesome-icon :icon="['fas', 'lock']" />
-                </span>
+            <!-- Error Message -->
+            <template v-if="v$.user.password.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.user.password.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
               </div>
+            </template>
+            <!-- Error Message -->
+          </div>
 
-              <!-- Error Message -->
-              <template v-if="v$.user.password.$dirty">
-                <div
-                  class="input-errors"
-                  v-for="(error, index) of v$.user.password.$errors"
-                  :key="index"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <!-- Error Message -->
-            </div>
+          <!-- gestion erreur API avec axios -->
+          <div v-if="this.state.apiErrors != ''" class="error-api">
+            <p class="error-msg">{{ this.state.apiErrors }}</p>
+          </div>
+          <!-- gestion erreur API avec axios -->
 
-            <!-- gestion erreur API avec axios -->
-            <div v-if="this.state.apiError != ''" class="error-api">
-              <p class="error-msg">{{ this.state.apiError }}</p>
-            </div>
-            <!-- gestion erreur API avec axios -->
-
-            <!-- bouton de soumission -->
-            <button
-              type="submit"
-              class="btn button"
-              title="Connexion"
-              value="Connexion"
-            >
-              Connexion
-            </button>
-            <!-- bouton de soumission -->
-          </form>
-        </div>
+          <!-- bouton de soumission -->
+          <button
+            type="submit"
+            class="btn button"
+            title="Connexion"
+            value="Connexion"
+          >
+            Connexion
+          </button>
+          <!-- bouton de soumission -->
+        </form>
       </div>
-
-      <!-- redirection sur la page création d'un compte -->
-      <div class="signup">
-        <p class="text-signup">Pas encore inscrit ?</p>
-        <div class="actions">
-          <router-link class="nav btn button" to="/signup">
-            Créer un compte
-          </router-link>
-        </div>
-      </div>
-      <!-- redirection sur la page création d'un compte -->
     </div>
+
+    <!-- redirection sur la page création d'un compte -->
+    <div class="signup">
+      <p class="text-signup">Pas encore inscrit ?</p>
+      <div class="actions">
+        <router-link class="nav btn button" to="/signup">
+          Créer un compte
+        </router-link>
+      </div>
+    </div>
+    <!-- redirection sur la page création d'un compte -->
   </div>
 </template>
 
@@ -108,10 +106,11 @@ import {
   maxLength,
 } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
+
 import axiosInstance from "../../services/api";
 
 export default {
-  name: "LoginForm",
+  name: "Login-Form",
   props: {
     msg: String,
   },
@@ -121,7 +120,7 @@ export default {
         email: "",
         password: "",
       },
-      apiError: "",
+      apiErrors: "",
     });
 
     const rules = computed(() => ({
@@ -185,7 +184,7 @@ export default {
           .catch((error) => {
             // console.log("erreur", error);
             if (error.response.status == 404) {
-              const errorMessage = (this.state.apiError =
+              const errorMessage = (this.state.apiErrors =
                 "Utilisateur introuvable !");
               this.errorMessage = errorMessage;
 
@@ -196,10 +195,10 @@ export default {
                 text: `Erreur reporté : ${errorMessage}`,
               });
             } else if (error.response.status == 401) {
-              const errorMessage = (this.state.apiError =
+              const errorMessage = (this.state.apiErrors =
                 "Mot de passe invalide !");
               this.errorMessage = errorMessage;
-              
+
               // error notification
               this.$notify({
                 type: "error",
@@ -232,16 +231,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-div div {
+.card {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   @media only screen and (min-width: 768px) {
     flex-direction: row;
-  }
-  div {
-    flex-direction: column;
   }
 }
 
@@ -329,5 +325,10 @@ button {
   line-height: 1.5rem;
   border-bottom: 1px solid #4e5166;
   padding-bottom: 3vh;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
 }
 </style>

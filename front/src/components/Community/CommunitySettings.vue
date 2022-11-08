@@ -148,7 +148,7 @@ export default {
         document.querySelector("#communityImage").files[0];
     },
     updateAccountClick() {
-      var bodyFormData = new FormData();
+      let bodyFormData = new FormData();
       if (this.state.community.communityImage)
         bodyFormData.append("image", this.state.community.communityImage);
 

@@ -2,9 +2,8 @@ module.exports = (sequelize, Sequelize) => {
   // * Model Definition
   const LikeComment = sequelize.define("likeComment", {
     vote: {
-      type: Sequelize.BOOLEAN,
-      unique: false,
-      allowNull: false,
+      type: Sequelize.INTEGER,
+      allowNull: true 
     },
   });
 
@@ -14,10 +13,12 @@ module.exports = (sequelize, Sequelize) => {
     LikeComment.belongsTo(models.comment, {
       foreignKey: "commentId",
       as: "comments",
+      onDelete: "CASCADE",
     });
     LikeComment.belongsTo(models.user, {
       foreignKey: "userId",
       as: "users",
+      onDelete: "CASCADE",
     });
   };
 

@@ -18,9 +18,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.go-back {
-  position: absolute;
-}
+// .go-back {
+//   position: absolute;
+// }
 
 button {
   border: 0;

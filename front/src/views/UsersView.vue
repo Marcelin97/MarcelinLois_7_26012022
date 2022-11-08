@@ -1,6 +1,6 @@
 <template>
   <!-- If there are users -->
-  <section v-if="users.length != 0 || users.length != ''">
+  <section v-if="users.length != 0 || users.length != '' & !isOwner">
     <h1>Explore des nouveaux profils !</h1>
 
     <!-- search bar -->
@@ -46,6 +46,11 @@ export default {
     filteredUsers() {
       return this.users.filter((user) =>
         user.username.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    isOwner() {
+      return this.users.filter((user) =>
+        user.id.includes(this.$store.state.user.id)
       );
     },
   },

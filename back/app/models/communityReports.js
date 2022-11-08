@@ -14,8 +14,12 @@ module.exports = (sequelize, Sequelize) => {
   // * Sequelize associations
   CommunityReport.associate = (models) => {
     // is linked to
-    CommunityReport.belongsTo(models.user);
-    CommunityReport.belongsTo(models.community);
+    CommunityReport.belongsTo(models.user, {
+      onDelete: "CASCADE",
+    });
+    CommunityReport.belongsTo(models.community, {
+      onDelete: "CASCADE",
+    });
   };
 
   return CommunityReport;

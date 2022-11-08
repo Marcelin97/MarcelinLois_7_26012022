@@ -24,7 +24,7 @@ exports.createComment = (req, res, next) => {
       post.createComment({
         content: req.body.content,
         userId: req.auth.userID,
-        PostId: post.id,
+        postId: post.id,
       });
 
       // ! Must be added to the post
@@ -46,41 +46,87 @@ exports.createComment = (req, res, next) => {
     });
 };
 
+// * Read a comment by post
+exports.readAllComments = (req, res, next) => {
+  post
+    .findByPk(req.params.id)
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({ message: "Post not exists" });
+      }
+      // console.log(post);
+      comment
+        .findAll({ where: { postId: post.id } })
+        .then((commentFind) => {
+          // console.log("commentaire", commentFind);
+          if (commentFind.length <= 0) {
+            return res.status(404).json({ message: "Comment(s) not exists" });
+          }
+
+          res.status(200).json({
+            status: 200,
+            message: "Comment(s) find with success",
+            commentFind,
+          });
+        })
+        .catch((err) => {
+          return res.status(404).json({ err, message: "Comment not found" });
+        });
+    })
+    .catch((err) => {
+      const message = "Could not read all comments by post";
+      res.status(500).json({ error: err.message, message });
+    });
+};
+
 // * Update a comment
 exports.updateComment = (req, res, next) => {
   // TODO : Find the comment to update
+  const { content } = req.body;
+
   comment
     .findByPk(req.params.id)
-    .then((result) => {
+    .then(async (result) => {
       if (!result) {
         return res.status(404).json({ message: "Comment not exists" });
       }
 
-      // ! Must be the owner to be able to edit the comment
-      if (result.userId != req.auth.userID) {
-        return res.status(401).send({
-          message: "Can't edit another users post",
+      // TODO : Find logged in user
+      const currentUser = await user.findOne({
+        where: { id: req.auth.userID },
+      });
+      if (currentUser == null) throw new Error("Logged in user not found");
+
+      //! TODO : Check if current user is the owner of the post
+      isOwner = result.userId == currentUser.id;
+
+      //! TODO : Check if the current user is admin
+      isAdmin = currentUser.isAdmin;
+
+      // ! Access denied
+      if (!isAdmin && !isOwner) {
+        return res.status(403).json({
+          error: "You do not have the necessary rights for this action.",
         });
       }
 
-      result
-        .update(req.body, { where: { id: result.id } })
-        .then((datas) => {
-          res.status(200).send({
-            status: 200,
-            message: "Comment Edited Successfully",
-            datas,
-          });
-        })
-        .catch((err) =>
-          res.status(500).json({ error: err.name, message: err.message })
-        );
+      result.content = content || result.content;
+
+      // TODO : Content management
+      if (content) {
+        result.content = content;
+      }
+
+      await result.save();
+      res.status(200).json({
+        message: "Comment updated",
+        status: 200,
+        datas: result,
+      });
     })
     .catch((err) => {
-      res.status(500).json({
-        message: "Something went wrong",
-        err,
-      });
+      const message = "Comment could not be edited";
+      res.status(500).json({ error: err.message, message });
     });
 };
 
@@ -122,60 +168,41 @@ exports.deleteComment = (req, res, next) => {
 };
 
 // * Like a comment
-exports.likeDislikeComment = (req, res, next) => {
-  let vote = req.body.vote;
-  let transaction;
-  // TODO : Find the post to be like
-  comment
-    .findOne({ where: { id: req.params.id } })
-    .then((comment) => {
-      if (!comment) {
-        return res.status(404).json({ message: "Post not exists" });
-      }
-      // console.log(post)
-      // TODO : Check if the current user is in the list of liked posts
-      likeComment
-        .findOne({
-          where: { userId: req.auth.userID, commentId: comment.id },
-        })
-        .then((result) => {
-          // TODO : If no like and If user want to like
-          if (!result && vote == true) {
-            likeComment.create({
-              vote: true,
-              commentId: comment.id,
-              userId: req.auth.userID,
-            });
-            // ! Must be add to the post
-            comment.increment("likes", { by: 1, transaction });
+exports.likeDislikeComment = async (req, res) => {
+  try {
+    let commentFind = await comment.findOne({ where: { id: req.params.id } });
+    if (commentFind == null) throw new Error("Ce commentaire n'existe pas.");
 
-            return res.status(200).json({ message: "You liked this comment" });
-          }
-
-          // TODO : If user want to unlike
-          if (result && vote == false) {
-            likeComment.destroy({
-              where: { userId: req.auth.userID, commentId: comment.id },
-            });
-
-            // ! Must be delete to the post
-            comment.decrement("likes", { by: 1, transaction });
-
-            return res.json({
-              message: "You removed your like from the comment",
-            });
-          }
-
-          // ! Save the post to update likes count
-          comment.save({ where: { id: req.params.id } });
-        })
-        .catch((err) => {
-          res.status(500).json({ error: err.name, message: err.message });
-        });
-    })
-    .catch((err) => {
-      res.status(500).json({ err, error: { msg: "Couldn´t like post" } });
+    let like = req.body.vote;
+    let liked = await likeComment.findOne({
+      where: { userId: req.auth.userID, commentId: commentFind.id },
     });
+
+    // If user want to like
+    if (liked == null && like == 1) {
+      await likeComment.create({
+        vote: true,
+        userId: req.auth.userID,
+        commentId: commentFind.id,
+      });
+
+      commentFind.likes += 1;
+    }
+
+    // If user want to unlike
+    if (liked != null && like == 0) {
+      await liked.destroy();
+      commentFind.likes -= 1;
+    }
+
+    // Save Comment model to update likes count
+    await commentFind.save();
+
+    return res.status(200).json({ message: "super" });
+  } catch (error) {
+    console.error(error);
+    // return Helper.errorResponse(req, res, error.message);
+  }
 };
 
 // * Report a comment

@@ -6,12 +6,13 @@ export default {
   },
   methods: {
     // TODO: Who can do this C.R.U.D : admin  and creator only
-    canAdmin(creatorId) {
+    canAdmin(creatorId, userId) {
       if (this.isAuthenticated) {
         if (
           creatorId === this.authData.id ||
           this.isSuperAdmin === true ||
-          this.authData.isAdmin === true
+          this.authData.isAdmin === true ||
+          userId === this.authData.id
         )
           return true;
         return false;

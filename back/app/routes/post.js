@@ -72,4 +72,9 @@ router.post("/:id/likes", isLoggedIn, postsCtrl.likePost);
 //=================================>
 router.post("/:id/save", isLoggedIn, postsCtrl.saveUnsavePost);
 
+//=================================>
+// * READ LIKES OR DISLIKES BY POST
+//=================================>
+router.get("/:id/likesByPost", isLoggedIn, postsCtrl.readLikeByPost);
+
 module.exports = router;

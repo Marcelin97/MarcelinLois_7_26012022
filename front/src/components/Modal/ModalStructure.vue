@@ -52,10 +52,7 @@ export default {
   bottom: 0;
   left: 0;
   z-index: 99999;
-  // overflow-x: hidden;
-  // overflow-y: auto;
   backface-visibility: hidden;
-  // transition: overflow-x 0.6s cubic-bezier(0.55, 0, 0.1, 1);
   &__backdrop {
     background-color: rgba(0, 0, 0, 0.3);
     position: fixed;

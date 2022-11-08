@@ -1,16 +1,12 @@
 <template>
   <div class="footer">
-    <img src="../../assets/img/patternpad.svg" alt="" />
+    <img src="../../assets/img/patternpad.svg" alt="Patternpad" />
 
     <div class="footer-container">
       <div class="footer2">© 2022</div>
     </div>
     <div class="link">
-      <router-link
-        class="footer_link"
-        to="/wall"
-        aria-label="Read more about Groupomania"
-      >
+      <router-link class="footer_link" to="/wall" aria-label="Groupomania">
         Groupomania
       </router-link>
     </div>

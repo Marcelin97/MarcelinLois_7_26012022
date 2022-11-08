@@ -5,7 +5,9 @@ module.exports = function (sequelize, Sequelize) {
   // * Sequelize associations
     Follower.associate = function (models) {
       // is linked to
-      Follower.belongsTo(models.user);
+      Follower.belongsTo(models.user, {
+        onDelete: "CASCADE",
+      });
       Follower.belongsTo(models.community);
     };
 

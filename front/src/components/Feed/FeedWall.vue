@@ -12,21 +12,14 @@
         <!-- Input Box -->
         <InputBox />
         <!-- Posts -->
-        <div v-if="posts.length != 0">
-          <PostCard
-            v-for="(post, index) in posts"
-            :key="index"
-            :post="post"
-            v-bind:index="index"
-            v-bind:id="post.id"
-            @deletePostClick="deletePostClick"
-          />
+        <div v-if="posts.length != 0" class="post">
+          <PostCard class="post__card" v-for="(post, index) in posts" :key="index" :post="post" v-bind:index="index"
+            v-bind:id="post.id" @deletePostClick="deletePostClick" />
         </div>
         <div v-else>
           <div class="container-communities">
             <h3>Il n'y a pas de post pour le moment</h3>
-            <router-link class="menu-link underline" to="/communities"
-              >Commence par crée une communauté
+            <router-link class="menu-link underline" to="/communities">Tu peux aussi crée une communauté
             </router-link>
           </div>
         </div>
@@ -86,23 +79,22 @@ export default {
         if (!confirm("Êtes-vous sûr de vouloir supprimer ce poste ?")) return;
         await postsApi.deletePost(`${id}`);
 
-          // force refresh page
-            this.$router.go(0);
+        // force refresh page
+        this.$router.go(0);
+      } catch (error) {
+        // console.error(error.data.error);
 
-        } catch (error) {
-          console.error(error.data.error);
+        const errorMessage = (this.apiErrors = error.data.error);
+        this.errorMessage = errorMessage;
 
-          const errorMessage = (this.apiErrors = error.data.error);
-          this.errorMessage = errorMessage;
-
-          // notification error message
-          this.$notify({
-            type: "error",
-            title: `Accès refusé:`,
-            text: `${errorMessage}`,
-            duration: 3000,
-          });
-        }
+        // notification error message
+        this.$notify({
+          type: "error",
+          title: `Accès refusé:`,
+          text: `${errorMessage}`,
+          duration: 3000,
+        });
+      }
     },
   },
 };
@@ -113,13 +105,15 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-}
-.container__sidebar {
-  top: 0;
-}
-.container__main {
-  /* Take the remaining width */
-  flex: 1;
+
+  &__sidebar {
+    top: 0;
+  }
+
+  &__main {
+    /* Take the remaining width */
+    flex: 1;
+  }
 }
 
 .container-communities {
@@ -127,24 +121,12 @@ export default {
   align-items: center;
   flex-direction: column;
 }
-.menu-link::after {
-  position: absolute;
-  top: 0;
-  right: 100%;
-  font-size: 0.75rem;
-  letter-spacing: 0.056rem;
-  padding: 0 0.25rem 0 0;
-}
 
-.menu-item {
-  margin: 1rem;
-  @for $i from 0 through 5 {
-    &:nth-child(#{1 + $i}) {
-      .menu-link::after {
-        content: "0#{1 + $i}";
-      }
-    }
-  }
+.post {
+  margin: auto;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
 }
 
 .underline {
