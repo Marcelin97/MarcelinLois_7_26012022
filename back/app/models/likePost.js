@@ -3,11 +3,7 @@ module.exports = (sequelize, Sequelize) => {
   const LikePost = sequelize.define("likePost", {
     vote: {
       type: Sequelize.INTEGER,
-<<<<<<< HEAD
       allowNull: true
-=======
-      allowNull: true 
->>>>>>> 81a707f5a2e5937f05c10f0fc6368fda96ab6dd8
     },
   });
 
