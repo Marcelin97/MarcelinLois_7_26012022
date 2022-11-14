@@ -348,7 +348,7 @@ import commentsApi from "../../api/comments";
 
 import roleMixin from "../../mixins/role.mixin";
 
-import timeAgo from "@/services/timeAgo";
+import timeAgo from "../../services/timeAgo";
 
 export default {
   name: "Post-Card",
