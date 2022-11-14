@@ -5,13 +5,13 @@ The last project of the Web Developer training.
 I created a REST API with Express, Sequelize and MySQL then for the front-end part I created an application with the Vue.js 3 js framework for this project.
 
 ## Summary
- - [Required](#required-🔧)
+ - [Required](#required)
  - [How to install Backend-side](#how-to-install-backend-side)
  - [Run the Backend server](#run-the-backend-server)
  - [Configure the database](#configure-the-database)
  - [How to install Frontend-side](#how-to-install-frontend-side)
 
- ## Required 🔧
+ ## Required
 
 * Node 15.x
 * Npm 7.7.x

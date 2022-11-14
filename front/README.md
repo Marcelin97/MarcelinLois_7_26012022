@@ -7,12 +7,12 @@ It use VueJS 3.0 to render content and Express to serve files as HTTP server.
 
 ## Summary
 
-- [Required](#required-🔧)
+- [Required](#required)
 - [Projet setup](#project-setup)
 - [Run the Client](#run-the-client)
 - [Other commands](#other-commands)
 
-## Required 🔧
+## Required
 
 - Node 15.x
 - Npm 7.7.x
