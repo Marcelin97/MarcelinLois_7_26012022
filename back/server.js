@@ -49,7 +49,7 @@ const errorHandler = (error) => {
 //=================================>
 
 // Mettre force sur false une fois que j'ai fini les models pour évité que cela écrase mes données à chaque fois.
-db.sequelize.sync({ force: false  }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   console.log("Drop and re-sync db.");
 });
 
