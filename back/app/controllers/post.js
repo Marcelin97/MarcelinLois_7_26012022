@@ -414,13 +414,8 @@ exports.likePost = async (req, res, next) => {
                   postId,
                 })
                 .then((datas) => {
-<<<<<<< HEAD
                   return res.status(201).json({
                     status: 201,
-=======
-                  return res.status(200).json({
-                    status: 200,
->>>>>>> 81a707f5a2e5937f05c10f0fc6368fda96ab6dd8
                     message: "You disliked this post",
                     data: datas,
                   });
@@ -464,13 +459,8 @@ exports.likePost = async (req, res, next) => {
                   postId,
                 })
                 .then((datas) => {
-<<<<<<< HEAD
                   return res.status(201).json({
                     status: 201,
-=======
-                  return res.status(200).json({
-                    status: 200,
->>>>>>> 81a707f5a2e5937f05c10f0fc6368fda96ab6dd8
                     message: "You loved this post",
                     data: datas,
                   });
@@ -487,28 +477,19 @@ exports.likePost = async (req, res, next) => {
         // If it is a like
         case 1:
           changeLike(req.auth.userID, result.id, 1);
-<<<<<<< HEAD
           // res.status(200).json({ message: "You loved this post" });
-=======
->>>>>>> 81a707f5a2e5937f05c10f0fc6368fda96ab6dd8
           break;
 
         // if it's nolike/nodislike
         case 0:
           changeLike(req.auth.userID, result.id, 0);
-<<<<<<< HEAD
           // res.status(200).json({ message: "you removed your like or your dislike" });
-=======
->>>>>>> 81a707f5a2e5937f05c10f0fc6368fda96ab6dd8
           break;
 
         // if it's a dislike
         case -1:
           changeLike(req.auth.userID, result.id, -1);
-<<<<<<< HEAD
           // res.status(200).json({ message: "You disliked this post" });
-=======
->>>>>>> 81a707f5a2e5937f05c10f0fc6368fda96ab6dd8
           break;
         default:
           break;
@@ -539,10 +520,7 @@ exports.reportPost = (req, res) => {
           res.status(200).json({
             status: 200,
             message: "Post successfully reported",
-<<<<<<< HEAD
             datas,
-=======
->>>>>>> 81a707f5a2e5937f05c10f0fc6368fda96ab6dd8
           });
         })
         .catch((error) =>
