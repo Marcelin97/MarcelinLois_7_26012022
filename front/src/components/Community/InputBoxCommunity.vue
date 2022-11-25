@@ -169,7 +169,7 @@ export default {
             });
 
             // force refresh page
-            this.$router.go(0);
+            // this.$router.go(0);
           })
           .catch((error) => {
             // console.log(error.response);

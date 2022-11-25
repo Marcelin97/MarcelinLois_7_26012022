@@ -10,16 +10,24 @@
         <!-- Stories -->
         <StoriesWall />
         <!-- Input Box -->
-        <InputBox @create-post="createPost"/>
+        <InputBox @create-post="createPost" />
         <!-- Posts -->
         <div v-if="posts.length != 0" class="post">
-          <PostCard class="post__card" v-for="(post, index) in posts" :key="index" :post="post" v-bind:index="index"
-            v-bind:id="post.id" @deletePostClick="deletePostClick"  />
+          <PostCard
+            class="post__card"
+            v-for="(post, index) in posts"
+            :key="index"
+            :post="post"
+            v-bind:index="index"
+            v-bind:id="post.id"
+            @deletePostClick="deletePostClick"
+          />
         </div>
         <div v-else>
           <div class="container-communities">
             <h3>Il n'y a pas de post pour le moment</h3>
-            <router-link class="menu-link underline" to="/communities">Tu peux aussi crée une communauté
+            <router-link class="menu-link underline" to="/communities"
+              >Tu peux aussi crée une communauté
             </router-link>
           </div>
         </div>
@@ -49,7 +57,6 @@ export default {
     return {
       posts: [], // add posts array
       apiErrors: "",
-            communities: [], // add communities  array
     };
   },
   mounted() {
@@ -57,7 +64,10 @@ export default {
       .get("/posts/readAll")
       .then((response) => {
         this.posts = response.data.result;
-        console.log("wall posts", this.posts);
+        // this.posts = response.data.result.map((post) => {
+        //   return post;
+        // });
+        // console.log("wall posts", this.posts);
       })
       .catch((error) => {
         if (error.response.status === 404) {
@@ -75,34 +85,10 @@ export default {
       });
   },
   methods: {
-    createPost(bodyFormData) {
-              axiosInstance
-          .post("/posts", bodyFormData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-                .then((response) => {
-                  console.log(response)
-            // this.posts.unshift(response.data)
-            // notification de succès
-            this.$notify({
-              type: "success",
-              title: `Publication crée`,
-              text: `Initialisation...`,
-            });
-          })
-          .catch((error) => {
-            console.log(error.response);
-            this.apiErrors = error.response.data.error;
-
-            // error notification
-            this.$notify({
-              type: "error",
-              title: `❌ Erreur lors de la publication`,
-              text: `Erreur reporté : ${this.apiErrors}`,
-            });
-          });
+  createPost(post) {
+      console.log("newpost", post);
+      this.posts = [post, ...this.posts]
+      console.log(this.posts);
     },
     async deletePostClick(index, id) {
       try {

@@ -267,7 +267,7 @@ export default {
             this.$refs.updateComment.closeModal();
 
             // force refresh page
-            this.$router.go(0);
+            // this.$router.go(0);
 
             // notification de succès
             this.$notify({

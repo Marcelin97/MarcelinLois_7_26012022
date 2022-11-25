@@ -454,7 +454,6 @@ export default {
       .catch((e) => {
         // console.log(error);
         this.apiErrors = e.data;
-        alert(e.data.message);
       });
   },
   methods: {
@@ -578,9 +577,9 @@ export default {
           });
         });
     },
-    async onAddComment({ content }) {
+    onAddComment({ content }) {
       try {
-        const response = await commentsApi.addComment(this.post.id, content);
+        const response = commentsApi.addComment(this.post.id, content);
         this.comments.push(response);
 
         this.$notify({
@@ -591,7 +590,6 @@ export default {
       } catch (e) {
         // console.error(e.data);
         this.apiErrors = e.data;
-        alert(e.data.message);
       }
     },
     async onDeleteComment(commentId) {
@@ -609,7 +607,6 @@ export default {
         }
       } catch (e) {
         this.apiErrors = e.data;
-        alert(e.data);
       }
     },
   },

@@ -90,7 +90,7 @@
               :community="community"
               :key="index"
             >
-              {{ community.id }} - {{ community.title }}
+              {{ community.id }}
             </option>
           </select>
         </div>
@@ -194,7 +194,7 @@ export default {
   data() {
     return {
       apiErrors: "",
-      // communities:: [], // add communities  array
+      communities: [], // add communities  array
       selectValue: "",
       placeholder: "Choisi une communauté",
     };
@@ -225,14 +225,39 @@ export default {
         bodyFormData.append("title", this.state.post.title);
         bodyFormData.append("content", this.state.post.content);
         bodyFormData.append("image", this.state.post.image);
-        bodyFormData.append("communityId", this.state.community.id);
-        for (let value of bodyFormData.values()) {
-          console.log(value);
-        }
+        bodyFormData.append("communityId", Number(this.state.community.id));
+        // for (let value of bodyFormData.values()) {
+        //   console.log(value);
+        // }
 
-        this.$emit("create-post", this.bodyFormData)
+        axiosInstance
+          .post("/posts", bodyFormData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then(async (response) => {
+            // console.log(response)
+            this.$emit("create-post", response.datas);
 
+            // notification de succès
+            this.$notify({
+              type: "success",
+              title: `Publication crée`,
+              text: `Initialisation...`,
+            });
+          })
+          .catch((error) => {
+            console.log(error.response);
+            this.apiErrors = error.response.data.error;
 
+            // error notification
+            this.$notify({
+              type: "error",
+              title: `❌ Erreur lors de la publication`,
+              text: `Erreur reporté : ${this.apiErrors}`,
+            });
+          });
       } else {
         // error notification
         this.$notify({
