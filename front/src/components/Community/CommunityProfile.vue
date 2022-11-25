@@ -75,7 +75,6 @@
           <div class="community-profile-actions__btn">
             <!-- export data -->
             <button
-              v-if="isAuthenticated && !isFollowingCommunity(this.communityId)"
               type="button"
               class="btn btn-export"
               aria-label="S'abonner"
@@ -86,7 +85,6 @@
             </button>
 
             <button
-              v-if="isFollowingCommunity(this.communityId)"
               type="button"
               class="btn btn-export"
               aria-label="Se désabonner"
@@ -394,7 +392,7 @@ export default {
         this.users = response.data.data;
       })
       .catch((error) => {
-        if (error.response.status == 404) {
+        if (error.response.status === 404) {
           const errorMessage = (this.apiErrors = "Utilisateurs introuvable !");
           this.errorMessage = errorMessage;
 
@@ -413,7 +411,7 @@ export default {
         this.communityRead = response.data.datas;
       })
       .catch((error) => {
-        if (error.response.status == 404) {
+        if (error.response.status === 404) {
           const errorMessage = (this.apiErrors = "Communauté introuvable !");
           this.errorMessage = errorMessage;
 
@@ -477,7 +475,7 @@ export default {
             });
           })
           .catch((error) => {
-            if (error.response.status == 404) {
+            if (error.response.status === 404) {
               const errorMessage = (this.apiErrors =
                 "Communauté introuvable !");
               this.errorMessage = errorMessage;
@@ -582,7 +580,7 @@ export default {
             this.$router.go(0);
           })
           .catch((error) => {
-            if (error.response.status == 500) {
+            if (error.response.status === 500) {
               // console.log(error.response.data.error);
               const errorMessage = (this.apiErrors =
                 "Vous n'êtes pas autorisé à gérer les rôles de communauté !");
@@ -638,7 +636,7 @@ export default {
             this.$router.go(0);
           })
           .catch((error) => {
-            if (error.response.status == 403) {
+            if (error.response.status === 403) {
               const errorMessage = (this.apiErrors =
                 "Vous n'êtes pas autorisé à gérer les rôles de communauté !");
               this.errorMessage = errorMessage;

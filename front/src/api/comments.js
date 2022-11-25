@@ -8,11 +8,10 @@ export default {
    * @param userId
    * @return {Promise<any>}
    */
-  async addComment(postId, comment, userId) {
+  async addComment(postId, comment) {
     try {
       const response = await axiosInstance.post("/comments", {
         postId,
-        userId,
         content: comment,
       });
       return response.data;

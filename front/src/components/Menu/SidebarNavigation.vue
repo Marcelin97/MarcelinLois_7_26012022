@@ -34,8 +34,6 @@ export default {
 
 <style lang="scss" scoped>
 .menu-list {
-  background-image: url(../../assets/img/sidebarNavigation1.svg);
-  background-repeat: no-repeat;
   margin: 0;
   padding-left: 1.5rem;
   display: flex;

@@ -194,7 +194,7 @@ export default {
   data() {
     return {
       apiErrors: "",
-      communities: [], // add communities  array
+      // communities:: [], // add communities  array
       selectValue: "",
       placeholder: "Choisi une communauté",
     };
@@ -207,9 +207,8 @@ export default {
         // console.log(this.communities)
       })
       .catch((error) => {
-        if (error.response.status == 404) {
-          const errorMessage = (this.apiErrors = "Communauté introuvable !");
-          this.errorMessage = errorMessage;
+        if (error.response.status === 404) {
+          this.apiErrors = "Il n'y a pas encore de communauté !";
         }
       });
   },
@@ -227,39 +226,13 @@ export default {
         bodyFormData.append("content", this.state.post.content);
         bodyFormData.append("image", this.state.post.image);
         bodyFormData.append("communityId", this.state.community.id);
-        // for (let value of bodyFormData.values()) {
-        //   console.log(value);
-        // }
+        for (let value of bodyFormData.values()) {
+          console.log(value);
+        }
 
-        axiosInstance
-          .post("/posts", bodyFormData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then(() => {
-            // notification de succès
-            this.$notify({
-              type: "success",
-              title: `Publication crée`,
-              text: `Initialisation...`,
-            });
+        this.$emit("create-post", this.bodyFormData)
 
-            // force refresh page
-            this.$router.go(0);
-          })
-          .catch((error) => {
-            console.log(error.response);
-            const errorMessage = (this.apiErrors = error.response.data.error);
-            this.errorMessage = errorMessage;
 
-            // error notification
-            this.$notify({
-              type: "error",
-              title: `❌ Erreur lors de la publication`,
-              text: `Erreur reporté : ${errorMessage}`,
-            });
-          });
       } else {
         // error notification
         this.$notify({

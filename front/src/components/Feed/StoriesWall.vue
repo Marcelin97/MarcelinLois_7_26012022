@@ -31,10 +31,8 @@ export default {
       })
       .catch((error) => {
         // console.log(error.response.status);
-        if (error.response.status == 404) {
-          const errorMessage = (this.apiErrors =
-            "Il n'y pas encore de communauté(s) !");
-          this.errorMessage = errorMessage;
+        if (error.response.status === 404) {
+          this.apiErrors = "Il n'y pas encore de communauté(s) !";
         }
       });
   },

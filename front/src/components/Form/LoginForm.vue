@@ -183,27 +183,25 @@ export default {
           })
           .catch((error) => {
             // console.log("erreur", error);
-            if (error.response.status == 404) {
-              const errorMessage = (this.state.apiErrors =
-                "Utilisateur introuvable !");
-              this.errorMessage = errorMessage;
+            if (error.response.status === 404) {
+              this.state.apiErrors =
+                "Utilisateur introuvable !";
 
               // error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la connexion`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.state.apiErrors}`,
               });
-            } else if (error.response.status == 401) {
-              const errorMessage = (this.state.apiErrors =
-                "Mot de passe invalide !");
-              this.errorMessage = errorMessage;
+            } else if (error.response.status === 401) {
+              this.state.apiErrors =
+                "Mot de passe invalide !";
 
               // error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la connexion`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.state.apiErrors}`,
               });
             }
           });

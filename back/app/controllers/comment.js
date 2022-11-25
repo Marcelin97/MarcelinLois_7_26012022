@@ -15,7 +15,11 @@ exports.createComment = (req, res, next) => {
   let transaction;
   // TODO : Find a post to create a related comment
   post
-    .findOne({ where: { id: req.body.postId } })
+    .findOne({
+      where: { id: req.body.postId }, include: {
+        all: true,
+      },
+    })
     .then((post) => {
       if (!post) {
         return res.status(404).json({ message: "Post not exists" });
@@ -34,6 +38,7 @@ exports.createComment = (req, res, next) => {
       post.save({ where: { id: req.body.postId } });
 
       return res.status(200).json({
+        post,
         status: 201,
         message: "Comment created",
       });

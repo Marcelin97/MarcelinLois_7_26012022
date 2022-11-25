@@ -37,7 +37,7 @@ export default {
     return {
       // add users array:
       users: [],
-      apiError: "",
+      apiErrors: "",
       search: "",
     };
   },
@@ -61,15 +61,14 @@ export default {
         this.users = response.data.data;
       })
       .catch((error) => {
-        if (error.response.status == 404) {
-          const errorMessage = (this.apiError = "Utilisateurs introuvable !");
-          this.errorMessage = errorMessage;
+        if (error.response.status === 404) {
+          this.apiErrors = "Utilisateurs introuvable !";
 
           // notification d'erreur
           this.$notify({
             type: "error",
             title: `Erreur de l'api`,
-            text: `Erreur reporté : ${errorMessage}`,
+            text: `Erreur reporté : ${this.apiErrors}`,
           });
         }
       });

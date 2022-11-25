@@ -45,7 +45,7 @@ export default {
     return {
       // add communities array:
       communities: [],
-      apiError: "",
+      apiErrors: "",
       search: "",
     };
   },
@@ -63,16 +63,14 @@ export default {
         this.communities = response.data.datas;
       })
       .catch((error) => {
-        if (error.response.status == 404) {
-          const errorMessage = (this.apiError =
-            "Il n'y pas encore de communauté(s) !");
-          this.errorMessage = errorMessage;
+        if (error.response.status === 404) {
+          this.apiErrors = "Il n'y pas encore de communauté(s) !";
 
           // notification d'erreur
           this.$notify({
             type: "info",
             title: `Information de l'api`,
-            text: `${errorMessage}`,
+            text: `${this.apiErrors}`,
           });
         }
       });

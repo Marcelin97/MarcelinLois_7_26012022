@@ -439,7 +439,6 @@ export default {
         let voteLike = response.data.result.filter((item) => {
           return item.vote == 1;
         });
-        // console.log("là", voteLike.length);
         this.likesCount = voteLike.length;
 
         let voteDislike = response.data.result.filter((item) => {
@@ -489,14 +488,13 @@ export default {
           duration: 30000,
         });
       } catch (error) {
-        const errorMessage = (this.apiErrors = error);
-        this.errorMessage = errorMessage;
+        this.apiErrors = error;
 
         // notification error message
         this.$notify({
           type: "error",
           title: `Erreur lors de l'envoi du rapport`,
-          text: `${errorMessage}`,
+          text: `${this.apiErrors}`,
           duration: 3000,
         });
       }
@@ -570,13 +568,12 @@ export default {
         })
         .catch((error) => {
           // console.log(error);
-          const errorMessage = (this.apiErrors = error);
-          this.errorMessage = errorMessage;
+          this.apiErrors = error;
 
           this.$notify({
             type: "error",
             title: `Erreur lors de l'ajout du vote`,
-            text: `Erreur reporté : ${errorMessage}`,
+            text: `Erreur reporté : ${this.apiErrors}`,
             duration: 3000,
           });
         });
@@ -612,7 +609,7 @@ export default {
         }
       } catch (e) {
         this.apiErrors = e.data;
-        alert(e.data.message);
+        alert(e.data);
       }
     },
   },

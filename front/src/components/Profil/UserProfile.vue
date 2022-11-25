@@ -194,7 +194,7 @@
       <template v-slot:footer>
         <!-- gestion erreur API avec axios -->
         <div class="error-api">
-          <p class="error-msg">{{ apiError }}</p>
+          <p class="error-msg">{{ apiErrors }}</p>
         </div>
         <!-- gestion erreur API avec axios -->
       </template>
@@ -250,7 +250,7 @@ export default {
   },
   data() {
     return {
-      apiError: "",
+      apiErrors: "",
     };
   },
   methods: {
@@ -271,16 +271,14 @@ export default {
           text: "Le téléchargement commence.",
         });
       } catch (error) {
-        const errorMessage = (this.apiError = error.response);
-        this.errorMessage = errorMessage;
-        // console.log("apiError", error);
+        this.apiErrors = error.response;
 
         // notification d'erreur
         this.$notify({
           duration: 2500,
           type: "error",
           title: `Erreur lors du téléchargement des données`,
-          text: `Erreur reporté : ${errorMessage}`,
+          text: `Erreur reporté : ${this.apiErrors}`,
         });
       }
     },
@@ -317,25 +315,21 @@ export default {
           })
           .catch((error) => {
             // console.log(error.response.status);
-            if (error.response.status == 404) {
-              const errorMessage = (this.apiError =
-                "Utilisateur introuvable !");
-              this.errorMessage = errorMessage;
+            if (error.response.status === 404) {
+              this.apiErrors = "Utilisateur introuvable !";
               // notification d'erreur
               this.$notify({
                 type: "error",
                 title: `Erreur lors du signalement`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.apiErrors}`,
               });
-            } else if (error.response.status == 409) {
-              const errorMessage = (this.apiError =
-                "Vous avez déjà signalé cet utilisateur !");
-              this.errorMessage = errorMessage;
+            } else if (error.response.status === 409) {
+              this.apiErrors = "Vous avez déjà signalé cet utilisateur !";
               // notification d'erreur
               this.$notify({
                 type: "error",
                 title: `Erreur lors du signalement`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.apiErrors}`,
               });
             }
           });
