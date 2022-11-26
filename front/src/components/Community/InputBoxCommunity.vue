@@ -135,6 +135,7 @@ export default {
 
     return { state, v$ };
   },
+  emits: ['create-community'],
   validationConfig: {
     $lazy: true,
   },
@@ -161,7 +162,7 @@ export default {
             },
           })
           .then((response) => {
-            console.log("community", response.data)
+            console.log("request create community", response.data)
             this.$emit("create-community",response.data);
 
             // notification de succès

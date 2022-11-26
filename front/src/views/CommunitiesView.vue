@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     createCommunity(data) {
-      this.communities.unshift(data);
+      this.communities.unshift(data.datas);
       console.log("create community", this.communities)
     }
   }

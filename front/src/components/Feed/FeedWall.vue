@@ -58,8 +58,8 @@ export default {
   methods: {
     createPost(post) {
       console.log("receive newPost", post);
-      // this.posts = [post, ...this.posts];
-      this.posts.unshift(post);
+      this.posts = [post.datas, ...this.posts];
+      this.posts.unshift(post.datas);
       console.log("update all posts", this.posts);
     },
     async deletePostClick(index, id) {
