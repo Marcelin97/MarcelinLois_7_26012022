@@ -4,77 +4,37 @@
       <h2>Publication</h2>
 
       <!-- form structure-->
-      <form
-        id="form"
-        @submit.prevent="createPostClick"
-        enctype="multipart/form-data"
-      >
+      <form id="form" @submit.prevent="createPostClick" enctype="multipart/form-data">
         <!-- add file -->
         <div class="container__file">
           <div class="fileUploadInput">
             <label>✨ Ajouter une image</label>
-            <input
-              accept=".jpeg,.jpg,.png"
-              @change="onChangeFileUpload"
-              ref="image"
-              class="image"
-              type="file"
-              id="image"
-              @blur="v$.post.image.$touch"
-              :class="v$.post.image.$error === true ? 'error' : 'dirty'"
-            />
+            <input accept=".jpeg,.jpg,.png" @change="onChangeFileUpload" ref="image" class="image" type="file"
+              id="image" @blur="v$.post.image.$touch" :class="v$.post.image.$error === true ? 'error' : 'dirty'" />
             <button>🔗</button>
           </div>
         </div>
 
-        <input
-          class="form-title"
-          id="name"
-          type="text"
-          placeholder="TITRE"
-          required
-          autocomplete="off"
-          v-model="state.post.title"
-          blur="v$.post.title.$touch"
-          :class="v$.post.title.$error === true ? 'error' : 'dirty'"
-          minlength="3"
-          maxlength="255"
-          aria-label="Titre de votre post"
-        />
+        <input class="form-title" id="name" type="text" placeholder="TITRE" required autocomplete="off"
+          v-model="state.post.title" blur="v$.post.title.$touch"
+          :class="v$.post.title.$error === true ? 'error' : 'dirty'" minlength="3" maxlength="255"
+          aria-label="Titre de votre post" />
 
         <!-- Error Message -->
         <template v-if="v$.post.title.$dirty">
-          <div
-            class="input-errors"
-            v-for="(error, index) of v$.post.title.$errors"
-            :key="index"
-          >
+          <div class="input-errors" v-for="(error, index) of v$.post.title.$errors" :key="index">
             <div class="error-msg">{{ error.$message }}</div>
           </div>
         </template>
         <!-- Error Message -->
 
-        <textarea
-          id="message"
-          type="text"
-          placeholder="À PROPOS de..."
-          autocomplete="off"
-          v-model="state.post.content"
-          @blur="v$.post.content.$touch"
-          :class="v$.post.content.$error === true ? 'error' : 'dirty'"
-          minlength="2"
-          maxlength="400"
-          required
-          aria-label="description de votre publication"
-        ></textarea>
+        <textarea id="message" type="text" placeholder="À PROPOS de..." autocomplete="off" v-model="state.post.content"
+          @blur="v$.post.content.$touch" :class="v$.post.content.$error === true ? 'error' : 'dirty'" minlength="2"
+          maxlength="400" required aria-label="description de votre publication"></textarea>
 
         <!-- Error Message -->
         <template v-if="v$.post.content.$dirty">
-          <div
-            class="input-errors"
-            v-for="(error, index) of v$.post.content.$errors"
-            :key="index"
-          >
+          <div class="input-errors" v-for="(error, index) of v$.post.content.$errors" :key="index">
             <div class="error-msg">{{ error.$message }}</div>
           </div>
         </template>
@@ -85,11 +45,7 @@
             <option selected disabled value="">
               {{ placeholder }}
             </option>
-            <option
-              v-for="(community, index) in communities"
-              :community="community"
-              :key="index"
-            >
+            <option v-for="(community, index) in communities" :community="community" :key="index">
               {{ community.id }}
             </option>
           </select>
@@ -98,24 +54,13 @@
 
         <!-- Error Message -->
         <template v-if="v$.community.id.$dirty">
-          <div
-            class="input-errors"
-            v-for="(error, index) of v$.community.id.$errors"
-            :key="index"
-          >
+          <div class="input-errors" v-for="(error, index) of v$.community.id.$errors" :key="index">
             <div class="error-msg">{{ error.$message }}</div>
           </div>
         </template>
         <!-- Error Message -->
 
-        <button
-          class="btn"
-          id="submit"
-          type="submit"
-          value="CRÉE!"
-          title="Crée un post"
-          aria-label="Crée un post"
-        >
+        <button class="btn" id="submit" type="submit" value="CRÉE!" title="Crée un post" aria-label="Crée un post">
           CRÉE!
         </button>
       </form>
@@ -237,8 +182,8 @@ export default {
             },
           })
           .then(async (response) => {
-            // console.log(response)
-            this.$emit("create-post", response.datas);
+            console.log("requête create post", response.data)
+            this.$emit("create-post", response.data);
 
             // notification de succès
             this.$notify({
@@ -278,6 +223,7 @@ export default {
       }
     },
   },
+  emits: ['create-post'],
 };
 </script>
 
@@ -287,6 +233,7 @@ export default {
     margin: 1rem auto;
   }
 }
+
 .form-input-box {
   display: flex;
   flex-direction: column;
@@ -295,6 +242,7 @@ export default {
   margin: 0 auto 2rem auto;
   padding: 2rem;
   border-radius: 0.8rem;
+
   @media only screen and (min-width: 768px) {
     width: 580px;
   }
@@ -339,9 +287,11 @@ h2 {
   border-radius: 0.4rem;
   color: #95989a;
 }
+
 .fileUploadInput input[type="file"] {
   padding: 0 gap(m);
 }
+
 .fileUploadInput input[type="file"]::-webkit-file-upload-button {
   visibility: hidden;
   margin-left: 10px;
@@ -349,6 +299,7 @@ h2 {
   height: 50px;
   width: 0px;
 }
+
 .fileUploadInput button {
   z-index: 1;
   position: absolute;
@@ -412,10 +363,12 @@ select {
   color: #fff;
   background-color: #34495e;
   cursor: pointer;
+
   /* <option> colors */
   option {
     color: inherit;
   }
+
   /* Remove focus outline */
   &:focus {
     outline: none;
@@ -444,6 +397,7 @@ select {
   transition: 0.25s all ease;
   pointer-events: none;
 }
+
 /* Transition */
 .select:hover::after {
   color: #f39c12;
@@ -478,6 +432,7 @@ button#submit {
   line-height: 15px;
   margin: 5px 0 0;
   max-width: 15rem;
+
   @media only screen and (min-width: 576px) {
     max-width: 25rem;
   }

@@ -160,7 +160,10 @@ export default {
               "Content-Type": "multipart/form-data",
             },
           })
-          .then(() => {
+          .then((response) => {
+            console.log("community", response.data)
+            this.$emit("create-community",response.data);
+
             // notification de succès
             this.$notify({
               type: "success",

@@ -8,7 +8,7 @@
     </h1>
 
     <!-- Input Box Communities -->
-    <InputBoxCommunityVue />
+    <InputBoxCommunityVue @create-community="createCommunity"/>
 
     <!-- search bar -->
     <div class="search-bar">
@@ -75,6 +75,12 @@ export default {
         }
       });
   },
+  methods: {
+    createCommunity(data) {
+      this.communities.unshift(data);
+      console.log("create community", this.communities)
+    }
+  }
 };
 </script>
 

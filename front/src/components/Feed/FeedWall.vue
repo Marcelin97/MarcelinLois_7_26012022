@@ -13,21 +13,13 @@
         <InputBox @create-post="createPost" />
         <!-- Posts -->
         <div v-if="posts.length != 0" class="post">
-          <PostCard
-            class="post__card"
-            v-for="(post, index) in posts"
-            :key="index"
-            :post="post"
-            v-bind:index="index"
-            v-bind:id="post.id"
-            @deletePostClick="deletePostClick"
-          />
+          <PostCard class="post__card" v-for="(post, index) in posts" :key="index" :post="post" v-bind:index="index"
+            v-bind:id="post.id" @deletePostClick="deletePostClick" />
         </div>
         <div v-else>
           <div class="container-communities">
             <h3>Il n'y a pas de post pour le moment</h3>
-            <router-link class="menu-link underline" to="/communities"
-              >Tu peux aussi crée une communauté
+            <router-link class="menu-link underline" to="/communities">Tu peux aussi crée une communauté
             </router-link>
           </div>
         </div>
@@ -42,7 +34,7 @@ import InputBox from "./InputBox.vue";
 import StoriesWall from "./StoriesWall.vue";
 import SidebarNavigation from "../Menu/SidebarNavigation.vue";
 
-import axiosInstance from "../../services/api";
+// import axiosInstance from "../../services/api";
 import postsApi from "../../api/posts";
 
 export default {
@@ -59,36 +51,16 @@ export default {
       apiErrors: "",
     };
   },
-  mounted() {
-    axiosInstance
-      .get("/posts/readAll")
-      .then((response) => {
-        this.posts = response.data.result;
-        // this.posts = response.data.result.map((post) => {
-        //   return post;
-        // });
-        // console.log("wall posts", this.posts);
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          const errorMessage = (this.apiErrors =
-            "Il n'y pas encore de post(s) !");
-          this.errorMessage = errorMessage;
-
-          // notification d'erreur
-          this.$notify({
-            type: "error",
-            title: `Information de l'api`,
-            text: `${errorMessage}`,
-          });
-        }
-      });
+  async created() {
+    const posts = await postsApi.getPosts()
+    this.posts = posts;
   },
   methods: {
-  createPost(post) {
-      console.log("newpost", post);
-      this.posts = [post, ...this.posts]
-      console.log(this.posts);
+    createPost(post) {
+      console.log("receive newPost", post);
+      // this.posts = [post, ...this.posts];
+      this.posts.unshift(post);
+      console.log("update all posts", this.posts);
     },
     async deletePostClick(index, id) {
       try {

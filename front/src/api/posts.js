@@ -2,6 +2,18 @@ import axiosInstance from "../services/api";
 
 export default {
   /**
+ * Get all posts
+ * @return {Promise<any>}
+ */
+  async getPosts() {
+    try {
+      const response = await axiosInstance.get("/posts/readAll")
+      return response.data.result
+    } catch (e) {
+      throw e.response
+    }
+  },
+  /**
    * Delete a post
    * @param postId
    * @return {Promise<AxiosResponse<any>>}
