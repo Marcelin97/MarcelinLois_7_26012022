@@ -1,40 +1,80 @@
 <template>
   <div class="container">
     <div class="form-input-box">
-      <h2>Publication</h2>
+      <h2>Crée une Publication</h2>
 
       <!-- form structure-->
-      <form id="form" @submit.prevent="createPostClick" enctype="multipart/form-data">
+      <form
+        id="form"
+        @submit.prevent="createPostClick"
+        enctype="multipart/form-data"
+      >
         <!-- add file -->
         <div class="container__file">
           <div class="fileUploadInput">
             <label>✨ Ajouter une image</label>
-            <input accept=".jpeg,.jpg,.png" @change="onChangeFileUpload" ref="image" class="image" type="file"
-              id="image" @blur="v$.post.image.$touch" :class="v$.post.image.$error === true ? 'error' : 'dirty'" />
+            <input
+              accept=".jpeg,.jpg,.png"
+              @change="onChangeFileUpload"
+              ref="image"
+              class="image"
+              type="file"
+              id="image"
+              @blur="v$.post.image.$touch"
+              :class="v$.post.image.$error === true ? 'error' : 'dirty'"
+            />
             <button>🔗</button>
           </div>
         </div>
 
-        <input class="form-title" id="name" type="text" placeholder="TITRE" required autocomplete="off"
-          v-model="state.post.title" blur="v$.post.title.$touch"
-          :class="v$.post.title.$error === true ? 'error' : 'dirty'" minlength="3" maxlength="255"
-          aria-label="Titre de votre post" />
+        <input
+          class="form-title"
+          id="name"
+          type="text"
+          placeholder="TITRE"
+          required
+          autocomplete="off"
+          v-model="state.post.title"
+          blur="v$.post.title.$touch"
+          :class="v$.post.title.$error === true ? 'error' : 'dirty'"
+          minlength="3"
+          maxlength="255"
+          aria-label="Titre de votre post"
+        />
 
         <!-- Error Message -->
         <template v-if="v$.post.title.$dirty">
-          <div class="input-errors" v-for="(error, index) of v$.post.title.$errors" :key="index">
+          <div
+            class="input-errors"
+            v-for="(error, index) of v$.post.title.$errors"
+            :key="index"
+          >
             <div class="error-msg">{{ error.$message }}</div>
           </div>
         </template>
         <!-- Error Message -->
 
-        <textarea id="message" type="text" placeholder="À PROPOS de..." autocomplete="off" v-model="state.post.content"
-          @blur="v$.post.content.$touch" :class="v$.post.content.$error === true ? 'error' : 'dirty'" minlength="2"
-          maxlength="400" required aria-label="description de votre publication"></textarea>
+        <textarea
+          id="message"
+          type="text"
+          placeholder="À PROPOS de..."
+          autocomplete="off"
+          v-model="state.post.content"
+          @blur="v$.post.content.$touch"
+          :class="v$.post.content.$error === true ? 'error' : 'dirty'"
+          minlength="2"
+          maxlength="400"
+          required
+          aria-label="description de votre publication"
+        ></textarea>
 
         <!-- Error Message -->
         <template v-if="v$.post.content.$dirty">
-          <div class="input-errors" v-for="(error, index) of v$.post.content.$errors" :key="index">
+          <div
+            class="input-errors"
+            v-for="(error, index) of v$.post.content.$errors"
+            :key="index"
+          >
             <div class="error-msg">{{ error.$message }}</div>
           </div>
         </template>
@@ -45,7 +85,11 @@
             <option selected disabled value="">
               {{ placeholder }}
             </option>
-            <option v-for="(community, index) in communities" :community="community" :key="index">
+            <option
+              v-for="(community, index) in communities"
+              :community="community"
+              :key="index"
+            >
               {{ community.id }}
             </option>
           </select>
@@ -54,13 +98,24 @@
 
         <!-- Error Message -->
         <template v-if="v$.community.id.$dirty">
-          <div class="input-errors" v-for="(error, index) of v$.community.id.$errors" :key="index">
+          <div
+            class="input-errors"
+            v-for="(error, index) of v$.community.id.$errors"
+            :key="index"
+          >
             <div class="error-msg">{{ error.$message }}</div>
           </div>
         </template>
         <!-- Error Message -->
 
-        <button class="btn" id="submit" type="submit" value="CRÉE!" title="Crée un post" aria-label="Crée un post">
+        <button
+          class="btn"
+          id="submit"
+          type="submit"
+          value="CRÉE!"
+          title="Crée un post"
+          aria-label="Crée un post"
+        >
           CRÉE!
         </button>
       </form>
@@ -133,6 +188,7 @@ export default {
 
     return { state, v$ };
   },
+  emits: ["create-post"],
   validationConfig: {
     $lazy: true,
   },
@@ -182,7 +238,7 @@ export default {
             },
           })
           .then(async (response) => {
-            console.log("requête create post", response.data)
+            console.log("requête create post", response.data);
             this.$emit("create-post", response.data);
 
             // notification de succès
@@ -223,12 +279,15 @@ export default {
       }
     },
   },
-  emits: ['create-post'],
 };
 </script>
 
 <style lang="scss" scoped>
 .container {
+  max-width: 300px;
+  @media (width >=890px) {
+    max-width: none;
+  }
   &__file {
     margin: 1rem auto;
   }
@@ -242,14 +301,17 @@ export default {
   margin: 0 auto 2rem auto;
   padding: 2rem;
   border-radius: 0.8rem;
-
-  @media only screen and (min-width: 768px) {
-    width: 580px;
+  width: 300px;
+  @media only screen and (min-width: 650px) {
+    width: 430px;
+  }
+  @media only screen and (min-width: 758px) {
+    width: 530px;
   }
 }
 
 h2 {
-  font-size: 0.8rem;
+  font-size: 1.3rem;
   text-align: center;
   line-height: 1.5rem;
   color: #95989a;

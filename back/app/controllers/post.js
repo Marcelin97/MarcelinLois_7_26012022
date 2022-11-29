@@ -212,13 +212,18 @@ exports.manyLikes = (req, res, next) => {
 // * Read all posts
 exports.readAllPosts = async (req, res, next) => {
   post
-    .findAll({
-      include: {
-        all: true,
+    .findAll(
+      {
+        order: [["createdAt", "DESC"]],
+        limit: 6,
+        raw: true,
       },
-      order: [["createdAt", "DESC"]],
-      limit: 6,
-    })
+      {
+        include: {
+          all: true,
+        },
+      }
+    )
     .then(async (result) => {
       // TODO : Check if post exist
       if (!result) {

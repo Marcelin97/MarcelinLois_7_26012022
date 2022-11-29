@@ -43,9 +43,11 @@ export default {
 .stories {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   overflow: hidden;
   overflow-x: auto;
   cursor: grabbing;
-  justify-content: space-evenly;
+  // justify-content: space-evenly;
+  max-width: 350px;
 }
 </style>

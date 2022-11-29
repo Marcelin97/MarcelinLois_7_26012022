@@ -58,8 +58,8 @@ export default {
   border-radius: 2px;
   padding: 10px;
   padding-right: 0;
-  display: flex;
-  align-items: center;
+  // display: flex;
+  // align-items: center;
   overflow: hidden;
   overflow-x: auto;
 }
@@ -91,7 +91,7 @@ export default {
   border: 2px solid #fff;
 }
 .username {
-  width: 100%;
+  width: auto;
   overflow: hidden;
   text-align: center;
   font-size: 12px;

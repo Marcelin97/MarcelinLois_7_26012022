@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1>{{ this.community.title }}</h1>
-    <CommunityProfile :community="community" :communityId="communityId" />
+    <CommunityProfile :community="community" :communityId="communityId"/>
 
     <!-- gestion erreur API avec axios -->
     <div v-if="apiErrors" class="error-api">
@@ -39,14 +39,13 @@ export default {
       );
       this.community = response.data.datas;
     } catch (error) {
-      const errorMessage = (this.apiErrors = error.response);
-      this.errorMessage = errorMessage;
+      this.apiErrors = error.response;
 
       // notification error message
       this.$notify({
         type: "error",
         title: `Erreur lors du changement de la communauté`,
-        text: `Erreur reporté : ${errorMessage}`,
+        text: `Erreur reporté : ${this.apiErrors}`,
         duration: 30000,
       });
     }

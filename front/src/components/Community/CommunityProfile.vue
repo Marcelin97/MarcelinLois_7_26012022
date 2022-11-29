@@ -433,7 +433,7 @@ export default {
       ) {
         try {
           await communitiesApi.deleteCommunity(this.communityId);
-
+          
           // notification success
           this.$notify({
             type: "success",

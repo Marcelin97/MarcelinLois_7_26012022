@@ -79,6 +79,7 @@ exports.readAllCommunity = async (req, res, next) => {
       }
       res.status(200).json({
         status: 200,
+        message: "Communities find with success",
         datas: communitiesActive,
       });
     })

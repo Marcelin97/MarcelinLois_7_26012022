@@ -89,10 +89,10 @@ import { helpers, required, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 import axiosInstance from "../../services/api";
-// import communityApi from "../../api/community";
 
 export default {
   name: "InputBoxCommunity",
+  emits: ['create-community'],
   setup() {
     const state = reactive({
       community: {
@@ -135,7 +135,6 @@ export default {
 
     return { state, v$ };
   },
-  emits: ['create-community'],
   validationConfig: {
     $lazy: true,
   },
@@ -162,8 +161,11 @@ export default {
             },
           })
           .then((response) => {
-            console.log("request create community", response.data)
-            this.$emit("create-community",response.data);
+            // console.log("request create community", response.data)
+            this.$emit("create-community", response.data);
+
+            // redirect to the homme page to create a post
+            this.$router.push("/wall");
 
             // notification de succès
             this.$notify({
