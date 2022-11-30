@@ -324,7 +324,7 @@
           >
             Annuler
           </button>
-          <deleteBtn @click.prevent.stop="deletePostClick(index, id)" />
+          <deleteBtn @click="deletePost()" />
         </div>
       </template>
     </modalStructure>
@@ -353,6 +353,7 @@ import timeAgo from "../../services/timeAgo";
 export default {
   name: "Post-Card",
   props: ["post", "id", "index", "creatorInfo", "posts"],
+  emits: ["delete-post"],
   components: {
     deleteBtn,
     modalStructure,
@@ -457,19 +458,32 @@ export default {
       });
   },
   methods: {
-    async deletePostClick(index, id) {
-      this.$emit("deletePostClick", index, id);
+    async deletePost() {
+      try {
+        if (!this.isAuthenticated) return;
+        if (!confirm("Êtes-vous sûr de vouloir supprimer ce poste ?")) return;
+        await postsApi.deletePost(this.id);
+        this.$emit("delete-post", this.id);
 
-      // close delete modal
-      this.$refs.deletePost.closeModal();
+        // notification success
+        this.$notify({
+          type: "success",
+          title: `Communauté supprimé`,
+          duration: 30000,
+        });
 
-      // notification success
-      this.$notify({
-        type: "success",
-        title: `Suppression`,
-        text: `La publication est supprimer`,
-        duration: 30000,
-      });
+        // close delete modal
+        this.$refs.deletePost.closeModal();
+
+      } catch (error) {
+        const errorMessage = this.handleErrorMessage(error);
+        this.$notify({
+          type: "error",
+          title: `Erreur lors de la suppression`,
+          text: `Erreur reporté : ${errorMessage}`,
+          duration: 30000,
+        });
+      }
     },
     async reportPostClick(index, postId) {
       try {

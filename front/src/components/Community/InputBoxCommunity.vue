@@ -228,7 +228,7 @@ export default {
 }
 
 h2 {
-  font-size: 0.8rem;
+  font-size: 1.3rem;
   text-align: center;
   line-height: 1.5rem;
   color: #95989a;
@@ -264,7 +264,7 @@ h2 {
   z-index: 1;
   padding: 0 gap(m);
   width: 100%;
-  height: 50px;
+  height: 40px;
   border: 1px solid #4e5166;
   border-radius: 0.4rem;
   color: #95989a;
@@ -284,8 +284,8 @@ h2 {
   position: absolute;
   right: 0;
   bottom: 0;
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   line-height: 0;
   user-select: none;
   border: none;
@@ -306,7 +306,7 @@ textarea::placeholder {
   font-size: 0.875em;
   width: 100%;
   max-width: 20rem;
-  height: 50px;
+  height: 30px;
   padding: 0px 15px 0px 15px;
   background: transparent;
   outline: none;
@@ -319,7 +319,7 @@ textarea::placeholder {
 textarea {
   width: 100%;
   max-width: 20rem;
-  height: 110px;
+  height: 60px;
   max-height: 110px;
   padding: 15px;
   background: transparent;

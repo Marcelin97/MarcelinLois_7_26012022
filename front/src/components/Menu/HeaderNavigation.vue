@@ -1,22 +1,30 @@
 <template>
   <nav class="navbar">
     <h1 class="navbar-logo">
-      <img class="navbar-logo-icon" src="../../assets/img/icon.svg" alt="bonjour" />
-      <span class="navbar-logo-text">Groupomania</span>
+      <router-link class="link-home" to="/wall"><img class="navbar-logo-icon" src="../../assets/img/icon.svg"
+          alt="Logo Groupomania" />
+        <span class="navbar-logo-text">Groupomania</span>
+      </router-link>
     </h1>
     <nav class="navbar-menu">
-      <button type="button">
+      <router-link class="link" type="button" to="/wall">
+        <img src="../../assets/img/icon-home.svg" alt="Fil d'actualité" title="Fil d'actualité" />
+      </router-link>
+      <router-link class="link" type="button" to="/communities">
+        <img src="../../assets/img/icon-users.svg" alt="Communautés" title="Communautés" />
+      </router-link>
+      <router-link class="link" type="button" to="/explore/users">
+        <img src="../../assets/img/icon-account.svg" alt="Utilisateurs" title="Utilisateurs" />
+      </router-link>
+      <router-link class="link" type="button" to="/user/parameter">
         <img src="../../assets/img/icon-settings.svg" alt="Paramètre du compte" title="Paramètre du compte" />
+      </router-link>
+      <button type="button" @click="logout">
+        <img src="../../assets/img/icon-lock.svg" title="Déconnexion" alt="Déconnexion" />
       </button>
-      <button type="button">
-        <img src="../../assets/img/icon-accounts.svg" alt="Utilisateurs" title="Utilisateurs"/>
-      </button>
-            <button type="button">
-              <img src="../../assets/img/sign-out-svgrepo-com.svg" title="Déconnexion" alt="Déconnexion" />
-            </button>
-      <button type="button">
+      <router-link class="link" type="button" to="/user">
         <img class="burger-avatar" title="Mon compte" src="../../assets/img/avataaars.png" alt="Mon compte" />
-      </button>
+      </router-link>
     </nav>
   </nav>
 </template>
@@ -39,31 +47,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.burger {
-  position: fixed;
-  z-index: 3;
-  top: 20px;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.burger-avatar {
-  width: 30px;
-  height: 30px;
-  transition: 0.4s;
-}
-
-button {
-  border: 0;
-  padding: 0;
-  font-family: inherit;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-}
-
 .navbar {
   position: fixed;
   z-index: 99999;
@@ -75,7 +58,7 @@ button {
   width: 100%;
   height: 72px;
   padding: 0 20px;
-  background: #ffff;    
+  background: #ffff;
   color: #f9f9f9;
 }
 
@@ -120,6 +103,7 @@ button {
   }
 }
 
+.navbar-menu>.link,
 .navbar-menu>button {
   position: relative;
   flex: 0 0 36px;
@@ -130,27 +114,36 @@ button {
   width: 36px;
 }
 
-.navbar-menu>button.active {
-  opacity: 1;
-}
-
-.navbar-menu>button.active::after {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  translate: -50% 0;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #36b7ee;
-}
-
 @media only screen and (min-width: 600px) {
-  .navbar-menu>button:last-child {
+  .navbar-menu>.link:last-child {
     position: absolute;
     right: 20px;
+  }
+}
+
+.burger-avatar {
+  width: 30px;
+  height: 30px;
+  transition: 0.4s;
+}
+
+.link-home {
+  display: flex;
+  align-items: center;
+}
+
+.link,
+button {
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  img {
+    height: 1.7rem;
+    width: auto;
   }
 }
 </style>

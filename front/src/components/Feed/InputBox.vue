@@ -284,12 +284,8 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  max-width: 300px;
-  @media (width >=890px) {
-    max-width: none;
-  }
   &__file {
-    margin: 1rem auto;
+    margin: 0.5rem auto;
   }
 }
 
@@ -299,13 +295,13 @@ export default {
   justify-content: center;
   box-shadow: 0 0 20px rgb(66 50 98 / 35%);
   margin: 0 auto 2rem auto;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 0.8rem;
-  width: 300px;
-  @media only screen and (min-width: 650px) {
-    width: 430px;
-  }
-  @media only screen and (min-width: 758px) {
+  width: 280px;
+  @media only screen and (min-width: 600px) {
+      width: 430px;
+    }
+  @media only screen and (min-width: 768px) {
     width: 530px;
   }
 }
@@ -330,7 +326,6 @@ h2 {
   grid-gap: 10px;
   position: relative;
   z-index: 1;
-  margin: 1rem 0;
 }
 
 .fileUploadInput label {
@@ -388,7 +383,7 @@ textarea::placeholder {
   font-size: 0.875em;
   width: 100%;
   max-width: 20rem;
-  height: 50px;
+  height: 30px;
   padding: 0px 15px 0px 15px;
   background: transparent;
   outline: none;
@@ -401,7 +396,7 @@ textarea::placeholder {
 textarea {
   width: 100%;
   max-width: 20rem;
-  height: 110px;
+  height: 60px;
   max-height: 110px;
   padding: 15px;
   background: transparent;
@@ -417,7 +412,7 @@ select {
   appearance: none;
   border: 0;
   outline: 0;
-  width: 20rem;
+  width: 15rem;
   height: 3rem;
   padding: 0 4em 0 1em;
   border-radius: 0.25em;
@@ -425,6 +420,9 @@ select {
   color: #fff;
   background-color: #34495e;
   cursor: pointer;
+    @media only screen and (min-width: 600px) {
+        width: 20rem;
+      }
 
   /* <option> colors */
   option {
@@ -441,7 +439,6 @@ select {
 .select {
   position: relative;
   display: flex;
-  width: 20em;
   height: 3em;
   border-radius: 0.25em;
   overflow: hidden;

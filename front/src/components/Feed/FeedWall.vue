@@ -2,9 +2,6 @@
   <div>
     <!-- Feeds -->
     <div class="container">
-      <!-- SidebarNavigation -->
-      <SidebarNavigation class="container__sidebar" />
-
       <!-- Main -->
       <div class="container__main">
         <!-- Stories -->
@@ -14,7 +11,7 @@
         <!-- Posts -->
         <div v-if="posts.length != 0" class="post">
           <PostCard class="post__card" v-for="(post, index) in posts" :key="index" :post="post" v-bind:index="index"
-            v-bind:id="post.id" @deletePostClick="deletePostClick" />
+            v-bind:id="post.id" @delete-post="deletePost" />
         </div>
         <div v-else>
           <div class="container-communities">
@@ -50,7 +47,7 @@ export default {
     };
   },
   async created() {
-    const getPosts = await postsApi.getPosts()
+    const getPosts = await postsApi.getPosts();
     this.posts = getPosts;
   },
   methods: {
@@ -65,34 +62,15 @@ export default {
     //   this.posts.push(post.datas);
     //   console.log("update all posts", this.posts);
     // },
-    async deletePostClick(index, id) {
-      try {
-        if (!confirm("Êtes-vous sûr de vouloir supprimer ce poste ?")) return;
-        await postsApi.deletePost(`${id}`);
-
-        // // force refresh page
-        // this.$router.go(0);
-      } catch (error) {
-        // console.error(error.data.error);
-
-        const errorMessage = (this.apiErrors = error.data.error);
-        this.errorMessage = errorMessage;
-
-        // notification error message
-        this.$notify({
-          type: "error",
-          title: `Accès refusé:`,
-          text: `${errorMessage}`,
-          duration: 3000,
-        });
-      }
+    deletePost(postId) {
+      // ...Logic handled by PostFooter.vue
+      this.posts = this.posts.filter((p) => p.id !== postId);
     },
     async createPost() {
       try {
-        const getPosts = await postsApi.getPosts()
+        const getPosts = await postsApi.getPosts();
         this.posts = getPosts;
       } catch (error) {
-        
         this.$notify({
           type: "error",
           title: `Erreur lors du changement de la communauté`,
