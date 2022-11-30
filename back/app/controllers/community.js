@@ -69,7 +69,7 @@ exports.readAllCommunity = async (req, res, next) => {
         isActive: true,
       },
       order: [["createdAt", "DESC"]],
-      raw: true,
+      // raw: true,
     })
     .then((communitiesActive) => {
       if (communitiesActive.length <= 0) {

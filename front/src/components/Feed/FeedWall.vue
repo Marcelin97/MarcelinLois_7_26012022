@@ -32,7 +32,6 @@
 import PostCard from "../Posts/PostCard.vue";
 import InputBox from "./InputBox.vue";
 import StoriesWall from "./StoriesWall.vue";
-import SidebarNavigation from "../Menu/SidebarNavigation.vue";
 
 // import axiosInstance from "../../services/api";
 import postsApi from "../../api/posts";
@@ -43,7 +42,6 @@ export default {
     PostCard,
     InputBox,
     StoriesWall,
-    SidebarNavigation,
   },
   data() {
     return {
@@ -52,16 +50,21 @@ export default {
     };
   },
   async created() {
-    const posts = await postsApi.getPosts()
-    this.posts = posts;
+    const getPosts = await postsApi.getPosts()
+    this.posts = getPosts;
   },
   methods: {
-    createPost(post) {
-      console.log("receive newPost", post);
-      // this.posts = [post.datas, ...this.posts];
-      this.posts.unshift(post.datas);
-      console.log("update all posts", this.posts);
+    init() {
+      if (this.$route.params.id > 0) {
+        this.createPost();
+      }
     },
+    // createPost(post) {
+    //   console.log("receive newPost", post);
+    //   this.posts = [post.datas, ...this.posts];
+    //   this.posts.push(post.datas);
+    //   console.log("update all posts", this.posts);
+    // },
     async deletePostClick(index, id) {
       try {
         if (!confirm("Êtes-vous sûr de vouloir supprimer ce poste ?")) return;
@@ -84,6 +87,20 @@ export default {
         });
       }
     },
+    async createPost() {
+      try {
+        const getPosts = await postsApi.getPosts()
+        this.posts = getPosts;
+      } catch (error) {
+        
+        this.$notify({
+          type: "error",
+          title: `Erreur lors du changement de la communauté`,
+          text: `Erreur reporté : ${error}`,
+          duration: 30000,
+        });
+      }
+    },
   },
 };
 </script>
@@ -93,10 +110,6 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-
-  &__sidebar {
-    top: 0;
-  }
 
   &__main {
     /* Take the remaining width */

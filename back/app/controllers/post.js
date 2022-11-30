@@ -216,13 +216,11 @@ exports.readAllPosts = async (req, res, next) => {
       {
         order: [["createdAt", "DESC"]],
         limit: 6,
-        raw: true,
-      },
-      {
+        // raw: true,
         include: {
           all: true,
         },
-      }
+      },
     )
     .then(async (result) => {
       // TODO : Check if post exist

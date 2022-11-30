@@ -132,6 +132,7 @@ import axiosInstance from "../../services/api";
 
 export default {
   name: "InputBox-Post",
+  emits: ["create-post"],
   setup() {
     const state = reactive({
       post: {
@@ -188,7 +189,6 @@ export default {
 
     return { state, v$ };
   },
-  emits: ["create-post"],
   validationConfig: {
     $lazy: true,
   },

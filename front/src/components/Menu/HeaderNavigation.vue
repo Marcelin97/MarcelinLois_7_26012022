@@ -1,51 +1,24 @@
 <template>
-  <button type="button" class="burger" @click="toggleMobileNav">
-    <img
-      class="burger-avatar"
-      src="../../assets/img/avataaars.png"
-      alt="image d'utilisateur"
-    />
-    <span class="burger-icon"></span>
-  </button>
-  <div class="overlay"></div>
-
-  <aside class="sidebar" :class="mobileNav ? 'block' : 'hidden'">
-    <img
-      class="sidebar-avatar"
-      src="../../assets/img/avataaars.png"
-      alt="image d'utilisateur"
-    />
-    <div class="sidebar-username">username</div>
-    <div class="sidebar-role">Frontend Developer</div>
-    <nav class="sidebar-menu">
+  <nav class="navbar">
+    <h1 class="navbar-logo">
+      <img class="navbar-logo-icon" src="../../assets/img/icon.svg" alt="bonjour" />
+      <span class="navbar-logo-text">Groupomania</span>
+    </h1>
+    <nav class="navbar-menu">
       <button type="button">
-        <img src="../../assets/img/icon-home.svg" alt="image d'utilisateur" />
-        <span>Home</span>
+        <img src="../../assets/img/icon-settings.svg" alt="Paramètre du compte" title="Paramètre du compte" />
       </button>
       <button type="button">
-        <img
-          src="../../assets/img/icon-settings.svg"
-          alt="image d'utilisateur"
-        />
-        <span>Settings</span>
+        <img src="../../assets/img/icon-accounts.svg" alt="Utilisateurs" title="Utilisateurs"/>
       </button>
+            <button type="button">
+              <img src="../../assets/img/sign-out-svgrepo-com.svg" title="Déconnexion" alt="Déconnexion" />
+            </button>
       <button type="button">
-        <img
-          src="../../assets/img/icon-accounts.svg"
-          alt="image d'utilisateur"
-        />
-        <span>Profile</span>
+        <img class="burger-avatar" title="Mon compte" src="../../assets/img/avataaars.png" alt="Mon compte" />
       </button>
     </nav>
-    <nav class="sidebar-menu bottom">
-      <button type="button">
-        <img src="../../assets/img/icon-lock.svg" alt="image d'utilisateur" />
-        <span>Sign Out</span>
-      </button>
-    </nav>
-  </aside>
-
-  <h2>Groupomania</h2>
+  </nav>
 </template>
 
 <script>
@@ -57,15 +30,6 @@ export default {
     };
   },
   methods: {
-    toggleMobileNav() {
-      //this.navbarBurgers
-      console.log("is-active");
-      this.mobileNav = !this.mobileNav;
-
-      if (this.mobileNav == true) {
-        document.body.classList.toggle("open");
-      }
-    },
     logout: function () {
       this.$store.commit("logout");
       this.$router.push("/login");
@@ -75,39 +39,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-button {
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-h2 {
-  font-size: 16px;
-  font-weight: 500;
-  padding-left: 20px;
-  margin: 22px 0;
-}
-
-.overlay {
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(3px);
-  opacity: 0;
-  visibility: hidden;
-  transition: 0.4s;
-}
-
-body.open .overlay {
-  opacity: 1;
-  visibility: visible;
-}
-
 .burger {
   position: fixed;
   z-index: 3;
@@ -118,142 +49,108 @@ body.open .overlay {
   gap: 6px;
 }
 
-@media (width >=500px) {
-  .burger {
-    display: none;
-  }
-}
-
 .burger-avatar {
   width: 30px;
   height: 30px;
   transition: 0.4s;
 }
 
-body.open .burger-avatar {
-  translate: 40px 0;
-  opacity: 0;
-  visibility: hidden;
+button {
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
 }
 
-.burger-icon {
-  display: block;
-  width: 30px;
-  height: 30px;
-  background-image: url("../../assets/img/icon-burger.svg");
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-
-body.open .burger-icon {
-  background-image: url("../../assets/img/icon-close.svg");
-}
-
-.sidebar {
-  position: absolute;
-  z-index: 2;
+.navbar {
+  position: fixed;
+  z-index: 99999;
   top: 0;
-  right: 0;
+  left: 0;
   display: flex;
   align-items: center;
-  flex-direction: column;
+  justify-content: space-between;
   width: 100%;
-  height: 100%;
-  padding: 40px 20px;
-  background: #000000;
-  opacity: 0;
-  visibility: hidden;
-  filter: blur(10px);
-  transition-property: filter, visibility, opacity;
-  transition-duration: 0.6s;
-}
-
-@media (width >=330px) {
-  .sidebar {
-    transition-property: translate;
-  }
-}
-
-@media (width >=400px) {
-  .sidebar {
-    translate: 100% 0;
-    width: 180px;
-    transition: 0.4s;
-    border-left: 1px solid rgba(255, 255, 255, 0.16);
-  }
-}
-
-@media (width >=500px) {
-  .sidebar {
-    translate: 0 0;
-
-    opacity: 1;
-    visibility: visible;
-    filter: blur(0);
-  }
-}
-
-body.open .sidebar {
-  translate: 0 0;
-  opacity: 1;
-  visibility: visible;
-  filter: blur(0);
-}
-
-.sidebar-avatar {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 20px;
-}
-
-.sidebar-username {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.96);
-}
-
-.sidebar-role {
-  margin: 0 0 20px;
-  font-size: 9px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.57);
-}
-
-.sidebar-menu {
-  display: grid;
-  width: 100%;
-  padding: 10px 0;
-  padding-left: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-@media (width >=350px) {
-  .sidebar-menu {
-    padding-left: 0;
-  }
-}
-
-.sidebar-menu > button {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-family: "Poppins";
-  font-size: 16px;
-  font-weight: 200;
-  letter-spacing: 2px;
-  line-height: 1;
-  padding: 10px 20px;
-}
-
-.sidebar-menu > button > img {
-  width: 17px;
-  height: 17px;
-}
-
-.sidebar-menu > button > span {
+  height: 72px;
+  padding: 0 20px;
+  background: #ffff;    
   color: #f9f9f9;
-  font-size: 11px;
-  translate: 0 1px;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 120px;
+}
+
+.navbar-logo-icon {
+  height: 28px;
+}
+
+@media only screen and (min-width: 400px) {
+  .navbar-logo-icon {
+    height: 24px;
+  }
+}
+
+.navbar-logo-text {
+  display: none;
+  height: 19px;
+}
+
+@media only screen and (min-width: 400px) {
+  .navbar-logo-text {
+    display: block;
+  }
+}
+
+.navbar-menu {
+  display: flex;
+  transition: 0.3s;
+}
+
+@media only screen and (min-width: 600px) {
+  .navbar-menu {
+    flex: 1 1 auto;
+    justify-content: center;
+    margin-right: 120px;
+  }
+}
+
+.navbar-menu>button {
+  position: relative;
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  height: 72px;
+  width: 36px;
+}
+
+.navbar-menu>button.active {
+  opacity: 1;
+}
+
+.navbar-menu>button.active::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  translate: -50% 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #36b7ee;
+}
+
+@media only screen and (min-width: 600px) {
+  .navbar-menu>button:last-child {
+    position: absolute;
+    right: 20px;
+  }
 }
 </style>
