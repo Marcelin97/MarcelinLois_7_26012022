@@ -5,7 +5,6 @@ export default {
    * Add a post comment
    * @param postId
    * @param comment
-   * @param userId
    * @return {Promise<any>}
    */
   async addComment(postId, comment) {
@@ -49,19 +48,6 @@ export default {
       throw e.response;
     }
   },
-
-  // /**
-  //  * Get reported comments
-  //  * @returns {Promise<any>}
-  //  */
-  // async getReportedComments() {
-  //   try {
-  //     const response = await axiosInstance.get("/comments/reports");
-  //     return response.data;
-  //   } catch (e) {
-  //     throw e.response;
-  //   }
-  // },
 
   /**
    * Report a comment
