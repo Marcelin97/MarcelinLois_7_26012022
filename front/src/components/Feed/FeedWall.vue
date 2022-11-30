@@ -10,13 +10,24 @@
         <InputBox @create-post="createPost" />
         <!-- Posts -->
         <div v-if="posts.length != 0" class="post">
-          <PostCard class="post__card" v-for="(post, index) in posts" :key="index" :post="post" v-bind:index="index"
-            v-bind:id="post.id" @delete-post="deletePost" />
+          <PostCard
+            class="post__card"
+            v-for="(post, index) in posts"
+            :key="index"
+            :post="post"
+            v-bind:index="index"
+            v-bind:id="post.id"
+            @delete-post="deletePost"
+          />
         </div>
         <div v-else>
           <div class="container-communities">
             <h3>Il n'y a pas de post pour le moment</h3>
-            <router-link class="menu-link underline" to="/communities">Tu peux aussi crée une communauté
+            <router-link
+              class="menu-link underline"
+              to="/communities"
+              aria-label="Page des communautés"
+              >Tu peux aussi crée une communauté
             </router-link>
           </div>
         </div>
@@ -30,7 +41,6 @@ import PostCard from "../Posts/PostCard.vue";
 import InputBox from "./InputBox.vue";
 import StoriesWall from "./StoriesWall.vue";
 
-// import axiosInstance from "../../services/api";
 import postsApi from "../../api/posts";
 
 export default {
@@ -51,21 +61,12 @@ export default {
     this.posts = getPosts;
   },
   methods: {
-    init() {
-      if (this.$route.params.id > 0) {
-        this.createPost();
-      }
-    },
     // createPost(post) {
     //   console.log("receive newPost", post);
     //   this.posts = [post.datas, ...this.posts];
-    //   this.posts.push(post.datas);
+    //   // this.posts.push(post.datas);
     //   console.log("update all posts", this.posts);
     // },
-    deletePost(postId) {
-      // ...Logic handled by PostFooter.vue
-      this.posts = this.posts.filter((p) => p.id !== postId);
-    },
     async createPost() {
       try {
         const getPosts = await postsApi.getPosts();
@@ -73,11 +74,14 @@ export default {
       } catch (error) {
         this.$notify({
           type: "error",
-          title: `Erreur lors du changement de la communauté`,
+          title: `Erreur lors du changement des posts`,
           text: `Erreur reporté : ${error}`,
           duration: 30000,
         });
       }
+    },
+    deletePost(postId) {
+      this.posts = this.posts.filter((p) => p.id !== postId);
     },
   },
 };

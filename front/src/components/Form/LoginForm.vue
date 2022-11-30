@@ -87,7 +87,7 @@
     <div class="signup">
       <p class="text-signup">Pas encore inscrit ?</p>
       <div class="actions">
-        <router-link class="nav btn button" to="/signup">
+        <router-link class="nav btn button" to="/signup" aria-label="Créer un compte">
           Créer un compte
         </router-link>
       </div>

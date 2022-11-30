@@ -17,7 +17,7 @@
       </div>
       <div v-else>
         <h3>Tu n'as pas de post pour le moment</h3>
-        <router-link class="link" to="/communities"
+        <router-link class="link" to="/communities" aria-label="Aller sur la page de communautés"
           >Commence par crée une communauté</router-link
         >
       </div>

@@ -54,7 +54,7 @@
 
             <!-- button submit -->
             <div class="button-container">
-              <button aria-label="Modifier" title="Modifier" type="submit" class="btn" @click.prevent.stop="onUpdateComment">
+              <button aria-label="Modifier" title="Modifier" type="submit" class="btn" @click="editComment">
                 Modifier
               </button>
             </div>
@@ -135,6 +135,7 @@ import timeAgo from "@/services/timeAgo";
 export default {
   name: "List-Comment",
   props: ["comment", "content", "index", "communityId"],
+  emits: ["update-comment"],
   components: {
     modalStructure,
   },
@@ -231,7 +232,7 @@ export default {
               type: "success",
               title: `Signalement`,
               text: `Merci, votre rapport a été envoyé.`,
-              duration: 30000,
+              duration: 20000,
             });
           } catch (e) {
             alert(e.data.message);
@@ -256,18 +257,18 @@ export default {
         });
       }
     },
-    async onUpdateComment() {
+    async editComment() {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
         // if ANY fail validation
         axiosInstance
           .put(`/comments/update/${this.comment.id}`, this.state.commentUpdate)
           .then(() => {
+            this.$emit("update-comment", this.comment.id);
+
             // close delete modal
             this.$refs.updateComment.closeModal();
 
-            // force refresh page
-            // this.$router.go(0);
 
             // notification de succès
             this.$notify({

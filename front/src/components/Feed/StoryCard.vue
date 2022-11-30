@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="left-col">
         <div class="status-wrapper">
-          <router-link class="more" :to="`/communities/profil/${this.id}`">
+          <router-link class="more" :to="`/communities/profil/${this.id}`" aria-label="Profile de la communauté">
             <div class="status-card">
               <div class="profile-pic">
                 <img

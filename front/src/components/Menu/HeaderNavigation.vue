@@ -1,28 +1,28 @@
 <template>
   <nav class="navbar">
     <h1 class="navbar-logo">
-      <router-link class="link-home" to="/wall"><img class="navbar-logo-icon" src="../../assets/img/icon.svg"
-          alt="Logo Groupomania" />
+      <router-link class="link-home" to="/wall" aria-label="Groupomania"><img class="navbar-logo-icon"
+          src="../../assets/img/icon.svg" alt="Logo Groupomania" />
         <span class="navbar-logo-text">Groupomania</span>
       </router-link>
     </h1>
     <nav class="navbar-menu">
-      <router-link class="link" type="button" to="/wall">
+      <router-link class="link" type="button" to="/wall" aria-label="Fil d'actualité">
         <img src="../../assets/img/icon-home.svg" alt="Fil d'actualité" title="Fil d'actualité" />
       </router-link>
-      <router-link class="link" type="button" to="/communities">
+      <router-link class="link" type="button" to="/communities" aria-label="Communautés">
         <img src="../../assets/img/icon-users.svg" alt="Communautés" title="Communautés" />
       </router-link>
-      <router-link class="link" type="button" to="/explore/users">
+      <router-link class="link" type="button" to="/explore/users" aria-label="Utilisateurs">
         <img src="../../assets/img/icon-account.svg" alt="Utilisateurs" title="Utilisateurs" />
       </router-link>
-      <router-link class="link" type="button" to="/user/parameter">
+      <router-link class="link" type="button" to="/user/parameter" aria-label="Paramètre du compte">
         <img src="../../assets/img/icon-settings.svg" alt="Paramètre du compte" title="Paramètre du compte" />
       </router-link>
-      <button type="button" @click="logout">
+      <button type="button" @click="logout" aria-label="déconnexion">
         <img src="../../assets/img/icon-lock.svg" title="Déconnexion" alt="Déconnexion" />
       </button>
-      <router-link class="link" type="button" to="/user">
+      <router-link class="link" type="button" to="/user" aria-label="Mon compte">
         <img class="burger-avatar" title="Mon compte" src="../../assets/img/avataaars.png" alt="Mon compte" />
       </router-link>
     </nav>

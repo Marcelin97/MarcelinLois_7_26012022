@@ -90,7 +90,7 @@
               :community="community"
               :key="index"
             >
-              {{ community.id }}
+              {{ community.id }} - {{ community.title }}
             </option>
           </select>
         </div>
@@ -205,7 +205,6 @@ export default {
       .get("/community/readAllCommunities")
       .then((response) => {
         this.communities = response.data.datas;
-        // console.log(this.communities)
       })
       .catch((error) => {
         if (error.response.status === 404) {
@@ -216,7 +215,6 @@ export default {
   methods: {
     onChangeFileUpload() {
       this.state.post.image = document.querySelector("#image").files[0];
-      // console.log("image upload", this.state.post.image);
     },
     createPostClick() {
       this.v$.$validate(); // checks all inputs
@@ -226,7 +224,7 @@ export default {
         bodyFormData.append("title", this.state.post.title);
         bodyFormData.append("content", this.state.post.content);
         bodyFormData.append("image", this.state.post.image);
-        bodyFormData.append("communityId", Number(this.state.community.id));
+        bodyFormData.append("communityId", this.state.community.id);
         // for (let value of bodyFormData.values()) {
         //   console.log(value);
         // }
@@ -238,8 +236,11 @@ export default {
             },
           })
           .then(async (response) => {
-            console.log("requête create post", response.data);
+            // console.log("requête create post", response.data);
             this.$emit("create-post", response.data);
+
+            // reset form
+            this.v$.$reset();
 
             // notification de succès
             this.$notify({
@@ -249,13 +250,12 @@ export default {
             });
           })
           .catch((error) => {
-            console.log(error.response);
             this.apiErrors = error.response.data.error;
 
             // error notification
             this.$notify({
               type: "error",
-              title: `❌ Erreur lors de la publication`,
+              title: `Erreur lors de la publication`,
               text: `Erreur reporté : ${this.apiErrors}`,
             });
           });

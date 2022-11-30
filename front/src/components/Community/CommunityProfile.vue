@@ -40,6 +40,7 @@
             <!-- update profile -->
             <router-link
               v-if="canAdmin(this.communityRead.userId)"
+              aria-label="Modifier cette communauté"
               :communityId="communityId"
               class="btn"
               :to="'/communities/profil/' + community.id + '/settings'"
@@ -576,8 +577,6 @@ export default {
               text: "Vous venez d'ajouter un nouveau modérateur",
             });
 
-            // force refresh page
-            this.$router.go(0);
           })
           .catch((error) => {
             if (error.response.status === 500) {
@@ -632,8 +631,6 @@ export default {
               text: "Vous venez de supprimer un modérateur",
             });
 
-            // force refresh page
-            this.$router.go(0);
           })
           .catch((error) => {
             if (error.response.status === 403) {

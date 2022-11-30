@@ -23,10 +23,10 @@
           communautés, posts,...
         </p>
         <div class="actions">
-          <router-link class="nav btn" to="/signup"
+          <router-link class="nav btn" to="/signup" aria-label="Aller sur la page d'inscription"
             >Créer un compte</router-link
           >
-          <router-link class="nav btn-login btn" to="/login"
+          <router-link class="nav btn-login btn" to="/login" aria-label="Aller sur la page de connexion"
             >Connexion</router-link
           >
         </div>

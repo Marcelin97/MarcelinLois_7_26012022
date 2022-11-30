@@ -1,18 +1,9 @@
 <template>
   <article v-if="!isOwner" class="tile">
     <div class="tile-header">
-      <img
-        :src="`http://localhost:3000${user.imageUrl}`"
-        :alt="'Avatar de ' + user.username"
-        aria-label="Photo d'utilisateur"
-        v-if="user.imageUrl"
-      />
-      <img
-        v-else
-        src="../../assets/img/avataaars.png"
-        alt="Avatar par défaut"
-        aria-label="Avatar par défaut"
-      />
+      <img :src="`http://localhost:3000${user.imageUrl}`" :alt="'Avatar de ' + user.username"
+        aria-label="Photo d'utilisateur" v-if="user.imageUrl" />
+      <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
       <h3>
         <span>{{ user.username }}</span>
         <span>id: {{ user.id }}</span>
@@ -20,13 +11,10 @@
     </div>
 
     <!-- link to profile page -->
-    <router-link class="more" :to="`/explore/users/${this.id}`">
+    <router-link class="more" :to="`/explore/users/${this.id}`" aria-label="Explore ce profile d'utilisateur">
       <span class="more__user">Voir le profile</span>
       <span>
-        <font-awesome-icon
-          class="more__icon"
-          :icon="['fas', 'person-walking-arrow-right']"
-        />
+        <font-awesome-icon class="more__icon" :icon="['fas', 'person-walking-arrow-right']" />
       </span>
     </router-link>
   </article>
@@ -45,10 +33,10 @@ export default {
     this.id = this.user.id;
   },
   computed: {
-     isOwner () {
-      return this.user.id === this.$store.state.user.id
-    }
-  }
+    isOwner() {
+      return this.user.id === this.$store.state.user.id;
+    },
+  },
 };
 </script>
 

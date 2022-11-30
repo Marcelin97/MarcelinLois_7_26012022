@@ -13,7 +13,7 @@
       </div>
       <div class="bottomRow">
         <div class="author">Voir plus</div>
-        <router-link class="more" :to="`/communities/profil/${this.id}`">
+        <router-link class="more" :to="`/communities/profil/${this.id}`" aria-label="Profil d'une communauté">
           <font-awesome-icon
             class="icon"
             :icon="['fas', 'person-walking-arrow-right']"

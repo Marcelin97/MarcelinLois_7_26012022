@@ -5,18 +5,9 @@
         <!-- Profil image -->
         <div>
           <div class="profile-card__img">
-            <img
-              v-if="user.imageUrl"
-              :src="`http://localhost:3000${user.imageUrl}`"
-              :alt="'Avatar de ' + user.imageUrl"
-              aria-label="Photo d'utilisateur"
-            />
-            <img
-              v-else
-              src="../../assets/img/avataaars.png"
-              alt="Avatar par défaut"
-              aria-label="Avatar par défaut"
-            />
+            <img v-if="user.imageUrl" :src="`http://localhost:3000${user.imageUrl}`" :alt="'Avatar de ' + user.imageUrl"
+              aria-label="Photo d'utilisateur" />
+            <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
           </div>
 
           <div v-if="user.isAdmin == true" class="ribbon">
@@ -62,42 +53,27 @@
         <div class="profile-card-ctr">
           <div v-if="userLoggedIn == false" class="profile-card-ctr__actions">
             <!-- button report user -->
-            <button
-              type="button"
-              class="btn"
-              @click="$refs.reportUser.openModal()"
-              text="Signaler ce compte"
-              aria-label="Signaler ce compte"
-            >
+            <button type="button" class="btn" @click="$refs.reportUser.openModal()" text="Signaler ce compte"
+              aria-label="Signaler ce compte">
               Signaler...
             </button>
           </div>
 
           <div v-else class="profile-card-ctr__actions">
             <!-- update profile -->
-            <router-link class="btn" to="/user/parameter">
+            <router-link class="btn" to="/user/parameter" aria-label="Aller sur la page pour modifier son profile">
               Modifier mon profil
             </router-link>
 
             <!-- export data -->
-            <button
-              type="button"
-              class="btn btn-export"
-              @click="exportDataClick"
-              text="Exporter mes données"
-              aria-label="Exporter mes données"
-            >
+            <button type="button" class="btn btn-export" @click="exportDataClick" text="Exporter mes données"
+              aria-label="Exporter mes données">
               Exporter mes données
             </button>
 
             <!-- button delete account -->
-            <button
-              type="button"
-              class="btn btn-delete"
-              @click="$refs.deleteAccount.openModal()"
-              text="Supprimer mon compte"
-              aria-label="Supprimer mon compte"
-            >
+            <button type="button" class="btn btn-delete" @click="$refs.deleteAccount.openModal()"
+              text="Supprimer mon compte" aria-label="Supprimer mon compte">
               Supprimer mon compte
             </button>
           </div>
@@ -120,13 +96,8 @@
 
       <template v-slot:footer>
         <div class="modal__actions">
-          <button
-            class="btn"
-            text="Annuler"
-            type="button"
-            aria-label="Annuler la suppression"
-            @click="$refs.deleteAccount.closeModal()"
-          >
+          <button class="btn" text="Annuler" type="button" aria-label="Annuler la suppression"
+            @click="$refs.deleteAccount.closeModal()">
             Annuler
           </button>
           <deleteBtn @click="deleteAccountClick" />
@@ -142,49 +113,26 @@
 
       <template v-slot:body>
         <div class="container">
-          <form
-            action="#"
-            method="post"
-            @submit.prevent.stop="reportAccountClick"
-          >
+          <form action="#" method="post" @submit.prevent.stop="reportAccountClick">
             <div class="FormGroup">
-              <label class="FormGroupLabel" for=""
-                >Pourquoi signalez-vous ce compte ?</label
-              >
+              <label class="FormGroupLabel" for="">Pourquoi signalez-vous ce compte ?</label>
               <div class="FormTextboxWrapper">
-                <textarea
-                  cols="50"
-                  rows="5"
-                  required
-                  class="FormTextbox"
-                  type="text"
-                  placeholder="Explique nous les raisons de ce signalement."
-                  v-model="state.user.content"
-                  @blur="v$.user.content.$touch"
-                  :class="v$.user.content.$error === true ? 'error' : 'dirty'"
-                />
+                <textarea cols="50" rows="5" required class="FormTextbox" type="text"
+                  placeholder="Explique nous les raisons de ce signalement." v-model="state.user.content"
+                  @blur="v$.user.content.$touch" :class="v$.user.content.$error === true ? 'error' : 'dirty'" />
               </div>
 
               <!-- Error Message -->
               <template v-if="v$.user.content.$dirty">
-                <div
-                  v-for="(error, index) of v$.user.content.$errors"
-                  :key="index"
-                >
+                <div v-for="(error, index) of v$.user.content.$errors" :key="index">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <!-- Error Message -->
             </div>
 
-            <button
-              type="submit"
-              class="btn button"
-              title="Signaler"
-              text="Signaler"
-              value="Signaler"
-              aria-label="Signaler un utilisateur"
-            >
+            <button type="submit" class="btn button" title="Signaler" text="Signaler" value="Signaler"
+              aria-label="Signaler un utilisateur">
               Confirmer signalement
             </button>
           </form>
@@ -292,8 +240,16 @@ export default {
           await usersApi.deleteUser();
           await this.$store.commit("logout");
           await this.$router.push("/");
-        } catch (e) {
-          console.error(e.data);
+        } catch (error) {
+          this.apiErrors = error.response;
+
+          // notification d'erreur
+          this.$notify({
+            duration: 2500,
+            type: "error",
+            title: `Erreur lors de la suppression du compte`,
+            text: `Erreur reporté : ${this.apiErrors}`,
+          });
         }
       }
     },
@@ -308,7 +264,6 @@ export default {
             this.$notify({
               type: "success",
               title: `Signalement envoyé !`,
-              text: `Vous allez être redirigé vers votre profil.`,
             });
             // close report user modal
             this.$refs.reportUser.closeModal();
@@ -324,6 +279,9 @@ export default {
                 text: `Erreur reporté : ${this.apiErrors}`,
               });
             } else if (error.response.status === 409) {
+              // close report user modal
+              this.$refs.reportUser.closeModal();
+
               this.apiErrors = "Vous avez déjà signalé cet utilisateur !";
               // notification d'erreur
               this.$notify({
@@ -372,6 +330,7 @@ export default {
     padding-top: 100px;
   }
 }
+
 .profile-card-name {
   line-height: 35px;
   text-transform: uppercase;
@@ -380,6 +339,7 @@ export default {
   font-size: 1rem;
   text-align: center;
 }
+
 .profile-card {
   width: 100%;
   margin: auto;
@@ -465,6 +425,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 img {
   width: 100%;
   height: 100%;
@@ -494,9 +455,10 @@ img {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+
   .btn {
-  margin: 0rem;
-}
+    margin: 0rem;
+  }
 }
 
 // modal report user
@@ -600,6 +562,7 @@ img {
   line-height: 15px;
   margin: 5px 0 0;
   max-width: 15rem;
+
   @media only screen and (min-width: 576px) {
     max-width: 25rem;
   }
