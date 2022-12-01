@@ -219,7 +219,7 @@
             v-bind:index="index"
             v-bind:communityId="post.communityId"
             @delete-comment="onDeleteComment"
-            @update-comment="updateComment"
+            @update-comment="this.$emit('update-comment')"
             class="comments-list"
           />
 
@@ -360,7 +360,7 @@ import timeAgo from "../../services/timeAgo";
 export default {
   name: "Post-Card",
   props: ["post", "id", "index", "creatorInfo", "posts"],
-  emits: ["delete-post"],
+  emits: ["delete-post", "update-comment"],
   components: {
     deleteBtn,
     modalStructure,
@@ -617,7 +617,7 @@ export default {
         });
       }
     },
-    updateComment(commentId) {
+    updateComment(response, commentId) {
       this.comments = this.comments.filter((c) => c.id !== commentId);
     },
     async onDeleteComment(commentId) {

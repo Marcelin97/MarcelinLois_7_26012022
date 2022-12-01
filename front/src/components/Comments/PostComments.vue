@@ -332,8 +332,8 @@ export default {
         // if ANY fail validation
         axiosInstance
           .put(`/comments/update/${this.comment.id}`, this.state.commentUpdate)
-          .then(() => {
-            this.$emit("update-comment", this.comment.id);
+          .then((response) => {
+            this.$emit("update-comment", response, this.comment.id);
 
             // close delete modal
             this.$refs.updateComment.closeModal();
