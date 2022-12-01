@@ -1,29 +1,83 @@
 <template>
   <nav class="navbar">
     <h1 class="navbar-logo">
-      <router-link class="link-home" to="/wall" aria-label="Groupomania"><img class="navbar-logo-icon"
-          src="../../assets/img/icon.svg" alt="Logo Groupomania" />
+      <router-link class="link-home" to="/wall" aria-label="Groupomania"
+        ><img
+          class="navbar-logo-icon"
+          src="../../assets/img/icon.svg"
+          alt="Logo Groupomania"
+        />
         <span class="navbar-logo-text">Groupomania</span>
       </router-link>
     </h1>
     <nav class="navbar-menu">
-      <router-link class="link" type="button" to="/wall" aria-label="Fil d'actualité">
-        <img src="../../assets/img/icon-home.svg" alt="Fil d'actualité" title="Fil d'actualité" />
+      <router-link
+        class="link"
+        type="button"
+        to="/wall"
+        aria-label="Fil d'actualité"
+      >
+        <img
+          src="../../assets/img/icon-home.svg"
+          alt="Fil d'actualité"
+          title="Fil d'actualité"
+        />
       </router-link>
-      <router-link class="link" type="button" to="/communities" aria-label="Communautés">
-        <img src="../../assets/img/icon-users.svg" alt="Communautés" title="Communautés" />
+      <router-link
+        class="link"
+        type="button"
+        to="/communities"
+        aria-label="Communautés"
+      >
+        <img
+          src="../../assets/img/icon-users.svg"
+          alt="Communautés"
+          title="Communautés"
+        />
       </router-link>
-      <router-link class="link" type="button" to="/explore/users" aria-label="Utilisateurs">
-        <img src="../../assets/img/icon-account.svg" alt="Utilisateurs" title="Utilisateurs" />
+      <router-link
+        class="link"
+        type="button"
+        to="/explore/users"
+        aria-label="Utilisateurs"
+      >
+        <img
+          src="../../assets/img/icon-account.svg"
+          alt="Utilisateurs"
+          title="Utilisateurs"
+        />
       </router-link>
-      <router-link class="link" type="button" to="/user/parameter" aria-label="Paramètre du compte">
-        <img src="../../assets/img/icon-settings.svg" alt="Paramètre du compte" title="Paramètre du compte" />
+      <router-link
+        class="link"
+        type="button"
+        to="/user/parameter"
+        aria-label="Paramètre du compte"
+      >
+        <img
+          src="../../assets/img/icon-settings.svg"
+          alt="Paramètre du compte"
+          title="Paramètre du compte"
+        />
       </router-link>
       <button type="button" @click="logout" aria-label="déconnexion">
-        <img src="../../assets/img/icon-lock.svg" title="Déconnexion" alt="Déconnexion" />
+        <img
+          src="../../assets/img/icon-lock.svg"
+          title="Déconnexion"
+          alt="Déconnexion"
+        />
       </button>
-      <router-link class="link" type="button" to="/user" aria-label="Mon compte">
-        <img class="burger-avatar" title="Mon compte" src="../../assets/img/avataaars.png" alt="Mon compte" />
+      <router-link
+        class="link"
+        type="button"
+        to="/user"
+        aria-label="Mon compte"
+      >
+        <img
+          class="burger-avatar"
+          title="Mon compte"
+          src="../../assets/img/avataaars.png"
+          alt="Mon compte"
+        />
       </router-link>
     </nav>
   </nav>
@@ -103,8 +157,8 @@ export default {
   }
 }
 
-.navbar-menu>.link,
-.navbar-menu>button {
+.navbar-menu > .link,
+.navbar-menu > button {
   position: relative;
   flex: 0 0 36px;
   display: grid;
@@ -115,7 +169,7 @@ export default {
 }
 
 @media only screen and (min-width: 600px) {
-  .navbar-menu>.link:last-child {
+  .navbar-menu > .link:last-child {
     position: absolute;
     right: 20px;
   }

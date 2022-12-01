@@ -7,35 +7,76 @@
       <div class="container">
         <div class="fileUploadInput">
           <label>✨ Ajouter une image</label>
-          <input accept=".jpeg,.jpg,png" @change="onChangeFileUpload" ref="image" class="image" type="file" id="image"
-            @blur="v$.community.image.$touch" :class="v$.community.image.$error === true ? 'error' : 'dirty'" />
+          <input
+            accept=".jpeg,.jpg,png"
+            @change="onChangeFileUpload"
+            ref="image"
+            class="image"
+            type="file"
+            id="image"
+            @blur="v$.community.image.$touch"
+            :class="v$.community.image.$error === true ? 'error' : 'dirty'"
+          />
           <button>🔗</button>
         </div>
       </div>
 
-      <input class="form-title" id="name" type="text" placeholder="TITRE" required autocomplete="off"
-        v-model="state.community.title" blur="v$.community.title.$touch"
-        :class="v$.community.title.$error === true ? 'error' : 'dirty'" minlength="3" maxlength="255"
-        aria-label="Titre de votre communauté" />
+      <input
+        class="form-title"
+        id="name"
+        type="text"
+        placeholder="TITRE"
+        required
+        autocomplete="off"
+        v-model="state.community.title"
+        blur="v$.community.title.$touch"
+        :class="v$.community.title.$error === true ? 'error' : 'dirty'"
+        minlength="3"
+        maxlength="255"
+        aria-label="Titre de votre communauté"
+      />
       <!-- Error Message -->
       <template v-if="v$.community.title.$dirty">
-        <div class="input-errors" v-for="(error, index) of v$.community.title.$errors" :key="index">
+        <div
+          class="input-errors"
+          v-for="(error, index) of v$.community.title.$errors"
+          :key="index"
+        >
           <div class="error-msg">{{ error.$message }}</div>
         </div>
       </template>
       <!-- Error Message -->
-      <textarea id="message" type="text" placeholder="À PROPOS de..." autocomplete="off" v-model="state.community.about"
-        @blur="v$.community.about.$touch" :class="v$.community.about.$error === true ? 'error' : 'dirty'" minlength="10"
-        required aria-label="à propos de votre communauté"></textarea>
+      <textarea
+        id="message"
+        type="text"
+        placeholder="À PROPOS de..."
+        autocomplete="off"
+        v-model="state.community.about"
+        @blur="v$.community.about.$touch"
+        :class="v$.community.about.$error === true ? 'error' : 'dirty'"
+        minlength="10"
+        required
+        aria-label="à propos de votre communauté"
+      ></textarea>
       <!-- Error Message -->
       <template v-if="v$.community.about.$dirty">
-        <div class="input-errors" v-for="(error, index) of v$.community.about.$errors" :key="index">
+        <div
+          class="input-errors"
+          v-for="(error, index) of v$.community.about.$errors"
+          :key="index"
+        >
           <div class="error-msg">{{ error.$message }}</div>
         </div>
       </template>
       <!-- Error Message -->
-      <button class="btn" id="submit" type="submit" value="CRÉE!" title="Crée une communauté"
-        aria-label="Crée une communauté">
+      <button
+        class="btn"
+        id="submit"
+        type="submit"
+        value="CRÉE!"
+        title="Crée une communauté"
+        aria-label="Crée une communauté"
+      >
         CRÉE!
       </button>
     </form>

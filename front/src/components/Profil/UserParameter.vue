@@ -312,16 +312,13 @@ export default {
           this.$router.push("/user");
         })
         .catch((err) => {
-          console.log(err);
-
-          const errorMessage = (this.apiErrors = err.response);
-          this.errorMessage = errorMessage;
+          this.apiErrors = err.response;
 
           // notification error message
           this.$notify({
             type: "error",
             title: `Erreur lors de la mise à jour de l'utilisateur'`,
-            text: `Erreur reporté : ${errorMessage}`,
+            text: `Erreur reporté : ${this.apiErrors}`,
             duration: 30000,
           });
         });

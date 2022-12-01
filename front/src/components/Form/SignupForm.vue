@@ -227,7 +227,6 @@ export default {
         axiosInstance
           .post("/auth/signup", this.state.user)
           .then(() => {
-
             // open success modal
             this.$refs.signupUser.openModal();
 
@@ -236,14 +235,13 @@ export default {
           })
           .catch((error) => {
             // console.log(error.response.data.error.errors[0].message);
-            const errorMessage = (this.state.apiErrors =
-              error.response.data.error.errors[0].message);
+            this.state.apiErrors = error.response.data.error.errors[0].message;
 
             // error notification
             this.$notify({
               type: "error",
               title: `Erreur lors de l'inscription`,
-              text: `Erreur reporté : ${errorMessage}`,
+              text: `Erreur reporté : ${this.apiErrors}`,
             });
           });
       } else {

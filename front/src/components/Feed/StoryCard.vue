@@ -92,6 +92,7 @@ export default {
 }
 .username {
   width: auto;
+  height: 15px;
   overflow: hidden;
   text-align: center;
   font-size: 12px;

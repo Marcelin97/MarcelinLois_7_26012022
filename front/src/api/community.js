@@ -2,6 +2,18 @@ import axiosInstance from "../services/api";
 
 export default {
   /**
+ * Get all communities
+ * @return {Promise<any>}
+ */
+  async getCommunities() {
+    try {
+      const response = await axiosInstance.get('/community/readAllCommunities')
+      return response.data.datas
+    } catch (e) {
+      throw e.response
+    }
+  },
+  /**
    * Read one community
    * @param id
    * @return {Promise<any>}

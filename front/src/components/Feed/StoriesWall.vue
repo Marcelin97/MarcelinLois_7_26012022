@@ -9,7 +9,8 @@
 </template>
 <script>
 import StoryCard from "./StoryCard.vue";
-import axiosInstance from "../../services/api";
+
+import communitiesApi from "../../api/community";
 
 export default {
   name: "Stories-Wall",
@@ -19,22 +20,12 @@ export default {
   data() {
     return {
       communities: [], // add communities array
-      apiErrors: "",
       search: "",
     };
   },
-  mounted() {
-    axiosInstance
-      .get("/community/readAllCommunities")
-      .then((response) => {
-        this.communities = response.data.datas;
-      })
-      .catch((error) => {
-        // console.log(error.response.status);
-        if (error.response.status === 404) {
-          this.apiErrors = "Il n'y pas encore de communauté(s) !";
-        }
-      });
+  async mounted() {
+    const getCommunities = await communitiesApi.getCommunities();
+    this.communities = getCommunities;
   },
 };
 </script>
@@ -47,7 +38,6 @@ export default {
   overflow: hidden;
   overflow-x: auto;
   cursor: grabbing;
-  // justify-content: space-evenly;
-  max-width: 350px;
+  margin-top: 30px;
 }
 </style>

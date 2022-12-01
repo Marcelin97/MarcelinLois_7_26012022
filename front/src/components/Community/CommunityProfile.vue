@@ -311,6 +311,7 @@ import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
 
 import communitiesApi from "../../api/community";
+import usersApi from "../../api/users";
 import axiosInstance from "../../services/api";
 
 import useVuelidate from "@vuelidate/core";
@@ -383,47 +384,49 @@ export default {
       return this.community.userId === this.$store.state.user.id;
     },
   },
-  created() {
+  async created() {
     this.user = this.$store.state.user;
     this.communityId = this.$route.params.id;
 
-    axiosInstance
-      .get("/auth/readAll")
-      .then((response) => {
-        this.users = response.data.data;
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          const errorMessage = (this.apiErrors = "Utilisateurs introuvable !");
-          this.errorMessage = errorMessage;
+    // read all users
+    try {
+      const response = await usersApi.getUsers();
+      this.users = response;
+    } catch (error) {
+      if (error.response.status === 404) {
+        this.apiErrors = "Utilisateurs introuvable !";
 
-          // notification d'erreur
-          this.$notify({
-            type: "error",
-            title: `Erreur de l'api`,
-            text: `Erreur reporté : ${errorMessage}`,
-          });
-        }
+        // notification d'erreur
+        this.$notify({
+          type: "error",
+          title: `Erreur de l'api`,
+          text: `Erreur reporté : ${this.apiErrors}`,
+        });
+      }
+    }
+
+    // read one community
+    try {
+      const getCommunity = await communitiesApi.readTargetCommunity(
+        `${this.communityId}`
+      );
+      this.communityRead = getCommunity.data.datas;
+      // console.log(this.communities);
+    } catch (error) {
+      if (error.response.status === 404) {
+        this.apiErrors = "Il n'y a pas encore de communauté !";
+      } else {
+        this.apiErrors = error.data.error;
+      }
+
+      // notification error message
+      this.$notify({
+        type: "error",
+        title: `Accès refusé:`,
+        text: `${this.apiErrors}`,
+        duration: 3000,
       });
-
-    axiosInstance
-      .get(`/community/readOne/${this.communityId}`)
-      .then((response) => {
-        this.communityRead = response.data.datas;
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          const errorMessage = (this.apiErrors = "Communauté introuvable !");
-          this.errorMessage = errorMessage;
-
-          // notification d'erreur
-          this.$notify({
-            type: "error",
-            title: `Erreur de l'api`,
-            text: `Erreur reporté : ${errorMessage}`,
-          });
-        }
-      });
+    }
   },
   methods: {
     async deleteCommunityClick() {
@@ -434,7 +437,7 @@ export default {
       ) {
         try {
           await communitiesApi.deleteCommunity(this.communityId);
-          
+
           // notification success
           this.$notify({
             type: "success",
@@ -443,19 +446,16 @@ export default {
             duration: 30000,
           });
 
-          // redirect to the community page
-          this.$router.push("/communities");
+          // redirect to the community page to create new one
+          this.$router.push("/wall");
         } catch (error) {
-          console.error(error.data.error);
-
-          const errorMessage = (this.apiErrors = error.data.error);
-          this.errorMessage = errorMessage;
+          this.apiErrors = error.data.error;
 
           // notification error message
           this.$notify({
             type: "error",
             title: `Accès refusé:`,
-            text: `${errorMessage}`,
+            text: `${this.apiErrors}`,
             duration: 3000,
           });
         }
@@ -477,24 +477,21 @@ export default {
           })
           .catch((error) => {
             if (error.response.status === 404) {
-              const errorMessage = (this.apiErrors =
-                "Communauté introuvable !");
-              this.errorMessage = errorMessage;
+              this.apiErrors = "Communauté introuvable !";
 
               // notification d'erreur
               this.$notify({
                 type: "error",
                 title: `Erreur lors de l'envoi du rapport`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.apiErrors}`,
               });
             } else if (error.response) {
-              const errorMessage = (this.apiErrors = error.response);
-              this.errorMessage = errorMessage;
+              this.apiErrors = error.response;
               // notification d'erreur
               this.$notify({
                 type: "error",
                 title: `Erreur lors de l'envoi du rapport`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.apiErrors}`,
               });
             }
           });
@@ -520,8 +517,6 @@ export default {
     async followCommunityClick() {
       try {
         await communitiesApi.followCommunity(this.communityId);
-        // force refresh page
-        // this.$router.go(0);
 
         // notification success
         this.$notify({
@@ -529,23 +524,20 @@ export default {
           text: "Vous suivez cette communauté",
         });
       } catch (error) {
-        const errorMessage = (this.apiErrors = error.response);
-        this.errorMessage = errorMessage;
+        this.apiErrors = error.response;
 
         // notification d'erreur
         this.$notify({
           duration: 2500,
           type: "error",
           title: `Erreur lors du téléchargement des données`,
-          text: `Erreur reporté : ${errorMessage}`,
+          text: `Erreur reporté : ${this.apiErrors}`,
         });
       }
     },
     async unfollowCommunityClick() {
       try {
         await communitiesApi.unfollowCommunity(this.communityId);
-        // force refresh page
-        // this.$router.go(0);
 
         // notification success
         this.$notify({
@@ -553,15 +545,14 @@ export default {
           text: "Vous ne suivez plus cette communauté",
         });
       } catch (error) {
-        const errorMessage = (this.apiErrors = error.response);
-        this.errorMessage = errorMessage;
+        this.apiErrors = error.response;
 
         // notification d'erreur
         this.$notify({
           duration: 2500,
           type: "error",
           title: `Erreur lors du téléchargement des données`,
-          text: `Erreur reporté : ${errorMessage}`,
+          text: `Erreur reporté : ${this.apiErrors}`,
         });
       }
     },
@@ -576,43 +567,39 @@ export default {
               title: "Modérateur",
               text: "Vous venez d'ajouter un nouveau modérateur",
             });
-
           })
           .catch((error) => {
             if (error.response.status === 500) {
               // console.log(error.response.data.error);
-              const errorMessage = (this.apiErrors =
-                "Vous n'êtes pas autorisé à gérer les rôles de communauté !");
-              this.errorMessage = errorMessage;
+              this.apiErrors =
+                "Vous n'êtes pas autorisé à gérer les rôles de communauté !";
 
               // notification d'erreur
               this.$notify({
                 type: "error",
                 title: `Erreur lors de l'ajoute du modérateur`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.apiErrors}`,
               });
             } else if (error.response) {
-              const errorMessage = (this.state.apiErrors = error.response);
-              this.errorMessage = errorMessage;
+              this.apiErrors = error.response;
 
               // error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de l'ajoute du modérateur`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.apiErrors}`,
               });
             }
           });
       } catch (error) {
-        const errorMessage = (this.apiErrors = error.response.data.error);
-        this.errorMessage = errorMessage;
+        this.apiErrors = error.response.data.error;
 
         // notification d'erreur
         this.$notify({
           duration: 2500,
           type: "error",
           title: `Erreur lors de l'ajoute du modérateur`,
-          text: `Erreur reporté : ${errorMessage}`,
+          text: `Erreur reporté : ${this.apiErrors}`,
         });
       }
     },
@@ -630,42 +617,38 @@ export default {
               title: "Modérateur supprimer",
               text: "Vous venez de supprimer un modérateur",
             });
-
           })
           .catch((error) => {
             if (error.response.status === 403) {
-              const errorMessage = (this.apiErrors =
-                "Vous n'êtes pas autorisé à gérer les rôles de communauté !");
-              this.errorMessage = errorMessage;
+              this.apiErrors =
+                "Vous n'êtes pas autorisé à gérer les rôles de communauté !";
 
               // notification d'erreur
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la suppression du modérateur`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.apiErrors}`,
               });
             } else if (error.response) {
-              const errorMessage = (this.state.apiErrors = error.response);
-              this.errorMessage = errorMessage;
+              this.state.apiErrors = error.response;
 
               // error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la suppression du modérateur`,
-                text: `Erreur reporté : ${errorMessage}`,
+                text: `Erreur reporté : ${this.apiErrors}`,
               });
             }
           });
       } catch (error) {
-        const errorMessage = (this.apiErrors = error.response.data.error);
-        this.errorMessage = errorMessage;
+        this.apiErrors = error.response.data.error;
 
         // notification d'erreur
         this.$notify({
           duration: 2500,
           type: "error",
           title: `Erreur lors de l'ajoute du modérateur`,
-          text: `Erreur reporté : ${errorMessage}`,
+          text: `Erreur reporté : ${this.apiErrors}`,
         });
       }
     },

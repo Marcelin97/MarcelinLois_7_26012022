@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1>{{ this.community.title }}</h1>
-    <CommunityProfile :community="community" :communityId="communityId"/>
+    <CommunityProfile :community="community" :communityId="communityId" />
 
     <!-- gestion erreur API avec axios -->
     <div v-if="apiErrors" class="error-api">
@@ -10,12 +10,12 @@
       </p>
     </div>
     <!-- gestion erreur API avec axios -->
-    
   </section>
 </template>
 
 <script>
 import CommunityProfile from "../components/Community/CommunityProfile.vue";
+
 import communitiesApi from "../api/community";
 
 export default {
@@ -34,10 +34,10 @@ export default {
     this.communityId = this.$route.params.id;
 
     try {
-      const response = await communitiesApi.readTargetCommunity(
+      const getCommunities = await communitiesApi.readTargetCommunity(
         this.communityId
       );
-      this.community = response.data.datas;
+      this.community = getCommunities.data.datas;
     } catch (error) {
       this.apiErrors = error.response;
 

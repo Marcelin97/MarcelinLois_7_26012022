@@ -2,6 +2,18 @@ import axiosInstance from "../services/api";
 
 export default {
   /**
+* Get all users
+* @return {Promise<any>}
+*/
+  async getUsers() {
+    try {
+      const response = await axiosInstance.get("/auth/readAll")
+      return response.data.data
+    } catch (e) {
+      throw e.response
+    }
+  },
+  /**
    * Export logged user's data in a csv format
    * @return {Promise<any>}
    */

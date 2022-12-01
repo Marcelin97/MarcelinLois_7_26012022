@@ -54,4 +54,7 @@ export default {
 body {
   background-color: #ffff;
 }
+main{
+  margin-top: 2rem;
+}
 </style>

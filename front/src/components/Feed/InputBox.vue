@@ -12,7 +12,7 @@
         <!-- add file -->
         <div class="container__file">
           <div class="fileUploadInput">
-            <label>✨ Ajouter une image</label>
+            <label>🖼️ Ajouter une image</label>
             <input
               accept=".jpeg,.jpg,.png"
               @change="onChangeFileUpload"
@@ -23,7 +23,6 @@
               @blur="v$.post.image.$touch"
               :class="v$.post.image.$error === true ? 'error' : 'dirty'"
             />
-            <button>🔗</button>
           </div>
         </div>
 
@@ -37,7 +36,7 @@
           v-model="state.post.title"
           blur="v$.post.title.$touch"
           :class="v$.post.title.$error === true ? 'error' : 'dirty'"
-          minlength="3"
+          minlength="5"
           maxlength="255"
           aria-label="Titre de votre post"
         />
@@ -129,6 +128,7 @@ import { helpers, required, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 import axiosInstance from "../../services/api";
+import communitiesApi from "../../api/community";
 
 export default {
   name: "InputBox-Post",
@@ -154,11 +154,10 @@ export default {
           ),
           $autoDirty: true,
           $lazy: true,
-          minLength: minLength(3),
-          maxLength: maxLength(25),
+          minLength: minLength(5),
+          maxLength: maxLength(255),
         },
         image: {
-          // required: helpers.withMessage("Une image est obligatoire.", required),
           $autoDirty: true,
           $lazy: true,
         },
@@ -200,17 +199,25 @@ export default {
       placeholder: "Choisi une communauté",
     };
   },
-  created() {
-    axiosInstance
-      .get("/community/readAllCommunities")
-      .then((response) => {
-        this.communities = response.data.datas;
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          this.apiErrors = "Il n'y a pas encore de communauté !";
-        }
+  async created() {
+    try {
+      const getCommunities = await communitiesApi.getCommunities();
+      this.communities = getCommunities;
+      // console.log(this.communities);
+    } catch (error) {
+      if (error.response.status === 404) {
+        this.apiErrors = "Il n'y a pas encore de communauté !";
+      }
+      this.apiErrors = error.data.error;
+
+      // notification error message
+      this.$notify({
+        type: "error",
+        title: `Accès refusé:`,
+        text: `${this.apiErrors}`,
+        duration: 3000,
       });
+    }
   },
   methods: {
     onChangeFileUpload() {
@@ -298,9 +305,11 @@ export default {
   padding: 1rem;
   border-radius: 0.8rem;
   width: 280px;
+
   @media only screen and (min-width: 600px) {
-      width: 430px;
-    }
+    width: 430px;
+  }
+
   @media only screen and (min-width: 768px) {
     width: 530px;
   }
@@ -357,22 +366,6 @@ h2 {
   width: 0px;
 }
 
-.fileUploadInput button {
-  z-index: 1;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  height: 50px;
-  width: 50px;
-  line-height: 0;
-  user-select: none;
-  border: none;
-  background-color: #4e5166;
-  border-radius: 0 0.4rem 0.4rem 0;
-  font-size: 1rem;
-  font-weight: 800;
-}
-
 .form-title::placeholder,
 textarea::placeholder {
   font-size: 0.875em;
@@ -420,9 +413,10 @@ select {
   color: #fff;
   background-color: #34495e;
   cursor: pointer;
-    @media only screen and (min-width: 600px) {
-        width: 20rem;
-      }
+
+  @media only screen and (min-width: 600px) {
+    width: 20rem;
+  }
 
   /* <option> colors */
   option {

@@ -8,7 +8,7 @@
     </h1>
 
     <!-- Input Box Communities -->
-    <InputBoxCommunityVue @create-community="createCommunity"/>
+    <InputBoxCommunityVue @create-community="createCommunity" />
 
     <!-- search bar -->
     <div class="search-bar">
@@ -33,7 +33,8 @@
 <script>
 import CommunityList from "../components/Community/communityList.vue";
 import InputBoxCommunityVue from "../components/Community/InputBoxCommunity.vue";
-import axiosInstance from "../services/api";
+
+import communitiesApi from "../api/community";
 
 export default {
   name: "Communities-View",
@@ -56,31 +57,16 @@ export default {
       );
     },
   },
-  mounted() {
-    axiosInstance
-      .get("/community/readAllCommunities")
-      .then((response) => {
-        this.communities = response.data.datas;
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          this.apiErrors = "Il n'y pas encore de communauté(s) !";
-
-          // notification d'erreur
-          this.$notify({
-            type: "info",
-            title: `Information de l'api`,
-            text: `${this.apiErrors}`,
-          });
-        }
-      });
+  async mounted() {
+    const getCommunities = await communitiesApi.getCommunities();
+    this.communities = getCommunities;
   },
   methods: {
     createCommunity(data) {
       this.communities.unshift(data.datas);
       // console.log("update all communities", this.communities)
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -152,8 +152,10 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
+
 import usersApi from "../../api/users";
 import axiosInstance from "../../services/api";
+
 import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
