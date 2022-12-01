@@ -6,9 +6,10 @@
       <div class="container">
         <form action="#" method="post" @submit.prevent="login">
           <div class="FormGroup">
-            <label class="FormGroupLabel" for="">User</label>
+            <label class="FormGroupLabel" for="">E-mail</label>
             <div class="FormTextboxWrapper">
               <input
+              autocomplete="email"
                 class="FormTextbox"
                 type="text"
                 placeholder="E-mail"
@@ -38,6 +39,7 @@
             <label class="FormGroupLabel" for="">Pass</label>
             <div class="FormTextboxWrapper">
               <input
+              autocomplete="current-password"
                 class="FormTextbox"
                 type="password"
                 placeholder="Mot de passe"

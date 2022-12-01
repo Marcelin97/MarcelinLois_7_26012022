@@ -6,6 +6,7 @@ const {
   likePost,
   savePost,
   follower,
+  comment
 } = require("../models");
 
 // * Import the fileSystem module
@@ -31,11 +32,21 @@ exports.createPost = (req, res, next) => {
             creatorId: req.auth.userID,
           })
 
-          .then((datas) => {
+          .then(async (datas) => {
+            // console.log(await datas.getCommunity());
+            // datas.community = await datas.getCommunity();
+            // datas.setDataValue('community', await datas.getCommunity());
+            // datas.setDataValue('user', await datas.getUser());
+            // datas.setDataValue('comment', await datas.getComments());
+            const newPost = await post.findOne({
+              where: { id: datas.id }, include: {
+                all: true,
+              },
+            })
             res.status(201).json({
               status: 201,
               message: " Post create successfully",
-              datas,
+              newPost
             });
           })
           .catch((error) =>
@@ -49,11 +60,16 @@ exports.createPost = (req, res, next) => {
             creatorId: req.auth.userID,
           })
 
-          .then((datas) => {
+          .then(async (datas) => {
+            const newPost = await post.findOne({
+              where: { id: datas.id }, include: {
+                all: true,
+              },
+            })
             res.status(201).json({
               status: 201,
               message: " Post create successfully",
-              datas,
+              newPost,
             });
           })
           .catch((error) =>

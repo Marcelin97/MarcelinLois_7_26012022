@@ -69,24 +69,10 @@ export default {
     this.communities = getCommunities;
   },
   methods: {
-    // createPost(data) {
-    //   console.log("receive newPost", data);
-    //   // this.posts = [data.datas, ...this.posts];
-    //   this.posts.unshift(data.datas);
-    //   console.log("update all posts", this.posts);
-    // },
-    async createPost() {
-      try {
-        const getPosts = await postsApi.getPosts();
-        this.posts = getPosts;
-      } catch (error) {
-        this.$notify({
-          type: "error",
-          title: `Erreur lors du changement des posts`,
-          text: `Erreur reporté : ${error}`,
-          duration: 30000,
-        });
-      }
+    createPost(data) {
+      // console.log("receive newPost", data);
+      this.posts = [data, ...this.posts];
+      // console.log("update all posts", this.posts);
     },
     deletePost(postId) {
       this.posts = this.posts.filter((p) => p.id !== postId);

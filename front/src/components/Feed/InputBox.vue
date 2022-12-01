@@ -244,7 +244,7 @@ export default {
           })
           .then(async (response) => {
             // console.log("requête create post", response.data);
-            this.$emit("create-post", response.data);
+            this.$emit("create-post", response.data.newPost);
 
             // reset form
             this.v$.$reset();
