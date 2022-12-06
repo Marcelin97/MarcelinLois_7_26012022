@@ -16,32 +16,47 @@ exports.createComment = (req, res, next) => {
   // TODO : Find a post to create a related comment
   post
     .findOne({
-      where: { id: req.body.postId }, include: {
+      where: { id: req.body.postId },
+      include: {
         all: true,
       },
     })
-    .then((post) => {
-      if (!post) {
+    .then(async (postFind) => {
+      if (!postFind) {
         return res.status(404).json({ message: "Post not exists" });
       }
 
-      post.createComment({
+      postFind.createComment({
         content: req.body.content,
         userId: req.auth.userID,
-        postId: post.id,
+        postId: postFind.id,
       });
 
-      // ! Must be added to the post
-      post.increment("commentsCount", { by: 1, transaction });
+      // ! Must be added to the postFind
+      postFind.increment("commentsCount", { by: 1, transaction });
 
-      // ! Save the post to update comments count
-      post.save({ where: { id: req.body.postId } });
-
-      return res.status(200).json({
-        post,
-        status: 201,
-        message: "Comment created",
-      });
+      // ! Save the postFind to update comments count
+      await postFind.save({ where: { id: req.body.postId } });
+      post
+        .findOne({
+          where: { id: req.body.postId },
+          include: {
+            all: true,
+          },
+        })
+        .then((result) => {
+          return res.status(200).json({
+            post: result,
+            status: 201,
+            message: "Comment created",
+          });
+        })
+        .catch((err) => {
+          return res.status(500).json({
+            message: "Failed to write a comment",
+            err,
+          });
+        });
     })
     .catch((err) => {
       return res.status(500).json({

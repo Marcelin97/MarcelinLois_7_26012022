@@ -30,7 +30,7 @@
           class="form-title"
           id="name"
           type="text"
-          placeholder="TITRE"
+          placeholder="Titre de votre publication"
           required
           autocomplete="off"
           v-model="state.post.title"
@@ -196,7 +196,7 @@ export default {
       apiErrors: "",
       communities: [], // add communities  array
       selectValue: "",
-      placeholder: "Choisi une communauté",
+      placeholder: "Ta communauté",
     };
   },
   async created() {
@@ -301,18 +301,19 @@ export default {
   flex-direction: column;
   justify-content: center;
   box-shadow: 0 0 20px rgb(66 50 98 / 35%);
-  margin: 0 auto 2rem auto;
+  // margin: 0 auto 2rem auto;
   padding: 1rem;
   border-radius: 0.8rem;
-  width: 280px;
+  width: auto;
+  margin: 0 1rem 1rem;
 
-  @media only screen and (min-width: 600px) {
-    width: 430px;
-  }
+  // @media only screen and (min-width: 600px) {
+  //   width: 430px;
+  // }
 
-  @media only screen and (min-width: 768px) {
-    width: 530px;
-  }
+  // @media only screen and (min-width: 768px) {
+  //   width: 530px;
+  // }
 }
 
 h2 {
@@ -406,17 +407,13 @@ select {
   border: 0;
   outline: 0;
   width: 15rem;
-  height: 3rem;
+  height: 2rem;
   padding: 0 4em 0 1em;
   border-radius: 0.25em;
   box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
   color: #fff;
   background-color: #34495e;
   cursor: pointer;
-
-  @media only screen and (min-width: 600px) {
-    width: 20rem;
-  }
 
   /* <option> colors */
   option {
@@ -433,18 +430,23 @@ select {
 .select {
   position: relative;
   display: flex;
-  height: 3em;
+  align-items: center;
   border-radius: 0.25em;
   overflow: hidden;
-  margin: 1rem 0 0.5rem 0;
+  margin: 0.5rem 0 0.5rem 0;
+  text-overflow: ellipsis;
+  // width: 100%;
+  @media only screen and (min-width: 576px) {
+    width: 100%;
+  }
 }
 
 /* Arrow */
 .select::after {
-  content: "\25BC";
+  content: "▼";
   position: absolute;
-  top: 0;
-  right: 0;
+  /* top: 0; */
+  right: 10px;
   padding: 1em;
   background-color: #34495e;
   transition: 0.25s all ease;
@@ -458,8 +460,8 @@ select {
 
 button#submit {
   width: 100%;
-  max-width: 20rem;
-  margin: 10px;
+  // max-width: 20rem;
+  margin: 0.2rem;
   font-size: 0.875em;
 }
 

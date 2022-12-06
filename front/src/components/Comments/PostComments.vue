@@ -12,7 +12,7 @@
         aria-label="Supprimer ce commentaire"
         class="btn-danger"
         title="Supprimer ce commentaire"
-        @click.prevent.stop="$emit('delete-comment', this.comment.id)"
+        @click.stop.prevent="$emit('delete-comment', this.comment.id)"
       >
         Supprimer
       </button>
@@ -102,7 +102,7 @@
                 title="Modifier"
                 type="submit"
                 class="btn"
-                @click="onUpdateComment"
+                @click.stop.prevent="onUpdateComment"
               >
                 Modifier
               </button>
@@ -204,7 +204,7 @@ import timeAgo from "@/services/timeAgo";
 export default {
   name: "List-Comment",
   props: ["comment", "content", "index", "communityId"],
-  emits: ["update-comment"],
+  emits: ["update-comment", "delete-comment"],
   components: {
     modalStructure,
   },

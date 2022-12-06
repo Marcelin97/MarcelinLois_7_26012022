@@ -18,7 +18,7 @@
         aria-label="Fil d'actualité"
       >
         <img
-          src="../../assets/img/icon-home.svg"
+          src="../../assets/img/home.svg"
           alt="Fil d'actualité"
           title="Fil d'actualité"
         />
@@ -30,7 +30,7 @@
         aria-label="Communautés"
       >
         <img
-          src="../../assets/img/icon-users.svg"
+          src="../../assets/img/community.svg"
           alt="Communautés"
           title="Communautés"
         />
@@ -61,7 +61,7 @@
       </router-link>
       <button type="button" @click="logout" aria-label="déconnexion">
         <img
-          src="../../assets/img/icon-lock.svg"
+          src="../../assets/img/sign-out.svg"
           title="Déconnexion"
           alt="Déconnexion"
         />

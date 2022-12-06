@@ -204,7 +204,7 @@
 
         <!-- section comment(s) -->
         <div>
-          <div v-if="this.comments.length != 0">
+          <div v-if="this.post.comments.length != 0">
             {{ showCommentsCount }}
             <span>
               <font-awesome-icon icon="fa-regular fa-comments" />
@@ -219,7 +219,7 @@
             v-bind:index="index"
             v-bind:communityId="post.communityId"
             @delete-comment="onDeleteComment"
-            @update-comment="this.$emit('update-comment')"
+            @update-comment="update-comment"
             class="comments-list"
           />
 
@@ -360,7 +360,7 @@ import timeAgo from "../../services/timeAgo";
 export default {
   name: "Post-Card",
   props: ["post", "id", "index", "creatorInfo", "posts"],
-  emits: ["delete-post", "update-comment"],
+  emits: ["delete-post", "reload-post"],
   components: {
     deleteBtn,
     modalStructure,
@@ -415,7 +415,7 @@ export default {
   },
   computed: {
     showCommentsCount() {
-      return this.comments.length;
+      return this.post.comments.length;
     },
     showDate() {
       if (this.post.createdAt !== this.post.updatedAt) {
@@ -434,34 +434,29 @@ export default {
     this.postId = this.$route.params.id;
 
     // I get all my comments by post
-    this.comments = await commentsApi.getPostComments(this.id);
+    // this.comments = await commentsApi.getPostComments(this.id)
+    this.comments = this.post.comments;
+    // console.log(this.comments);
   },
   mounted() {
     this.currentUser = this.$store.state.user;
 
-    axiosInstance
-      .get(`posts/${this.id}/likesByPost`)
-      .then((response) => {
-        // console.log("likePost", response.data.result);
+    // log all vote by posts
+    console.log("tous les votes par post", this.post.likePosts);
 
-        let voteLike = response.data.result.filter((item) => {
-          return item.vote == 1;
-        });
-        this.likesCount = voteLike.length;
+    // count positive vote 
+    let likeByPost = this.post.likePosts.filter((item) => {
+      return item.vote == 1;
+    });
+    console.log("like positif", likeByPost);
+    this.likesCount = likeByPost.length;
+    console.log(this.likesCount);
 
-        let voteDislike = response.data.result.filter((item) => {
+    // count negative vote
+    let dislikeByPost = this.post.likePosts.filter((item) => {
           return item.vote == -1;
         });
-        this.dislikesCount = voteDislike.length;
-
-        // for (const iterator of response.data.result) {
-        //   console.log(iterator)
-        // }
-      })
-
-      .catch((e) => {
-        this.apiErrors = e.data;
-      });
+    this.dislikesCount = dislikeByPost.length;
   },
   methods: {
     async deletePost() {
@@ -539,11 +534,15 @@ export default {
           this.vote = -1;
           this.like_color = "rgb(255,255,255)";
           this.dislike_color = "rgb(255,255,255)";
+          this.likesCount--;
+          this.dislikesCount++;
         }
         if (this.vote === -1 && valeurLike === 1) {
           this.vote = 1;
           this.like_color = "rgb(255,255,255)";
           this.dislike_color = "rgb(255,255,255)";
+          this.likesCount++;
+          this.dislikesCount--;
         }
       }
       if (valeurLike === 1) {
@@ -596,10 +595,14 @@ export default {
           });
         });
     },
-    onAddComment({ content }) {
+    async onAddComment({ content }) {
       try {
-        commentsApi.addComment(this.post.id, content);
-        // this.comments.push(response);
+        const response = await commentsApi.addComment(this.id, content);
+        console.log(response.post);
+        console.log(response.post.comments[response.post.comments.length - 1]);
+        this.comments.push(response.post.comments[response.post.comments.length-1]);
+        console.log(this.comments);
+
 
         this.$notify({
           type: "success",
@@ -644,6 +647,21 @@ export default {
         });
       }
     },
+    // async fetchPost() {
+    //   try {
+
+    //     const response = await axiosInstance.get("/posts/" + this.id + "/read");
+    //     this.$emit("reload-post", response);
+    //   } catch (error) {
+    //     this.apiErrors = error;
+    //     this.$notify({
+    //       type: "error",
+    //       title: `Erreur lors du changement du poste`,
+    //       text: `Erreur reporté : ${this.apiErrors}`,
+    //       duration: 30000,
+    //     });
+    //   }
+    // },
   },
 };
 </script>
@@ -656,6 +674,7 @@ export default {
   background: #fff;
   border-radius: 0.4rem;
   margin-bottom: 2rem;
+  flex-basis: 70%;
 
   &__header {
     border-bottom: 1px solid #ccc;

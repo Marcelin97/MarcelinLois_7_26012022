@@ -1,6 +1,6 @@
 <template>
   <div aria-labelledby="comments-title">
-    <form @submit="onSubmit">
+    <form @submit.stop.prevent="onSubmit">
       <div class="form-content">
         <textarea aria-label="Ajouter un commentaire..." autocomplete="off" v-model="state.content"
           @blur="v$.content.$touch" :class="v$.content.$error === true ? 'error' : 'dirty'" name="content" type="text"
@@ -30,7 +30,7 @@ import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 export default {
-  name: "Add-Comment",
+  name: "New-Comment",
   emits: ["add-comment"],
   data() {
     return {
