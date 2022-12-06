@@ -415,7 +415,7 @@ export default {
   },
   computed: {
     showCommentsCount() {
-      return this.post.comments.length;
+      return this.comments.length;
     },
     showDate() {
       if (this.post.createdAt !== this.post.updatedAt) {
@@ -647,21 +647,6 @@ export default {
         });
       }
     },
-    // async fetchPost() {
-    //   try {
-
-    //     const response = await axiosInstance.get("/posts/" + this.id + "/read");
-    //     this.$emit("reload-post", response);
-    //   } catch (error) {
-    //     this.apiErrors = error;
-    //     this.$notify({
-    //       type: "error",
-    //       title: `Erreur lors du changement du poste`,
-    //       text: `Erreur reporté : ${this.apiErrors}`,
-    //       duration: 30000,
-    //     });
-    //   }
-    // },
   },
 };
 </script>
