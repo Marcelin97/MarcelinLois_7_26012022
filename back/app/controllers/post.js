@@ -535,7 +535,7 @@ exports.reportPost = (req, res) => {
           postId: post.id,
           userId: req.auth.userID,
         })
-        .then(() => {
+        .then((datas) => {
           res.status(200).json({
             status: 200,
             message: "Post successfully reported",

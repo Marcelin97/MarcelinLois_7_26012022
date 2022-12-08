@@ -2,10 +2,19 @@
   <div aria-labelledby="comments-title">
     <form @submit.stop.prevent="onSubmit">
       <div class="form-content">
-        <textarea aria-label="Ajouter un commentaire..." autocomplete="off" v-model="state.content"
-          @blur="v$.content.$touch" :class="v$.content.$error === true ? 'error' : 'dirty'" name="content" type="text"
-          class="form-content__input" id="content" rows="2"
-          :placeholder="'Commenter en tant que' + ' ' + currentUser.username" />
+        <textarea
+          aria-label="Ajouter un commentaire..."
+          autocomplete="off"
+          v-model="state.content"
+          @blur="v$.content.$touch"
+          :class="v$.content.$error === true ? 'error' : 'dirty'"
+          name="content"
+          type="text"
+          class="form-content__input"
+          id="content"
+          rows="2"
+          :placeholder="'Commenter en tant que' + ' ' + currentUser.username"
+        />
 
         <!-- Error Message -->
         <template v-if="v$.content.$dirty">
@@ -16,7 +25,12 @@
         <!-- Error Message -->
       </div>
       <div>
-        <button type="submit" class="btn-comment" title="Commenter" text="Commenter">
+        <button
+          type="submit"
+          class="btn-comment"
+          title="Commenter"
+          text="Commenter"
+        >
           Publier
         </button>
       </div>

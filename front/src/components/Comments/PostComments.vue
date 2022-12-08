@@ -266,6 +266,9 @@ export default {
   validationConfig: {
     $lazy: true,
   },
+  mounted() {
+    this.state.commentUpdate.content = this.comment.content;
+  },
   computed: {
     showDate() {
       if (this.comment.createdAt !== this.comment.updatedAt) {
@@ -333,7 +336,9 @@ export default {
         axiosInstance
           .put(`/comments/update/${this.comment.id}`, this.state.commentUpdate)
           .then((response) => {
-            this.$emit("update-comment", response, this.comment.id);
+            console.log(response.data.datas);
+            console.log("test");
+            this.$emit("update-comment", response.data.datas, this.comment.id);
 
             // close delete modal
             this.$refs.updateComment.closeModal();

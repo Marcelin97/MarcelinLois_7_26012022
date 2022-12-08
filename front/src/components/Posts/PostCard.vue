@@ -219,7 +219,7 @@
             v-bind:index="index"
             v-bind:communityId="post.communityId"
             @delete-comment="onDeleteComment"
-            @update-comment="update-comment"
+            @update-comment="onUpdateComment"
             class="comments-list"
           />
 
@@ -379,6 +379,7 @@ export default {
       comments: [],
       like_color: "",
       dislike_color: "",
+      postRead: [],
     };
   },
   mixins: [roleMixin],
@@ -423,15 +424,19 @@ export default {
       }
       return `Posté ${timeAgo.format(new Date(this.post.createdAt))}`;
     },
-    showLikesCount() {
-      return this.likesCount;
-    },
+    // showLikesCount() {
+    //   let likes = this.post.filter((p) => p.likePosts == 1)
+    //   console.log(likes);
+    //   return likes.length > 0;
+    // },
     showDislikesCount() {
       return this.dislikesCount;
     },
   },
   async created() {
     this.postId = this.$route.params.id;
+    this.postRead = this.post;
+    console.log(this.postRead);
 
     // I get all my comments by post
     // this.comments = await commentsApi.getPostComments(this.id)
@@ -441,22 +446,22 @@ export default {
   mounted() {
     this.currentUser = this.$store.state.user;
 
-    // log all vote by posts
-    console.log("tous les votes par post", this.post.likePosts);
+    // // log all vote by posts
+    // console.log("tous les votes par post", this.post.likePosts);
 
-    // count positive vote 
-    let likeByPost = this.post.likePosts.filter((item) => {
-      return item.vote == 1;
-    });
-    console.log("like positif", likeByPost);
-    this.likesCount = likeByPost.length;
-    console.log(this.likesCount);
+    // // count positive vote
+    // let likeByPost = this.post.likePosts.filter((item) => {
+    //   return item.vote == 1;
+    // });
+    // console.log("like positif", likeByPost);
+    // this.likesCount = likeByPost.length;
+    // // console.log(this.likesCount);
 
-    // count negative vote
-    let dislikeByPost = this.post.likePosts.filter((item) => {
-          return item.vote == -1;
-        });
-    this.dislikesCount = dislikeByPost.length;
+    // // count negative vote
+    // let dislikeByPost = this.post.likePosts.filter((item) => {
+    //       return item.vote == -1;
+    //     });
+    // this.dislikesCount = dislikeByPost.length;
   },
   methods: {
     async deletePost() {
@@ -534,15 +539,11 @@ export default {
           this.vote = -1;
           this.like_color = "rgb(255,255,255)";
           this.dislike_color = "rgb(255,255,255)";
-          this.likesCount--;
-          this.dislikesCount++;
         }
         if (this.vote === -1 && valeurLike === 1) {
           this.vote = 1;
           this.like_color = "rgb(255,255,255)";
           this.dislike_color = "rgb(255,255,255)";
-          this.likesCount++;
-          this.dislikesCount--;
         }
       }
       if (valeurLike === 1) {
@@ -598,11 +599,12 @@ export default {
     async onAddComment({ content }) {
       try {
         const response = await commentsApi.addComment(this.id, content);
-        console.log(response.post);
-        console.log(response.post.comments[response.post.comments.length - 1]);
-        this.comments.push(response.post.comments[response.post.comments.length-1]);
-        console.log(this.comments);
-
+        // console.log(response.post);
+        // console.log(response.post.comments[response.post.comments.length - 1]);
+        this.comments.push(
+          response.post.comments[response.post.comments.length - 1]
+        );
+        // console.log(this.comments);
 
         this.$notify({
           type: "success",
@@ -620,8 +622,17 @@ export default {
         });
       }
     },
-    updateComment(response, commentId) {
-      this.comments = this.comments.filter((c) => c.id !== commentId);
+    onUpdateComment(data, commentId) {
+      // console.log(data);
+      // console.log(commentId);
+      // console.log(this.comments)
+      this.comments = this.comments.map((comment) => {
+        if (comment.id === commentId) {
+          comment.content = data.content;
+          // console.log(comment.content);
+        }
+        return comment;
+      });
     },
     async onDeleteComment(commentId) {
       try {

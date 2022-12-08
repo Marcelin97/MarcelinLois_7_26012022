@@ -1,5 +1,6 @@
 <template>
   <section class="stories">
+    <h2>Dernières communautés</h2>
     <StoryCard
       v-for="(community, index) in communities"
       :key="index"
@@ -33,8 +34,8 @@ export default {
 <style lang="scss" scoped>
 .stories {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   overflow: hidden;
   overflow-x: auto;
   cursor: grabbing;

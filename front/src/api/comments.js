@@ -31,7 +31,7 @@ export default {
       // console.log(response.data.commentFind)
       return response.data.commentFind;
     } catch (e) {
-      console.error(e.response);
+      console.error(e);
       throw e.response;
     }
   },
@@ -46,6 +46,22 @@ export default {
     } catch (e) {
       console.error(e.response);
       throw e.response;
+    }
+  },
+
+  /**
+  * Update a post comment
+  * @param commentId
+  * @param comment
+  * @return {Promise<any>}
+  */
+  async updateComment(commentId, comment) {
+    try {
+      const response = await axiosInstance.put(`/comments/update/${commentId}`, {content: comment })
+      return response.data.datas
+    } catch (e) {
+      console.error(e.response)
+      throw e.response
     }
   },
 
