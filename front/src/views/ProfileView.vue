@@ -4,13 +4,17 @@
       <h1>Mon compte</h1>
 
       <!-- output component -->
-      <UserProfile :user="user" :userId="user.id" :userLoggedIn="true" @update-user="onUpdateAccount"/>
+      <UserProfile
+        :user="user"
+        :userId="user.id"
+        :userLoggedIn="true"
+        @update-user="onUpdateAccount"
+      />
     </section>
 
     <!-- If there are posts -->
     <section>
       <div v-if="posts.length != 0">
-        
         <!-- output component -->
         <PostCard
           v-for="(post, index) in posts"
@@ -68,7 +72,7 @@ export default {
       console.log("update account", data);
       this.user = data.user;
     },
-  }
+  },
 };
 </script>
 
@@ -87,8 +91,5 @@ h3,
   font-size: 1.2rem;
   margin-bottom: 1rem;
   text-align: center;
-  @media only screen and (min-width: 768px) {
-    margin-top: 0px;
-  }
 }
 </style>

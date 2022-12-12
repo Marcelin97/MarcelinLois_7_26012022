@@ -5,9 +5,18 @@
         <!-- Profil image -->
         <div>
           <div class="profile-card__img">
-            <img v-if="user.imageUrl" :src="`http://localhost:3000${user.imageUrl}`" :alt="'Avatar de ' + user.imageUrl"
-              aria-label="Photo d'utilisateur" />
-            <img v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut" aria-label="Avatar par défaut" />
+            <img
+              v-if="user.imageUrl"
+              :src="`http://localhost:3000${user.imageUrl}`"
+              :alt="'Avatar de ' + user.imageUrl"
+              aria-label="Photo d'utilisateur"
+            />
+            <img
+              v-else
+              src="../../assets/img/avataaars.png"
+              alt="Avatar par défaut"
+              aria-label="Avatar par défaut"
+            />
           </div>
 
           <div v-if="user.isAdmin == true" class="ribbon">
@@ -53,28 +62,48 @@
         <div class="profile-card-ctr">
           <div v-if="userLoggedIn == false" class="profile-card-ctr__actions">
             <!-- button report user -->
-            <button type="button" class="btn" @click="$refs.reportUser.openModal()" text="Signaler ce compte"
-              aria-label="Signaler ce compte">
+            <button
+              type="button"
+              class="btn"
+              @click="$refs.reportUser.openModal()"
+              text="Signaler ce compte"
+              aria-label="Signaler ce compte"
+            >
               Signaler...
             </button>
           </div>
 
           <div v-else class="profile-card-ctr__actions">
             <!-- update profile -->
-            <button type="button" class="btn" @click="$refs.updateUser.openModal()" text="Modifier ce compte"
-            aria-label="Aller sur la page pour modifier son profile">
+            <button
+              type="button"
+              class="btn"
+              @click="$refs.updateUser.openModal()"
+              text="Modifier ce compte"
+              aria-label="Modifier son profile"
+            >
               Modifier mon profil
             </button>
 
             <!-- export data -->
-            <button type="button" class="btn btn-export" @click="exportDataClick" text="Exporter mes données"
-              aria-label="Exporter mes données">
+            <button
+              type="button"
+              class="btn btn-export"
+              @click="exportDataClick"
+              text="Exporter mes données"
+              aria-label="Exporter mes données"
+            >
               Exporter mes données
             </button>
 
             <!-- button delete account -->
-            <button type="button" class="btn btn-delete" @click="$refs.deleteAccount.openModal()"
-              text="Supprimer mon compte" aria-label="Supprimer mon compte">
+            <button
+              type="button"
+              class="btn btn-delete"
+              @click="$refs.deleteAccount.openModal()"
+              text="Supprimer mon compte"
+              aria-label="Supprimer mon compte"
+            >
               Supprimer mon compte
             </button>
           </div>
@@ -87,129 +116,210 @@
       <template v-slot:header>
         <h1>Modifier mon profil</h1>
       </template>
-    
+
       <template v-slot:body>
-              <form action="#" method="put" enctype="multipart/form-data">
-                <div class="form-group">
-                  <label for="first-name">Prénom</label>
-                  <input id="first-name" type="text" v-model="state.userUpdate.firstName" @blur="v$.userUpdate.firstName.$touch"
-                    :class="v$.userUpdate.firstName.$error === true ? 'error' : 'dirty'" />
-              
-                  <!-- Error Message -->
-                  <template v-if="v$.userUpdate.firstName.$dirty">
-                    <div class="input-errors" v-for="(error, index) of v$.userUpdate.firstName.$errors" :key="index">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
-                  <!-- Error Message -->
-                </div>
-              
-                <div class="form-group">
-                  <label for="last-name">Nom de famille</label>
-                  <input id="last-name" type="text" v-model="state.userUpdate.lastName" @blur="v$.userUpdate.lastName.$touch"
-                    :class="v$.userUpdate.lastName.$error === true ? 'error' : 'dirty'" />
-              
-                  <!-- Error Message -->
-                  <template v-if="v$.userUpdate.lastName.$dirty">
-                    <div class="input-errors" v-for="(error, index) of v$.userUpdate.lastName.$errors" :key="index">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
-                  <!-- Error Message -->
-                </div>
-              
-                <div class="form-group">
-                  <label for="birthday">Date de naissance</label>
-                  <input id="birthday" type="date" v-model="state.userUpdate.birthday" @blur="v$.userUpdate.birthday.$touch"
-                    :class="v$.userUpdate.birthday.$error === true ? 'error' : 'dirty'" />
-              
-                  <!-- Error Message -->
-                  <template v-if="v$.userUpdate.birthday.$dirty">
-                    <div class="input-errors" v-for="(error, index) of v$.userUpdate.birthday.$errors" :key="index">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
-                  <!-- Error Message -->
-                </div>
-              
-                <div class="form-group">
-                  <label for="username">Nom d'utilisateur</label>
-                  <input id="username" type="text" v-model="state.userUpdate.username" @blur="v$.userUpdate.username.$touch"
-                    :class="v$.userUpdate.username.$error === true ? 'error' : 'dirty'" />
-              
-                  <!-- Error Message -->
-                  <template v-if="v$.userUpdate.username.$dirty">
-                    <div class="input-errors" v-for="(error, index) of v$.userUpdate.username.$errors" :key="index">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
-                  <!-- Error Message -->
-                </div>
-              
-                <div class="form-group">
-                  <label for="email">E-mail</label>
-                  <input id="email" type="email" v-model="state.userUpdate.email" @blur="v$.userUpdate.email.$touch"
-                    :class="v$.userUpdate.email.$error === true ? 'error' : 'dirty'" />
-              
-                  <!-- Error Message -->
-                  <template v-if="v$.userUpdate.email.$dirty">
-                    <div class="input-errors" v-for="(error, index) of v$.userUpdate.email.$errors" :key="index">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
-                  <!-- Error Message -->
-                </div>
-              
-                <div class="form-group">
-                  <label for="newPassword">Nouveau mot de passe</label>
-                  <input id="newPassword" type="newPassword" v-model="state.userUpdate.newPassword" @blur="v$.userUpdate.newPassword.$touch"
-                    :class="v$.userUpdate.newPassword.$error === true ? 'error' : 'dirty'" />
-              
-                  <!-- Error Message -->
-                  <template v-if="v$.userUpdate.newPassword.$dirty">
-                    <div class="input-errors" v-for="(error, index) of v$.userUpdate.newPassword.$errors" :key="index">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
-                  <!-- Error Message -->
-                </div>
-              
-                <div class="form-group fileUploadInput">
-                  <label for="userImage">Photo de profil</label>
-                  <input class="input-file" v-on="state.userUpdate.userImage" id="userImage" type="file" accept=".jpeg,.jpg,png"
-                    @change="onChangeFileUpload" ref="file" />
-              
-                  <!-- Error Message -->
-                  <template v-if="v$.userUpdate.userImage.$dirty">
-                    <div class="input-errors" v-for="(error, index) of v$.userUpdate.userImage.$errors" :key="index">
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
-                  <!-- Error Message -->
-                </div>
-              
-                <!-- button submit -->
-                <div class="button-container">
-                  <button 
-                  aria-label="Modifier"
-                title="Modifier"
-                  type="submit" 
-                  class="btn"
-                  @click.stop.prevent="onUpdateUser"
-                  >
-                  Modifier
-                </button>
-                </div>
-              </form>
-      </template>
-    
-      <template v-slot:footer>
-        <div class="modal__actions">
-          <button class="btn" text="Annuler" type="button" aria-label="Annuler la modification"
-            @click="$refs.updateUser.closeModal()">
-            Annuler
-          </button>
-        </div>
+        <form
+          class="formUpdate"
+          action="#"
+          method="put"
+          enctype="multipart/form-data"
+        >
+          <div class="form-group">
+            <label for="first-name">Prénom</label>
+            <input
+              id="first-name"
+              type="text"
+              v-model="state.userUpdate.firstName"
+              @blur="v$.userUpdate.firstName.$touch"
+              :class="
+                v$.userUpdate.firstName.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.firstName.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.firstName.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="last-name">Nom de famille</label>
+            <input
+              id="last-name"
+              type="text"
+              v-model="state.userUpdate.lastName"
+              @blur="v$.userUpdate.lastName.$touch"
+              :class="
+                v$.userUpdate.lastName.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.lastName.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.lastName.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="birthday">Date de naissance</label>
+            <input
+              id="birthday"
+              type="date"
+              v-model="state.userUpdate.birthday"
+              @blur="v$.userUpdate.birthday.$touch"
+              :class="
+                v$.userUpdate.birthday.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.birthday.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.birthday.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="username">Nom d'utilisateur</label>
+            <input
+              id="username"
+              type="text"
+              v-model="state.userUpdate.username"
+              @blur="v$.userUpdate.username.$touch"
+              :class="
+                v$.userUpdate.username.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.username.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.username.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input
+              id="email"
+              type="email"
+              v-model="state.userUpdate.email"
+              @blur="v$.userUpdate.email.$touch"
+              :class="v$.userUpdate.email.$error === true ? 'error' : 'dirty'"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.email.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.email.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="newPassword">Nouveau mot de passe</label>
+            <input
+              id="newPassword"
+              type="newPassword"
+              v-model="state.userUpdate.newPassword"
+              @blur="v$.userUpdate.newPassword.$touch"
+              :class="
+                v$.userUpdate.newPassword.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.newPassword.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.newPassword.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group fileUploadInput">
+            <label for="userImage">Photo de profil</label>
+            <input
+              class="input-file"
+              v-on="state.userUpdate.userImage"
+              id="userImage"
+              type="file"
+              accept=".jpeg,.jpg,png"
+              @change="onChangeFileUpload"
+              ref="file"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.userImage.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.userImage.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <!-- button submit -->
+          <div class="button-container">
+            <button
+              aria-label="Modifier"
+              title="Modifier"
+              type="submit"
+              class="btn"
+              @click.stop.prevent="onUpdateUser"
+            >
+              Modifier
+            </button>
+
+            <button
+              class="btn"
+              text="Annuler"
+              type="button"
+              aria-label="Annuler la modification"
+              @click="$refs.updateUser.closeModal()"
+            >
+              Annuler
+            </button>
+          </div>
+        </form>
       </template>
     </modalStructure>
 
@@ -228,8 +338,13 @@
 
       <template v-slot:footer>
         <div class="modal__actions">
-          <button class="btn" text="Annuler" type="button" aria-label="Annuler la suppression"
-            @click="$refs.deleteAccount.closeModal()">
+          <button
+            class="btn"
+            text="Annuler"
+            type="button"
+            aria-label="Annuler la suppression"
+            @click="$refs.deleteAccount.closeModal()"
+          >
             Annuler
           </button>
           <deleteBtn @click="deleteAccountClick" />
@@ -245,26 +360,49 @@
 
       <template v-slot:body>
         <div class="container">
-          <form action="#" method="post" @submit.prevent.stop="reportAccountClick">
+          <form
+            action="#"
+            method="post"
+            @submit.prevent.stop="reportAccountClick"
+          >
             <div class="FormGroup">
-              <label class="FormGroupLabel" for="">Pourquoi signalez-vous ce compte ?</label>
+              <label class="FormGroupLabel" for=""
+                >Pourquoi signalez-vous ce compte ?</label
+              >
               <div class="FormTextboxWrapper">
-                <textarea cols="50" rows="5" required class="FormTextbox" type="text"
-                  placeholder="Explique nous les raisons de ce signalement." v-model="state.user.content"
-                  @blur="v$.user.content.$touch" :class="v$.user.content.$error === true ? 'error' : 'dirty'" />
+                <textarea
+                  cols="50"
+                  rows="5"
+                  required
+                  class="FormTextbox"
+                  type="text"
+                  placeholder="Explique nous les raisons de ce signalement."
+                  v-model="state.user.content"
+                  @blur="v$.user.content.$touch"
+                  :class="v$.user.content.$error === true ? 'error' : 'dirty'"
+                />
               </div>
 
               <!-- Error Message -->
               <template v-if="v$.user.content.$dirty">
-                <div v-for="(error, index) of v$.user.content.$errors" :key="index">
+                <div
+                  v-for="(error, index) of v$.user.content.$errors"
+                  :key="index"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <!-- Error Message -->
             </div>
 
-            <button type="submit" class="btn button" title="Signaler" text="Signaler" value="Signaler"
-              aria-label="Signaler un utilisateur">
+            <button
+              type="submit"
+              class="btn button"
+              title="Signaler"
+              text="Signaler"
+              value="Signaler"
+              aria-label="Signaler un utilisateur"
+            >
               Confirmer signalement
             </button>
           </form>
@@ -289,7 +427,13 @@ import usersApi from "../../api/users";
 import axiosInstance from "../../services/api";
 
 import useVuelidate from "@vuelidate/core";
-import { helpers, minLength, email, maxLength, alphaNum } from "@vuelidate/validators";
+import {
+  helpers,
+  minLength,
+  email,
+  maxLength,
+  alphaNum,
+} from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 export function strongPassword(value) {
@@ -303,7 +447,7 @@ export function strongPassword(value) {
 export default {
   name: "User-profile",
   props: ["user", "userLoggedIn"],
-  emits: ["update-user",],
+  emits: ["update-user"],
   setup() {
     const state = reactive({
       user: {
@@ -400,7 +544,8 @@ export default {
   },
   methods: {
     onChangeFileUpload() {
-      this.state.userUpdate.userImage = document.querySelector("#userImage").files[0];
+      this.state.userUpdate.userImage =
+        document.querySelector("#userImage").files[0];
     },
     async onUpdateUser() {
       let bodyFormData = new FormData();
@@ -429,13 +574,11 @@ export default {
           },
         })
         .then((result) => {
-
           this.$emit("update-user", result.data);
           // console.log("result: ", result.data);
           this.$store.commit("updateUser", result.data);
 
-          
-          // close report user modal
+          // close update user modal
           this.$refs.updateUser.closeModal();
 
           // success notification
@@ -823,6 +966,19 @@ img {
 
   @media only screen and (min-width: 576px) {
     max-width: 25rem;
+  }
+}
+
+.formUpdate {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  display: flex;
+  margin: 10px 10px auto;
+  label {
+    margin-right: 10px;
   }
 }
 </style>

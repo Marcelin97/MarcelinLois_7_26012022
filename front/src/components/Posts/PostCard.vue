@@ -81,14 +81,15 @@
             <div class="dropdown-content" v-bind:class="{ show: show }">
               <ul>
                 <li v-if="canAdmin(this.post.creatorId)">
-                  <router-link
-                    :postId="postId"
+                  <button
+                    type="button"
+                    text="Modifier ce post"
                     class="btn__update"
-                    :to="'/posts/' + post.id + '/update'"
                     aria-label="Modifier ce post"
+                    @click="$refs.updatePost.openModal()"
                   >
                     Modifier
-                  </router-link>
+                  </button>
                 </li>
                 <li v-if="this.$store.state.user.id != this.post.creatorId">
                   <button
@@ -244,6 +245,108 @@
       </p>
     </div>
 
+    <!-- modal update post -->
+    <modalStructure ref="updatePost">
+      <template v-slot:header>
+        <h1>Modifier mon post</h1>
+      </template>
+
+      <template v-slot:body>
+        <form action="#" method="put" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="title">Nouveau titre de la publication</label>
+            <input
+              placeholder="TITRE"
+              autocomplete="off"
+              minlength="3"
+              maxlength="255"
+              aria-label="Titre de votre post"
+              id="title"
+              type="text"
+              v-model="state.postUpdate.title"
+              @blur="v$.postUpdate.title.$touch"
+              :class="v$.postUpdate.title.$error === true ? 'error' : 'dirty'"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.postUpdate.title.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.postUpdate.title.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="content">Nouvelle description de la publication</label>
+            <input
+              id="content"
+              type="text"
+              placeholder="À PROPOS de..."
+              minlength="2"
+              maxlength="400"
+              aria-label="description de votre publication"
+              v-model="state.postUpdate.content"
+              @blur="v$.postUpdate.content.$touch"
+              :class="v$.postUpdate.content.$error === true ? 'error' : 'dirty'"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.postUpdate.content.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.postUpdate.content.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="PostImage">Nouvelle photo de la publication</label>
+            <input
+              class="input-file"
+              v-on="state.postUpdate.image"
+              id="image"
+              type="file"
+              accept=".jpeg,.jpg,png"
+              @change="onChangeFileUpload"
+              ref="file"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.postUpdate.image.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.postUpdate.image.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <!-- button submit -->
+          <div class="button-container">
+            <button
+              type="submit"
+              class="btn"
+              @click.stop.prevent="onUpdatePost"
+            >
+              Modifier
+            </button>
+          </div>
+        </form>
+      </template>
+    </modalStructure>
+
     <!-- modal report post -->
     <modalStructure ref="reportPost">
       <template v-slot:header>
@@ -360,7 +463,7 @@ import timeAgo from "../../services/timeAgo";
 export default {
   name: "Post-Card",
   props: ["post", "id", "index", "creatorInfo"],
-  emits: ["delete-post",],
+  emits: ["delete-post", "update-post"],
   components: {
     deleteBtn,
     modalStructure,
@@ -388,6 +491,11 @@ export default {
       post: {
         content: "",
       },
+      postUpdate: {
+        title: "",
+        image: "",
+        content: "",
+      },
     });
 
     const rules = computed(() => ({
@@ -403,6 +511,24 @@ export default {
             "La longueur maximale autorisée est de 255",
             maxLength(255)
           ),
+        },
+      },
+      postUpdate: {
+        title: {
+          $autoDirty: true,
+          $lazy: true,
+          minLength: minLength(3),
+          maxLength: maxLength(25),
+        },
+        image: {
+          $autoDirty: true,
+          $lazy: true,
+        },
+        content: {
+          $autoDirty: true,
+          $lazy: true,
+          minLength: minLength(2),
+          maxLength: maxLength(400),
         },
       },
     }));
@@ -436,7 +562,7 @@ export default {
   async created() {
     this.postId = this.$route.params.id;
     this.postRead = this.post;
-    console.log(this.postRead)
+    console.log(this.postRead);
 
     // I get all my comments by post
     // this.comments = await commentsApi.getPostComments(this.id)
@@ -449,7 +575,7 @@ export default {
     // // log all vote by posts
     // console.log("tous les votes par post", this.post.likePosts);
 
-    // // count positive vote 
+    // // count positive vote
     // let likeByPost = this.post.likePosts.filter((item) => {
     //   return item.vote == 1;
     // });
@@ -464,6 +590,46 @@ export default {
     // this.dislikesCount = dislikeByPost.length;
   },
   methods: {
+    async onUpdatePost() {
+      let bodyFormData = new FormData();
+      if (this.state.postUpdate.image)
+        bodyFormData.append("image", this.state.postUpdate.image);
+
+      for (let key of ["title", "content"]) {
+        const param = this.state.postUpdate[key];
+        // console.log(param, key);
+        if (param) {
+          bodyFormData.append(key, param);
+        }
+      }
+
+      axiosInstance
+        .patch(`/posts/${this.id}/update`, bodyFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((result) => {
+          console.log("result: ", result.data.datas);
+          this.$emit("update-post", result.data.datas);
+
+          // close update post modal
+          this.$refs.updatePost.closeModal();
+
+          // notification de succès
+          this.$notify({
+            type: "success",
+            title: `Post mis à jour`,
+            text: `Vous allez être redirigé vers le fil d'actualité.`,
+          });
+
+          // redirect to the feed
+          this.$router.push("/wall");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     async deletePost() {
       try {
         if (!this.isAuthenticated) return;
@@ -539,7 +705,6 @@ export default {
           this.vote = -1;
           this.like_color = "rgb(255,255,255)";
           this.dislike_color = "rgb(255,255,255)";
-
         }
         if (this.vote === -1 && valeurLike === 1) {
           this.vote = 1;
@@ -602,7 +767,9 @@ export default {
         const response = await commentsApi.addComment(this.id, content);
         // console.log(response.post);
         // console.log(response.post.comments[response.post.comments.length - 1]);
-        this.comments.push(response.post.comments[response.post.comments.length -1]);
+        this.comments.push(
+          response.post.comments[response.post.comments.length - 1]
+        );
         // console.log(this.comments);
 
         this.$notify({
@@ -622,19 +789,16 @@ export default {
       }
     },
     onUpdateComment(data, commentId) {
-        // console.log(data);
-        // console.log(commentId);
-        // console.log(this.comments)
-        this.comments = this.comments.map((comment) => {
-          if (comment.id === commentId) {
-            comment.content = data.content;
-            console.log(comment.content);
-          }
-          return comment
+      // console.log(data);
+      // console.log(commentId);
+      // console.log(this.comments)
+      this.comments = this.comments.map((comment) => {
+        if (comment.id === commentId) {
+          comment.content = data.content;
+          console.log(comment.content);
         }
-        );
-        
-
+        return comment;
+      });
     },
     async onDeleteComment(commentId) {
       try {

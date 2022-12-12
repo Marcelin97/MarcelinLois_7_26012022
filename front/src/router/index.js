@@ -6,7 +6,6 @@ import HomeView from "../views/HomeView.vue";
 import SignupView from "../views/SignupView.vue";
 import LoginView from "../views/LoginView.vue";
 import UserView from "../views/UserView";
-import UserParameterView from "../views/UserParameterView";
 import UsersView from "../views/UsersView";
 import ProfileView from "../views/ProfileView";
 import CommunitiesView from "../views/CommunitiesView";
@@ -46,11 +45,6 @@ const routes = [
     name: "user",
     component: ProfileView,
     props: true,
-  },
-  {
-    path: "/user/parameter",
-    name: "user/parameter",
-    component: UserParameterView,
   },
   {
     path: "/explore/users",
