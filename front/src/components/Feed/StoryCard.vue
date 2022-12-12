@@ -38,20 +38,21 @@ export default {
 
 <style lang="scss" scoped>
 .main {
-  justify-content: center;
-  display: flex;
-  flex-direction: row;
+  // justify-content: center;
+  // display: flex;
+  // flex-direction: row;
+  overflow: scroll;
 }
 .wrapper {
-  width: 70%;
-  max-width: 1000px;
-  display: grid;
-  grid-template-columns: 100% 100%;
-  grid-gap: 30px;
+  // width: 70%;
+  // max-width: 1000px;
+  // display: grid;
+  // grid-template-columns: 100% 100%;
+  // grid-gap: 30px;
 }
 .left-col {
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
 }
 .status-wrapper {
   width: 100%;
@@ -64,16 +65,16 @@ export default {
   overflow-x: auto;
 }
 .status-wrapper::-webkit-scrollbar {
-  display: none;
+  // display: none;
 }
 .status-card {
-  flex: 0 0 auto;
-  width: 80px;
-  max-width: 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-right: 15px;
+  // flex: 0 0 auto;
+  // width: 80px;
+  // max-width: 80px;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  // margin-right: 15px;
 }
 .profile-pic {
   width: 70px;

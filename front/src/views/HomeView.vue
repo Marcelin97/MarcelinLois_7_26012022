@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div class="home">
-      <HelloWorld msg="Bienvenue sur Groupomania" />
-    </div>
     <div class="container">
       <div class="connect-wrap">
         <div class="extras">
@@ -19,14 +16,20 @@
       <div class="login">
         <h1>Groupomania<span class="blinker">'</span></h1>
         <p>
-          Créer un compte et retrouvez tous vos collègues,
-          communautés, posts,...
+          Créer un compte et retrouvez tous vos collègues, communautés,
+          posts,...
         </p>
         <div class="actions">
-          <router-link class="nav btn" to="/signup" aria-label="Aller sur la page d'inscription"
+          <router-link
+            class="nav btn"
+            to="/signup"
+            aria-label="Aller sur la page d'inscription"
             >Créer un compte</router-link
           >
-          <router-link class="nav btn-login btn" to="/login" aria-label="Aller sur la page de connexion"
+          <router-link
+            class="nav btn-login btn"
+            to="/login"
+            aria-label="Aller sur la page de connexion"
             >Connexion</router-link
           >
         </div>
@@ -115,6 +118,9 @@ img {
     width: 600px;
   }
   h1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     margin: 2rem 0;
     font-weight: bolder;
     letter-spacing: 0.3rem;
@@ -122,13 +128,9 @@ img {
     line-height: 1.4rem;
     text-align: center;
     border-bottom: 1px solid #4e5166;
-    padding-bottom: 3vh;
+    padding-bottom: 2rem;
     span {
       font-size: 1.4rem;
-    }
-    @media only screen and (min-width: 576px) {
-      display: flex;
-      flex-direction: column;
     }
   }
   p {
@@ -138,7 +140,7 @@ img {
     margin: 2rem 0;
     line-height: 1.5rem;
     border-bottom: 1px solid #4e5166;
-    padding-bottom: 3vh;
+    padding-bottom: 2rem;
   }
 
   .blinker {

@@ -2,12 +2,16 @@
   <div v-if="user.length != 0">
     <section>
       <h1>Mon compte</h1>
-      <UserProfile :user="user" :userId="user.id" :userLoggedIn="true" />
+
+      <!-- output component -->
+      <UserProfile :user="user" :userId="user.id" :userLoggedIn="true" @update-user="onUpdateAccount"/>
     </section>
 
     <!-- If there are posts -->
     <section>
       <div v-if="posts.length != 0">
+        
+        <!-- output component -->
         <PostCard
           v-for="(post, index) in posts"
           :key="index"
@@ -17,7 +21,10 @@
       </div>
       <div v-else>
         <h3>Tu n'as pas de post pour le moment</h3>
-        <router-link class="link" to="/communities" aria-label="Aller sur la page de communautés"
+        <router-link
+          class="link"
+          to="/communities"
+          aria-label="Aller sur la page de communautés"
           >Commence par crée une communauté</router-link
         >
       </div>
@@ -46,13 +53,22 @@ export default {
   },
   mounted() {
     const user = this.$store.state.user;
-    this.user = this.$store.state.user; // current user
+
+    // Current user
+    this.user = this.$store.state.user;
+
+    // I'm looking for posts about my account
     this.posts = this.$store.state.user.posts.map((post) => {
       post.user = user;
       return post;
     });
-    console.log("mon compte", this.posts);
   },
+  methods: {
+    onUpdateAccount(data) {
+      console.log("update account", data);
+      this.user = data.user;
+    },
+  }
 };
 </script>
 

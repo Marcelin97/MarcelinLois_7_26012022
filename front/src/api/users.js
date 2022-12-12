@@ -2,9 +2,9 @@ import axiosInstance from "../services/api";
 
 export default {
   /**
-* Get all users
-* @return {Promise<any>}
-*/
+  * Get all users
+  * @return {Promise<any>}
+  */
   async getUsers() {
     try {
       const response = await axiosInstance.get("/auth/readAll")
@@ -14,7 +14,7 @@ export default {
     }
   },
   /**
-   * Export logged user's data in a csv format
+   * Export logged user's data
    * @return {Promise<any>}
    */
   async exportMyData() {

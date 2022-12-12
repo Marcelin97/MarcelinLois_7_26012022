@@ -1,6 +1,6 @@
 <template>
   <!-- If there are users -->
-  <section v-if="users.length != 0 || users.length != '' & !isOwner">
+  <section v-if="users.length != 0 || (users.length != '') & !isOwner">
     <h1>Explore des nouveaux profils !</h1>
 
     <!-- search bar -->
@@ -26,7 +26,9 @@
 
 <script>
 import UsersList from "@/components/Profil/UsersList";
-import axiosInstance from "../services/api";
+
+// User requests
+import usersApi from "../api/users";
 
 export default {
   name: "Users-View",
@@ -35,43 +37,43 @@ export default {
   },
   data() {
     return {
-      // add users array:
-      users: [],
+      users: [], // add users array
       apiErrors: "",
       search: "",
     };
   },
-  // Add computed section:
   computed: {
+    // Search Bar
     filteredUsers() {
       return this.users.filter((user) =>
         user.username.toLowerCase().includes(this.search.toLowerCase())
       );
     },
+    // Search if it's current user
     isOwner() {
       return this.users.filter((user) =>
         user.id.includes(this.$store.state.user.id)
       );
     },
   },
-  mounted() {
-    axiosInstance
-      .get("/auth/readAll")
-      .then((response) => {
-        this.users = response.data.data;
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          this.apiErrors = "Utilisateurs introuvable !";
+  async mounted() {
+    // I'm creating a query to retrieve all users informations.
+    try {
+      const response = await usersApi.getUsers();
+      // I assign datas to the users array
+      this.users = response;
+    } catch (error) {
+      if (error.response.status === 404) {
+        this.apiErrors = "Utilisateurs introuvable !";
 
-          // notification d'erreur
-          this.$notify({
-            type: "error",
-            title: `Erreur de l'api`,
-            text: `Erreur reporté : ${this.apiErrors}`,
-          });
-        }
-      });
+        // notification d'erreur
+        this.$notify({
+          type: "error",
+          title: `Erreur de l'api`,
+          text: `Erreur reporté : ${this.apiErrors}`,
+        });
+      }
+    }
   },
 };
 </script>
@@ -114,14 +116,8 @@ input::placeholder {
 }
 
 .list_users {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  column-gap: 1rem;
-  row-gap: 1rem;
+  display: flex;
+  flex-direction: column;
   margin-top: 1.25rem;
-
-  @media only screen and (min-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 </style>

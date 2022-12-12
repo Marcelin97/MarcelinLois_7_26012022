@@ -59,6 +59,7 @@ module.exports = (sequelize, Sequelize) => {
     });
     Post.hasMany(models.comment, {
       as: "comments",
+      
     });
     Post.hasMany(models.likePost, {
       as: "likePosts",

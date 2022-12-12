@@ -1,6 +1,8 @@
 <template>
   <section>
     <h1>{{ this.community.title }}</h1>
+
+    <!-- output component -->
     <CommunityProfile :community="community" :communityId="communityId" />
 
     <!-- gestion erreur API avec axios -->
@@ -16,6 +18,7 @@
 <script>
 import CommunityProfile from "../components/Community/CommunityProfile.vue";
 
+// Communities requests
 import communitiesApi from "../api/community";
 
 export default {
@@ -25,23 +28,26 @@ export default {
   },
   data() {
     return {
-      community: [],
+      community: [], // add communities array
       communityId: "",
-      apiErrors: false,
+      apiErrors: "",
     };
   },
   async mounted() {
+    // I get my route parameter
     this.communityId = this.$route.params.id;
 
+    // I'm creating a query to retrieve target community information.
     try {
       const getCommunities = await communitiesApi.readTargetCommunity(
         this.communityId
       );
+      // I assign data to the community array
       this.community = getCommunities.data.datas;
     } catch (error) {
       this.apiErrors = error.response;
 
-      // notification error message
+      // Error notification
       this.$notify({
         type: "error",
         title: `Erreur lors du changement de la communauté`,

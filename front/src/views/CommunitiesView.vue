@@ -34,6 +34,7 @@
 import CommunityList from "../components/Community/communityList.vue";
 import InputBoxCommunityVue from "../components/Community/InputBoxCommunity.vue";
 
+// Communities request
 import communitiesApi from "../api/community";
 
 export default {
@@ -44,13 +45,13 @@ export default {
   },
   data() {
     return {
-      // add communities array:
-      communities: [],
+      communities: [], // add communities array
       apiErrors: "",
       search: "",
     };
   },
   computed: {
+    // Search Bar
     filteredCommunities() {
       return this.communities.filter((community) =>
         community.title.toLowerCase().includes(this.search.toLowerCase())
@@ -58,13 +59,16 @@ export default {
     },
   },
   async mounted() {
+    // I'm creating a query to retrieve all communities informations.
     const getCommunities = await communitiesApi.getCommunities();
+    // I assign the datas to communities array
     this.communities = getCommunities;
   },
   methods: {
+    // I retrieve my event (@create-community in InputBoxCommunityVue) with my data to create a community
     createCommunity(data) {
+      // I push my data to the communities array
       this.communities.unshift(data.datas);
-      // console.log("update all communities", this.communities)
     },
   },
 };

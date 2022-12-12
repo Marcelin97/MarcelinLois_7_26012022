@@ -388,7 +388,7 @@ export default {
     this.user = this.$store.state.user;
     this.communityId = this.$route.params.id;
 
-    // read all users
+    // I'm creating a query to retrieve all users informations.
     try {
       const response = await usersApi.getUsers();
       this.users = response;
@@ -405,13 +405,12 @@ export default {
       }
     }
 
-    // read one community
+    // I'm creating a query to retrieve target community informations.
     try {
       const getCommunity = await communitiesApi.readTargetCommunity(
         `${this.communityId}`
       );
       this.communityRead = getCommunity.data.datas;
-      // console.log(this.communities);
     } catch (error) {
       if (error.response.status === 404) {
         this.apiErrors = "Il n'y a pas encore de communauté !";

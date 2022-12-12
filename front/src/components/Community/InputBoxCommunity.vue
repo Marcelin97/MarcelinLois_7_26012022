@@ -164,8 +164,11 @@ export default {
             // console.log("request create community", response.data)
             this.$emit("create-community", response.data);
 
+            // reset form
+            this.v$.$reset();
+
             // redirect to the homme page to create a post
-            this.$router.push("/wall");
+            // this.$router.push("/wall");
 
             // notification de succès
             this.$notify({

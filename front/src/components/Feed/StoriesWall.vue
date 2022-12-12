@@ -1,11 +1,15 @@
 <template>
   <section class="stories">
     <h2>Dernières communautés</h2>
+    <div class="stories__card">
+    
     <StoryCard
+    class="card"
       v-for="(community, index) in communities"
       :key="index"
       :community="community"
     />
+    </div>
   </section>
 </template>
 <script>
@@ -32,13 +36,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.stories {
+.stories{
+      display: flex;
+      margin: 35px auto;
+      flex-direction: column;
+      width: 100%;
+
+        &__card{
+            display: flex;
+            flex: 1;
+          }
+}
+
+h2{
+  flex-basis: 100%;
+}
+
+.card{
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  overflow-x: auto;
-  cursor: grabbing;
-  margin-top: 30px;
+  flex-direction: row;
 }
 </style>

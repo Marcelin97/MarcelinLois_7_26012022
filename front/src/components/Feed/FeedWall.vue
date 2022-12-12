@@ -32,7 +32,6 @@
               v-bind:index="index"
               v-bind:id="post.id"
               @delete-post="deletePost"
-              @reload-post="fetchPost"
             />
           </div>
           <div v-else>
@@ -83,9 +82,6 @@ export default {
     deletePost(postId) {
       this.posts = this.posts.filter((p) => p.id !== postId);
     },
-    // fetchPost(data) {
-
-    // }
   },
 };
 </script>

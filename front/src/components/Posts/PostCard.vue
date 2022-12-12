@@ -204,7 +204,7 @@
 
         <!-- section comment(s) -->
         <div>
-          <div v-if="this.post.comments.length != 0">
+          <div>
             {{ showCommentsCount }}
             <span>
               <font-awesome-icon icon="fa-regular fa-comments" />
@@ -224,7 +224,7 @@
           />
 
           <!-- if no comment(s) -->
-          <p v-if="comments.length === 0" class="noComment">
+          <p class="noComment">
             Il n'y a aucun commentaire pour le moment.
             <br />
             Soyez le premier !
@@ -359,8 +359,8 @@ import timeAgo from "../../services/timeAgo";
 
 export default {
   name: "Post-Card",
-  props: ["post", "id", "index", "creatorInfo", "posts"],
-  emits: ["delete-post", "reload-post"],
+  props: ["post", "id", "index", "creatorInfo"],
+  emits: ["delete-post",],
   components: {
     deleteBtn,
     modalStructure,
@@ -415,9 +415,9 @@ export default {
     $lazy: true,
   },
   computed: {
-    showCommentsCount() {
-      return this.comments.length;
-    },
+    // showCommentsCount() {
+    //   return this.comments.length;
+    // },
     showDate() {
       if (this.post.createdAt !== this.post.updatedAt) {
         return `Mis à jour ${timeAgo.format(new Date(this.post.updatedAt))}`;
@@ -429,14 +429,14 @@ export default {
     //   console.log(likes);
     //   return likes.length > 0;
     // },
-    showDislikesCount() {
-      return this.dislikesCount;
-    },
+    // showDislikesCount() {
+    //   return this.dislikesCount;
+    // },
   },
   async created() {
     this.postId = this.$route.params.id;
     this.postRead = this.post;
-    console.log(this.postRead);
+    console.log(this.postRead)
 
     // I get all my comments by post
     // this.comments = await commentsApi.getPostComments(this.id)
@@ -449,7 +449,7 @@ export default {
     // // log all vote by posts
     // console.log("tous les votes par post", this.post.likePosts);
 
-    // // count positive vote
+    // // count positive vote 
     // let likeByPost = this.post.likePosts.filter((item) => {
     //   return item.vote == 1;
     // });
@@ -539,6 +539,7 @@ export default {
           this.vote = -1;
           this.like_color = "rgb(255,255,255)";
           this.dislike_color = "rgb(255,255,255)";
+
         }
         if (this.vote === -1 && valeurLike === 1) {
           this.vote = 1;
@@ -601,9 +602,7 @@ export default {
         const response = await commentsApi.addComment(this.id, content);
         // console.log(response.post);
         // console.log(response.post.comments[response.post.comments.length - 1]);
-        this.comments.push(
-          response.post.comments[response.post.comments.length - 1]
-        );
+        this.comments.push(response.post.comments[response.post.comments.length -1]);
         // console.log(this.comments);
 
         this.$notify({
@@ -623,16 +622,19 @@ export default {
       }
     },
     onUpdateComment(data, commentId) {
-      // console.log(data);
-      // console.log(commentId);
-      // console.log(this.comments)
-      this.comments = this.comments.map((comment) => {
-        if (comment.id === commentId) {
-          comment.content = data.content;
-          // console.log(comment.content);
+        // console.log(data);
+        // console.log(commentId);
+        // console.log(this.comments)
+        this.comments = this.comments.map((comment) => {
+          if (comment.id === commentId) {
+            comment.content = data.content;
+            console.log(comment.content);
+          }
+          return comment
         }
-        return comment;
-      });
+        );
+        
+
     },
     async onDeleteComment(commentId) {
       try {
