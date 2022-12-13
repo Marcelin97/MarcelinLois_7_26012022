@@ -32,6 +32,7 @@
               v-bind:index="index"
               v-bind:id="post.id"
               @delete-post="deletePost"
+              @update-post="onUpdatePost"
             />
           </div>
           <div v-else>
@@ -67,9 +68,10 @@ export default {
       apiErrors: "",
     };
   },
-  async mounted() {
+  async created() {
     const getPosts = await postsApi.getPosts();
     this.posts = getPosts;
+    console.log("wall posts", this.posts);
     const getCommunities = await communitiesApi.getCommunities();
     this.communities = getCommunities;
   },
@@ -81,6 +83,20 @@ export default {
     },
     deletePost(postId) {
       this.posts = this.posts.filter((p) => p.id !== postId);
+    },
+    onUpdatePost(data, postId) {
+      console.log("update post", data);
+      console.log(postId);
+      this.posts = this.posts.map((post) => {
+
+        if (post.id === postId) {
+          console.log("recup", post)
+          post = data.datas;
+          console.log('post update', post)
+        }
+        return post;
+      });
+      console.log(this.posts)
     },
   },
 };

@@ -336,8 +336,8 @@ export default {
         axiosInstance
           .put(`/comments/update/${this.comment.id}`, this.state.commentUpdate)
           .then((response) => {
-            console.log(response.data.datas);
-            console.log("test");
+            // console.log(response.data.datas);
+            // console.log("test");
             this.$emit("update-comment", response.data.datas, this.comment.id);
 
             // close delete modal

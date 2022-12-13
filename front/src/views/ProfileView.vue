@@ -21,10 +21,11 @@
           :key="index"
           :post="post"
           v-bind:id="post.id"
+          @update-post="onUpdatePost"
         />
       </div>
       <div v-else>
-        <h3>Tu n'as pas de post pour le moment</h3>
+        <h3>{{ this.loadingMessage }}</h3>
         <router-link
           class="link"
           to="/communities"
@@ -43,6 +44,9 @@
 import UserProfile from "@/components/Profil/UserProfile.vue";
 import PostCard from "../components/Posts/PostCard.vue";
 
+// Post requests
+import postsApi from "../api/posts";
+
 export default {
   name: "Profile-View",
   components: {
@@ -53,24 +57,40 @@ export default {
     return {
       posts: [], // add posts array
       user: [], // current user
+      loadingMessage: 'Chargement en cours'
     };
   },
   mounted() {
-    const user = this.$store.state.user;
-
     // Current user
     this.user = this.$store.state.user;
-
+  },
+  async created() {
     // I'm looking for posts about my account
-    this.posts = this.$store.state.user.posts.map((post) => {
-      post.user = user;
-      return post;
-    });
+    const posts = await postsApi.getPostsByUser(this.$store.state.user.id)
+    this.posts = posts;
+    console.log("profile posts", this.posts);
+    if (this.posts.length < 1) {
+      this.loadingMessage = 'Il n y a pas encore de publications à afficher'
+    }
   },
   methods: {
     onUpdateAccount(data) {
       console.log("update account", data);
       this.user = data.user;
+    },
+    onUpdatePost(data, postId) {
+      console.log("update post", data);
+      console.log(postId);
+      this.posts = this.posts.map((post) => {
+
+        if (post.id === postId) {
+          console.log("recup", post)
+          post = data.datas;
+          console.log('post update', post)
+        }
+        return post;
+      });
+      console.log(this.posts)
     },
   },
 };

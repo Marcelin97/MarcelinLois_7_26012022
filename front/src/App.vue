@@ -55,6 +55,6 @@ body {
   background-color: #ffff;
 }
 main{
-  margin-top: 3rem;
+  margin-top: 5rem;
 }
 </style>

@@ -24,11 +24,12 @@
         :post="post"
         v-bind:id="post.id"
         :creatorInfo="creatorInfo"
+        @update-post="onUpdatePost"
       />
     </section>
   </div>
   <div v-else>
-    <h2>Chargement en cours...</h2>
+    <h2>{{ this.loadingMessage }}</h2>
   </div>
 </template>
 
@@ -38,6 +39,8 @@ import PostCard from "../components/Posts/PostCard.vue";
 
 // User requests
 import usersApi from "../api/users";
+// Post requests
+import postsApi from "../api/posts";
 
 export default {
   name: "User-View",
@@ -52,12 +55,22 @@ export default {
       user: [], // target user info
       userId: "",
       apiErrors: "",
+      loadingMessage: 'Chargement en cours'
     };
   },
-  async mounted() {
+  async created() {
     // I get my route parameter
     this.userId = this.$route.params.id;
 
+    // I'm creating a query to retrieve post by target user.
+    const posts = await postsApi.getPostsByUser(this.userId)
+    this.posts = posts;
+    // console.log("user target => posts", this.posts);
+    if (this.posts.length < 1) {
+      this.loadingMessage = 'Il n y a pas encore de publications à afficher'
+    }
+  },
+  async mounted() {
     // I'm creating a query to retrieve target user information.
     try {
       const response = await usersApi.readTargetUser(this.userId);
@@ -74,9 +87,6 @@ export default {
         duration: 30000,
       });
     }
-
-    // I assign the target user's posts in my posts array
-    this.posts = this.user.posts;
 
     // I assign target user info to CreatorInfo
     this.creatorInfo = this.user;

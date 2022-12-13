@@ -20,7 +20,7 @@
 
   <!-- If there are no users -->
   <section v-else>
-    <h2>Il n'y a pas d'autres utilisateurs pour le moment.</h2>
+    <h2>{{ this.loadingMessage }}</h2>
   </section>
 </template>
 
@@ -40,6 +40,7 @@ export default {
       users: [], // add users array
       apiErrors: "",
       search: "",
+      loadingMessage: 'Chargement en cours'
     };
   },
   computed: {
@@ -62,6 +63,10 @@ export default {
       const response = await usersApi.getUsers();
       // I assign datas to the users array
       this.users = response;
+      // If no users
+      if (this.users.length < 1) {
+        this.loadingMessage = 'Il n y a pas encore d autres utilisateurs'
+      }
     } catch (error) {
       if (error.response.status === 404) {
         this.apiErrors = "Utilisateurs introuvable !";

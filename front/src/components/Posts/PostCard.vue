@@ -252,7 +252,7 @@
       </template>
 
       <template v-slot:body>
-        <form action="#" method="put" enctype="multipart/form-data">
+        <form action="#" method="patch" enctype="multipart/form-data">
           <div class="form-group">
             <label for="title">Nouveau titre de la publication</label>
             <input
@@ -571,25 +571,11 @@ export default {
   },
   mounted() {
     this.currentUser = this.$store.state.user;
-
-    // // log all vote by posts
-    // console.log("tous les votes par post", this.post.likePosts);
-
-    // // count positive vote
-    // let likeByPost = this.post.likePosts.filter((item) => {
-    //   return item.vote == 1;
-    // });
-    // console.log("like positif", likeByPost);
-    // this.likesCount = likeByPost.length;
-    // // console.log(this.likesCount);
-
-    // // count negative vote
-    // let dislikeByPost = this.post.likePosts.filter((item) => {
-    //       return item.vote == -1;
-    //     });
-    // this.dislikesCount = dislikeByPost.length;
   },
   methods: {
+    onChangeFileUpload() {
+      this.state.postUpdate.image = document.querySelector("#image").files[0];
+    },
     async onUpdatePost() {
       let bodyFormData = new FormData();
       if (this.state.postUpdate.image)
@@ -611,8 +597,8 @@ export default {
         })
         .then((result) => {
           console.log("result: ", result.data.datas);
-          this.$emit("update-post", result.data.datas);
-
+          this.$emit("update-post", result.data, this.id);
+          
           // close update post modal
           this.$refs.updatePost.closeModal();
 
@@ -622,12 +608,17 @@ export default {
             title: `Post mis à jour`,
             text: `Vous allez être redirigé vers le fil d'actualité.`,
           });
-
-          // redirect to the feed
-          this.$router.push("/wall");
         })
         .catch((err) => {
-          console.log(err);
+          this.apiErrors = err.response;
+
+          // notification error message
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de la mise à jour de l'utilisateur'`,
+            text: `Erreur reporté : ${this.apiErrors}`,
+            duration: 30000,
+          });
         });
     },
     async deletePost() {

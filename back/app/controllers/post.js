@@ -110,6 +110,34 @@ exports.readPostById = (req, res, next) => {
     });
 };
 
+// * Read all post by user
+exports.readAllPostsByUser = (req, res, next) => {
+  post
+    .findAll({
+      where: {
+        creatorId: req.params.userId,
+      },
+      include: {
+        all: true,
+      },
+    })
+    .then((result) => {
+      // TODO : Check if post exist
+      if (!result) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: "Post find with success",
+        result,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ err, error: { msg: "Couldn´t find post" } });
+    });
+};
+
 // * Read all post by community
 exports.readAllPostByCommunity = (req, res, next) => {
   community
@@ -263,7 +291,10 @@ exports.readAllPosts = async (req, res, next) => {
 exports.updatePost = (req, res, next) => {
   const { title, content } = req.body;
   post
-    .findOne({ where: { id: req.params.id } })
+    .findOne({
+      where: { id: req.params.id }, include: {
+        all: true,
+      }, })
     .then(async (result) => {
       // TODO : Check if post exist
       if (!result) {
