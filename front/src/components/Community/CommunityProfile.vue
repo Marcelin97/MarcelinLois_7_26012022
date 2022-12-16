@@ -81,6 +81,7 @@
               aria-label="S'abonner"
               @click="followCommunityClick"
               text="S'abonner"
+              v-if="!isFollowingCommunity"
             >
               S'abonner
             </button>
@@ -91,6 +92,8 @@
               aria-label="Se désabonner"
               @click="unfollowCommunityClick"
               text="Se désabonner"
+              
+              v-if="isFollowingCommunity"
             >
               Se désabonner
             </button>
@@ -312,6 +315,7 @@ import deleteBtn from "../Base/DeleteBtn.vue";
 
 import communitiesApi from "../../api/community";
 import usersApi from "../../api/users";
+import postsApi from "../../api/posts";
 import axiosInstance from "../../services/api";
 
 import useVuelidate from "@vuelidate/core";
@@ -322,7 +326,8 @@ import roleMixin from "../../mixins/role.mixin";
 
 export default {
   name: "Community-profile",
-  props: ["community"],
+  props: ["community", "hasFollow", "unFollow"],
+  emits: ["follow-community", "unfollow-community", "delete-community"],
   setup() {
     const state = reactive({
       community: {
@@ -364,6 +369,7 @@ export default {
   data() {
     return {
       user: [],
+      follower: [],
       apiErrors: "",
       communityId: "",
       users: [],
@@ -376,6 +382,7 @@ export default {
       },
       selectValue: "",
       placeholder: "Choisi un modérateur",
+      isHidden: false
     };
   },
   mixins: [roleMixin],
@@ -383,10 +390,33 @@ export default {
     isOwner() {
       return this.community.userId === this.$store.state.user.id;
     },
+    // Check if current user is following a specific community
+    isFollowingCommunity() {
+      return this.follower.find(
+        (feed) => feed.userId === this.$store.state.user.id
+      );
+
+      // if (this.isAuthenticated) {
+      //   for (let i = 0; i < this.follower.length; i++) {
+      //     let elem = this.follower[i];
+      //     if (
+      //       elem.userId === this.user.id &&
+      //       elem.communityId === this.community.id
+      //     )
+      //       return true;
+      //   }
+      // }
+      // return false;
+    },
   },
   async created() {
     this.user = this.$store.state.user;
     this.communityId = this.$route.params.id;
+
+    // I'm creating a query to retrieve if current user follow a community
+    const getFollow = await postsApi.communityFollow();
+    this.follower = getFollow;
+    console.log("follower", this.follower);
 
     // I'm creating a query to retrieve all users informations.
     try {
@@ -412,7 +442,7 @@ export default {
       );
       this.communityRead = getCommunity.data.datas;
     } catch (error) {
-      if (error.response.status === 404) {
+      if (error.status === 404) {
         this.apiErrors = "Il n'y a pas encore de communauté !";
       } else {
         this.apiErrors = error.data.error;
@@ -436,7 +466,7 @@ export default {
       ) {
         try {
           await communitiesApi.deleteCommunity(this.communityId);
-
+          this.$emit("delete-community", this.communityId);
           // notification success
           this.$notify({
             type: "success",
@@ -446,7 +476,7 @@ export default {
           });
 
           // redirect to the community page to create new one
-          this.$router.push("/wall");
+          this.$router.push("/communities");
         } catch (error) {
           this.apiErrors = error.data.error;
 
@@ -516,6 +546,9 @@ export default {
     async followCommunityClick() {
       try {
         await communitiesApi.followCommunity(this.communityId);
+        this.$emit("follow-community", this.communityId);
+        // this.hasFollow = !this.hasFollow;
+        this.isFollowingCommunity = false
 
         // notification success
         this.$notify({
@@ -529,7 +562,6 @@ export default {
         this.$notify({
           duration: 2500,
           type: "error",
-          title: `Erreur lors du téléchargement des données`,
           text: `Erreur reporté : ${this.apiErrors}`,
         });
       }
@@ -537,7 +569,9 @@ export default {
     async unfollowCommunityClick() {
       try {
         await communitiesApi.unfollowCommunity(this.communityId);
-
+        this.$emit("unfollow-community", this.communityId);
+        // this.hasFollow;
+        this.isFollowingCommunity = true
         // notification success
         this.$notify({
           type: "success",
@@ -550,7 +584,6 @@ export default {
         this.$notify({
           duration: 2500,
           type: "error",
-          title: `Erreur lors du téléchargement des données`,
           text: `Erreur reporté : ${this.apiErrors}`,
         });
       }

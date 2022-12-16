@@ -14,7 +14,7 @@
       </router-view>
       <notifications
         id="notifications"
-        position="top right"
+        position="bottom center"
         :duration="3000"
         :ignoreDuplicates="true"
         :reverse="true"

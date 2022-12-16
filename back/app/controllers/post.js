@@ -117,6 +117,7 @@ exports.readAllPostsByUser = (req, res, next) => {
       where: {
         creatorId: req.params.userId,
       },
+       order: [["createdAt", "DESC"]],
       include: {
         all: true,
       },
@@ -192,7 +193,7 @@ exports.readAllPostByCommunityFollow = (req, res, next) => {
           required: true,
           include: {
             model: post,
-            required: true,
+            // required: true,
             as: "posts",
           },
         },
@@ -259,8 +260,7 @@ exports.readAllPosts = async (req, res, next) => {
     .findAll(
       {
         order: [["createdAt", "DESC"]],
-        limit: 6,
-        // raw: true,
+        // limit: 6,
         include: {
           all: true,
         },

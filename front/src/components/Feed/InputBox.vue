@@ -249,6 +249,12 @@ export default {
             // reset form
             this.v$.$reset();
 
+            // this works
+            //setTimeout(() => { this.$v.$reset() }, 0)
+
+            // this works even better - using Vue.nextTick method
+            this.$nextTick(() => { this.$v.$reset() })
+
             // notification de succès
             this.$notify({
               type: "success",
@@ -408,9 +414,7 @@ select {
   outline: 0;
   width: 15rem;
   height: 2rem;
-  padding: 0 4em 0 1em;
-  border-radius: 0.25em;
-  box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 1em 0 rgb(0 0 0 / 20%);
   color: #fff;
   background-color: #34495e;
   cursor: pointer;
@@ -435,6 +439,7 @@ select {
   overflow: hidden;
   margin: 0.5rem 0 0.5rem 0;
   text-overflow: ellipsis;
+  justify-content: center;
   // width: 100%;
   @media only screen and (min-width: 576px) {
     width: 100%;
@@ -444,10 +449,10 @@ select {
 /* Arrow */
 .select::after {
   content: "▼";
-  position: absolute;
+  // position: absolute;
   /* top: 0; */
-  right: 10px;
-  padding: 1em;
+  // right: 10px;
+  padding: 8px;
   background-color: #34495e;
   transition: 0.25s all ease;
   pointer-events: none;

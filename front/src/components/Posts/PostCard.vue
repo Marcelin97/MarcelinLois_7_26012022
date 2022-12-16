@@ -139,6 +139,7 @@
             class="like icon-vote"
             title="Mettre un j'aime"
             @click="sendLike(1, id)"
+            :class="{disabled: upvoted}"
           >
             <svg
               class="heart"
@@ -170,6 +171,7 @@
             class="dislike icon-vote"
             title="j'aime pas"
             @click="sendLike(-1, id)"
+            :class="{disabled: downvoted}"
           >
             <svg
               class="disheart"
@@ -483,6 +485,8 @@ export default {
       like_color: "",
       dislike_color: "",
       postRead: [],
+      upvoted: false,
+      downvoted: false
     };
   },
   mixins: [roleMixin],
@@ -541,23 +545,49 @@ export default {
     $lazy: true,
   },
   computed: {
-    // showCommentsCount() {
-    //   return this.comments.length;
-    // },
+    showCommentsCount() {
+      return this.comments.length;
+    },
     showDate() {
       if (this.post.createdAt !== this.post.updatedAt) {
         return `Mis à jour ${timeAgo.format(new Date(this.post.updatedAt))}`;
       }
       return `Posté ${timeAgo.format(new Date(this.post.createdAt))}`;
     },
-    // showLikesCount() {
-    //   let likes = this.post.filter((p) => p.likePosts == 1)
-    //   console.log(likes);
-    //   return likes.length > 0;
-    // },
-    // showDislikesCount() {
-    //   return this.dislikesCount;
-    // },
+    showLikesCount() {
+
+        let like = this.post.likePosts.filter(
+          (p) => p.vote === 1
+        );
+        console.log(like.length);
+      return like.length;
+    },
+    showDislikesCount() {
+      let disLike = this.post.likePosts.filter(
+        (p) => p.vote === -1
+      );
+      console.log(disLike.length);
+      return disLike.length;
+    },
+    isLikedByUser() {
+      return this.post.likePosts.find((like) => like.userId === this.$store.state.user.id)
+    },
+    isLiked() {
+        // this.post.likePosts.filter((like) => {
+        //   console.log("hihi", like.vote)
+        //   if (like.userId === this.$store.state.user.id) {
+        //     let like = like.vote 
+        //   }
+        // })
+        for (let i = 0; i < this.post.likePosts.length; i++) {
+          let elem = this.post.likePosts[i];
+          console.log("okok", elem);
+          if (this.$store.state.user.id === elem.id) {
+            return true;
+          }
+      }
+        return false
+      }
   },
   async created() {
     this.postId = this.$route.params.id;
@@ -590,15 +620,15 @@ export default {
       }
 
       axiosInstance
-        .patch(`/posts/${this.id}/update`, bodyFormData, {
+        .patch(`/posts/${this.post.id}/update`, bodyFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then((result) => {
           console.log("result: ", result.data.datas);
-          this.$emit("update-post", result.data, this.id);
-          
+          this.$emit("update-post", result.data, this.post.id);
+
           // close update post modal
           this.$refs.updatePost.closeModal();
 
@@ -676,58 +706,17 @@ export default {
       }
     },
     sendLike(valeurLike, id) {
-      if (this.vote == undefined || this.vote == null || this.vote === 0) {
-        this.vote = valeurLike;
-      } //si l'utilisateur à déjà (dis)liké le post
-      else {
-        if (this.vote === valeurLike) {
-          valeurLike = 0;
-          this.vote = 0;
-          this.like_color = "rgb(255,255,255)";
-          this.dislike_color = "rgb(255,255,255)";
-        }
-        if (this.vote === 1 && valeurLike === 0) {
-          this.vote = -1;
-        }
-        if (this.vote === 0 && valeurLike === 1) {
-          this.vote = 1;
-        }
-        if (this.vote === 1 && valeurLike === -1) {
-          this.vote = -1;
-          this.like_color = "rgb(255,255,255)";
-          this.dislike_color = "rgb(255,255,255)";
-        }
-        if (this.vote === -1 && valeurLike === 1) {
-          this.vote = 1;
-          this.like_color = "rgb(255,255,255)";
-          this.dislike_color = "rgb(255,255,255)";
-        }
+      if (valeurLike == 1) {
+        this.upvoted = !this.upvoted;
+        this.downvoted = false;
+      } else{
+        valeurLike == 0
       }
-      if (valeurLike === 1) {
-        this.like_color = "rgb(255, 54, 54)";
+      if (valeurLike == -1) {
+        this.downvoted = !this.downvoted;
+        this.upvoted = false;
+      }
 
-        this.$notify({
-          type: "success",
-          title: `J'aime enregistré !`,
-          duration: 2000,
-        });
-      }
-      if (valeurLike === -1) {
-        this.dislike_color = "rgb(0,0,204)";
-
-        this.$notify({
-          type: "success",
-          title: `Je n'aime pas enregistré !`,
-          duration: 2000,
-        });
-      }
-      if (valeurLike === 0) {
-        this.$notify({
-          type: "success",
-          title: `Vote enlevé !`,
-          duration: 2000,
-        });
-      }
       // data send to axios request
       const infoLike = {
         vote: valeurLike,
@@ -752,7 +741,86 @@ export default {
             duration: 3000,
           });
         });
+      
     },
+    // sendLike(valeurLike, id) {
+    //   if (this.vote == undefined || this.vote == null || this.vote === 0) {
+    //     this.vote = valeurLike;
+    //   } //si l'utilisateur à déjà (dis)liké le post
+    //   else {
+    //     if (this.vote === valeurLike) {
+    //       valeurLike = 0;
+    //       this.vote = 0;
+    //       this.like_color = "rgb(255,255,255)";
+    //       this.dislike_color = "rgb(255,255,255)";
+    //     }
+    //     if (this.vote === 1 && valeurLike === 0) {
+    //       this.vote = -1;
+    //     }
+    //     if (this.vote === 0 && valeurLike === 1) {
+    //       this.vote = 1;
+    //     }
+    //     if (this.vote === 1 && valeurLike === -1) {
+    //       this.vote = -1;
+    //       this.like_color = "rgb(255,255,255)";
+    //       this.dislike_color = "rgb(255,255,255)";
+    //     }
+    //     if (this.vote === -1 && valeurLike === 1) {
+    //       this.vote = 1;
+    //       this.like_color = "rgb(255,255,255)";
+    //       this.dislike_color = "rgb(255,255,255)";
+    //     }
+    //   }
+    //   if (valeurLike === 1) {
+    //     this.like_color = "rgb(255, 54, 54)";
+
+    //     this.$notify({
+    //       type: "success",
+    //       title: `J'aime enregistré !`,
+    //       duration: 2000,
+    //     });
+    //   }
+    //   if (valeurLike === -1) {
+    //     this.dislike_color = "rgb(0,0,204)";
+
+    //     this.$notify({
+    //       type: "success",
+    //       title: `Je n'aime pas enregistré !`,
+    //       duration: 2000,
+    //     });
+    //   }
+    //   if (valeurLike === 0) {
+    //     this.$notify({
+    //       type: "success",
+    //       title: `Vote enlevé !`,
+    //       duration: 2000,
+    //     });
+    //   }
+    //   // data send to axios request
+    //   const infoLike = {
+    //     vote: valeurLike,
+    //     postId: id,
+    //     userId: this.currentUser.id,
+    //   };
+    //   axiosInstance
+    //     .post(`posts/${id}/likes`, infoLike)
+    //     .then((res) => {
+    //       // console.log("likePost", res.data);
+    //       if (res) {
+    //         return res.json;
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       this.apiErrors = error;
+
+    //       this.$notify({
+    //         type: "error",
+    //         title: `Erreur lors de l'ajout du vote`,
+    //         text: `Erreur reporté : ${this.apiErrors}`,
+    //         duration: 3000,
+    //       });
+    //     });
+    // },
     async onAddComment({ content }) {
       try {
         const response = await commentsApi.addComment(this.id, content);

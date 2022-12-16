@@ -3,7 +3,7 @@
     <h1>{{ this.community.title }}</h1>
 
     <!-- output component -->
-    <CommunityProfile :community="community" :communityId="communityId" />
+    <CommunityProfile :hasFollow="true" @delete-community="deleteCommunity" @unfollow-community="unfollowCommunity" @follow-community="followCommunity" :community="community" :communityId="communityId" />
 
     <!-- gestion erreur API avec axios -->
     <div v-if="apiErrors" class="error-api">
@@ -38,24 +38,21 @@ export default {
     this.communityId = this.$route.params.id;
 
     // I'm creating a query to retrieve target community information.
-    try {
-      const getCommunities = await communitiesApi.readTargetCommunity(
-        this.communityId
-      );
+      const getCommunities = await communitiesApi.readTargetCommunity(this.communityId);
       // I assign data to the community array
       this.community = getCommunities.data.datas;
-    } catch (error) {
-      this.apiErrors = error.response;
-
-      // Error notification
-      this.$notify({
-        type: "error",
-        title: `Erreur lors du changement de la communauté`,
-        text: `Erreur reporté : ${this.apiErrors}`,
-        duration: 30000,
-      });
-    }
   },
+  methods: {
+    followCommunity(communityId) {
+      this.community.id == communityId;
+    },
+    unfollowCommunity(communityId) {
+      this.community.id == communityId;
+    },
+    deleteCommunity(communityId) {
+      this.community.id == communityId;
+    },
+  }
 };
 </script>
 

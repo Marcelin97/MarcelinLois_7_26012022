@@ -69,8 +69,8 @@ export default {
     };
   },
   async created() {
-    const getPosts = await postsApi.getPosts();
-    this.posts = getPosts;
+    const posts = await postsApi.getPosts();
+    this.posts = posts;
     console.log("wall posts", this.posts);
     const getCommunities = await communitiesApi.getCommunities();
     this.communities = getCommunities;

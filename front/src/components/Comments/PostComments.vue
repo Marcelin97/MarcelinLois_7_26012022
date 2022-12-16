@@ -378,6 +378,10 @@ export default {
           });
         } else {
           this.love = "Like";
+          this.$notify({
+            type: "success",
+            title: `Vous n'aimez plus ce commentaire`,
+          });
         }
       } catch (error) {
         this.apiErrors = error;
