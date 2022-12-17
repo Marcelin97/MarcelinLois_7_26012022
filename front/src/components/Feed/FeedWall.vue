@@ -11,11 +11,7 @@
           <!-- Input Box -->
           <InputBox v-if="communities.length != 0" @create-post="createPost" />
           <div v-else class="container-communities">
-            <router-link
-              class="underline"
-              to="/communities"
-              aria-label="Page des communautés"
-            >
+            <router-link class="underline" to="/communities" aria-label="Page des communautés">
               Commence par crée une communauté 😎
             </router-link>
           </div>
@@ -24,16 +20,8 @@
         <div class="sidebar__main">
           <!-- Posts -->
           <div v-if="posts.length != 0" class="post">
-            <PostCard
-              class="post__card"
-              v-for="(post, index) in posts"
-              :key="index"
-              :post="post"
-              v-bind:index="index"
-              v-bind:id="post.id"
-              @delete-post="deletePost"
-              @update-post="onUpdatePost"
-            />
+            <PostCard class="post__card" v-for="(post, index) in posts" :key="index" :post="post" v-bind:index="index"
+              v-bind:id="post.id" @delete-post="deletePost" @update-post="onUpdatePost" />
           </div>
           <div v-else>
             <div class="container-communities">
@@ -90,8 +78,9 @@ export default {
       this.posts = this.posts.map((post) => {
 
         if (post.id === postId) {
-          console.log("recup", post)
-          post = data.datas;
+          console.log("DEBUG DATA", data);
+          console.log("DEBUG DATAS", data.datas)
+          post = data;
           console.log('post update', post)
         }
         return post;
@@ -111,17 +100,20 @@ export default {
 .sidebar {
   display: flex;
   flex-direction: column;
-    @media only screen and (min-width: 576px) {
-        flex-direction: row;
-      }
+
+  @media only screen and (min-width: 576px) {
+    flex-direction: row;
+  }
 }
 
 .sidebar__sidebar {
   width: 100%;
-    @media only screen and (min-width: 576px) {
-        width: 35%;
-      }
+
+  @media only screen and (min-width: 576px) {
+    width: 35%;
+  }
 }
+
 .sidebar__main {
   display: flex;
   /* Take the remaining width */

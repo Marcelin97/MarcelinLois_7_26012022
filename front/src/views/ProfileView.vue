@@ -85,7 +85,7 @@ export default {
 
         if (post.id === postId) {
           console.log("recup", post)
-          post = data.datas;
+          post = data;
           console.log('post update', post)
         }
         return post;

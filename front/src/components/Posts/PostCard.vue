@@ -6,70 +6,36 @@
         <div class="header">
           <div class="header__left">
             <div class="profile-pic" v-if="post.user">
-              <img
-                v-if="post.user.imageUrl"
-                class="profile-pic__user"
-                :src="`http://localhost:3000${post.user.imageUrl}`"
-                :alt="'Avatar de ' + post.user.username"
-                aria-label="Photo d'utilisateur"
-              />
-              <img
-                class="profile-pic__user"
-                v-else
-                src="../../assets/img/avataaars.png"
-                alt="Avatar par défaut"
-                aria-label="Avatar par défaut"
-              />
+              <img v-if="post.user.imageUrl" class="profile-pic__user"
+                :src="`http://localhost:3000${post.user.imageUrl}`" :alt="'Avatar de ' + post.user.username"
+                aria-label="Photo d'utilisateur" />
+              <img class="profile-pic__user" v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut"
+                aria-label="Avatar par défaut" />
             </div>
             <div class="profile-pic" v-else-if="creatorInfo">
-              <img
-                v-if="creatorInfo.imageUrl"
-                class="profile-pic__user"
-                :src="`http://localhost:3000${creatorInfo.imageUrl}`"
-                :alt="'Avatar de ' + creatorInfo.username"
-                aria-label="Photo d'utilisateur"
-              />
-              <img
-                class="profile-pic__user"
-                v-else
-                src="../../assets/img/avataaars.png"
-                alt="Avatar par défaut"
-                aria-label="Avatar par défaut"
-              />
+              <img v-if="creatorInfo.imageUrl" class="profile-pic__user"
+                :src="`http://localhost:3000${creatorInfo.imageUrl}`" :alt="'Avatar de ' + creatorInfo.username"
+                aria-label="Photo d'utilisateur" />
+              <img class="profile-pic__user" v-else src="../../assets/img/avataaars.png" alt="Avatar par défaut"
+                aria-label="Avatar par défaut" />
             </div>
 
             <p class="profile-pic__username" v-if="post.user">
               {{ post.user.username }}
             </p>
-            <p
-              class="profile-pic__username"
-              v-else-if="creatorInfo.length != 0"
-            >
+            <p class="profile-pic__username" v-else-if="creatorInfo.length != 0">
               {{ creatorInfo.username }}
             </p>
           </div>
 
           <!-- Menu dropdown -->
           <div class="dropdown">
-            <button
-              class="dropdown-btn"
-              v-on:click="show = !show"
-              type="button"
-              tabindex="0"
-              aria-label="Menu déroulant"
-            >
+            <button class="dropdown-btn" v-on:click="show = !show" type="button" tabindex="0"
+              aria-label="Menu déroulant">
               <div>
                 <div style="height: 24px; width: 24px">
-                  <svg
-                    aria-label="Plus d’options"
-                    class="_ab6-"
-                    color="#262626"
-                    fill="#262626"
-                    height="24"
-                    role="img"
-                    viewBox="0 0 24 24"
-                    width="24"
-                  >
+                  <svg aria-label="Plus d’options" class="_ab6-" color="#262626" fill="#262626" height="24" role="img"
+                    viewBox="0 0 24 24" width="24">
                     <circle cx="12" cy="12" r="1.5"></circle>
                     <circle cx="6" cy="12" r="1.5"></circle>
                     <circle cx="18" cy="12" r="1.5"></circle>
@@ -81,37 +47,20 @@
             <div class="dropdown-content" v-bind:class="{ show: show }">
               <ul>
                 <li v-if="canAdmin(this.post.creatorId)">
-                  <button
-                    type="button"
-                    text="Modifier ce post"
-                    class="btn__update"
-                    aria-label="Modifier ce post"
-                    @click="$refs.updatePost.openModal()"
-                  >
+                  <button type="button" text="Modifier ce post" class="btn__update" aria-label="Modifier ce post"
+                    @click="$refs.updatePost.openModal()">
                     Modifier
                   </button>
                 </li>
                 <li v-if="this.$store.state.user.id != this.post.creatorId">
-                  <button
-                    title="Signaler ce post"
-                    type="button"
-                    @click="$refs.reportPost.openModal()"
-                    text="Signaler ce post"
-                    aria-label="Signaler ce post"
-                  >
+                  <button title="Signaler ce post" type="button" @click="$refs.reportPost.openModal()"
+                    text="Signaler ce post" aria-label="Signaler ce post">
                     Signaler
                   </button>
                 </li>
-                <li
-                  v-if="canModerate(this.post.creatorId, this.post.communityId)"
-                >
-                  <button
-                    title="Supprimer ce post"
-                    type="button"
-                    @click="$refs.deletePost.openModal()"
-                    text="Supprimer ce post"
-                    aria-label="Supprimer ce post"
-                  >
+                <li v-if="canModerate(this.post.creatorId, this.post.communityId)">
+                  <button title="Supprimer ce post" type="button" @click="$refs.deletePost.openModal()"
+                    text="Supprimer ce post" aria-label="Supprimer ce post">
                     Supprimer
                   </button>
                 </li>
@@ -123,40 +72,21 @@
 
       <!-- image card -->
       <div class="post-image">
-        <img
-          alt="photo du post"
-          :src="`http://localhost:3000${post.imageUrl}`"
-        />
+        <img alt="photo du post" :src="`http://localhost:3000${post.imageUrl}`" />
       </div>
 
       <!-- content card -->
       <div class="post-content">
         <!-- btn like -->
         <div class="vote-data">
-          <button
-            type="button"
-            aria-label="Like"
-            class="like icon-vote"
-            title="Mettre un j'aime"
-            @click="sendLike(1, id)"
-            :class="{disabled: upvoted}"
-          >
-            <svg
-              class="heart"
-              id="heart"
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              viewBox="0 0 32 31"
-            >
+          <button type="button" aria-label="Like" class="like icon-vote" title="Mettre un j'aime"
+            @click="sendLike(1, id)" :class="{ disabled: upvoted }">
+            <svg class="heart" id="heart" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
               <title>J'aime</title>
               <g stroke-width="2">
-                <path
-                  id="heart"
+                <path id="heart"
                   d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  v-bind:fill="like_color"
-                ></path>
+                  stroke-linecap="round" stroke-linejoin="round" v-bind:fill="like_color"></path>
               </g>
             </svg>
           </button>
@@ -165,30 +95,14 @@
 
         <!-- btn dislike -->
         <div class="vote-data">
-          <button
-            type="button"
-            aria-label="Dislike"
-            class="dislike icon-vote"
-            title="j'aime pas"
-            @click="sendLike(-1, id)"
-            :class="{disabled: downvoted}"
-          >
-            <svg
-              class="disheart"
-              id="heart"
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              viewBox="0 0 32 31"
-            >
+          <button type="button" aria-label="Dislike" class="dislike icon-vote" title="j'aime pas"
+            @click="sendLike(-1, id)" :class="{ disabled: downvoted }">
+            <svg class="disheart" id="heart" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
               <title>Enlever mon j'aime</title>
               <g stroke-width="2">
-                <path
-                  id="heart"
+                <path id="heart"
                   d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  v-bind:fill="dislike_color"
-                ></path>
+                  stroke-linecap="round" stroke-linejoin="round" v-bind:fill="dislike_color"></path>
               </g>
             </svg>
           </button>
@@ -214,17 +128,9 @@
             </span>
           </div>
           <!-- comment(s) list -->
-          <PostComments
-            v-for="(comment, index) in this.comments"
-            :key="index"
-            :comment="comment"
-            v-bind:content="comment.content"
-            v-bind:index="index"
-            v-bind:communityId="post.communityId"
-            @delete-comment="onDeleteComment"
-            @update-comment="onUpdateComment"
-            class="comments-list"
-          />
+          <PostComments v-for="(comment, index) in this.comments" :key="index" :comment="comment"
+            v-bind:content="comment.content" v-bind:index="index" v-bind:communityId="post.communityId"
+            @delete-comment="onDeleteComment" @update-comment="onUpdateComment" class="comments-list" />
 
           <!-- if no comment(s) -->
           <p class="noComment">
@@ -257,26 +163,13 @@
         <form action="#" method="patch" enctype="multipart/form-data">
           <div class="form-group">
             <label for="title">Nouveau titre de la publication</label>
-            <input
-              placeholder="TITRE"
-              autocomplete="off"
-              minlength="3"
-              maxlength="255"
-              aria-label="Titre de votre post"
-              id="title"
-              type="text"
-              v-model="state.postUpdate.title"
-              @blur="v$.postUpdate.title.$touch"
-              :class="v$.postUpdate.title.$error === true ? 'error' : 'dirty'"
-            />
+            <input placeholder="TITRE" autocomplete="off" minlength="3" maxlength="255" aria-label="Titre de votre post"
+              id="title" type="text" v-model="state.postUpdate.title" @blur="v$.postUpdate.title.$touch"
+              :class="v$.postUpdate.title.$error === true ? 'error' : 'dirty'" />
 
             <!-- Error Message -->
             <template v-if="v$.postUpdate.title.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.postUpdate.title.$errors"
-                :key="index"
-              >
+              <div class="input-errors" v-for="(error, index) of v$.postUpdate.title.$errors" :key="index">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -285,25 +178,13 @@
 
           <div class="form-group">
             <label for="content">Nouvelle description de la publication</label>
-            <input
-              id="content"
-              type="text"
-              placeholder="À PROPOS de..."
-              minlength="2"
-              maxlength="400"
-              aria-label="description de votre publication"
-              v-model="state.postUpdate.content"
-              @blur="v$.postUpdate.content.$touch"
-              :class="v$.postUpdate.content.$error === true ? 'error' : 'dirty'"
-            />
+            <input id="content" type="text" placeholder="À PROPOS de..." minlength="2" maxlength="400"
+              aria-label="description de votre publication" v-model="state.postUpdate.content"
+              @blur="v$.postUpdate.content.$touch" :class="v$.postUpdate.content.$error === true ? 'error' : 'dirty'" />
 
             <!-- Error Message -->
             <template v-if="v$.postUpdate.content.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.postUpdate.content.$errors"
-                :key="index"
-              >
+              <div class="input-errors" v-for="(error, index) of v$.postUpdate.content.$errors" :key="index">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -312,23 +193,12 @@
 
           <div class="form-group">
             <label for="PostImage">Nouvelle photo de la publication</label>
-            <input
-              class="input-file"
-              v-on="state.postUpdate.image"
-              id="image"
-              type="file"
-              accept=".jpeg,.jpg,png"
-              @change="onChangeFileUpload"
-              ref="file"
-            />
+            <input class="input-file" v-on="state.postUpdate.image" id="image" type="file" accept=".jpeg,.jpg,png"
+              @change="onChangeFileUpload" ref="file" />
 
             <!-- Error Message -->
             <template v-if="v$.postUpdate.image.$dirty">
-              <div
-                class="input-errors"
-                v-for="(error, index) of v$.postUpdate.image.$errors"
-                :key="index"
-              >
+              <div class="input-errors" v-for="(error, index) of v$.postUpdate.image.$errors" :key="index">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -337,11 +207,7 @@
 
           <!-- button submit -->
           <div class="button-container">
-            <button
-              type="submit"
-              class="btn"
-              @click.stop.prevent="onUpdatePost"
-            >
+            <button type="submit" class="btn" @click.stop.prevent="onUpdatePost">
               Modifier
             </button>
           </div>
@@ -359,44 +225,24 @@
         <div class="container">
           <form action="#" method="post" @closed="v$.$reset()">
             <div class="FormGroup">
-              <label class="FormGroupLabel" for=""
-                >Pourquoi signalez-vous ce post ?</label
-              >
+              <label class="FormGroupLabel" for="">Pourquoi signalez-vous ce post ?</label>
               <div class="FormTextboxWrapper">
-                <textarea
-                  cols="50"
-                  rows="5"
-                  required
-                  class="FormTextbox"
-                  type="text"
-                  placeholder="Explique nous les raisons de ce signalement."
-                  v-model="state.post.content"
-                  @blur="v$.post.content.$touch"
-                  :class="v$.post.content.$error === true ? 'error' : 'dirty'"
-                />
+                <textarea cols="50" rows="5" required class="FormTextbox" type="text"
+                  placeholder="Explique nous les raisons de ce signalement." v-model="state.post.content"
+                  @blur="v$.post.content.$touch" :class="v$.post.content.$error === true ? 'error' : 'dirty'" />
               </div>
 
               <!-- Error Message -->
               <template v-if="v$.post.content.$dirty">
-                <div
-                  class="input-errors"
-                  v-for="(error, index) of v$.post.content.$errors"
-                  :key="index"
-                >
+                <div class="input-errors" v-for="(error, index) of v$.post.content.$errors" :key="index">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <!-- Error Message -->
             </div>
 
-            <button
-              type="submit"
-              class="btn button"
-              title="Signaler"
-              text="Signaler"
-              aria-label="Confirmer signalement"
-              @click.prevent.stop="reportPostClick(index, id)"
-            >
+            <button type="submit" class="btn button" title="Signaler" text="Signaler" aria-label="Confirmer signalement"
+              @click.prevent.stop="reportPostClick(index, id)">
               Confirmer signalement
             </button>
           </form>
@@ -427,13 +273,8 @@
 
       <template v-slot:footer>
         <div class="modal__actions">
-          <button
-            class="btn"
-            text="Annuler"
-            title="Annuler"
-            aria-label="Annuler la suppression"
-            @click="$refs.deletePost.closeModal()"
-          >
+          <button class="btn" text="Annuler" title="Annuler" aria-label="Annuler la suppression"
+            @click="$refs.deletePost.closeModal()">
             Annuler
           </button>
           <deleteBtn @click="deletePost()" />
@@ -478,15 +319,11 @@ export default {
       currentUser: [],
       show: false,
       apiErrors: "",
-      vote: 0,
       likesCount: 0,
       dislikesCount: 0,
       comments: [],
       like_color: "",
       dislike_color: "",
-      postRead: [],
-      upvoted: false,
-      downvoted: false
     };
   },
   mixins: [roleMixin],
@@ -555,44 +392,37 @@ export default {
       return `Posté ${timeAgo.format(new Date(this.post.createdAt))}`;
     },
     showLikesCount() {
-
-        let like = this.post.likePosts.filter(
-          (p) => p.vote === 1
-        );
-        console.log(like.length);
+      let like = this.post.likePosts.filter((p) => p.vote === 1);
+      // console.log(like.length);
       return like.length;
     },
     showDislikesCount() {
-      let disLike = this.post.likePosts.filter(
-        (p) => p.vote === -1
-      );
-      console.log(disLike.length);
+      let disLike = this.post.likePosts.filter((p) => p.vote === -1);
+      // console.log(disLike.length);
       return disLike.length;
     },
-    isLikedByUser() {
-      return this.post.likePosts.find((like) => like.userId === this.$store.state.user.id)
-    },
+    // isLikedByUser() {
+    //   return this.post.likePosts.find((like) => like.userId === this.$store.state.user.id)
+    // },
     isLiked() {
-        // this.post.likePosts.filter((like) => {
-        //   console.log("hihi", like.vote)
-        //   if (like.userId === this.$store.state.user.id) {
-        //     let like = like.vote 
-        //   }
-        // })
-        for (let i = 0; i < this.post.likePosts.length; i++) {
-          let elem = this.post.likePosts[i];
-          console.log("okok", elem);
-          if (this.$store.state.user.id === elem.id) {
-            return true;
-          }
+      // this.post.likePosts.filter((like) => {
+      //   console.log("hihi", like.vote)
+      //   if (like.userId === this.$store.state.user.id) {
+      //     let like = like.vote
+      //   }
+      // })
+      for (let i = 0; i < this.post.likePosts.length; i++) {
+        let elem = this.post.likePosts[i];
+        console.log("elem", elem);
+        if (this.$store.state.user.id === elem.id) {
+          return true;
+        }
       }
-        return false
-      }
+      return false;
+    },
   },
   async created() {
     this.postId = this.$route.params.id;
-    this.postRead = this.post;
-    console.log(this.postRead);
 
     // I get all my comments by post
     // this.comments = await commentsApi.getPostComments(this.id)
@@ -627,7 +457,7 @@ export default {
         })
         .then((result) => {
           console.log("result: ", result.data.datas);
-          this.$emit("update-post", result.data, this.post.id);
+          this.$emit("update-post", result.data.datas, this.post.id);
 
           // close update post modal
           this.$refs.updatePost.closeModal();
@@ -706,28 +536,28 @@ export default {
       }
     },
     sendLike(valeurLike, id) {
-      if (valeurLike == 1) {
-        this.upvoted = !this.upvoted;
-        this.downvoted = false;
-      } else{
-        valeurLike == 0
-      }
-      if (valeurLike == -1) {
-        this.downvoted = !this.downvoted;
-        this.upvoted = false;
-      }
+      console.log(this.currentUser);
+      const likePost = this.post.likePosts.find((like) => like.userId === this.currentUser.id);
 
-      // data send to axios request
+      let valueLikeToSend = 0;
+      console.log("DEBUG POSTREAD", this.post.likePosts);
+      if (!likePost || !likePost.vote || likePost.vote + valeurLike === 0) valueLikeToSend = valeurLike;
+
       const infoLike = {
-        vote: valeurLike,
+        vote: valueLikeToSend,
         postId: id,
         userId: this.currentUser.id,
       };
+
       axiosInstance
         .post(`posts/${id}/likes`, infoLike)
         .then((res) => {
           // console.log("likePost", res.data);
+          const currentPost = this.post;
+          const otherLikes = currentPost.likePosts.filter(like => like.userId !== this.currentUser.id);
+
           if (res) {
+            this.$emit("update-post", { ...currentPost, likePosts: [...otherLikes, infoLike] }, id);
             return res.json;
           }
         })
@@ -741,7 +571,6 @@ export default {
             duration: 3000,
           });
         });
-      
     },
     // sendLike(valeurLike, id) {
     //   if (this.vote == undefined || this.vote == null || this.vote === 0) {
