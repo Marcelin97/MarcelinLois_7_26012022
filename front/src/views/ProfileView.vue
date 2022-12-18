@@ -21,6 +21,7 @@
           :key="index"
           :post="post"
           v-bind:id="post.id"
+          @delete-post="deletePost"
           @update-post="onUpdatePost"
         />
       </div>
@@ -74,23 +75,28 @@ export default {
     }
   },
   methods: {
+    // EVENT : update my account
     onUpdateAccount(data) {
-      console.log("update account", data);
+      // console.log("update account", data);
       this.user = data.user;
     },
+    // EVENT : update publication
     onUpdatePost(data, postId) {
-      console.log("update post", data);
+      // console.log("update post", data);
       console.log(postId);
       this.posts = this.posts.map((post) => {
 
         if (post.id === postId) {
-          console.log("recup", post)
+          // console.log("DEBUG DATA PROFILE", data)
           post = data;
-          console.log('post update', post)
+          // console.log('DEBUG POST PROFILE', post)
         }
         return post;
       });
       console.log(this.posts)
+    },
+    deletePost(postId) {
+      this.posts = this.posts.filter((p) => p.id !== postId);
     },
   },
 };

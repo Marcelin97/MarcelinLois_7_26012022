@@ -79,7 +79,6 @@ export default {
 
         if (post.id === postId) {
           console.log("DEBUG DATA", data);
-          console.log("DEBUG DATAS", data.datas)
           post = data;
           console.log('post update', post)
         }

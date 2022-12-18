@@ -193,12 +193,12 @@
 
           <div class="form-group">
             <label for="PostImage">Nouvelle photo de la publication</label>
-            <input class="input-file" v-on="state.postUpdate.image" id="image" type="file" accept=".jpeg,.jpg,png"
-              @change="onChangeFileUpload" ref="file" />
+            <input class="input-file" id="picture" type="file" accept=".jpeg,.jpg,png"
+              ref="file" />
 
             <!-- Error Message -->
-            <template v-if="v$.postUpdate.image.$dirty">
-              <div class="input-errors" v-for="(error, index) of v$.postUpdate.image.$errors" :key="index">
+            <template v-if="v$.post.image.$dirty">
+              <div class="input-errors" v-for="(error, index) of v$.post.image.$errors" :key="index">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -319,8 +319,6 @@ export default {
       currentUser: [],
       show: false,
       apiErrors: "",
-      likesCount: 0,
-      dislikesCount: 0,
       comments: [],
       like_color: "",
       dislike_color: "",
@@ -331,6 +329,7 @@ export default {
     const state = reactive({
       post: {
         content: "",
+        image:""
       },
       postUpdate: {
         title: "",
@@ -352,6 +351,10 @@ export default {
             "La longueur maximale autorisée est de 255",
             maxLength(255)
           ),
+        },
+        image: {
+          $autoDirty: true,
+          $lazy: true,
         },
       },
       postUpdate: {
@@ -405,12 +408,6 @@ export default {
     //   return this.post.likePosts.find((like) => like.userId === this.$store.state.user.id)
     // },
     isLiked() {
-      // this.post.likePosts.filter((like) => {
-      //   console.log("hihi", like.vote)
-      //   if (like.userId === this.$store.state.user.id) {
-      //     let like = like.vote
-      //   }
-      // })
       for (let i = 0; i < this.post.likePosts.length; i++) {
         let elem = this.post.likePosts[i];
         console.log("elem", elem);
@@ -433,15 +430,15 @@ export default {
     this.currentUser = this.$store.state.user;
   },
   methods: {
-    onChangeFileUpload() {
-      this.state.postUpdate.image = document.querySelector("#image").files[0];
-    },
     async onUpdatePost() {
       let bodyFormData = new FormData();
-      if (this.state.postUpdate.image)
-        bodyFormData.append("image", this.state.postUpdate.image);
+      const imagefile = document.getElementById('picture')
+      console.log("DEBUG IMAGE LOAD" , imagefile);
+      
+      if (imagefile)
+        bodyFormData.append("image", imagefile.files[0]);
 
-      for (let key of ["title", "content"]) {
+      for (let key of ["title", "content",]) {
         const param = this.state.postUpdate[key];
         // console.log(param, key);
         if (param) {
