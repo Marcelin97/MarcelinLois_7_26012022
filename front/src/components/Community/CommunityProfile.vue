@@ -91,7 +91,6 @@
               aria-label="Se désabonner"
               @click="unfollowCommunityClick"
               text="Se désabonner"
-              
             >
               Se désabonner
             </button>
@@ -112,9 +111,16 @@
       </div>
     </div>
 
-    <!-- <div>
-      <PostCard />
-    </div> -->
+    <div>
+      <PostCard
+        v-for="(post, index) in posts"
+          :key="index"
+          :post="post"
+          v-bind:id="post.id"
+          @delete-post="deletePost"
+          @update-post="onUpdatePost"
+      />
+    </div>
 
     <!-- modal delete account -->
     <modalStructure ref="deleteAccount">
@@ -310,10 +316,11 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
+import PostCard from "../Posts/PostCard.vue";
+
 
 import communitiesApi from "../../api/community";
 import usersApi from "../../api/users";
-// import postsApi from "../../api/posts";
 import axiosInstance from "../../services/api";
 
 import useVuelidate from "@vuelidate/core";
@@ -363,6 +370,7 @@ export default {
   components: {
     modalStructure,
     deleteBtn,
+    PostCard
   },
   data() {
     return {
@@ -380,7 +388,8 @@ export default {
       },
       selectValue: "",
       placeholder: "Choisi un modérateur",
-      isHidden: false
+      isHidden: false,
+      posts: [], // add posts array
     };
   },
   mixins: [roleMixin],
@@ -398,11 +407,12 @@ export default {
   async created() {
     this.user = this.$store.state.user;
     this.communityId = this.$route.params.id;
+    console.log("DEBUG COMMUNI ID ", this.communityId)
 
-    // I'm creating a query to retrieve if current user follow a community
-    // const getFollow = await postsApi.communityFollow();
-    // this.follower = getFollow;
-    // console.log("follower", this.follower);
+    // I get all the posts
+    const postsCommunity = await communitiesApi.getPostsCommunity(`${this.communityId}`);
+    this.posts = postsCommunity.posts;
+    console.log("DEBU POST COMMUNITY", this.posts);
 
     // I'm creating a query to retrieve all users informations.
     try {
@@ -534,7 +544,7 @@ export default {
         await communitiesApi.followCommunity(this.communityId);
         this.$emit("follow-community", this.communityId);
         // this.hasFollow = !this.hasFollow;
-        this.isFollowingCommunity = false
+        this.isFollowingCommunity = false;
 
         // notification success
         this.$notify({
@@ -556,7 +566,7 @@ export default {
       try {
         await communitiesApi.unfollowCommunity(this.communityId);
         this.$emit("unfollow-community", this.communityId);
-        
+
         // notification success
         this.$notify({
           type: "success",
@@ -668,6 +678,27 @@ export default {
           text: `Erreur reporté : ${this.apiErrors}`,
         });
       }
+    },
+    // EVENT : update my account
+    onUpdateAccount(data) {
+      this.user = data.user;
+    },
+    // EVENT : update publication
+    onUpdatePost(data, postId) {
+      // console.log("DEBUG POST", data);
+      this.posts = this.posts.map((post) => {
+        if (post.id === postId) {
+          // console.log("DEBUG DATA PROFILE", data)
+          post = data;
+          // console.log('DEBUG POST PROFILE', post)
+        }
+        return post;
+      });
+      // console.log("READ POSTS AFTER UPDATE", this.posts)
+    },
+    // EVENT : delete post
+    deletePost(postId) {
+      this.posts = this.posts.filter((p) => p.id !== postId);
     },
   },
 };

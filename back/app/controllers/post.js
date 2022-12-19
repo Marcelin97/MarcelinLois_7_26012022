@@ -150,7 +150,11 @@ exports.readAllPostByCommunity = (req, res, next) => {
         {
           model: post,
           as: "posts",
-          include: [{
+          include: [
+            {
+        model: user,
+        as: "user",
+      },{
             model: likePost,
             as: "likePosts"
           }, {
