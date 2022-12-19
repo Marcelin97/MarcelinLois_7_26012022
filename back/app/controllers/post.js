@@ -150,14 +150,13 @@ exports.readAllPostByCommunity = (req, res, next) => {
         {
           model: post,
           as: "posts",
-          attributes: [
-            "id",
-            "title",
-            "imageUrl",
-            "content",
-            "communityId",
-            "creatorId",
-          ],
+          include: [{
+            model: likePost,
+            as: "likePosts"
+          }, {
+            model: comment,
+            as: "comments"
+          }]
         },
       ],
       order: [["createdAt", "DESC"]],

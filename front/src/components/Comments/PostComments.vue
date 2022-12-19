@@ -278,7 +278,7 @@ export default {
       return `Posté ${timeAgo.format(new Date(this.comment.createdAt))}`;
     },
     addClass() {
-      return this.hasLiked ? "liked" : "";
+    return this.hasLiked ? "liked" : "";
     },
     isLiked() {
     return this.comment.userId === this.$store.state.user.id && this.comment.likes === true
@@ -373,8 +373,7 @@ export default {
         });
         this.hasLiked = !this.hasLiked;
 
-        if (this.hasLiked) this.likeCount++;
-        else this.likeCount--;
+        this.hasLiked ? this.likeCount++ : this.likeCount--;
 
         if (this.hasLiked) {
           this.love = "UnLike";

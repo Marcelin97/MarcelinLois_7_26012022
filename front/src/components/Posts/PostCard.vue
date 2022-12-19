@@ -139,28 +139,19 @@
             class="like icon-vote"
             title="Mettre un j'aime"
             @click="sendLike(1, id)"
-            :class="{ disabled: upvoted }"
           >
-            <svg
-              class="heart"
-              id="heart"
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              viewBox="0 0 32 31"
-            >
-              <title>J'aime</title>
-              <g stroke-width="2">
-                <path
-                  id="heart"
-                  d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  v-bind:fill="like_color"
-                ></path>
-              </g>
-            </svg>
+          <!-- <font-awesome-icon class="icon" :icon="['far', 'fa-thumbs-up']" /> -->
+          <svg class="heart" id="heart" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
+            <title>J'aime</title>
+            <g stroke-width="2">
+              <path id="heart"
+                d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
+                stroke-linecap="round" stroke-linejoin="round" :class="isLikedByUser ? 'like' : ''"></path>
+            </g>
+          </svg>
           </button>
-          <span class="vote-count">{{ showLikesCount }}</span>
+
+          <span class="vote-count" :class="isLikedByUser ? 'like' : ''" >{{ showLikesCount }}</span>
         </div>
 
         <!-- btn dislike -->
@@ -171,28 +162,18 @@
             class="dislike icon-vote"
             title="j'aime pas"
             @click="sendLike(-1, id)"
-            :class="{ disabled: downvoted }"
           >
-            <svg
-              class="disheart"
-              id="heart"
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              viewBox="0 0 32 31"
-            >
-              <title>Enlever mon j'aime</title>
-              <g stroke-width="2">
-                <path
-                  id="heart"
-                  d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  v-bind:fill="dislike_color"
-                ></path>
-              </g>
-            </svg>
+          <svg class="heart" id="heart" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
+            <title>J'aime pas</title>
+            <g stroke-width="2">
+              <path id="heart"
+                d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
+                stroke-linecap="round" stroke-linejoin="round" fill:blue stroke: :class="isDisLikedByUser ? 'dislike' : ''"></path>
+            </g>
+          </svg>
+          
           </button>
-          <span class="vote-count">{{ showDislikesCount }}</span>
+          <span class="vote-count" :class="isDisLikedByUser ? 'dislike' : ''" >{{ showDislikesCount }}</span>
         </div>
 
         <!-- section data of post -->
@@ -477,8 +458,6 @@ export default {
       show: false,
       apiErrors: "",
       comments: [],
-      like_color: "",
-      dislike_color: "",
     };
   },
   mixins: [roleMixin],
@@ -560,18 +539,11 @@ export default {
       // console.log(disLike.length);
       return disLike.length;
     },
-    // isLikedByUser() {
-    //   return this.post.likePosts.find((like) => like.userId === this.$store.state.user.id)
-    // },
-    isLiked() {
-      for (let i = 0; i < this.post.likePosts.length; i++) {
-        let elem = this.post.likePosts[i];
-        console.log("elem", elem);
-        if (this.$store.state.user.id === elem.id) {
-          return true;
-        }
-      }
-      return false;
+    isLikedByUser() {
+      return this.post.likePosts.find((like) => like.vote === 1 && like.userId === this.$store.state.user.id)
+    },
+    isDisLikedByUser() {
+      return this.post.likePosts.find((like) => like.vote === -1 && like.userId === this.$store.state.user.id)
     },
   },
   async created() {
@@ -797,6 +769,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.post__liked {
+  fill: red;
+}
 .post-card {
   max-width: 350px;
   margin: 0 auto;

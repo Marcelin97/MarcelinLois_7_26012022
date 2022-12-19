@@ -196,7 +196,7 @@ export default {
       apiErrors: "",
       communities: [], // add communities  array
       selectValue: "",
-      placeholder: "Ta communauté",
+      placeholder: "Communauté",
     };
   },
   async created() {
@@ -418,6 +418,7 @@ select {
   color: #fff;
   background-color: #34495e;
   cursor: pointer;
+  text-align: center;
 
   /* <option> colors */
   option {

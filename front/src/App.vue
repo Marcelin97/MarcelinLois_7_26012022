@@ -54,7 +54,16 @@ export default {
 body {
   background-color: #ffff;
 }
-main{
+main {
   margin-top: 5rem;
+}
+.like {
+  fill: red;
+  color: red;
+}
+.dislike {
+  stroke: blue;
+  fill: blue;
+  color: blue;
 }
 </style>
