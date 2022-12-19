@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+            <router-link class="more" :to="`/communities/profil/${this.id}`" aria-label="Profil d'une communauté">
+
     <div class="card">
       <img
         class="card__img"
@@ -11,16 +13,8 @@
       <div class="about">
         {{ community.about }}
       </div>
-      <div class="bottomRow">
-        <div class="author">Voir plus</div>
-        <router-link class="more" :to="`/communities/profil/${this.id}`" aria-label="Profil d'une communauté">
-          <font-awesome-icon
-            class="icon"
-            :icon="['fas', 'person-walking-arrow-right']"
-          />
-        </router-link>
-      </div>
     </div>
+    </router-link>
   </div>
 </template>
 
@@ -65,9 +59,6 @@ export default {
   transform: translateY(-5rem);
   animation: appear-from-top 750ms ease forwards;
   animation-delay: 1s;
-  @media screen and (min-width: 576px) {
-    width: 60%;
-  }
   &__img {
     margin: 0 auto;
     max-height: 300px;
@@ -90,29 +81,6 @@ export default {
   line-height: 1.5;
   margin-bottom: 1rem;
   word-break: break-all;
-}
-
-.bottomRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-}
-
-.author {
-  flex: 1;
-  color: #522cad;
-}
-.icon {
-  margin: 0 0.5rem 0 1.5rem;
-  color: #522cad;
-}
-.iconText {
-  color: #888888;
 }
 
 @keyframes appear-from-top {

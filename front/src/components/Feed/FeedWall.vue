@@ -3,6 +3,7 @@
     <!-- Feeds -->
     <div class="container">
       <!-- Main -->
+
       <!-- Stories -->
       <StoriesWall />
 
@@ -11,7 +12,11 @@
           <!-- Input Box -->
           <InputBox v-if="communities.length != 0" @create-post="createPost" />
           <div v-else class="container-communities">
-            <router-link class="underline" to="/communities" aria-label="Page des communautés">
+            <router-link
+              class="underline"
+              to="/communities"
+              aria-label="Page des communautés"
+            >
               Commence par crée une communauté 😎
             </router-link>
           </div>
@@ -20,8 +25,16 @@
         <div class="sidebar__main">
           <!-- Posts -->
           <div v-if="posts.length != 0" class="post">
-            <PostCard class="post__card" v-for="(post, index) in posts" :key="index" :post="post" v-bind:index="index"
-              v-bind:id="post.id" @delete-post="deletePost" @update-post="onUpdatePost" />
+            <PostCard
+              class="post__card"
+              v-for="(post, index) in posts"
+              :key="index"
+              :post="post"
+              v-bind:index="index"
+              v-bind:id="post.id"
+              @delete-post="deletePost"
+              @update-post="onUpdatePost"
+            />
           </div>
           <div v-else>
             <div class="container-communities">
@@ -39,7 +52,9 @@ import PostCard from "../Posts/PostCard.vue";
 import InputBox from "./InputBox.vue";
 import StoriesWall from "./StoriesWall.vue";
 
+// Post requests
 import postsApi from "../../api/posts";
+// Communities requests
 import communitiesApi from "../../api/community";
 
 export default {
@@ -57,34 +72,34 @@ export default {
     };
   },
   async created() {
+    // I get all the posts
     const posts = await postsApi.getPosts();
     this.posts = posts;
-    console.log("wall posts", this.posts);
+    // I collect all the communities to assign them to a publication
     const getCommunities = await communitiesApi.getCommunities();
     this.communities = getCommunities;
   },
   methods: {
+    // EVENT : create post
     createPost(data) {
-      // console.log("receive newPost", data);
       this.posts = [data, ...this.posts];
-      // console.log("update all posts", this.posts);
     },
-    deletePost(postId) {
-      this.posts = this.posts.filter((p) => p.id !== postId);
-    },
+    // EVENT : update publication
     onUpdatePost(data, postId) {
-      console.log("update post", data);
-      console.log(postId);
+      // console.log("DEBUG POST", data);
       this.posts = this.posts.map((post) => {
-
         if (post.id === postId) {
-          console.log("DEBUG DATA", data);
+          // console.log("DEBUG DATA", data);
           post = data;
-          console.log('post update', post)
+          // console.log('post update', post)
         }
         return post;
       });
-      console.log(this.posts)
+      // console.log("READ POSTS AFTER UPDATE", this.posts)
+    },
+    // EVENT : delete post
+    deletePost(postId) {
+      this.posts = this.posts.filter((p) => p.id !== postId);
     },
   },
 };

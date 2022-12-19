@@ -12,7 +12,6 @@ import CommunitiesView from "../views/CommunitiesView";
 import CommunityProfileView from "../views/CommunityProfilView";
 import WallView from "../views/WallView.vue";
 import CommunitySettings from "../views/CommunitySettingsView";
-import PostSettings from "../views/PostSettingsView";
 
 const routes = [
   {
@@ -72,12 +71,6 @@ const routes = [
     path: "/communities/profil/:id/settings",
     name: "Community-Settings",
     component: CommunitySettings,
-    props: true,
-  },
-  {
-    path: "/posts/:id/update",
-    name: "Post-Settings",
-    component: PostSettings,
     props: true,
   },
 ];

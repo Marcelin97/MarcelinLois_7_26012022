@@ -50,7 +50,7 @@
         :class="addClass ? 'liked' : 'unliked'"
         v-text="love"
       ></button>
-      <!-- <span :class="addClass"> {{ likeCount }}</span> -->
+      <!-- <span> {{ likeCount }}</span> -->
     </div>
 
     <!-- modal update comment -->
@@ -203,7 +203,7 @@ import timeAgo from "@/services/timeAgo";
 
 export default {
   name: "List-Comment",
-  props: ["comment", "content", "index", "communityId"],
+  props: ["comment", "content", "index", "communityId",],
   emits: ["update-comment", "delete-comment"],
   components: {
     modalStructure,
@@ -213,8 +213,9 @@ export default {
       currentUser: [],
       apiErrors: "",
       hasLiked: false,
-      // likeCount: 0,
+      likeCount: 0,
       love: "like",
+      commentLikes:""
     };
   },
   mixins: [roleMixin],
@@ -279,6 +280,9 @@ export default {
     addClass() {
       return this.hasLiked ? "liked" : "";
     },
+    isLiked() {
+    return this.comment.userId === this.$store.state.user.id && this.comment.likes === true
+    },
   },
   methods: {
     async onCommentReport() {
@@ -336,8 +340,6 @@ export default {
         axiosInstance
           .put(`/comments/update/${this.comment.id}`, this.state.commentUpdate)
           .then((response) => {
-            // console.log(response.data.datas);
-            // console.log("test");
             this.$emit("update-comment", response.data.datas, this.comment.id);
 
             // close delete modal
@@ -370,6 +372,10 @@ export default {
           vote: !this.hasLiked,
         });
         this.hasLiked = !this.hasLiked;
+
+        if (this.hasLiked) this.likeCount++;
+        else this.likeCount--;
+
         if (this.hasLiked) {
           this.love = "UnLike";
           this.$notify({

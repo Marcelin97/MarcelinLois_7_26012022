@@ -58,7 +58,7 @@ export default {
     return {
       posts: [], // add posts array
       user: [], // current user
-      loadingMessage: 'Chargement en cours'
+      loadingMessage: "Chargement en cours",
     };
   },
   mounted() {
@@ -67,25 +67,21 @@ export default {
   },
   async created() {
     // I'm looking for posts about my account
-    const posts = await postsApi.getPostsByUser(this.$store.state.user.id)
+    const posts = await postsApi.getPostsByUser(this.$store.state.user.id);
     this.posts = posts;
-    console.log("profile posts", this.posts);
     if (this.posts.length < 1) {
-      this.loadingMessage = 'Il n y a pas encore de publications à afficher'
+      this.loadingMessage = "Il n y a pas encore de publications à afficher";
     }
   },
   methods: {
     // EVENT : update my account
     onUpdateAccount(data) {
-      // console.log("update account", data);
       this.user = data.user;
     },
     // EVENT : update publication
     onUpdatePost(data, postId) {
-      // console.log("update post", data);
-      console.log(postId);
+      // console.log("DEBUG POST", data);
       this.posts = this.posts.map((post) => {
-
         if (post.id === postId) {
           // console.log("DEBUG DATA PROFILE", data)
           post = data;
@@ -93,8 +89,9 @@ export default {
         }
         return post;
       });
-      console.log(this.posts)
+      // console.log("READ POSTS AFTER UPDATE", this.posts)
     },
+    // EVENT : delete post
     deletePost(postId) {
       this.posts = this.posts.filter((p) => p.id !== postId);
     },

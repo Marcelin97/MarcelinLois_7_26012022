@@ -81,7 +81,6 @@
               aria-label="S'abonner"
               @click="followCommunityClick"
               text="S'abonner"
-              v-if="!isFollowingCommunity"
             >
               S'abonner
             </button>
@@ -93,7 +92,6 @@
               @click="unfollowCommunityClick"
               text="Se désabonner"
               
-              v-if="isFollowingCommunity"
             >
               Se désabonner
             </button>
@@ -114,9 +112,9 @@
       </div>
     </div>
 
-    <div>
+    <!-- <div>
       <PostCard />
-    </div>
+    </div> -->
 
     <!-- modal delete account -->
     <modalStructure ref="deleteAccount">
@@ -315,7 +313,7 @@ import deleteBtn from "../Base/DeleteBtn.vue";
 
 import communitiesApi from "../../api/community";
 import usersApi from "../../api/users";
-import postsApi from "../../api/posts";
+// import postsApi from "../../api/posts";
 import axiosInstance from "../../services/api";
 
 import useVuelidate from "@vuelidate/core";
@@ -395,18 +393,6 @@ export default {
       return this.follower.find(
         (feed) => feed.userId === this.$store.state.user.id
       );
-
-      // if (this.isAuthenticated) {
-      //   for (let i = 0; i < this.follower.length; i++) {
-      //     let elem = this.follower[i];
-      //     if (
-      //       elem.userId === this.user.id &&
-      //       elem.communityId === this.community.id
-      //     )
-      //       return true;
-      //   }
-      // }
-      // return false;
     },
   },
   async created() {
@@ -414,9 +400,9 @@ export default {
     this.communityId = this.$route.params.id;
 
     // I'm creating a query to retrieve if current user follow a community
-    const getFollow = await postsApi.communityFollow();
-    this.follower = getFollow;
-    console.log("follower", this.follower);
+    // const getFollow = await postsApi.communityFollow();
+    // this.follower = getFollow;
+    // console.log("follower", this.follower);
 
     // I'm creating a query to retrieve all users informations.
     try {
@@ -570,8 +556,7 @@ export default {
       try {
         await communitiesApi.unfollowCommunity(this.communityId);
         this.$emit("unfollow-community", this.communityId);
-        // this.hasFollow;
-        this.isFollowingCommunity = true
+        
         // notification success
         this.$notify({
           type: "success",
