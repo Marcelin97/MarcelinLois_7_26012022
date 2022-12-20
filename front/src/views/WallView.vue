@@ -2,7 +2,7 @@
   <!-- The Wall view -->
   <div>
     <div>
-      <!-- Feed -->
+      <!-- output component -->
       <FeedWall />
     </div>
   </div>

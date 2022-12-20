@@ -1,29 +1,66 @@
 <template>
   <div class="comments">
+
+    <!-- Comment -->
     <div class="comments-content">
+      <!-- Date of comment -->
       <p class="comments-createdAt">{{ showDate }}</p>
+      <!-- Content of comment -->
       <p class="comments-text">{{ content }}</p>
     </div>
+
+    <!-- BTN actions -->
     <div class="actions">
-      <button v-if="canModerate(this.comment.userId, this.communityId)" type="button" text="Supprimer ce commentaire"
-        aria-label="Supprimer ce commentaire" class="btn-danger" title="Supprimer ce commentaire"
-        @click.prevent.stop="$emit('delete-comment', this.comment.id)">
+      <!-- BTN delete comment -->
+      <button
+        v-if="canModerate(this.comment.userId, this.communityId)"
+        type="button"
+        text="Supprimer ce commentaire"
+        aria-label="Supprimer ce commentaire"
+        class="btn-danger"
+        title="Supprimer ce commentaire"
+        @click.stop.prevent="$emit('delete-comment', this.comment.id)"
+      >
         Supprimer
       </button>
 
-      <button v-if="canAdmin(this.comment.userId)" type="button" class="btn-update" title="Modifier ce commentaire"
-        @click="$refs.updateComment.openModal()" text="Modifier ce commentaire" aria-label="Modifier ce commentaire">
+      <!-- BTN update comment -->
+      <button
+        v-if="canAdmin(this.comment.userId)"
+        type="button"
+        class="btn-update"
+        title="Modifier ce commentaire"
+        @click="$refs.updateComment.openModal()"
+        text="Modifier ce commentaire"
+        aria-label="Modifier ce commentaire"
+      >
         Modifier
       </button>
 
-      <button v-if="this.$store.state.user.id != this.comment.userId" type="button" class="btn-report" title="Signaler ce commentaire"
-        @click="$refs.reportComment.openModal()" text="Signaler ce commentaire" aria-label="Signaler ce commentaire">
+      <!-- BTN report comment -->
+      <button
+        v-if="this.$store.state.user.id != this.comment.userId"
+        type="button"
+        class="btn-report"
+        title="Signaler ce commentaire"
+        @click="$refs.reportComment.openModal()"
+        text="Signaler ce commentaire"
+        aria-label="Signaler ce commentaire"
+      >
         Signaler
       </button>
 
-      <button aria-label="Like" class="like icon-vote" type="button" title="Mettre un j'aime" @click="like()"
-        :class="addClass ? 'liked' : 'unliked'" v-text="love"></button>
-      <!-- <span :class="addClass"> {{ likeCount }}</span> -->
+      <!-- BTN like comment -->
+      <button
+        aria-label="Like"
+        class="like icon-vote"
+        type="button"
+        title="Mettre un j'aime"
+        @click="like()"
+        :class="addClass ? 'liked' : 'unliked'"
+        v-text="love"
+      ></button>
+      <!-- <span> {{ likeCount }}</span> -->
     </div>
 
     <!-- modal update comment -->
@@ -34,27 +71,51 @@
 
       <template v-slot:body>
         <div class="container">
+
+          <!-- Form update comment -->
           <form action="#" method="put">
             <div class="form-group">
-              <label class="title-newcomment" for="content">Nouveau commentaire</label>
-              <input class="content-newcomment" placeholder="Nouveau commentaire" autocomplete="off" minlength="3"
-                maxlength="255" aria-label="Nouveau commentaire" id="content" type="text"
-                v-model="state.commentUpdate.content" @blur="v$.commentUpdate.content.$touch" :class="
+              <label class="title-newcomment" for="content"
+                >Nouveau commentaire</label
+              >
+              <input
+                class="content-newcomment"
+                placeholder="Nouveau commentaire"
+                autocomplete="off"
+                minlength="3"
+                maxlength="255"
+                aria-label="Nouveau commentaire"
+                id="content"
+                type="text"
+                v-model="state.commentUpdate.content"
+                @blur="v$.commentUpdate.content.$touch"
+                :class="
                   v$.commentUpdate.content.$error === true ? 'error' : 'dirty'
-                " />
+                "
+              />
 
               <!-- Error Message -->
               <template v-if="v$.commentUpdate.content.$dirty">
-                <div class="input-errors" v-for="(error, index) of v$.commentUpdate.content.$errors" :key="index">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.commentUpdate.content.$errors"
+                  :key="index"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <!-- Error Message -->
             </div>
 
-            <!-- button submit -->
+            <!-- BTN update comment -->
             <div class="button-container">
-              <button aria-label="Modifier" title="Modifier" type="submit" class="btn" @click.prevent.stop="onUpdateComment">
+              <button
+                aria-label="Modifier"
+                title="Modifier"
+                type="submit"
+                class="btn"
+                @click.stop.prevent="onUpdateComment"
+              >
                 Modifier
               </button>
             </div>
@@ -79,28 +140,51 @@
 
       <template v-slot:body>
         <div class="container">
+
+          <!-- Form report comment -->
           <form action="#" method="post">
             <div class="FormGroup">
-              <label class="FormGroupLabel" for="">Pourquoi signalez-vous ce commentaire ?</label>
+              <label class="FormGroupLabel" for=""
+                >Pourquoi signalez-vous ce commentaire ?</label
+              >
               <div class="FormTextboxWrapper">
-                <textarea cols="50" rows="5" required class="FormTextbox" type="text"
-                  placeholder="Explique nous les raisons de ce signalement." v-model="state.comment.content"
-                  @blur="v$.comment.content.$touch" :class="
+                <textarea
+                  cols="50"
+                  rows="5"
+                  required
+                  class="FormTextbox"
+                  type="text"
+                  placeholder="Explique nous les raisons de ce signalement."
+                  v-model="state.comment.content"
+                  @blur="v$.comment.content.$touch"
+                  :class="
                     v$.comment.content.$error === true ? 'error' : 'dirty'
-                  " />
+                  "
+                />
               </div>
 
               <!-- Error Message -->
               <template v-if="v$.comment.content.$dirty">
-                <div class="input-errors" v-for="(error, index) of v$.comment.content.$errors" :key="index">
+                <div
+                  class="input-errors"
+                  v-for="(error, index) of v$.comment.content.$errors"
+                  :key="index"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <!-- Error Message -->
             </div>
 
-            <button type="submit" class="btn button" title="Signaler" text="Signaler" aria-label="Confirmer signalement"
-              @click.prevent.stop="onCommentReport">
+            <!-- BTN report comment -->
+            <button
+              type="submit"
+              class="btn button"
+              title="Signaler"
+              text="Signaler"
+              aria-label="Confirmer signalement"
+              @click.prevent.stop="onCommentReport"
+            >
               Confirmer signalement
             </button>
           </form>
@@ -121,20 +205,25 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 
+// Comments requests
 import commentsApi from "@/api/comments";
+// API requests
 import axiosInstance from "@/services/api";
 
 import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
+// Manage roles
 import roleMixin from "../../mixins/role.mixin";
 
+// Manage time
 import timeAgo from "@/services/timeAgo";
 
 export default {
   name: "List-Comment",
-  props: ["comment", "content", "index", "communityId"],
+  props: ["comment", "content", "index", "communityId",],
+  emits: ["update-comment", "delete-comment"],
   components: {
     modalStructure,
   },
@@ -143,7 +232,7 @@ export default {
       currentUser: [],
       apiErrors: "",
       hasLiked: false,
-      // likeCount: 0,
+      likeCount: 0,
       love: "like",
     };
   },
@@ -196,6 +285,9 @@ export default {
   validationConfig: {
     $lazy: true,
   },
+  mounted() {
+    this.state.commentUpdate.content = this.comment.content;
+  },
   computed: {
     showDate() {
       if (this.comment.createdAt !== this.comment.updatedAt) {
@@ -203,15 +295,21 @@ export default {
       }
       return `Posté ${timeAgo.format(new Date(this.comment.createdAt))}`;
     },
+    // Change class of BTN like
     addClass() {
-      return this.hasLiked ? "liked" : "";
+    return this.hasLiked ? "liked" : "";
+    },
+    // Check if current user liked the comment
+    isLiked() {
+    return this.comment.userId === this.$store.state.user.id && this.comment.likes === true
     },
   },
   methods: {
+    // REPORT COMMENT
     async onCommentReport() {
-      this.v$.$validate(); // checks all inputs
-      if (!this.v$.$error) {
-        // if ANY fail validation
+      this.v$.$validate(); // Checks all inputs
+      if (!this.v$.$error) { // If ANY fail validation
+        
         if (
           confirm(
             "L'administrateur et le modérateur seront notifié, souhaitez-vous signaler ce commentaire ?"
@@ -223,28 +321,35 @@ export default {
               this.state.comment
             );
 
-            // close delete modal
+            // Close delete modal
             this.$refs.reportComment.closeModal();
 
-            // notification success
+            // Success notification
             this.$notify({
               type: "success",
               title: `Signalement`,
               text: `Merci, votre rapport a été envoyé.`,
-              duration: 30000,
+              duration: 20000,
             });
-          } catch (e) {
-            alert(e.data.message);
+          } catch (error) {
+            this.apiErrors = error.response;
+
+            // Error notification
+            this.$notify({
+              duration: 2500,
+              type: "error",
+              text: `Erreur reporté : ${this.apiErrors}`,
+            });
           }
         }
       } else {
-        // notification d'erreur
+        // Error notification
         this.$notify({
           type: "warn",
           title: `Veuillez faire un signalement complet.`,
         });
 
-        // montre les erreurs à l'écran
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")
@@ -256,20 +361,20 @@ export default {
         });
       }
     },
+    // UPDATE COMMENT
     async onUpdateComment() {
-      this.v$.$validate(); // checks all inputs
-      if (!this.v$.$error) {
-        // if ANY fail validation
+      this.v$.$validate(); // Checks all inputs
+      if (!this.v$.$error) { // If ANY fail validation
+        
         axiosInstance
           .put(`/comments/update/${this.comment.id}`, this.state.commentUpdate)
-          .then(() => {
-            // close delete modal
+          .then((response) => {
+            this.$emit("update-comment", response.data.datas, this.comment.id);
+
+            // Close update modal
             this.$refs.updateComment.closeModal();
 
-            // force refresh page
-            // this.$router.go(0);
-
-            // notification de succès
+            // Success notification
             this.$notify({
               type: "success",
               title: `Commentaire mis à jour`,
@@ -277,15 +382,13 @@ export default {
             });
           })
           .catch((error) => {
-            console.log(error);
-            const errorMessage = (this.apiErrors = error);
-            this.errorMessage = errorMessage;
+            this.apiErrors = error;
 
-            // notification error message
+            // Error notification
             this.$notify({
               type: "error",
               title: `Erreur lors de l'envoi du rapport`,
-              text: `${errorMessage}`,
+              text: `${this.apiErrors}`,
               duration: 3000,
             });
           });
@@ -298,18 +401,29 @@ export default {
           vote: !this.hasLiked,
         });
         this.hasLiked = !this.hasLiked;
+
+        // this.hasLiked ? this.likeCount++ : this.likeCount--;
+
         if (this.hasLiked) {
           this.love = "UnLike";
+          this.$notify({
+            type: "success",
+            title: `Vous aimez ce commentaire`,
+          });
         } else {
           this.love = "Like";
+          this.$notify({
+            type: "success",
+            title: `Vous n'aimez plus ce commentaire`,
+          });
         }
       } catch (error) {
-        const errorMessage = (this.apiErrors = error);
-        this.errorMessage = errorMessage;
+        this.apiErrors = error;
+
         this.$notify({
           type: "error",
           title: `Erreur lors de l'ajout du like`,
-          text: `Erreur reporté : ${errorMessage}`,
+          text: `Erreur reporté : ${this.apiErrors}`,
           duration: 30000,
         });
       }

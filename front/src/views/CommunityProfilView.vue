@@ -1,7 +1,16 @@
 <template>
   <section>
     <h1>{{ this.community.title }}</h1>
-    <CommunityProfile :community="community" :communityId="communityId"/>
+
+    <!-- output component -->
+    <CommunityProfile
+      :hasFollow="true"
+      @delete-community="deleteCommunity"
+      @unfollow-community="unfollowCommunity"
+      @follow-community="followCommunity"
+      :community="community"
+      :communityId="communityId"
+    />
 
     <!-- gestion erreur API avec axios -->
     <div v-if="apiErrors" class="error-api">
@@ -10,12 +19,13 @@
       </p>
     </div>
     <!-- gestion erreur API avec axios -->
-    
   </section>
 </template>
 
 <script>
 import CommunityProfile from "../components/Community/CommunityProfile.vue";
+
+// Communities requests
 import communitiesApi from "../api/community";
 
 export default {
@@ -25,30 +35,32 @@ export default {
   },
   data() {
     return {
-      community: [],
+      community: [], // add communities array
       communityId: "",
-      apiErrors: false,
+      apiErrors: "",
     };
   },
   async mounted() {
+    // I get my route parameter
     this.communityId = this.$route.params.id;
 
-    try {
-      const response = await communitiesApi.readTargetCommunity(
-        this.communityId
-      );
-      this.community = response.data.datas;
-    } catch (error) {
-      this.apiErrors = error.response;
-
-      // notification error message
-      this.$notify({
-        type: "error",
-        title: `Erreur lors du changement de la communauté`,
-        text: `Erreur reporté : ${this.apiErrors}`,
-        duration: 30000,
-      });
-    }
+    // I'm creating a query to retrieve target community information.
+    const getCommunities = await communitiesApi.readTargetCommunity(
+      this.communityId
+    );
+    // I assign data to the community array
+    this.community = getCommunities.data.datas;
+  },
+  methods: {
+    followCommunity(communityId) {
+      this.community.id == communityId;
+    },
+    unfollowCommunity(communityId) {
+      this.community.id == communityId;
+    },
+    deleteCommunity(communityId) {
+      this.community.id == communityId;
+    },
   },
 };
 </script>

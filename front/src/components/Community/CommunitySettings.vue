@@ -5,7 +5,9 @@
     <div class="container-update">
       <h2 class="title">Modifier la communauté</h2>
 
+      <!-- UPDATE FORM -->
       <form @submit.prevent="updateAccountClick" enctype="multipart/form-data">
+        <!-- NEW TITLE -->
         <div class="form-group">
           <label for="title">Nouveau titre de la communauté</label>
           <input
@@ -29,6 +31,7 @@
           <!-- Error Message -->
         </div>
 
+        <!-- NEW DESCRIPTION -->
         <div class="form-group">
           <label for="about">Nouvelle description de la communauté</label>
           <input
@@ -52,6 +55,7 @@
           <!-- Error Message -->
         </div>
 
+        <!-- NEW PICTURE -->
         <div class="form-group">
           <label for="communityImage">Nouvelle photo de la communauté</label>
           <input
@@ -61,7 +65,6 @@
             type="file"
             accept=".jpeg,.jpg,png"
             @change="onChangeFileUpload"
-            ref="file"
           />
 
           <!-- Error Message -->
@@ -77,7 +80,7 @@
           <!-- Error Message -->
         </div>
 
-        <!-- button submit -->
+        <!-- BTN submit -->
         <div class="button-container">
           <button type="submit" class="btn">Modifier</button>
         </div>
@@ -90,6 +93,8 @@
 import useVuelidate from "@vuelidate/core";
 import { minLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
+
+// API requests
 import axiosInstance from "../../services/api";
 
 export default {
@@ -143,10 +148,12 @@ export default {
     this.communityId = this.$route.params.id;
   },
   methods: {
+    // Capture the picture
     onChangeFileUpload() {
       this.state.community.communityImage =
         document.querySelector("#communityImage").files[0];
     },
+    // UPDATE COMMUNITY
     updateAccountClick() {
       let bodyFormData = new FormData();
       if (this.state.community.communityImage)
@@ -167,21 +174,25 @@ export default {
           },
         })
         .then(() => {
-          // console.log("result: ", result);
-          // alert("Vos modifications sont enregistrées");
+          // Redirect to the community page
+          this.$router.push(`/communities/profil/${this.communityId}`);
 
-          // notification de succès
+          // Success notification
           this.$notify({
             type: "success",
             title: `Communauté mise à jour`,
             text: `Vous allez être redirigé vers la communauté.`,
           });
-
-          // redirect to the community page
-          this.$router.push(`/communities/profil/${this.communityId}`);
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((error) => {
+          this.apiErrors = error.response.data.error;
+
+          // Error notification
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de la publication`,
+            text: `Erreur reporté : ${this.apiErrors}`,
+          });
         });
     },
   },

@@ -14,6 +14,20 @@ export default {
     }
   },
   /**
+ * Get all posts by user
+ * @param creatorId
+ * @return {Promise<any>}
+ */
+  async getPostsByUser(creatorId) {
+    try {
+      const response = await axiosInstance.get(`/posts/readAllByUser/${creatorId}`)
+      return response.data.result
+    } catch (e) {
+      throw e.response
+    }
+  },
+
+  /**
    * Delete a post
    * @param postId
    * @return {Promise<AxiosResponse<any>>}
@@ -39,5 +53,17 @@ export default {
       console.error(e.response);
       throw e.response;
     }
-  }
+  },
+    /**
+ * Get all posts by community follow
+ * @return {Promise<any>}
+ */
+  async communityFollow() {
+    try {
+      const response = await axiosInstance.get("/posts/readAllPostByCommunityFollow")
+      return response.data.result
+    } catch (e) {
+      throw e.response
+    }
+  },
 };

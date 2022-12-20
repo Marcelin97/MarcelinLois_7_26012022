@@ -1,6 +1,7 @@
 <template>
   <section>
-    <CommunityParameter msg="Gestion de la communauté."/>
+    <!-- output component -->
+    <CommunityParameter msg="Gestion de la communauté." />
   </section>
 </template>
 

@@ -32,10 +32,12 @@ export default {
     };
   },
   methods: {
+    // Close modal
     closeModal() {
       this.show = false;
       document.querySelector("body").classList.remove("overflow-hidden");
     },
+    // Open modal
     openModal() {
       this.show = true;
       document.querySelector("body").classList.add("overflow-hidden");

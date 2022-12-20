@@ -6,6 +6,7 @@
       <div class="footer2">© 2022</div>
     </div>
     <div class="link">
+      <!-- LINK TO NEWS FEED -->
       <router-link class="footer_link" to="/wall" aria-label="Groupomania">
         Groupomania
       </router-link>

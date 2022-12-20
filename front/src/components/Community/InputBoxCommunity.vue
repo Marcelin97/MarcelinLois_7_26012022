@@ -92,7 +92,7 @@ import axiosInstance from "../../services/api";
 
 export default {
   name: "InputBoxCommunity",
-  emits: ['create-community'],
+  emits: ["create-community"],
   setup() {
     const state = reactive({
       community: {
@@ -100,7 +100,7 @@ export default {
         image: "",
         about: "",
       },
-      apiError: "",
+      apiErrors: "",
     });
 
     const rules = computed(() => ({
@@ -139,13 +139,18 @@ export default {
     $lazy: true,
   },
   methods: {
+    // Capture the picture
     onChangeFileUpload() {
       this.state.community.image = document.querySelector("#image").files[0];
       // console.log("image upload", this.state.community.image);
     },
+    // CREATE COMMUNITY
     createCommunityClick() {
-      this.v$.$validate(); // checks all inputs
+      this.v$.$validate(); // Checks all inputs
+
       if (!this.v$.$error) {
+        // If ANY fail validation
+
         let bodyFormData = new FormData();
         bodyFormData.append("title", this.state.community.title);
         bodyFormData.append("about", this.state.community.about);
@@ -161,42 +166,39 @@ export default {
             },
           })
           .then((response) => {
-            // console.log("request create community", response.data)
             this.$emit("create-community", response.data);
 
-            // redirect to the homme page to create a post
+            // Reset form
+            this.v$.$reset();
+
+            // Redirect to the homme page to create a post
             this.$router.push("/wall");
 
-            // notification de succès
+            // Success notification
             this.$notify({
               type: "success",
               title: `Communauté crée`,
               text: `Bravo vous venez de créer une nouvelle communauté.`,
             });
-
-            // force refresh page
-            // this.$router.go(0);
           })
           .catch((error) => {
-            // console.log(error.response);
-            const errorMessage = (this.apiError = error.response.data.error);
-            this.errorMessage = errorMessage;
+            this.apiErrors = error.response.data.error;
 
-            // error notification
+            // Error notification
             this.$notify({
               type: "error",
-              title: `❌ Erreur lors de l'inscription`,
-              text: `Erreur reporté : ${errorMessage}`,
+              title: `Erreur lors de l'inscription`,
+              text: `Erreur reporté : ${this.apiErrors}`,
             });
           });
       } else {
-        // error notification
+        // Error notification
         this.$notify({
           type: "warn",
           title: `📝 Veuillez remplir le formulaire correctement`,
         });
 
-        // shows errors on screen
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")
@@ -222,6 +224,7 @@ export default {
   padding: 2rem;
   border-radius: 0.8rem;
   max-width: 400px;
+
   @media only screen and (min-width: 768px) {
     max-width: 580px;
   }
@@ -269,9 +272,11 @@ h2 {
   border-radius: 0.4rem;
   color: #95989a;
 }
+
 .fileUploadInput input[type="file"] {
   padding: 0 gap(m);
 }
+
 .fileUploadInput input[type="file"]::-webkit-file-upload-button {
   visibility: hidden;
   margin-left: 10px;
@@ -279,6 +284,7 @@ h2 {
   height: 50px;
   width: 0px;
 }
+
 .fileUploadInput button {
   z-index: 1;
   position: absolute;
@@ -360,6 +366,7 @@ button#submit {
   line-height: 15px;
   margin: 5px 0 0;
   max-width: 15rem;
+
   @media only screen and (min-width: 576px) {
     max-width: 25rem;
   }

@@ -4,11 +4,15 @@
       <h1>{{ msg }}</h1>
 
       <div class="container">
+        <!-- Login form -->
         <form action="#" method="post" @submit.prevent="login">
+          <!-- Email -->
           <div class="FormGroup">
-            <label class="FormGroupLabel" for="">User</label>
+            <label class="FormGroupLabel" for="email">E-mail</label>
             <div class="FormTextboxWrapper">
               <input
+                id="email"
+                autocomplete="email"
                 class="FormTextbox"
                 type="text"
                 placeholder="E-mail"
@@ -34,10 +38,13 @@
             <!-- Error Message -->
           </div>
 
+          <!-- Password -->
           <div class="FormGroup">
-            <label class="FormGroupLabel" for="">Pass</label>
+            <label class="FormGroupLabel" for="password">Pass</label>
             <div class="FormTextboxWrapper">
               <input
+                id="password"
+                autocomplete="current-password"
                 class="FormTextbox"
                 type="password"
                 placeholder="Mot de passe"
@@ -69,7 +76,7 @@
           </div>
           <!-- gestion erreur API avec axios -->
 
-          <!-- bouton de soumission -->
+          <!-- BTN submit -->
           <button
             type="submit"
             class="btn button"
@@ -78,21 +85,25 @@
           >
             Connexion
           </button>
-          <!-- bouton de soumission -->
         </form>
       </div>
     </div>
 
-    <!-- redirection sur la page création d'un compte -->
+    <!-- Redirect to the registration form -->
     <div class="signup">
       <p class="text-signup">Pas encore inscrit ?</p>
       <div class="actions">
-        <router-link class="nav btn button" to="/signup">
+        <!-- LINK REGISTRATION FORM -->
+        <router-link
+          class="nav btn button"
+          to="/signup"
+          aria-label="Créer un compte"
+        >
           Créer un compte
         </router-link>
       </div>
     </div>
-    <!-- redirection sur la page création d'un compte -->
+    <!-- Redirect to the registration form -->
   </div>
 </template>
 
@@ -107,6 +118,7 @@ import {
 } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
+// API requests
 import axiosInstance from "../../services/api";
 
 export default {
@@ -161,6 +173,7 @@ export default {
     $lazy: true,
   },
   methods: {
+    // LOGIN
     login() {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
@@ -168,36 +181,33 @@ export default {
         axiosInstance
           .post("/auth/login", this.state.user)
           .then((result) => {
-            // store current_user
+            // Store current_user
             this.$store.commit("logUser", result.data);
 
-            // success notification
+            // Success notification
             this.$notify({
               type: "success",
               title: `Connexion réussi !`,
               text: `Bienvenue`,
             });
 
-            // redirect to wall page
+            // Redirect to news feed
             this.$router.push("/wall");
           })
           .catch((error) => {
-            // console.log("erreur", error);
             if (error.response.status === 404) {
-              this.state.apiErrors =
-                "Utilisateur introuvable !";
+              this.state.apiErrors = "Utilisateur introuvable !";
 
-              // error notification
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la connexion`,
                 text: `Erreur reporté : ${this.state.apiErrors}`,
               });
             } else if (error.response.status === 401) {
-              this.state.apiErrors =
-                "Mot de passe invalide !";
+              this.state.apiErrors = "Mot de passe invalide !";
 
-              // error notification
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la connexion`,
@@ -206,13 +216,13 @@ export default {
             }
           });
       } else {
-        // error notification
+        // Error notification
         this.$notify({
           type: "warn",
           title: `Veuillez vous identifié correctement`,
         });
 
-        // montre les erreurs à l'écran
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")

@@ -17,10 +17,12 @@ module.exports = (sequelize, Sequelize) => {
     UserReport.belongsTo(models.user, {
       foreignKey: "userReportedId",
       as: "userReported",
+      onDelete: "CASCADE",
     });
     UserReport.belongsTo(models.user, {
       foreignKey: "fromUserId",
       as: "userFrom",
+      onDelete: "CASCADE",
     });
   };
 

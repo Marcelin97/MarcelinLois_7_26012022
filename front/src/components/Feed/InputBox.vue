@@ -12,18 +12,16 @@
         <!-- add file -->
         <div class="container__file">
           <div class="fileUploadInput">
-            <label>✨ Ajouter une image</label>
+            <label>🖼️ Ajouter une image</label>
             <input
               accept=".jpeg,.jpg,.png"
               @change="onChangeFileUpload"
-              ref="image"
               class="image"
               type="file"
               id="image"
               @blur="v$.post.image.$touch"
               :class="v$.post.image.$error === true ? 'error' : 'dirty'"
             />
-            <button>🔗</button>
           </div>
         </div>
 
@@ -31,13 +29,13 @@
           class="form-title"
           id="name"
           type="text"
-          placeholder="TITRE"
+          placeholder="Titre de votre publication"
           required
           autocomplete="off"
           v-model="state.post.title"
           blur="v$.post.title.$touch"
           :class="v$.post.title.$error === true ? 'error' : 'dirty'"
-          minlength="3"
+          minlength="5"
           maxlength="255"
           aria-label="Titre de votre post"
         />
@@ -90,7 +88,7 @@
               :community="community"
               :key="index"
             >
-              {{ community.id }}
+              {{ community.id }} - {{ community.title }}
             </option>
           </select>
         </div>
@@ -129,6 +127,7 @@ import { helpers, required, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 import axiosInstance from "../../services/api";
+import communitiesApi from "../../api/community";
 
 export default {
   name: "InputBox-Post",
@@ -154,11 +153,10 @@ export default {
           ),
           $autoDirty: true,
           $lazy: true,
-          minLength: minLength(3),
-          maxLength: maxLength(25),
+          minLength: minLength(5),
+          maxLength: maxLength(255),
         },
         image: {
-          // required: helpers.withMessage("Une image est obligatoire.", required),
           $autoDirty: true,
           $lazy: true,
         },
@@ -197,36 +195,46 @@ export default {
       apiErrors: "",
       communities: [], // add communities  array
       selectValue: "",
-      placeholder: "Choisi une communauté",
+      placeholder: "Communauté",
     };
   },
-  created() {
-    axiosInstance
-      .get("/community/readAllCommunities")
-      .then((response) => {
-        this.communities = response.data.datas;
-        // console.log(this.communities)
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          this.apiErrors = "Il n'y a pas encore de communauté !";
-        }
+  async created() {
+    try {
+      const getCommunities = await communitiesApi.getCommunities();
+      this.communities = getCommunities;
+      // console.log(this.communities);
+    } catch (error) {
+      if (error.response.status === 404) {
+        this.apiErrors = "Il n'y a pas encore de communauté !";
+      }
+      this.apiErrors = error.data.error;
+
+      // notification error message
+      this.$notify({
+        type: "error",
+        title: `Accès refusé:`,
+        text: `${this.apiErrors}`,
+        duration: 3000,
       });
+    }
   },
   methods: {
+    // Capture the picture
     onChangeFileUpload() {
       this.state.post.image = document.querySelector("#image").files[0];
-      // console.log("image upload", this.state.post.image);
     },
+    // CREATE POST
     createPostClick() {
-      this.v$.$validate(); // checks all inputs
+      this.v$.$validate(); // Checks all inputs
+
       if (!this.v$.$error) {
-        // if no errors
+        // If ANY fail validation
+
         let bodyFormData = new FormData();
         bodyFormData.append("title", this.state.post.title);
         bodyFormData.append("content", this.state.post.content);
         bodyFormData.append("image", this.state.post.image);
-        bodyFormData.append("communityId", Number(this.state.community.id));
+        bodyFormData.append("communityId", this.state.community.id);
         // for (let value of bodyFormData.values()) {
         //   console.log(value);
         // }
@@ -238,10 +246,12 @@ export default {
             },
           })
           .then(async (response) => {
-            console.log("requête create post", response.data);
-            this.$emit("create-post", response.data);
+            this.$emit("create-post", response.data.newPost);
 
-            // notification de succès
+            // Reset form
+            this.v$.$reset();
+
+            // Success notification
             this.$notify({
               type: "success",
               title: `Publication crée`,
@@ -249,24 +259,23 @@ export default {
             });
           })
           .catch((error) => {
-            console.log(error.response);
             this.apiErrors = error.response.data.error;
 
-            // error notification
+            // Error notification
             this.$notify({
               type: "error",
-              title: `❌ Erreur lors de la publication`,
+              title: `Erreur lors de la publication`,
               text: `Erreur reporté : ${this.apiErrors}`,
             });
           });
       } else {
-        // error notification
+        // Error notification
         this.$notify({
           type: "warn",
           title: `📝 Veuillez remplir le formulaire correctement`,
         });
 
-        // shows errors on screen
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")
@@ -294,16 +303,11 @@ export default {
   flex-direction: column;
   justify-content: center;
   box-shadow: 0 0 20px rgb(66 50 98 / 35%);
-  margin: 0 auto 2rem auto;
+  // margin: 0 auto 2rem auto;
   padding: 1rem;
   border-radius: 0.8rem;
-  width: 280px;
-  @media only screen and (min-width: 600px) {
-      width: 430px;
-    }
-  @media only screen and (min-width: 768px) {
-    width: 530px;
-  }
+  width: auto;
+  margin: 0 1rem 1rem;
 }
 
 h2 {
@@ -357,22 +361,6 @@ h2 {
   width: 0px;
 }
 
-.fileUploadInput button {
-  z-index: 1;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  height: 50px;
-  width: 50px;
-  line-height: 0;
-  user-select: none;
-  border: none;
-  background-color: #4e5166;
-  border-radius: 0 0.4rem 0.4rem 0;
-  font-size: 1rem;
-  font-weight: 800;
-}
-
 .form-title::placeholder,
 textarea::placeholder {
   font-size: 0.875em;
@@ -413,16 +401,12 @@ select {
   border: 0;
   outline: 0;
   width: 15rem;
-  height: 3rem;
-  padding: 0 4em 0 1em;
-  border-radius: 0.25em;
-  box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+  height: 2rem;
+  box-shadow: 0 0 1em 0 rgb(0 0 0 / 20%);
   color: #fff;
   background-color: #34495e;
   cursor: pointer;
-    @media only screen and (min-width: 600px) {
-        width: 20rem;
-      }
+  text-align: center;
 
   /* <option> colors */
   option {
@@ -439,19 +423,25 @@ select {
 .select {
   position: relative;
   display: flex;
-  height: 3em;
+  align-items: center;
   border-radius: 0.25em;
   overflow: hidden;
-  margin: 1rem 0 0.5rem 0;
+  margin: 0.5rem 0 0.5rem 0;
+  text-overflow: ellipsis;
+  justify-content: center;
+  // width: 100%;
+  @media only screen and (min-width: 576px) {
+    width: 100%;
+  }
 }
 
 /* Arrow */
 .select::after {
-  content: "\25BC";
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1em;
+  content: "▼";
+  // position: absolute;
+  /* top: 0; */
+  // right: 10px;
+  padding: 8px;
   background-color: #34495e;
   transition: 0.25s all ease;
   pointer-events: none;
@@ -464,8 +454,8 @@ select {
 
 button#submit {
   width: 100%;
-  max-width: 20rem;
-  margin: 10px;
+  // max-width: 20rem;
+  margin: 0.2rem;
   font-size: 0.875em;
 }
 

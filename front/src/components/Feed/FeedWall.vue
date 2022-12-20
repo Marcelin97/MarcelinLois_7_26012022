@@ -3,21 +3,45 @@
     <!-- Feeds -->
     <div class="container">
       <!-- Main -->
-      <div class="container__main">
-        <!-- Stories -->
-        <StoriesWall />
-        <!-- Input Box -->
-        <InputBox @create-post="createPost" />
-        <!-- Posts -->
-        <div v-if="posts.length != 0" class="post">
-          <PostCard class="post__card" v-for="(post, index) in posts" :key="index" :post="post" v-bind:index="index"
-            v-bind:id="post.id" @delete-post="deletePost" />
-        </div>
-        <div v-else>
-          <div class="container-communities">
-            <h3>Il n'y a pas de post pour le moment</h3>
-            <router-link class="menu-link underline" to="/communities">Tu peux aussi crée une communauté
+
+      <!-- Stories -->
+      <StoriesWall />
+
+      <div class="sidebar">
+        <aside class="sidebar__sidebar">
+          <!-- INPUT BOX - CREATE POST -->
+          <InputBox v-if="communities.length != 0" @create-post="createPost" />
+          <div v-else class="container-communities">
+            <!-- LINK COMMUNITIES -->
+            <router-link
+              class="underline"
+              to="/communities"
+              aria-label="Page des communautés"
+            >
+              Commence par crée une communauté 😎
             </router-link>
+          </div>
+        </aside>
+
+        <div class="sidebar__main">
+          <!-- POSTS -->
+          <div v-if="posts.length != 0" class="post">
+            <PostCard
+              class="post__card"
+              v-for="(post, index) in posts"
+              :key="index"
+              :post="post"
+              v-bind:index="index"
+              v-bind:id="post.id"
+              @delete-post="deletePost"
+              @update-post="onUpdatePost"
+            />
+          </div>
+          <!-- IF ANY POSTS -->
+          <div v-else>
+            <div class="container-communities">
+              <h2>{{ this.loadingPost }}</h2>
+            </div>
           </div>
         </div>
       </div>
@@ -30,8 +54,10 @@ import PostCard from "../Posts/PostCard.vue";
 import InputBox from "./InputBox.vue";
 import StoriesWall from "./StoriesWall.vue";
 
-// import axiosInstance from "../../services/api";
+// Post requests
 import postsApi from "../../api/posts";
+// Communities requests
+import communitiesApi from "../../api/community";
 
 export default {
   name: "Feed-Wall",
@@ -43,41 +69,38 @@ export default {
   data() {
     return {
       posts: [], // add posts array
+      communities: [], // add communities array
       apiErrors: "",
     };
   },
   async created() {
-    const getPosts = await postsApi.getPosts();
-    this.posts = getPosts;
+    // I get all the posts
+    const posts = await postsApi.getPosts();
+    this.posts = posts;
+    if (this.posts.length < 1) {
+      this.loadingPost = "Il n y a pas encore de publications à afficher";
+    }
+    // I collect all the communities to assign them to a publication
+    const getCommunities = await communitiesApi.getCommunities();
+    this.communities = getCommunities;
   },
   methods: {
-    init() {
-      if (this.$route.params.id > 0) {
-        this.createPost();
-      }
+    // EVENT : create post
+    createPost(data) {
+      this.posts = [data, ...this.posts];
     },
-    // createPost(post) {
-    //   console.log("receive newPost", post);
-    //   this.posts = [post.datas, ...this.posts];
-    //   this.posts.push(post.datas);
-    //   console.log("update all posts", this.posts);
-    // },
+    // EVENT : update publication
+    onUpdatePost(data, postId) {
+      this.posts = this.posts.map((post) => {
+        if (post.id === postId) {
+          post = data;
+        }
+        return post;
+      });
+    },
+    // EVENT : delete post
     deletePost(postId) {
-      // ...Logic handled by PostFooter.vue
       this.posts = this.posts.filter((p) => p.id !== postId);
-    },
-    async createPost() {
-      try {
-        const getPosts = await postsApi.getPosts();
-        this.posts = getPosts;
-      } catch (error) {
-        this.$notify({
-          type: "error",
-          title: `Erreur lors du changement de la communauté`,
-          text: `Erreur reporté : ${error}`,
-          duration: 30000,
-        });
-      }
     },
   },
 };
@@ -87,21 +110,45 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+}
 
-  &__main {
-    /* Take the remaining width */
-    flex: 1;
+.sidebar {
+  display: flex;
+  flex-direction: column;
+
+  @media only screen and (min-width: 576px) {
+    flex-direction: row;
   }
+}
+
+.sidebar__sidebar {
+  width: 100%;
+
+  @media only screen and (min-width: 576px) {
+    width: 35%;
+  }
+}
+
+.sidebar__main {
+  display: flex;
+  /* Take the remaining width */
+  flex: 1;
+  justify-content: center;
+  /* Make it scrollable */
+  overflow: auto;
 }
 
 .container-communities {
   display: flex;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-bottom: 1.2rem;
+  margin-left: 2rem;
 }
 
 .post {
+  display: flex;
   margin: auto;
   width: 350px;
   display: flex;
@@ -115,6 +162,7 @@ export default {
 .underline::before {
   content: "";
   position: absolute;
+  top: 1.2rem;
   bottom: 0;
   right: 0;
   width: 0;

@@ -5,7 +5,6 @@ export default {
    * Add a post comment
    * @param postId
    * @param comment
-   * @param userId
    * @return {Promise<any>}
    */
   async addComment(postId, comment) {
@@ -32,7 +31,7 @@ export default {
       // console.log(response.data.commentFind)
       return response.data.commentFind;
     } catch (e) {
-      console.error(e.response);
+      console.error(e);
       throw e.response;
     }
   },
@@ -50,18 +49,21 @@ export default {
     }
   },
 
-  // /**
-  //  * Get reported comments
-  //  * @returns {Promise<any>}
-  //  */
-  // async getReportedComments() {
-  //   try {
-  //     const response = await axiosInstance.get("/comments/reports");
-  //     return response.data;
-  //   } catch (e) {
-  //     throw e.response;
-  //   }
-  // },
+  /**
+  * Update a post comment
+  * @param commentId
+  * @param comment
+  * @return {Promise<any>}
+  */
+  async updateComment(commentId, comment) {
+    try {
+      const response = await axiosInstance.put(`/comments/update/${commentId}`, {content: comment })
+      return response.data.datas
+    } catch (e) {
+      console.error(e.response)
+      throw e.response
+    }
+  },
 
   /**
    * Report a comment

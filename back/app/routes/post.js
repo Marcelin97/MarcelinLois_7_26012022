@@ -19,6 +19,11 @@ router.post("/", isLoggedIn, multer, postsCtrl.createPost);
 router.get("/:id/read", isLoggedIn, postsCtrl.readPostById);
 
 //=================================>
+// * READ ALL POSTS BY USER
+//=================================>
+router.get("/readAllByUser/:userId", isLoggedIn, postsCtrl.readAllPostsByUser);
+
+//=================================>
 // * READ ALL POSTS
 //=================================>
 router.get("/readAll", isLoggedIn, postsCtrl.readAllPosts);

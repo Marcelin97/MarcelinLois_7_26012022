@@ -2,8 +2,9 @@
   <div>
     <div class="wrapper">
       <div class="profile-card js-profile-card">
-        <!-- Profil image -->
+        <!-- User informations -->
         <div>
+          <!-- User image -->
           <div class="profile-card__img">
             <img
               v-if="user.imageUrl"
@@ -19,12 +20,13 @@
             />
           </div>
 
+          <!-- Ribbon if admin -->
           <div v-if="user.isAdmin == true" class="ribbon">
             <span>Admin</span>
           </div>
         </div>
 
-        <!-- Profil informations -->
+        <!-- Username -->
         <div class="profile-card__cnt js-profile-cnt">
           <div class="profile-card-name">
             {{ user.username }}
@@ -32,7 +34,7 @@
 
           <!-- Profil statistics -->
           <div class="profile-card-inf">
-            <!-- Publications -->
+            <!-- Length of posts -->
             <div v-if="user.posts != 0" class="profile-card-inf__item">
               <div class="profile-card-inf__title">
                 {{ user.posts.length }}
@@ -40,7 +42,7 @@
               <div class="profile-card-inf__txt">Publications</div>
             </div>
 
-            <!-- Commentaires -->
+            <!-- Length of comments -->
             <div v-if="user.comments != 0" class="profile-card-inf__item">
               <div class="profile-card-inf__title">
                 {{ user.comments.length }}
@@ -48,7 +50,7 @@
               <div class="profile-card-inf__txt">Commentaires</div>
             </div>
 
-            <!-- Communautés crées -->
+            <!-- Length of communities -->
             <div v-if="user.community != 0" class="profile-card-inf__item">
               <div class="profile-card-inf__title">
                 {{ user.community.length }}
@@ -61,12 +63,11 @@
         <!-- button actions -->
         <div class="profile-card-ctr">
           <div v-if="userLoggedIn == false" class="profile-card-ctr__actions">
-            <!-- button report user -->
+            <!-- BTN report user -->
             <button
               type="button"
               class="btn"
               @click="$refs.reportUser.openModal()"
-              text="Signaler ce compte"
               aria-label="Signaler ce compte"
             >
               Signaler...
@@ -74,28 +75,31 @@
           </div>
 
           <div v-else class="profile-card-ctr__actions">
-            <!-- update profile -->
-            <router-link class="btn" to="/user/parameter">
+            <!-- BTN update profile -->
+            <button
+              type="button"
+              class="btn"
+              @click="$refs.updateUser.openModal()"
+              aria-label="Modifier son profile"
+            >
               Modifier mon profil
-            </router-link>
+            </button>
 
-            <!-- export data -->
+            <!-- BTN export data -->
             <button
               type="button"
               class="btn btn-export"
               @click="exportDataClick"
-              text="Exporter mes données"
               aria-label="Exporter mes données"
             >
               Exporter mes données
             </button>
 
-            <!-- button delete account -->
+            <!-- BTN delete account -->
             <button
               type="button"
               class="btn btn-delete"
               @click="$refs.deleteAccount.openModal()"
-              text="Supprimer mon compte"
               aria-label="Supprimer mon compte"
             >
               Supprimer mon compte
@@ -104,6 +108,217 @@
         </div>
       </div>
     </div>
+
+    <!-- modal update account -->
+    <modalStructure ref="updateUser">
+      <template v-slot:header>
+        <h1>Modifier mon profil</h1>
+      </template>
+
+      <template v-slot:body>
+        <form
+          class="formUpdate"
+          action="#"
+          method="put"
+          enctype="multipart/form-data"
+        >
+          <div class="form-group">
+            <label for="first-name">Prénom</label>
+            <input
+              id="first-name"
+              type="text"
+              v-model="state.userUpdate.firstName"
+              @blur="v$.userUpdate.firstName.$touch"
+              :class="
+                v$.userUpdate.firstName.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.firstName.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.firstName.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="last-name">Nom de famille</label>
+            <input
+              id="last-name"
+              type="text"
+              v-model="state.userUpdate.lastName"
+              @blur="v$.userUpdate.lastName.$touch"
+              :class="
+                v$.userUpdate.lastName.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.lastName.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.lastName.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="birthday">Date de naissance</label>
+            <input
+              id="birthday"
+              type="date"
+              v-model="state.userUpdate.birthday"
+              @blur="v$.userUpdate.birthday.$touch"
+              :class="
+                v$.userUpdate.birthday.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.birthday.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.birthday.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="username">Nom d'utilisateur</label>
+            <input
+              id="username"
+              type="text"
+              v-model="state.userUpdate.username"
+              @blur="v$.userUpdate.username.$touch"
+              :class="
+                v$.userUpdate.username.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.username.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.username.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input
+              id="email"
+              type="email"
+              v-model="state.userUpdate.email"
+              @blur="v$.userUpdate.email.$touch"
+              :class="v$.userUpdate.email.$error === true ? 'error' : 'dirty'"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.email.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.email.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="newPassword">Nouveau mot de passe</label>
+            <input
+              id="newPassword"
+              type="newPassword"
+              v-model="state.userUpdate.newPassword"
+              @blur="v$.userUpdate.newPassword.$touch"
+              :class="
+                v$.userUpdate.newPassword.$error === true ? 'error' : 'dirty'
+              "
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.newPassword.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.newPassword.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group fileUploadInput">
+            <label for="userImage">Photo de profil</label>
+            <input
+              class="input-file"
+              v-on="state.userUpdate.userImage"
+              id="userImage"
+              type="file"
+              accept=".jpeg,.jpg,png"
+              @change="onChangeFileUpload"
+              ref="file"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.userUpdate.userImage.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.userUpdate.userImage.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <!-- button submit -->
+          <div class="button-container">
+            <button
+              aria-label="Modifier"
+              title="Modifier"
+              type="submit"
+              class="btn"
+              @click.stop.prevent="onUpdateUser"
+            >
+              Modifier
+            </button>
+
+            <button
+              class="btn"
+              type="button"
+              aria-label="Annuler la modification"
+              @click="$refs.updateUser.closeModal()"
+            >
+              Annuler
+            </button>
+          </div>
+        </form>
+      </template>
+    </modalStructure>
 
     <!-- modal delete account -->
     <modalStructure ref="deleteAccount">
@@ -122,7 +337,6 @@
         <div class="modal__actions">
           <button
             class="btn"
-            text="Annuler"
             type="button"
             aria-label="Annuler la suppression"
             @click="$refs.deleteAccount.closeModal()"
@@ -181,7 +395,6 @@
               type="submit"
               class="btn button"
               title="Signaler"
-              text="Signaler"
               value="Signaler"
               aria-label="Signaler un utilisateur"
             >
@@ -204,19 +417,48 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
+
+// User requests
 import usersApi from "../../api/users";
+// API requests
 import axiosInstance from "../../services/api";
+
 import useVuelidate from "@vuelidate/core";
-import { helpers, minLength, maxLength } from "@vuelidate/validators";
+import {
+  helpers,
+  minLength,
+  email,
+  maxLength,
+  alphaNum,
+} from "@vuelidate/validators";
 import { reactive, computed } from "vue";
+
+export function strongPassword(value) {
+  return (
+    /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/.test(
+      value
+    ) && value.length >= 8
+  );
+}
 
 export default {
   name: "User-profile",
   props: ["user", "userLoggedIn"],
+  emits: ["update-user"],
   setup() {
     const state = reactive({
       user: {
         content: "",
+      },
+      test: "",
+      userUpdate: {
+        firstName: "",
+        lastName: "",
+        birthday: "",
+        email: "",
+        newPassword: "",
+        username: "",
+        userImage: "",
       },
     });
 
@@ -233,6 +475,46 @@ export default {
             "La longueur maximale autorisée est de 255",
             maxLength(255)
           ),
+        },
+      },
+      userUpdate: {
+        firstName: {
+          $autoDirty: true,
+          $lazy: true,
+        },
+        lastName: {
+          $autoDirty: true,
+          $lazy: true,
+        },
+        birthday: {
+          $autoDirty: true,
+          $lazy: true,
+        },
+        username: {
+          $autoDirty: true,
+          $lazy: true,
+          minLength: minLength(3),
+          maxLength: maxLength(25),
+          alphaNum,
+        },
+        email: {
+          $autoDirty: true,
+          $lazy: true,
+          email,
+          minLength: minLength(5),
+          maxLength: maxLength(60),
+        },
+        newPassword: {
+          $lazy: true,
+          password_validation: {
+            $validator: strongPassword,
+            $message:
+              "Entre 8 et 16 caractères, Une minuscule au moins, Une majuscule au moins, Un chiffre au moins, Un caractère spécial au moins (@&/!$ ...)",
+          },
+        },
+        userImage: {
+          $autoDirty: true,
+          $lazy: true,
         },
       },
     }));
@@ -253,7 +535,73 @@ export default {
       apiErrors: "",
     };
   },
+  mounted() {
+    // I assign my user to update with the data I have in my store
+    this.state.userUpdate = this.$store.state.user;
+  },
   methods: {
+    // Capture the picture
+    onChangeFileUpload() {
+      this.state.userUpdate.userImage =
+        document.querySelector("#userImage").files[0];
+    },
+    // UPDATE MY ACCOUNT
+    async onUpdateUser() {
+      let bodyFormData = new FormData();
+      if (this.state.userUpdate.userImage)
+        bodyFormData.append("image", this.state.userUpdate.userImage);
+
+      for (let key of [
+        "firstName",
+        "lastName",
+        "birthday",
+        "email",
+        "newPassword",
+        "username",
+      ]) {
+        const param = this.state.userUpdate[key];
+        // console.log(param, key);
+        if (param) {
+          bodyFormData.append(key, param);
+        }
+      }
+
+      axiosInstance
+        .patch("/auth/update", bodyFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((result) => {
+          this.$emit("update-user", result.data);
+          // console.log("result: ", result.data);
+          // Send data to store to update current user
+          this.$store.commit("updateUser", result.data);
+
+          // close update user modal
+          this.$refs.updateUser.closeModal();
+
+          this.state.userUpdate;
+
+          // Success notification
+          this.$notify({
+            type: "success",
+            title: `Profil mise à jour`,
+            text: `Vous allez être redirigé vers votre profil.`,
+          });
+        })
+        .catch((err) => {
+          this.apiErrors = err.response;
+
+          // Error notification
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de la mise à jour de l'utilisateur'`,
+            text: `Erreur reporté : ${this.apiErrors}`,
+          });
+        });
+    },
+    // EXPORT DATA OF MY ACCOUNT
     async exportDataClick() {
       try {
         const response = await usersApi.exportMyData();
@@ -261,11 +609,12 @@ export default {
         let fileLink = document.createElement("a");
 
         fileLink.href = fileURL;
-        fileLink.setAttribute("download", "file.txt");
+        fileLink.setAttribute("download", `${this.user.username}_datas.txt`);
         document.body.appendChild(fileLink);
 
         fileLink.click();
 
+        // Success notification
         this.$notify({
           type: "success",
           text: "Le téléchargement commence.",
@@ -273,7 +622,7 @@ export default {
       } catch (error) {
         this.apiErrors = error.response;
 
-        // notification d'erreur
+        // Error notification
         this.$notify({
           duration: 2500,
           type: "error",
@@ -282,6 +631,7 @@ export default {
         });
       }
     },
+    // DELETE MY ACCOUNT
     async deleteAccountClick() {
       if (
         window.confirm(
@@ -292,11 +642,19 @@ export default {
           await usersApi.deleteUser();
           await this.$store.commit("logout");
           await this.$router.push("/");
-        } catch (e) {
-          console.error(e.data);
+        } catch (error) {
+          this.apiErrors = error.response;
+
+          // Error notification
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de la suppression du compte`,
+            text: `Erreur reporté : ${this.apiErrors}`,
+          });
         }
       }
     },
+    // REPORT USER ACCOUNT
     reportAccountClick() {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
@@ -304,20 +662,21 @@ export default {
         axiosInstance
           .post(`/auth/report/${this.user.id}`, this.state.user)
           .then(() => {
-            // notification de succès
+            // Success notification
             this.$notify({
               type: "success",
               title: `Signalement envoyé !`,
-              text: `Vous allez être redirigé vers votre profil.`,
             });
-            // close report user modal
+            // Close report user modal
             this.$refs.reportUser.closeModal();
           })
           .catch((error) => {
-            // console.log(error.response.status);
+            // Close report user modal
+            this.$refs.reportUser.closeModal();
+
             if (error.response.status === 404) {
               this.apiErrors = "Utilisateur introuvable !";
-              // notification d'erreur
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors du signalement`,
@@ -325,7 +684,7 @@ export default {
               });
             } else if (error.response.status === 409) {
               this.apiErrors = "Vous avez déjà signalé cet utilisateur !";
-              // notification d'erreur
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors du signalement`,
@@ -334,13 +693,13 @@ export default {
             }
           });
       } else {
-        // notification d'erreur
+        // Error notification
         this.$notify({
           type: "warn",
           title: `Veuillez faire un signalement complet.`,
         });
 
-        // montre les erreurs à l'écran
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")
@@ -372,6 +731,7 @@ export default {
     padding-top: 100px;
   }
 }
+
 .profile-card-name {
   line-height: 35px;
   text-transform: uppercase;
@@ -380,6 +740,7 @@ export default {
   font-size: 1rem;
   text-align: center;
 }
+
 .profile-card {
   width: 100%;
   margin: auto;
@@ -465,6 +826,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 img {
   width: 100%;
   height: 100%;
@@ -494,9 +856,10 @@ img {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+
   .btn {
-  margin: 0rem;
-}
+    margin: 0rem;
+  }
 }
 
 // modal report user
@@ -600,8 +963,22 @@ img {
   line-height: 15px;
   margin: 5px 0 0;
   max-width: 15rem;
+
   @media only screen and (min-width: 576px) {
     max-width: 25rem;
+  }
+}
+
+.formUpdate {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  display: flex;
+  margin: 10px 10px auto;
+  label {
+    margin-right: 10px;
   }
 }
 </style>

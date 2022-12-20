@@ -4,7 +4,10 @@
       <!-- header card -->
       <div class="post-card__header">
         <div class="header">
+
+          <!-- Owner information -->
           <div class="header__left">
+            <!-- post owner profile picture -->
             <div class="profile-pic" v-if="post.user">
               <img
                 v-if="post.user.imageUrl"
@@ -38,6 +41,7 @@
               />
             </div>
 
+            <!-- Post owner name -->
             <p class="profile-pic__username" v-if="post.user">
               {{ post.user.username }}
             </p>
@@ -51,6 +55,7 @@
 
           <!-- Menu dropdown -->
           <div class="dropdown">
+            <!-- BTN dropdown menu -->
             <button
               class="dropdown-btn"
               v-on:click="show = !show"
@@ -77,21 +82,26 @@
                 </div>
               </div>
             </button>
-
+            
+            <!-- BTN ACTIONS -->
             <div class="dropdown-content" v-bind:class="{ show: show }">
               <ul>
+                <!-- BTN update post -->
                 <li v-if="canAdmin(this.post.creatorId)">
-                  <router-link
-                    :postId="postId"
+                  <button
+                    type="button"
+                    text="Modifier ce post"
                     class="btn__update"
-                    :to="'/posts/' + post.id + '/update'"
+                    aria-label="Modifier ce post"
+                    @click="$refs.updatePost.openModal()"
                   >
                     Modifier
-                  </router-link>
+                  </button>
                 </li>
+                <!-- BTN report post -->
                 <li v-if="this.$store.state.user.id != this.post.creatorId">
                   <button
-                  title="Signaler ce post"
+                    title="Signaler ce post"
                     type="button"
                     @click="$refs.reportPost.openModal()"
                     text="Signaler ce post"
@@ -100,11 +110,12 @@
                     Signaler
                   </button>
                 </li>
+                <!-- BTN delete post -->
                 <li
                   v-if="canModerate(this.post.creatorId, this.post.communityId)"
                 >
                   <button
-                  title="Supprimer ce post"
+                    title="Supprimer ce post"
                     type="button"
                     @click="$refs.deletePost.openModal()"
                     text="Supprimer ce post"
@@ -119,7 +130,7 @@
         </div>
       </div>
 
-      <!-- image card -->
+      <!-- Picture publication -->
       <div class="post-image">
         <img
           alt="photo du post"
@@ -129,69 +140,51 @@
 
       <!-- content card -->
       <div class="post-content">
-        <!-- btn like -->
+        <!-- BTN like -->
         <div class="vote-data">
           <button
-          type="button"
+            type="button"
             aria-label="Like"
             class="like icon-vote"
             title="Mettre un j'aime"
             @click="sendLike(1, id)"
           >
-            <svg
-              class="heart"
-              id="heart"
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              viewBox="0 0 32 31"
-            >
-              <title>J'aime</title>
-              <g stroke-width="2">
-                <path
-                  id="heart"
-                  d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  v-bind:fill="like_color"
-                ></path>
-              </g>
-            </svg>
+          <svg class="heart" id="heartLike" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
+            <title>J'aime</title>
+            <g stroke-width="2">
+              <path id="heartLike"
+                d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
+                stroke-linecap="round" stroke-linejoin="round" :class="isLikedByUser ? 'like' : ''"></path>
+            </g>
+          </svg>
           </button>
-          <span class="vote-count">{{ showLikesCount }}</span>
+
+          <span class="vote-count" :class="isLikedByUser ? 'like' : ''" >{{ showLikesCount }}</span>
         </div>
 
-        <!-- btn dislike -->
+        <!-- BTN dislike -->
         <div class="vote-data">
           <button
-          type="button"
+            type="button"
             aria-label="Dislike"
             class="dislike icon-vote"
             title="j'aime pas"
             @click="sendLike(-1, id)"
           >
-            <svg
-              class="disheart"
-              id="heart"
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              viewBox="0 0 32 31"
-            >
-              <title>Enlever mon j'aime</title>
-              <g stroke-width="2">
-                <path
-                  id="heart"
-                  d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  v-bind:fill="dislike_color"
-                ></path>
-              </g>
-            </svg>
+          <svg class="heart" id="heartDislike" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
+            <title>J'aime pas</title>
+            <g stroke-width="2">
+              <path id="heartDislike"
+                d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
+                stroke-linecap="round" stroke-linejoin="round" fill:blue stroke: :class="isDisLikedByUser ? 'dislike' : ''"></path>
+            </g>
+          </svg>
+          
           </button>
-          <span class="vote-count">{{ showDislikesCount }}</span>
+          <span class="vote-count" :class="isDisLikedByUser ? 'dislike' : ''" >{{ showDislikesCount }}</span>
         </div>
 
-        <!-- section data of post -->
+        <!-- Post informations -->
         <div>
           <p class="post__content">
             {{ post.title }}
@@ -201,41 +194,147 @@
           </p>
         </div>
 
-        <!-- section comment(s) -->
+        <!-- Section comment(s) -->
         <div>
-          <div v-if="this.comments.length != 0">
+          <div>
             {{ showCommentsCount }}
-            <span> <font-awesome-icon icon="fa-regular fa-comments" /></span>
+            <span>
+              <font-awesome-icon icon="fa-regular fa-comments" />
+            </span>
           </div>
-          <!-- comment(s) list -->
+          <!-- Comment(s) list -->
           <PostComments
-            v-for="(comment, index) in this.comments"
+            v-for="(comment, index) in comments"
             :key="index"
             :comment="comment"
             v-bind:content="comment.content"
             v-bind:index="index"
             v-bind:communityId="post.communityId"
             @delete-comment="onDeleteComment"
+            @update-comment="onUpdateComment"
             class="comments-list"
           />
 
           <!-- if no comment(s) -->
-          <p v-if="comments.length === 0" class="noComment">
-            Il n'y a aucun commentaire pour le moment. Soyez le premier !
+          <p class="noComment">
+            Il n'y a aucun commentaire pour le moment.
+            <br />
+            Soyez le premier !
           </p>
 
-          <!-- add a comment -->
+          <!-- Component add a comment -->
           <div class="post-comment">
             <AddComment @add-comment="onAddComment" />
           </div>
         </div>
       </div>
 
-      <!-- publication date -->
+      <!-- Date of publication -->
       <p class="post-createdat">
-        {{ showDate }}<font-awesome-icon icon="fa-regular fa-clock" />
+        {{ showDate }}
+        <font-awesome-icon icon="fa-regular fa-clock" />
       </p>
     </div>
+
+    <!-- modal update post -->
+    <modalStructure ref="updatePost">
+      <template v-slot:header>
+        <h1>Modifier mon post</h1>
+      </template>
+
+      <template v-slot:body>
+        <form action="#" method="patch" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="title">Nouveau titre de la publication</label>
+            <input
+              placeholder="TITRE"
+              autocomplete="off"
+              minlength="3"
+              maxlength="255"
+              aria-label="Titre de votre post"
+              id="title"
+              type="text"
+              v-model="state.postUpdate.title"
+              @blur="v$.postUpdate.title.$touch"
+              :class="v$.postUpdate.title.$error === true ? 'error' : 'dirty'"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.postUpdate.title.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.postUpdate.title.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="content">Nouvelle description de la publication</label>
+            <input
+              id="content"
+              type="text"
+              placeholder="À PROPOS de..."
+              minlength="2"
+              maxlength="400"
+              aria-label="description de votre publication"
+              v-model="state.postUpdate.content"
+              @blur="v$.postUpdate.content.$touch"
+              :class="v$.postUpdate.content.$error === true ? 'error' : 'dirty'"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.postUpdate.content.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.postUpdate.content.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <div class="form-group">
+            <label for="PostImage">Nouvelle photo de la publication</label>
+            <input
+              class="input-file"
+              id="picture"
+              type="file"
+              accept=".jpeg,.jpg,png"
+              ref="file"
+            />
+
+            <!-- Error Message -->
+            <template v-if="v$.postUpdate.image.$dirty">
+              <div
+                class="input-errors"
+                v-for="(error, index) of v$.postUpdate.image.$errors"
+                :key="index"
+              >
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <!-- Error Message -->
+          </div>
+
+          <!-- button submit -->
+          <div class="button-container">
+            <button
+              type="submit"
+              class="btn"
+              @click.stop.prevent="onUpdatePost"
+            >
+              Modifier
+            </button>
+          </div>
+        </form>
+      </template>
+    </modalStructure>
 
     <!-- modal report post -->
     <modalStructure ref="reportPost">
@@ -334,7 +433,6 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
-
 import PostComments from "../Comments/PostComments";
 import AddComment from "../Comments/AddComment.vue";
 
@@ -342,18 +440,23 @@ import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
+// API requests
 import axiosInstance from "../../services/api";
+// Posts requests
 import postsApi from "../../api/posts";
+// Comments requests
 import commentsApi from "../../api/comments";
 
+// Manage roles
 import roleMixin from "../../mixins/role.mixin";
 
+// Manage time
 import timeAgo from "../../services/timeAgo";
 
 export default {
   name: "Post-Card",
-  props: ["post", "id", "index", "creatorInfo", "posts"],
-  emits: ["delete-post"],
+  props: ["post", "id", "index", "creatorInfo"],
+  emits: ["delete-post", "update-post"],
   components: {
     deleteBtn,
     modalStructure,
@@ -366,18 +469,18 @@ export default {
       currentUser: [],
       show: false,
       apiErrors: "",
-      vote: 0,
-      likesCount: 0,
-      dislikesCount: 0,
       comments: [],
-      like_color: "",
-      dislike_color: "",
     };
   },
   mixins: [roleMixin],
   setup() {
     const state = reactive({
       post: {
+        content: "",
+      },
+      postUpdate: {
+        title: "",
+        image: "",
         content: "",
       },
     });
@@ -395,6 +498,28 @@ export default {
             "La longueur maximale autorisée est de 255",
             maxLength(255)
           ),
+        },
+        image: {
+          $autoDirty: true,
+          $lazy: true,
+        },
+      },
+      postUpdate: {
+        title: {
+          $autoDirty: true,
+          $lazy: true,
+          minLength: minLength(3),
+          maxLength: maxLength(25),
+        },
+        image: {
+          $autoDirty: true,
+          $lazy: true,
+        },
+        content: {
+          $autoDirty: true,
+          $lazy: true,
+          minLength: minLength(2),
+          maxLength: maxLength(400),
         },
       },
     }));
@@ -417,47 +542,79 @@ export default {
       return `Posté ${timeAgo.format(new Date(this.post.createdAt))}`;
     },
     showLikesCount() {
-      return this.likesCount
+      let like = this.post.likePosts.filter((p) => p.vote === 1);
+      // console.log(like.length);
+      return like.length;
     },
     showDislikesCount() {
-      return this.dislikesCount
+      let disLike = this.post.likePosts.filter((p) => p.vote === -1);
+      // console.log(disLike.length);
+      return disLike.length;
+    },
+    isLikedByUser() {
+      return this.post.likePosts.find((like) => like.vote === 1 && like.userId === this.$store.state.user.id)
+    },
+    isDisLikedByUser() {
+      return this.post.likePosts.find((like) => like.vote === -1 && like.userId === this.$store.state.user.id)
     },
   },
   async created() {
     this.postId = this.$route.params.id;
 
     // I get all my comments by post
-    this.comments = await commentsApi.getPostComments(this.id);
+    this.comments = this.post.comments;
   },
   mounted() {
     this.currentUser = this.$store.state.user;
-
-    axiosInstance
-      .get(`posts/${this.id}/likesByPost`)
-      .then((response) => {
-        // console.log("likePost", response.data.result);
-
-        let voteLike = response.data.result.filter((item) => {
-          return item.vote == 1;
-        });
-        this.likesCount = voteLike.length;
-
-        let voteDislike = response.data.result.filter((item) => {
-          return item.vote == -1;
-        });
-        this.dislikesCount = voteDislike.length;
-
-        // for (const iterator of response.data.result) {
-        //   console.log(iterator)
-        // }
-      })
-
-      .catch((e) => {
-        // console.log(error);
-        this.apiErrors = e.data;
-      });
   },
   methods: {
+    async onUpdatePost() {
+      let bodyFormData = new FormData();
+      const imagefile = document.getElementById("picture");
+      // console.log("DEBUG IMAGE LOAD" , imagefile);
+
+      if (imagefile) bodyFormData.append("image", imagefile.files[0]);
+
+      for (let key of ["title", "content"]) {
+        const param = this.state.postUpdate[key];
+        // console.log(param, key);
+        if (param) {
+          bodyFormData.append(key, param);
+        }
+      }
+
+      axiosInstance
+        .patch(`/posts/${this.post.id}/update`, bodyFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((result) => {
+          console.log("result: ", result.data.datas);
+          this.$emit("update-post", result.data.datas, this.post.id);
+
+          // close update post modal
+          this.$refs.updatePost.closeModal();
+
+          // notification de succès
+          this.$notify({
+            type: "success",
+            title: `Post mis à jour`,
+            text: `Vous allez être redirigé vers le fil d'actualité.`,
+          });
+        })
+        .catch((err) => {
+          this.apiErrors = err.response;
+
+          // notification error message
+          this.$notify({
+            type: "error",
+            title: `Erreur lors de la mise à jour de l'utilisateur'`,
+            text: `Erreur reporté : ${this.apiErrors}`,
+            duration: 30000,
+          });
+        });
+    },
     async deletePost() {
       try {
         if (!this.isAuthenticated) return;
@@ -468,20 +625,20 @@ export default {
         // notification success
         this.$notify({
           type: "success",
-          title: `Communauté supprimé`,
-          duration: 30000,
+          title: `Publication supprimé`,
+          duration: 20000,
         });
 
         // close delete modal
         this.$refs.deletePost.closeModal();
-
       } catch (error) {
-        const errorMessage = this.handleErrorMessage(error);
+        this.apiErrors = error;
+
         this.$notify({
           type: "error",
           title: `Erreur lors de la suppression`,
-          text: `Erreur reporté : ${errorMessage}`,
-          duration: 30000,
+          text: `Erreur reporté : ${this.apiErrors}`,
+          duration: 20000,
         });
       }
     },
@@ -498,7 +655,7 @@ export default {
           type: "success",
           title: `Signalement`,
           text: `Merci, votre rapport a été envoyé.`,
-          duration: 30000,
+          duration: 20000,
         });
       } catch (error) {
         this.apiErrors = error;
@@ -508,79 +665,45 @@ export default {
           type: "error",
           title: `Erreur lors de l'envoi du rapport`,
           text: `${this.apiErrors}`,
-          duration: 3000,
+          duration: 2000,
         });
       }
     },
     sendLike(valeurLike, id) {
-      if (this.vote == undefined || this.vote == null || this.vote === 0) {
-        this.vote = valeurLike;
-      } //si l'utilisateur à déjà (dis)liké le post
-      else {
-        if (this.vote === valeurLike) {
-          valeurLike = 0;
-          this.vote = 0;
-          this.like_color = "rgb(255,255,255)";
-          this.dislike_color = "rgb(255,255,255)";
-        }
-        if (this.vote === 1 && valeurLike === 0) {
-          this.vote = -1;
-        }
-        if (this.vote === 0 && valeurLike === 1) {
-          this.vote = 1;
-        }
-        if (this.vote === 1 && valeurLike === -1) {
-          this.vote = -1;
-          this.like_color = "rgb(255,255,255)";
-          this.dislike_color = "rgb(255,255,255)";
-        }
-        if (this.vote === -1 && valeurLike === 1) {
-          this.vote = 1;
-          this.like_color = "rgb(255,255,255)";
-          this.dislike_color = "rgb(255,255,255)";
-        }
-      }
-      if (valeurLike === 1) {
-        this.like_color = "rgb(255, 54, 54)";
+      const likePost = this.post.likePosts.find(
+        (like) => like.userId === this.currentUser.id
+      );
 
-        this.$notify({
-          type: "success",
-          title: `J'aime enregistré !`,
-          duration: 2000,
-        });
-      }
-      if (valeurLike === -1) {
-        this.dislike_color = "rgb(0,0,204)";
+      let valueLikeToSend = 0;
+      console.log("DEBUG POSTREAD", this.post.likePosts);
+      if (!likePost || !likePost.vote || likePost.vote + valeurLike === 0)
+        valueLikeToSend = valeurLike;
 
-        this.$notify({
-          type: "success",
-          title: `Je n'aime pas enregistré !`,
-          duration: 2000,
-        });
-      }
-      if (valeurLike === 0) {
-        this.$notify({
-          type: "success",
-          title: `Vote enlevé !`,
-          duration: 2000,
-        });
-      }
-      // data send to axios request
       const infoLike = {
-        vote: valeurLike,
+        vote: valueLikeToSend,
         postId: id,
         userId: this.currentUser.id,
       };
+
       axiosInstance
         .post(`posts/${id}/likes`, infoLike)
         .then((res) => {
           // console.log("likePost", res.data);
+          const currentPost = this.post;
+          const otherLikes = currentPost.likePosts.filter(
+            (like) => like.userId !== this.currentUser.id
+          );
+
           if (res) {
+            this.$emit(
+              "update-post",
+              { ...currentPost, likePosts: [...otherLikes, infoLike] },
+              id
+            );
             return res.json;
           }
         })
         .catch((error) => {
-          // console.log(error);
           this.apiErrors = error;
 
           this.$notify({
@@ -591,20 +714,43 @@ export default {
           });
         });
     },
-    onAddComment({ content }) {
+    async onAddComment({ content }) {
       try {
-        const response = commentsApi.addComment(this.post.id, content);
-        this.comments.push(response);
+        const response = await commentsApi.addComment(this.id, content);
+        // console.log(response.post);
+        // console.log(response.post.comments[response.post.comments.length - 1]);
+        this.comments.push(
+          response.post.comments[response.post.comments.length - 1]
+        );
+        // console.log(this.comments);
 
         this.$notify({
           type: "success",
           title: `Commentaire posté`,
           duration: 2000,
         });
-      } catch (e) {
-        // console.error(e.data);
-        this.apiErrors = e.data;
+      } catch (error) {
+        this.apiErrors = error;
+
+        this.$notify({
+          type: "error",
+          title: `Erreur lors de l'ajout du commentaire`,
+          text: `Erreur reporté : ${this.apiErrors}`,
+          duration: 2000,
+        });
       }
+    },
+    onUpdateComment(data, commentId) {
+      // console.log(data);
+      // console.log(commentId);
+      // console.log(this.comments)
+      this.comments = this.comments.map((comment) => {
+        if (comment.id === commentId) {
+          comment.content = data.content;
+          console.log(comment.content);
+        }
+        return comment;
+      });
     },
     async onDeleteComment(commentId) {
       try {
@@ -614,13 +760,20 @@ export default {
             (comment) => comment.id !== commentId
           );
           this.$notify({
-          type: "success",
-          title: `Commentaire supprimé`,
+            type: "success",
+            title: `Commentaire supprimé`,
+            duration: 2000,
+          });
+        }
+      } catch (error) {
+        this.apiErrors = error;
+
+        this.$notify({
+          type: "error",
+          title: `Erreur lors de la suppression du commentaire`,
+          text: `Erreur reporté : ${this.apiErrors}`,
           duration: 2000,
         });
-        }
-      } catch (e) {
-        this.apiErrors = e.data;
       }
     },
   },
@@ -628,6 +781,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.post__liked {
+  fill: red;
+}
 .post-card {
   max-width: 350px;
   margin: 0 auto;
@@ -635,6 +791,8 @@ export default {
   background: #fff;
   border-radius: 0.4rem;
   margin-bottom: 2rem;
+  flex-basis: 70%;
+
   &__header {
     border-bottom: 1px solid #ccc;
     background-color: transparent;
@@ -646,6 +804,7 @@ export default {
   align-content: stretch;
   align-items: center;
   flex-direction: row;
+
   &__left {
     margin: 8px 4px 8px 12px;
     padding: unset;
@@ -667,6 +826,7 @@ export default {
   padding: 1px;
   background: linear-gradient(45deg, #ffd6d6, #f34642 80%);
   margin-right: 10px;
+
   &__user {
     width: 100%;
     height: 100%;
@@ -674,6 +834,7 @@ export default {
     border-radius: 50%;
     border: 2px solid #fff;
   }
+
   &__username {
     font-size: 12px;
     font-weight: bold;
@@ -710,6 +871,7 @@ export default {
     ul {
       padding: 0;
       margin: 0;
+
       li {
         width: 100%;
         height: 2rem;
@@ -726,6 +888,7 @@ export default {
           width: 100%;
           padding: 5px 10px;
           cursor: pointer;
+
           &:hover {
             color: #ffd7d7;
           }
@@ -733,6 +896,7 @@ export default {
       }
     }
   }
+
   .show {
     display: block;
   }
@@ -756,6 +920,7 @@ export default {
   flex-direction: column;
   align-items: center;
 }
+
 .vote-count,
 .icon-vote {
   font-size: 0.75rem;
@@ -778,6 +943,7 @@ export default {
 .heart {
   stroke: #ff3636;
 }
+
 .disheart {
   stroke: #1530de;
 }
@@ -797,6 +963,7 @@ button:active .heart,
 .comments-list {
   margin-bottom: calc((5px) * 2);
 }
+
 .post-comment {
   display: flex;
   flex-direction: column;
@@ -807,7 +974,7 @@ button:active .heart,
 // Date of publication
 .post-createdat,
 .noComment {
-  font-size: 0.5rem;
+  font-size: 0.4rem;
   text-transform: uppercase;
   letter-spacing: 0.2rem;
   margin-left: 1rem;
@@ -849,6 +1016,7 @@ button:active .heart,
   line-height: 15px;
   margin: 5px 0 0;
   max-width: 15rem;
+
   @media only screen and (min-width: 576px) {
     max-width: 25rem;
   }

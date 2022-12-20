@@ -8,7 +8,7 @@
     </h1>
 
     <!-- Input Box Communities -->
-    <InputBoxCommunityVue @create-community="createCommunity"/>
+    <InputBoxCommunityVue @create-community="createCommunity" />
 
     <!-- search bar -->
     <div class="search-bar">
@@ -33,7 +33,9 @@
 <script>
 import CommunityList from "../components/Community/communityList.vue";
 import InputBoxCommunityVue from "../components/Community/InputBoxCommunity.vue";
-import axiosInstance from "../services/api";
+
+// Communities request
+import communitiesApi from "../api/community";
 
 export default {
   name: "Communities-View",
@@ -43,44 +45,32 @@ export default {
   },
   data() {
     return {
-      // add communities array:
-      communities: [],
+      communities: [], // add communities array
       apiErrors: "",
       search: "",
     };
   },
   computed: {
+    // Search Bar
     filteredCommunities() {
       return this.communities.filter((community) =>
         community.title.toLowerCase().includes(this.search.toLowerCase())
       );
     },
   },
-  mounted() {
-    axiosInstance
-      .get("/community/readAllCommunities")
-      .then((response) => {
-        this.communities = response.data.datas;
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          this.apiErrors = "Il n'y pas encore de communauté(s) !";
-
-          // notification d'erreur
-          this.$notify({
-            type: "info",
-            title: `Information de l'api`,
-            text: `${this.apiErrors}`,
-          });
-        }
-      });
+  async mounted() {
+    // I'm creating a query to retrieve all communities informations.
+    const getCommunities = await communitiesApi.getCommunities();
+    // I assign the datas to communities array
+    this.communities = getCommunities;
   },
   methods: {
+    // I retrieve my event (@create-community in InputBoxCommunityVue) with my data to create a community
     createCommunity(data) {
+      // I push my data to the communities array
       this.communities.unshift(data.datas);
-      // console.log("update all communities", this.communities)
-    }
-  }
+    },
+  },
 };
 </script>
 

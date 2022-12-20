@@ -6,14 +6,12 @@ import HomeView from "../views/HomeView.vue";
 import SignupView from "../views/SignupView.vue";
 import LoginView from "../views/LoginView.vue";
 import UserView from "../views/UserView";
-import UserParameterView from "../views/UserParameterView";
 import UsersView from "../views/UsersView";
 import ProfileView from "../views/ProfileView";
 import CommunitiesView from "../views/CommunitiesView";
 import CommunityProfileView from "../views/CommunityProfilView";
 import WallView from "../views/WallView.vue";
 import CommunitySettings from "../views/CommunitySettingsView";
-import PostSettings from "../views/PostSettingsView";
 
 const routes = [
   {
@@ -48,11 +46,6 @@ const routes = [
     props: true,
   },
   {
-    path: "/user/parameter",
-    name: "user/parameter",
-    component: UserParameterView,
-  },
-  {
     path: "/explore/users",
     name: "users",
     component: UsersView,
@@ -78,12 +71,6 @@ const routes = [
     path: "/communities/profil/:id/settings",
     name: "Community-Settings",
     component: CommunitySettings,
-    props: true,
-  },
-  {
-    path: "/posts/:id/update",
-    name: "Post-Settings",
-    component: PostSettings,
     props: true,
   },
 ];

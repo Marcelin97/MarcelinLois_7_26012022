@@ -1,6 +1,7 @@
 <template>
   <div aria-labelledby="comments-title">
-    <form @submit="onSubmit">
+    <!-- Form create comment -->
+    <form @submit.stop.prevent="onSubmit">
       <div class="form-content">
         <textarea
           aria-label="Ajouter un commentaire..."
@@ -25,6 +26,7 @@
         <!-- Error Message -->
       </div>
       <div>
+        <!-- BTN submit comment -->
         <button
           type="submit"
           class="btn-comment"
@@ -44,11 +46,11 @@ import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
 export default {
-  name: "Add-Comment",
+  name: "New-Comment",
+  emits: ["add-comment"],
   data() {
     return {
       currentUser: [],
-      apiErrors: "",
     };
   },
   setup() {
@@ -79,6 +81,7 @@ export default {
     $lazy: true,
   },
   mounted() {
+    // I assign data to the user array
     this.currentUser = this.$store.state.user;
   },
   methods: {
@@ -103,6 +106,7 @@ form {
   display: flex;
   flex-direction: column;
   width: 100%;
+
   &__input {
     width: 100%;
     border: none;
@@ -145,6 +149,7 @@ form {
   line-height: 15px;
   margin: 5px 0 0;
   max-width: 15rem;
+
   @media only screen and (min-width: 576px) {
     max-width: 25rem;
   }

@@ -2,6 +2,18 @@ import axiosInstance from "../services/api";
 
 export default {
   /**
+   * Get all communities
+   * @return {Promise<any>}
+   */
+  async getCommunities() {
+    try {
+      const response = await axiosInstance.get("/community/readAllCommunities");
+      return response.data.datas;
+    } catch (e) {
+      throw e.response;
+    }
+  },
+  /**
    * Read one community
    * @param id
    * @return {Promise<any>}
@@ -11,6 +23,21 @@ export default {
       return await axiosInstance.get(`/community/readOne/${id}`);
     } catch (e) {
       console.error(e.response);
+      throw e.response;
+    }
+  },
+  /**
+  * Get all posts by community
+  * @param id
+  * @return {Promise<any>}
+  */
+  async getPostsCommunity(id) {
+    try {
+      const response = await axiosInstance.get(
+        `/posts/readAllPostByCommunity/${id}`
+      );
+      return response.data.result;
+    } catch (e) {
       throw e.response;
     }
   },

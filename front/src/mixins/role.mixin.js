@@ -1,9 +1,9 @@
 import { mapGetters, mapState } from "vuex";
 
 export default {
-  created: function () {
-    console.log("mixin hook called");
-  },
+  // created: function () {
+  //   console.log("mixin hook called");
+  // },
   methods: {
     // TODO: Who can do this C.R.U.D : admin  and creator only
     canAdmin(creatorId, userId) {
@@ -36,7 +36,7 @@ export default {
     ...mapGetters(["isAuthenticated", "isSuperAdmin"]),
     ...mapGetters({
       isModerator: "isModerator",
-      isFollowingCommunity: "isFollowingCommunity"
+      isFollowingCommunity: "isFollowingCommunity",
     }),
     ...mapState({
       authData: "user",

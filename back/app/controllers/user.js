@@ -122,8 +122,6 @@ exports.login = (req, res) => {
       },
     })
     .then(async (user) => {
-      // console.log(user.email)
-
       if (!user) {
         return res.status(404).json({ message: "User Not found." });
       }
@@ -241,10 +239,7 @@ exports.readUser = async (req, res) => {
 //* Find a single user with an username
 exports.readByName = async (req, res) => {
   user
-    .findOne({
-      include: {
-        all: true,
-      },
+    .findOne({ include: { all: true},
       where: {
         id: req.params.id,
       },
@@ -269,7 +264,11 @@ exports.readByName = async (req, res) => {
 //* Retrieve all Users from the database.
 exports.readAll = (req, res) => {
   user
-    .findAll()
+    .findAll({
+      include: {
+        all: true,
+      },
+    })
     .then((users) => {
       if (users.length <= 0) {
         return res.status(404).json({ message: "Users not found" });

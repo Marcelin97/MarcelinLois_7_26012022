@@ -34,9 +34,11 @@ const store = createStore({
     },
   },
   getters: {
+    // Check if user is authenticated
     isAuthenticated(state) {
       return state.isAuthenticated === true && state.user !== null;
     },
+    // Check if user is admin
     isSuperAdmin(state) {
       return state.isAuthenticated === true && state.user.isAdmin === true;
     },
@@ -49,12 +51,6 @@ const store = createStore({
       if (getters.isAuthenticated) {
         const moderators = getters.user.moderators;
         for (let moderator of moderators) {
-          console.log(
-            "Embarquement du passager " +
-              moderator.community_moderator.userId +
-              " qui modère la communauté " +
-              moderator.community_moderator.communityId
-          );
           if (
             moderator.community_moderator.userId === getters.user.id &&
             moderator.community_moderator.communityId === parseInt(communityId)
@@ -69,12 +65,6 @@ const store = createStore({
       if (getters.isAuthenticated) {
         const followers = getters.user.follow;
         for (let follower of followers) {
-          console.log(
-            "Embarquement du passager " +
-              follower.follower.userId +
-              " qui modère la communauté " +
-              follower.follower.communityId
-          );
           if (
             follower.follower.userId === getters.user.id &&
             follower.follower.communityId === parseInt(communityId)
@@ -85,6 +75,7 @@ const store = createStore({
 
       return false;
     },
+    // Check if current user is admin
     isAdmin: (state, getters) => () => {
       if (getters.isSuperAdmin) {
         return true;

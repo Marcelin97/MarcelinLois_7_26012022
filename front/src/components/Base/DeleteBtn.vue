@@ -1,4 +1,5 @@
 <template>
+  <!-- BTN delete -->
   <button class="delete">Supprimer</button>
 </template>
 

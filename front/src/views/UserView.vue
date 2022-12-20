@@ -2,6 +2,8 @@
   <div v-if="user.length != 0">
     <section>
       <h1>Profil de {{ this.user.username }}</h1>
+
+      <!-- output component -->
       <UserProfile :user="user" :userLoggedIn="false" />
 
       <!-- gestion erreur API avec axios -->
@@ -14,25 +16,37 @@
     </section>
 
     <!-- If there are posts -->
-    <section v-if="posts.length != 0">
-      <PostCard
-        v-for="(post, index) in posts"
-        :key="index"
-        :post="post"
-        v-bind:id="post.id"
-        :creatorInfo="creatorInfo"
-      />
+    <section>
+      <div v-if="posts.length != 0">
+        <!-- output component -->
+        <PostCard
+          v-for="(post, index) in posts"
+          :key="index"
+          :post="post"
+          v-bind:id="post.id"
+          :creatorInfo="creatorInfo"
+          @update-post="onUpdatePost"
+        />
+      </div>
+      <!-- If there are any posts -->
+      <div v-else>
+        <h2>{{ this.loadingPost }}</h2>
+      </div>
     </section>
   </div>
   <div v-else>
-    <h2>Chargement en cours...</h2>
+    <h2>{{ this.loadingMessage }}</h2>
   </div>
 </template>
 
 <script>
 import UserProfile from "@/components/Profil/UserProfile.vue";
-import usersApi from "../api/users";
 import PostCard from "../components/Posts/PostCard.vue";
+
+// User requests
+import usersApi from "../api/users";
+// Post requests
+import postsApi from "../api/posts";
 
 export default {
   name: "User-View",
@@ -47,29 +61,40 @@ export default {
       user: [], // target user info
       userId: "",
       apiErrors: "",
+      loadingMessage: "Chargement en cours",
     };
   },
-  async mounted() {
+  async created() {
+    // I get my route parameter
     this.userId = this.$route.params.id;
 
+    // I'm creating a query to retrieve post by target user.
+    const posts = await postsApi.getPostsByUser(this.userId);
+    this.posts = posts;
+    // console.log("user target => posts", this.posts);
+    if (this.posts.length < 1) {
+      this.loadingPost = "Il n y a pas encore de publications à afficher";
+    }
+  },
+  async mounted() {
+    // I'm creating a query to retrieve target user information.
     try {
       const response = await usersApi.readTargetUser(this.userId);
+      // I assign data to the user array
       this.user = response.data.data;
     } catch (error) {
-      const errorMessage = (this.apiErrors = error.response);
-      this.errorMessage = errorMessage;
+      this.apiErrors = error.response;
 
-      // notification error message
+      // Error notification
       this.$notify({
         type: "error",
         title: `Erreur lors du changement de l'utilisateur'`,
-        text: `Erreur reporté : ${errorMessage}`,
+        text: `Erreur reporté : ${this.apiErrors}`,
         duration: 30000,
       });
     }
 
-    this.posts = this.user.posts;
-    console.log("Posts user pointé", this.posts);
+    // I assign target user info to CreatorInfo
     this.creatorInfo = this.user;
   },
 };
@@ -90,4 +115,3 @@ h2 {
   text-align: center;
 }
 </style>
-

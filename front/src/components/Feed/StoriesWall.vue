@@ -1,15 +1,22 @@
 <template>
-  <section class="stories">
-    <StoryCard
-      v-for="(community, index) in communities"
-      :key="index"
-      :community="community"
-    />
+  <section class="stories" v-if="communities.length != 0">
+    <h2>Dernières communautés</h2>
+    <div class="stories__card">
+      <StoryCard
+        id="scroll-div"
+        ref="scrollDiv"
+        class="card"
+        v-for="(community, index) in communities"
+        :key="index"
+        :community="community"
+      />
+    </div>
   </section>
 </template>
 <script>
 import StoryCard from "./StoryCard.vue";
-import axiosInstance from "../../services/api";
+
+import communitiesApi from "../../api/community";
 
 export default {
   name: "Stories-Wall",
@@ -19,22 +26,12 @@ export default {
   data() {
     return {
       communities: [], // add communities array
-      apiErrors: "",
       search: "",
     };
   },
-  mounted() {
-    axiosInstance
-      .get("/community/readAllCommunities")
-      .then((response) => {
-        this.communities = response.data.datas;
-      })
-      .catch((error) => {
-        // console.log(error.response.status);
-        if (error.response.status === 404) {
-          this.apiErrors = "Il n'y pas encore de communauté(s) !";
-        }
-      });
+  async mounted() {
+    const getCommunities = await communitiesApi.getCommunities();
+    this.communities = getCommunities;
   },
 };
 </script>
@@ -42,12 +39,26 @@ export default {
 <style lang="scss" scoped>
 .stories {
   display: flex;
-  flex-direction: row;
+  margin: 35px auto;
+  flex-direction: column;
   justify-content: center;
-  overflow: hidden;
-  overflow-x: auto;
-  cursor: grabbing;
-  // justify-content: space-evenly;
-  max-width: 350px;
+  // width: 100%;
+
+  &__card {
+    display: flex;
+    // overflow-x: auto;
+  }
+  h2 {
+    text-align: center;
+  }
+}
+
+h2 {
+  flex-basis: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
 }
 </style>

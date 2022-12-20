@@ -6,6 +6,7 @@ const {
   likePost,
   savePost,
   follower,
+  comment,
 } = require("../models");
 
 // * Import the fileSystem module
@@ -31,11 +32,22 @@ exports.createPost = (req, res, next) => {
             creatorId: req.auth.userID,
           })
 
-          .then((datas) => {
+          .then(async (datas) => {
+            // console.log(await datas.getCommunity());
+            // datas.community = await datas.getCommunity();
+            // datas.setDataValue('community', await datas.getCommunity());
+            // datas.setDataValue('user', await datas.getUser());
+            // datas.setDataValue('comment', await datas.getComments());
+            const newPost = await post.findOne({
+              where: { id: datas.id },
+              include: {
+                all: true,
+              },
+            });
             res.status(201).json({
               status: 201,
               message: " Post create successfully",
-              datas,
+              newPost,
             });
           })
           .catch((error) =>
@@ -49,11 +61,17 @@ exports.createPost = (req, res, next) => {
             creatorId: req.auth.userID,
           })
 
-          .then((datas) => {
+          .then(async (datas) => {
+            const newPost = await post.findOne({
+              where: { id: datas.id },
+              include: {
+                all: true,
+              },
+            });
             res.status(201).json({
               status: 201,
               message: " Post create successfully",
-              datas,
+              newPost,
             });
           })
           .catch((error) =>
@@ -94,6 +112,35 @@ exports.readPostById = (req, res, next) => {
     });
 };
 
+// * Read all post by user
+exports.readAllPostsByUser = (req, res, next) => {
+  post
+    .findAll({
+      where: {
+        creatorId: req.params.userId,
+      },
+      order: [["createdAt", "DESC"]],
+      include: {
+        all: true,
+      },
+    })
+    .then((result) => {
+      // TODO : Check if post exist
+      if (!result) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: "Post find with success",
+        result,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ err, error: { msg: "Couldn´t find post" } });
+    });
+};
+
 // * Read all post by community
 exports.readAllPostByCommunity = (req, res, next) => {
   community
@@ -105,13 +152,19 @@ exports.readAllPostByCommunity = (req, res, next) => {
         {
           model: post,
           as: "posts",
-          attributes: [
-            "id",
-            "title",
-            "imageUrl",
-            "content",
-            "communityId",
-            "creatorId",
+          include: [
+            {
+              model: user,
+              as: "user",
+            },
+            {
+              model: likePost,
+              as: "likePosts",
+            },
+            {
+              model: comment,
+              as: "comments",
+            },
           ],
         },
       ],
@@ -148,7 +201,7 @@ exports.readAllPostByCommunityFollow = (req, res, next) => {
           required: true,
           include: {
             model: post,
-            required: true,
+            // required: true,
             as: "posts",
           },
         },
@@ -212,16 +265,13 @@ exports.manyLikes = (req, res, next) => {
 // * Read all posts
 exports.readAllPosts = async (req, res, next) => {
   post
-    .findAll(
-      {
-        order: [["createdAt", "DESC"]],
-        limit: 6,
-        // raw: true,
-        include: {
-          all: true,
-        },
+    .findAll({
+      order: [["createdAt", "DESC"]],
+      // limit: 6,
+      include: {
+        all: true,
       },
-    )
+    })
     .then(async (result) => {
       // TODO : Check if post exist
       if (!result) {
@@ -247,7 +297,12 @@ exports.readAllPosts = async (req, res, next) => {
 exports.updatePost = (req, res, next) => {
   const { title, content } = req.body;
   post
-    .findOne({ where: { id: req.params.id } })
+    .findOne({
+      where: { id: req.params.id },
+      include: {
+        all: true,
+      },
+    })
     .then(async (result) => {
       // TODO : Check if post exist
       if (!result) {
@@ -373,7 +428,7 @@ exports.deletePost = (req, res, next) => {
 // ? gestion neutre si pas like et pas dislike
 exports.likePost = async (req, res, next) => {
   let like = req.body.vote;
-
+  console.log("DEBUG");
   // TODO : Find the post to be like
   post
     .findOne({ where: { id: req.params.id } })
@@ -519,7 +574,7 @@ exports.reportPost = (req, res) => {
           postId: post.id,
           userId: req.auth.userID,
         })
-        .then(() => {
+        .then((datas) => {
           res.status(200).json({
             status: 200,
             message: "Post successfully reported",

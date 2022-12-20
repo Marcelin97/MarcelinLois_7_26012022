@@ -14,7 +14,7 @@
       </router-view>
       <notifications
         id="notifications"
-        position="bottom right"
+        position="bottom center"
         :duration="3000"
         :ignoreDuplicates="true"
         :reverse="true"
@@ -53,5 +53,17 @@ export default {
 <style lang="scss">
 body {
   background-color: #ffff;
+}
+main {
+  margin-top: 5rem;
+}
+.like {
+  fill: red;
+  color: red;
+}
+.dislike {
+  stroke: blue;
+  fill: blue;
+  color: blue;
 }
 </style>

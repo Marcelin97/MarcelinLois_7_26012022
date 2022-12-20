@@ -1,29 +1,81 @@
 <template>
+  <!-- Navigation -->
   <nav class="navbar">
     <h1 class="navbar-logo">
-      <router-link class="link-home" to="/wall"><img class="navbar-logo-icon" src="../../assets/img/icon.svg"
-          alt="Logo Groupomania" />
+      <!-- Logo of the company -->
+      <!-- LINK BACK TO THE HOME -->
+      <router-link class="link-home" to="/wall" aria-label="Groupomania"
+        ><img
+          class="navbar-logo-icon"
+          src="../../assets/img/icon.svg"
+          alt="Logo Groupomania"
+        />
+        <!-- Name of the company -->
         <span class="navbar-logo-text">Groupomania</span>
       </router-link>
     </h1>
+    <!-- Navigation menu -->
     <nav class="navbar-menu">
-      <router-link class="link" type="button" to="/wall">
-        <img src="../../assets/img/icon-home.svg" alt="Fil d'actualité" title="Fil d'actualité" />
+      <!-- LINK TO NEWS FEED -->
+      <router-link
+        class="link"
+        type="button"
+        to="/wall"
+        aria-label="Fil d'actualité"
+      >
+        <img
+          src="../../assets/img/home.svg"
+          alt="Fil d'actualité"
+          title="Fil d'actualité"
+        />
       </router-link>
-      <router-link class="link" type="button" to="/communities">
-        <img src="../../assets/img/icon-users.svg" alt="Communautés" title="Communautés" />
+      <!-- LINK TO COMMUNITIES -->
+      <router-link
+        class="link"
+        type="button"
+        to="/communities"
+        aria-label="Communautés"
+      >
+        <img
+          src="../../assets/img/community.svg"
+          alt="Communautés"
+          title="Communautés"
+        />
       </router-link>
-      <router-link class="link" type="button" to="/explore/users">
-        <img src="../../assets/img/icon-account.svg" alt="Utilisateurs" title="Utilisateurs" />
+      <!-- LINK TO USERS -->
+      <router-link
+        class="link"
+        type="button"
+        to="/explore/users"
+        aria-label="Utilisateurs"
+      >
+        <img
+          src="../../assets/img/icon-account.svg"
+          alt="Utilisateurs"
+          title="Utilisateurs"
+        />
       </router-link>
-      <router-link class="link" type="button" to="/user/parameter">
-        <img src="../../assets/img/icon-settings.svg" alt="Paramètre du compte" title="Paramètre du compte" />
-      </router-link>
-      <button type="button" @click="logout">
-        <img src="../../assets/img/icon-lock.svg" title="Déconnexion" alt="Déconnexion" />
+      <!-- LINK LOGOUT -->
+      <button type="button" @click="logout" aria-label="déconnexion">
+        <img
+          src="../../assets/img/sign-out.svg"
+          title="Déconnexion"
+          alt="Déconnexion"
+        />
       </button>
-      <router-link class="link" type="button" to="/user">
-        <img class="burger-avatar" title="Mon compte" src="../../assets/img/avataaars.png" alt="Mon compte" />
+      <!-- LINK TO MY ACCOUNT -->
+      <router-link
+        class="link"
+        type="button"
+        to="/user"
+        aria-label="Mon compte"
+      >
+        <img
+          class="burger-avatar"
+          title="Mon compte"
+          src="../../assets/img/avataaars.png"
+          alt="Mon compte"
+        />
       </router-link>
     </nav>
   </nav>
@@ -32,11 +84,6 @@
 <script>
 export default {
   name: "Nav-Bar",
-  data() {
-    return {
-      mobileNav: false,
-    };
-  },
   methods: {
     logout: function () {
       this.$store.commit("logout");
@@ -103,8 +150,8 @@ export default {
   }
 }
 
-.navbar-menu>.link,
-.navbar-menu>button {
+.navbar-menu > .link,
+.navbar-menu > button {
   position: relative;
   flex: 0 0 36px;
   display: grid;
@@ -115,7 +162,7 @@ export default {
 }
 
 @media only screen and (min-width: 600px) {
-  .navbar-menu>.link:last-child {
+  .navbar-menu > .link:last-child {
     position: absolute;
     right: 20px;
   }

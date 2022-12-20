@@ -1,8 +1,11 @@
 <template>
   <div>
     <nav>
+      <!-- output component -->
       <GoBack />
     </nav>
+
+    <!-- output component -->
     <SignupForm msg="Créer mon compte" />
   </div>
 </template>
