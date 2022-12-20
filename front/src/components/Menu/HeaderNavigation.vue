@@ -1,16 +1,22 @@
 <template>
+  <!-- Navigation -->
   <nav class="navbar">
     <h1 class="navbar-logo">
+      <!-- Logo of the company -->
+      <!-- LINK BACK TO THE HOME -->
       <router-link class="link-home" to="/wall" aria-label="Groupomania"
         ><img
           class="navbar-logo-icon"
           src="../../assets/img/icon.svg"
           alt="Logo Groupomania"
         />
+        <!-- Name of the company -->
         <span class="navbar-logo-text">Groupomania</span>
       </router-link>
     </h1>
+    <!-- Navigation menu -->
     <nav class="navbar-menu">
+      <!-- LINK TO NEWS FEED -->
       <router-link
         class="link"
         type="button"
@@ -23,6 +29,7 @@
           title="Fil d'actualité"
         />
       </router-link>
+      <!-- LINK TO COMMUNITIES -->
       <router-link
         class="link"
         type="button"
@@ -35,6 +42,7 @@
           title="Communautés"
         />
       </router-link>
+      <!-- LINK TO USERS -->
       <router-link
         class="link"
         type="button"
@@ -47,18 +55,7 @@
           title="Utilisateurs"
         />
       </router-link>
-      <router-link
-        class="link"
-        type="button"
-        to="/user/parameter"
-        aria-label="Paramètre du compte"
-      >
-        <img
-          src="../../assets/img/icon-settings.svg"
-          alt="Paramètre du compte"
-          title="Paramètre du compte"
-        />
-      </router-link>
+      <!-- LINK LOGOUT -->
       <button type="button" @click="logout" aria-label="déconnexion">
         <img
           src="../../assets/img/sign-out.svg"
@@ -66,6 +63,7 @@
           alt="Déconnexion"
         />
       </button>
+      <!-- LINK TO MY ACCOUNT -->
       <router-link
         class="link"
         type="button"
@@ -86,11 +84,6 @@
 <script>
 export default {
   name: "Nav-Bar",
-  data() {
-    return {
-      mobileNav: false,
-    };
-  },
   methods: {
     logout: function () {
       this.$store.commit("logout");

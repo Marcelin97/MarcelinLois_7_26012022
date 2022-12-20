@@ -1,10 +1,17 @@
 <template>
   <div class="comments">
+
+    <!-- Comment -->
     <div class="comments-content">
+      <!-- Date of comment -->
       <p class="comments-createdAt">{{ showDate }}</p>
+      <!-- Content of comment -->
       <p class="comments-text">{{ content }}</p>
     </div>
+
+    <!-- BTN actions -->
     <div class="actions">
+      <!-- BTN delete comment -->
       <button
         v-if="canModerate(this.comment.userId, this.communityId)"
         type="button"
@@ -17,6 +24,7 @@
         Supprimer
       </button>
 
+      <!-- BTN update comment -->
       <button
         v-if="canAdmin(this.comment.userId)"
         type="button"
@@ -29,6 +37,7 @@
         Modifier
       </button>
 
+      <!-- BTN report comment -->
       <button
         v-if="this.$store.state.user.id != this.comment.userId"
         type="button"
@@ -41,6 +50,7 @@
         Signaler
       </button>
 
+      <!-- BTN like comment -->
       <button
         aria-label="Like"
         class="like icon-vote"
@@ -61,6 +71,8 @@
 
       <template v-slot:body>
         <div class="container">
+
+          <!-- Form update comment -->
           <form action="#" method="put">
             <div class="form-group">
               <label class="title-newcomment" for="content"
@@ -95,7 +107,7 @@
               <!-- Error Message -->
             </div>
 
-            <!-- button submit -->
+            <!-- BTN update comment -->
             <div class="button-container">
               <button
                 aria-label="Modifier"
@@ -128,6 +140,8 @@
 
       <template v-slot:body>
         <div class="container">
+
+          <!-- Form report comment -->
           <form action="#" method="post">
             <div class="FormGroup">
               <label class="FormGroupLabel" for=""
@@ -162,6 +176,7 @@
               <!-- Error Message -->
             </div>
 
+            <!-- BTN report comment -->
             <button
               type="submit"
               class="btn button"
@@ -190,15 +205,19 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 
+// Comments requests
 import commentsApi from "@/api/comments";
+// API requests
 import axiosInstance from "@/services/api";
 
 import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
+// Manage roles
 import roleMixin from "../../mixins/role.mixin";
 
+// Manage time
 import timeAgo from "@/services/timeAgo";
 
 export default {
@@ -215,7 +234,6 @@ export default {
       hasLiked: false,
       likeCount: 0,
       love: "like",
-      commentLikes:""
     };
   },
   mixins: [roleMixin],
@@ -277,18 +295,21 @@ export default {
       }
       return `Posté ${timeAgo.format(new Date(this.comment.createdAt))}`;
     },
+    // Change class of BTN like
     addClass() {
     return this.hasLiked ? "liked" : "";
     },
+    // Check if current user liked the comment
     isLiked() {
     return this.comment.userId === this.$store.state.user.id && this.comment.likes === true
     },
   },
   methods: {
+    // REPORT COMMENT
     async onCommentReport() {
-      this.v$.$validate(); // checks all inputs
-      if (!this.v$.$error) {
-        // if ANY fail validation
+      this.v$.$validate(); // Checks all inputs
+      if (!this.v$.$error) { // If ANY fail validation
+        
         if (
           confirm(
             "L'administrateur et le modérateur seront notifié, souhaitez-vous signaler ce commentaire ?"
@@ -300,28 +321,35 @@ export default {
               this.state.comment
             );
 
-            // close delete modal
+            // Close delete modal
             this.$refs.reportComment.closeModal();
 
-            // notification success
+            // Success notification
             this.$notify({
               type: "success",
               title: `Signalement`,
               text: `Merci, votre rapport a été envoyé.`,
               duration: 20000,
             });
-          } catch (e) {
-            alert(e.data.message);
+          } catch (error) {
+            this.apiErrors = error.response;
+
+            // Error notification
+            this.$notify({
+              duration: 2500,
+              type: "error",
+              text: `Erreur reporté : ${this.apiErrors}`,
+            });
           }
         }
       } else {
-        // notification d'erreur
+        // Error notification
         this.$notify({
           type: "warn",
           title: `Veuillez faire un signalement complet.`,
         });
 
-        // montre les erreurs à l'écran
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")
@@ -333,19 +361,20 @@ export default {
         });
       }
     },
+    // UPDATE COMMENT
     async onUpdateComment() {
-      this.v$.$validate(); // checks all inputs
-      if (!this.v$.$error) {
-        // if ANY fail validation
+      this.v$.$validate(); // Checks all inputs
+      if (!this.v$.$error) { // If ANY fail validation
+        
         axiosInstance
           .put(`/comments/update/${this.comment.id}`, this.state.commentUpdate)
           .then((response) => {
             this.$emit("update-comment", response.data.datas, this.comment.id);
 
-            // close delete modal
+            // Close update modal
             this.$refs.updateComment.closeModal();
 
-            // notification de succès
+            // Success notification
             this.$notify({
               type: "success",
               title: `Commentaire mis à jour`,
@@ -355,7 +384,7 @@ export default {
           .catch((error) => {
             this.apiErrors = error;
 
-            // notification error message
+            // Error notification
             this.$notify({
               type: "error",
               title: `Erreur lors de l'envoi du rapport`,
@@ -373,7 +402,7 @@ export default {
         });
         this.hasLiked = !this.hasLiked;
 
-        this.hasLiked ? this.likeCount++ : this.likeCount--;
+        // this.hasLiked ? this.likeCount++ : this.likeCount--;
 
         if (this.hasLiked) {
           this.love = "UnLike";

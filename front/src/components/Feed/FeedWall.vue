@@ -9,9 +9,10 @@
 
       <div class="sidebar">
         <aside class="sidebar__sidebar">
-          <!-- Input Box -->
+          <!-- INPUT BOX - CREATE POST -->
           <InputBox v-if="communities.length != 0" @create-post="createPost" />
           <div v-else class="container-communities">
+            <!-- LINK COMMUNITIES -->
             <router-link
               class="underline"
               to="/communities"
@@ -23,7 +24,7 @@
         </aside>
 
         <div class="sidebar__main">
-          <!-- Posts -->
+          <!-- POSTS -->
           <div v-if="posts.length != 0" class="post">
             <PostCard
               class="post__card"
@@ -36,9 +37,10 @@
               @update-post="onUpdatePost"
             />
           </div>
+          <!-- IF ANY POSTS -->
           <div v-else>
             <div class="container-communities">
-              <h3>Il n'y a pas de post pour le moment.</h3>
+              <h2>{{ this.loadingPost }}</h2>
             </div>
           </div>
         </div>
@@ -75,6 +77,9 @@ export default {
     // I get all the posts
     const posts = await postsApi.getPosts();
     this.posts = posts;
+    if (this.posts.length < 1) {
+      this.loadingPost = "Il n y a pas encore de publications à afficher";
+    }
     // I collect all the communities to assign them to a publication
     const getCommunities = await communitiesApi.getCommunities();
     this.communities = getCommunities;
@@ -86,16 +91,12 @@ export default {
     },
     // EVENT : update publication
     onUpdatePost(data, postId) {
-      // console.log("DEBUG POST", data);
       this.posts = this.posts.map((post) => {
         if (post.id === postId) {
-          // console.log("DEBUG DATA", data);
           post = data;
-          // console.log('post update', post)
         }
         return post;
       });
-      // console.log("READ POSTS AFTER UPDATE", this.posts)
     },
     // EVENT : delete post
     deletePost(postId) {

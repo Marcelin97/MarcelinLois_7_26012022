@@ -4,7 +4,10 @@
       <!-- header card -->
       <div class="post-card__header">
         <div class="header">
+
+          <!-- Owner information -->
           <div class="header__left">
+            <!-- post owner profile picture -->
             <div class="profile-pic" v-if="post.user">
               <img
                 v-if="post.user.imageUrl"
@@ -38,6 +41,7 @@
               />
             </div>
 
+            <!-- Post owner name -->
             <p class="profile-pic__username" v-if="post.user">
               {{ post.user.username }}
             </p>
@@ -51,6 +55,7 @@
 
           <!-- Menu dropdown -->
           <div class="dropdown">
+            <!-- BTN dropdown menu -->
             <button
               class="dropdown-btn"
               v-on:click="show = !show"
@@ -77,9 +82,11 @@
                 </div>
               </div>
             </button>
-
+            
+            <!-- BTN ACTIONS -->
             <div class="dropdown-content" v-bind:class="{ show: show }">
               <ul>
+                <!-- BTN update post -->
                 <li v-if="canAdmin(this.post.creatorId)">
                   <button
                     type="button"
@@ -91,6 +98,7 @@
                     Modifier
                   </button>
                 </li>
+                <!-- BTN report post -->
                 <li v-if="this.$store.state.user.id != this.post.creatorId">
                   <button
                     title="Signaler ce post"
@@ -102,6 +110,7 @@
                     Signaler
                   </button>
                 </li>
+                <!-- BTN delete post -->
                 <li
                   v-if="canModerate(this.post.creatorId, this.post.communityId)"
                 >
@@ -121,7 +130,7 @@
         </div>
       </div>
 
-      <!-- image card -->
+      <!-- Picture publication -->
       <div class="post-image">
         <img
           alt="photo du post"
@@ -131,7 +140,7 @@
 
       <!-- content card -->
       <div class="post-content">
-        <!-- btn like -->
+        <!-- BTN like -->
         <div class="vote-data">
           <button
             type="button"
@@ -140,11 +149,10 @@
             title="Mettre un j'aime"
             @click="sendLike(1, id)"
           >
-          <!-- <font-awesome-icon class="icon" :icon="['far', 'fa-thumbs-up']" /> -->
-          <svg class="heart" id="heart" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
+          <svg class="heart" id="heartLike" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
             <title>J'aime</title>
             <g stroke-width="2">
-              <path id="heart"
+              <path id="heartLike"
                 d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
                 stroke-linecap="round" stroke-linejoin="round" :class="isLikedByUser ? 'like' : ''"></path>
             </g>
@@ -163,10 +171,10 @@
             title="j'aime pas"
             @click="sendLike(-1, id)"
           >
-          <svg class="heart" id="heart" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
+          <svg class="heart" id="heartDislike" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 32 31">
             <title>J'aime pas</title>
             <g stroke-width="2">
-              <path id="heart"
+              <path id="heartDislike"
                 d="M10.55 2.31a8.07 8.07 0 0 0-8.07 8.08c0 3.15 2.16 5.66 4.28 7.61 3.35 3.44 6.46 7.37 9.59 11.08 2.92-3.86 5.48-7.41 8.91-11.36 1.72-2.24 4.71-4.18 4.7-7.33a8.07 8.07 0 0 0-0.79-3.49l0.02-0.06-0.05-0.01a8.07 8.07 0 0 0-12.85-2.26l-0.12 0.02a8.07 8.07 0 0 0-5.62-2.28z"
                 stroke-linecap="round" stroke-linejoin="round" fill:blue stroke: :class="isDisLikedByUser ? 'dislike' : ''"></path>
             </g>
@@ -176,7 +184,7 @@
           <span class="vote-count" :class="isDisLikedByUser ? 'dislike' : ''" >{{ showDislikesCount }}</span>
         </div>
 
-        <!-- Post information -->
+        <!-- Post informations -->
         <div>
           <p class="post__content">
             {{ post.title }}
@@ -442,6 +450,7 @@ import commentsApi from "../../api/comments";
 // Manage roles
 import roleMixin from "../../mixins/role.mixin";
 
+// Manage time
 import timeAgo from "../../services/timeAgo";
 
 export default {

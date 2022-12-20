@@ -1,19 +1,26 @@
 <template>
   <div class="container">
-            <router-link class="more" :to="`/communities/profil/${this.id}`" aria-label="Profil d'une communauté">
-
-    <div class="card">
-      <img
-        class="card__img"
-        :src="`http://localhost:3000${community.icon}`"
-        :alt="'Avatar de ' + community.title"
-        aria-label="Photo de la communauté"
-      />
-      <div class="title">{{ community.title }}</div>
-      <div class="about">
-        {{ community.about }}
+    <!-- LINK TO COMMUNITY PROFILE -->
+    <router-link
+      class="more"
+      :to="`/communities/profil/${this.id}`"
+      aria-label="Profil d'une communauté"
+    >
+      <div class="card">
+        <!-- Picture community -->
+        <img
+          class="card__img"
+          :src="`http://localhost:3000${community.icon}`"
+          :alt="'Avatar de ' + community.title"
+          aria-label="Photo de la communauté"
+        />
+        <!-- Community title -->
+        <div class="title">{{ community.title }}</div>
+        <!-- Community description -->
+        <div class="about">
+          {{ community.about }}
+        </div>
       </div>
-    </div>
     </router-link>
   </div>
 </template>
@@ -29,7 +36,6 @@ export default {
   },
   mounted() {
     this.id = this.community.id;
-    // console.log(this.id);
   },
 };
 </script>

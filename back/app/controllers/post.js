@@ -6,7 +6,7 @@ const {
   likePost,
   savePost,
   follower,
-  comment
+  comment,
 } = require("../models");
 
 // * Import the fileSystem module
@@ -39,14 +39,15 @@ exports.createPost = (req, res, next) => {
             // datas.setDataValue('user', await datas.getUser());
             // datas.setDataValue('comment', await datas.getComments());
             const newPost = await post.findOne({
-              where: { id: datas.id }, include: {
+              where: { id: datas.id },
+              include: {
                 all: true,
               },
-            })
+            });
             res.status(201).json({
               status: 201,
               message: " Post create successfully",
-              newPost
+              newPost,
             });
           })
           .catch((error) =>
@@ -62,10 +63,11 @@ exports.createPost = (req, res, next) => {
 
           .then(async (datas) => {
             const newPost = await post.findOne({
-              where: { id: datas.id }, include: {
+              where: { id: datas.id },
+              include: {
                 all: true,
               },
-            })
+            });
             res.status(201).json({
               status: 201,
               message: " Post create successfully",
@@ -117,7 +119,7 @@ exports.readAllPostsByUser = (req, res, next) => {
       where: {
         creatorId: req.params.userId,
       },
-       order: [["createdAt", "DESC"]],
+      order: [["createdAt", "DESC"]],
       include: {
         all: true,
       },
@@ -152,15 +154,18 @@ exports.readAllPostByCommunity = (req, res, next) => {
           as: "posts",
           include: [
             {
-        model: user,
-        as: "user",
-      },{
-            model: likePost,
-            as: "likePosts"
-          }, {
-            model: comment,
-            as: "comments"
-          }]
+              model: user,
+              as: "user",
+            },
+            {
+              model: likePost,
+              as: "likePosts",
+            },
+            {
+              model: comment,
+              as: "comments",
+            },
+          ],
         },
       ],
       order: [["createdAt", "DESC"]],
@@ -260,15 +265,13 @@ exports.manyLikes = (req, res, next) => {
 // * Read all posts
 exports.readAllPosts = async (req, res, next) => {
   post
-    .findAll(
-      {
-        order: [["createdAt", "DESC"]],
-        // limit: 6,
-        include: {
-          all: true,
-        },
+    .findAll({
+      order: [["createdAt", "DESC"]],
+      // limit: 6,
+      include: {
+        all: true,
       },
-    )
+    })
     .then(async (result) => {
       // TODO : Check if post exist
       if (!result) {
@@ -295,9 +298,11 @@ exports.updatePost = (req, res, next) => {
   const { title, content } = req.body;
   post
     .findOne({
-      where: { id: req.params.id }, include: {
+      where: { id: req.params.id },
+      include: {
         all: true,
-      }, })
+      },
+    })
     .then(async (result) => {
       // TODO : Check if post exist
       if (!result) {

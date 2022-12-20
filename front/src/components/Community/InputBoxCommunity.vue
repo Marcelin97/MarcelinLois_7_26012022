@@ -139,13 +139,18 @@ export default {
     $lazy: true,
   },
   methods: {
+    // Capture the picture
     onChangeFileUpload() {
       this.state.community.image = document.querySelector("#image").files[0];
       // console.log("image upload", this.state.community.image);
     },
+    // CREATE COMMUNITY
     createCommunityClick() {
-      this.v$.$validate(); // checks all inputs
+      this.v$.$validate(); // Checks all inputs
+
       if (!this.v$.$error) {
+        // If ANY fail validation
+
         let bodyFormData = new FormData();
         bodyFormData.append("title", this.state.community.title);
         bodyFormData.append("about", this.state.community.about);
@@ -161,16 +166,15 @@ export default {
             },
           })
           .then((response) => {
-            // console.log("request create community", response.data)
             this.$emit("create-community", response.data);
 
-            // reset form
+            // Reset form
             this.v$.$reset();
 
-            // redirect to the homme page to create a post
-            // this.$router.push("/wall");
+            // Redirect to the homme page to create a post
+            this.$router.push("/wall");
 
-            // notification de succès
+            // Success notification
             this.$notify({
               type: "success",
               title: `Communauté crée`,
@@ -180,7 +184,7 @@ export default {
           .catch((error) => {
             this.apiErrors = error.response.data.error;
 
-            // error notification
+            // Error notification
             this.$notify({
               type: "error",
               title: `Erreur lors de l'inscription`,
@@ -188,13 +192,13 @@ export default {
             });
           });
       } else {
-        // error notification
+        // Error notification
         this.$notify({
           type: "warn",
           title: `📝 Veuillez remplir le formulaire correctement`,
         });
 
-        // shows errors on screen
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")

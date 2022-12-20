@@ -21,8 +21,10 @@ import { far } from "@fortawesome/free-regular-svg-icons";
 /* add icons to the library */
 library.add(far);
 
-import { FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome';
-
+import {
+  FontAwesomeLayers,
+  FontAwesomeLayersText,
+} from "@fortawesome/vue-fontawesome";
 
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch(); // This will kick of the initial replacement of i to svg tags and configure a MutationObserver
@@ -34,8 +36,8 @@ import Notifications from "@kyvg/vue3-notification";
 
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
-  .component('font-awesome-layers', FontAwesomeLayers)
-  .component('font-awesome-layer-text', FontAwesomeLayersText)
+  .component("font-awesome-layers", FontAwesomeLayers)
+  .component("font-awesome-layer-text", FontAwesomeLayersText)
   .use(router)
   .use(store)
   .use(Notifications)

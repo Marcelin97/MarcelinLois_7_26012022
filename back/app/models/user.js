@@ -4,12 +4,12 @@ module.exports = (sequelize, Sequelize) => {
     firstName: {
       type: Sequelize.STRING,
       required: true,
-      omitNull: true
+      omitNull: true,
     },
     lastName: {
       type: Sequelize.STRING,
       required: true,
-      omitNull: true
+      omitNull: true,
     },
     username: {
       type: Sequelize.STRING,
@@ -128,11 +128,6 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(models.postReport, {
       as: "postReports",
     });
-    // User.hasMany(models.comment, {
-    //   as: "commentParents",
-    //   onDelete: "CASCADE",
-    //   onUpdate: "CASCADE",
-    // });
     User.hasMany(models.commentReplies, {
       as: "replies",
     });
@@ -149,21 +144,18 @@ module.exports = (sequelize, Sequelize) => {
     // ! One user can own 0 or many communities
     User.hasMany(models.community, {
       as: "community",
-      // foreignKey: "userId",
     });
 
     // ! One user can join one or many communities
     User.belongsToMany(models.community, {
       through: "follower",
-      as: "follow"
+      as: "follow",
     });
 
     // ! One user can manage one or many communities
     User.belongsToMany(models.community, {
       through: "community_moderator",
       as: "moderators",
-      // foreignKey: "moderatorId", // replaces `userId`
-      // otherKey: "communityId", // replaces `communityId`
     });
   };
 

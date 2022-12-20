@@ -12,11 +12,12 @@
     </div>
     <!-- gestion erreur API avec axios -->
 
+    <!-- Registration Form -->
     <form action="#" method="post" @submit.prevent="createAccount">
       <fieldset>
         <legend>Inscription</legend>
 
-        <!-- Le nom d'utilisateur -->
+        <!-- Username -->
         <div>
           <div class="wrapper">
             <label>
@@ -44,7 +45,7 @@
           </div>
         </div>
 
-        <!-- L'email -->
+        <!-- Email -->
         <div>
           <div class="wrapper">
             <label>
@@ -72,7 +73,7 @@
           </div>
         </div>
 
-        <!-- Le mot de passe -->
+        <!-- Password -->
         <div>
           <div class="wrapper">
             <label>
@@ -101,7 +102,7 @@
         </div>
       </fieldset>
 
-      <!-- bouton de soumission -->
+      <!-- BTN submit -->
       <div class="submit">
         <button
           type="submit"
@@ -111,7 +112,6 @@
           <span class="btn" v-if="!this.v$.$error">Créer mon compte</span>
           <span class="btn" v-else>Création en cours...</span>
         </button>
-        <!-- bouton de soumission -->
       </div>
     </form>
 
@@ -144,8 +144,11 @@ import {
   alphaNum,
 } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
+
+// API requests
 import axiosInstance from "../../services/api";
 
+// Check strong password in front application
 export function strongPassword(value) {
   return (
     /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/.test(
@@ -218,26 +221,25 @@ export default {
     $lazy: true,
   },
   methods: {
+    // CREATE ACCOUNT
     async createAccount() {
-      const isFormCorrect = await this.v$.$validate(); // checks all inputs
+      const isFormCorrect = await this.v$.$validate(); // Checks all inputs
 
-      if (isFormCorrect) {
-        // if ANY fail validation
-        // alert("Form successfully submitted.");
+      if (isFormCorrect) { // if ANY fail validation
         axiosInstance
           .post("/auth/signup", this.state.user)
           .then(() => {
             // open success modal
             this.$refs.signupUser.openModal();
 
-            // and redirect to the login page
-            this.$router.push("/login");
+            // Redirect to the login page
+            setTimeout(() => this.$router.push("/login"), 2500);
           })
           .catch((error) => {
             // console.log(error.response.data.error.errors[0].message);
             this.state.apiErrors = error.response.data.error.errors[0].message;
 
-            // error notification
+            // Error notification
             this.$notify({
               type: "error",
               title: `Erreur lors de l'inscription`,
@@ -245,13 +247,13 @@ export default {
             });
           });
       } else {
-        // error notification
+        // Error notification
         this.$notify({
           type: "warn",
           title: `📝 Veuillez remplir le formulaire correctement`,
         });
 
-        // shows errors on screen
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")

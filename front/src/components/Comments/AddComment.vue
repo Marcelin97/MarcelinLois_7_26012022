@@ -1,5 +1,6 @@
 <template>
   <div aria-labelledby="comments-title">
+    <!-- Form create comment -->
     <form @submit.stop.prevent="onSubmit">
       <div class="form-content">
         <textarea
@@ -25,6 +26,7 @@
         <!-- Error Message -->
       </div>
       <div>
+        <!-- BTN submit comment -->
         <button
           type="submit"
           class="btn-comment"
@@ -79,6 +81,7 @@ export default {
     $lazy: true,
   },
   mounted() {
+    // I assign data to the user array
     this.currentUser = this.$store.state.user;
   },
   methods: {

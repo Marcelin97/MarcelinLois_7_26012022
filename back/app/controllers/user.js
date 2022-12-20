@@ -122,8 +122,6 @@ exports.login = (req, res) => {
       },
     })
     .then(async (user) => {
-      // console.log(user.email)
-
       if (!user) {
         return res.status(404).json({ message: "User Not found." });
       }

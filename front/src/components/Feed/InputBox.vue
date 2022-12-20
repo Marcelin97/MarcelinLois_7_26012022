@@ -16,7 +16,6 @@
             <input
               accept=".jpeg,.jpg,.png"
               @change="onChangeFileUpload"
-              ref="image"
               class="image"
               type="file"
               id="image"
@@ -220,13 +219,17 @@ export default {
     }
   },
   methods: {
+    // Capture the picture
     onChangeFileUpload() {
       this.state.post.image = document.querySelector("#image").files[0];
     },
+    // CREATE POST
     createPostClick() {
-      this.v$.$validate(); // checks all inputs
+      this.v$.$validate(); // Checks all inputs
+
       if (!this.v$.$error) {
-        // if no errors
+        // If ANY fail validation
+
         let bodyFormData = new FormData();
         bodyFormData.append("title", this.state.post.title);
         bodyFormData.append("content", this.state.post.content);
@@ -243,19 +246,12 @@ export default {
             },
           })
           .then(async (response) => {
-            // console.log("requête create post", response.data);
             this.$emit("create-post", response.data.newPost);
 
-            // reset form
+            // Reset form
             this.v$.$reset();
 
-            // this works
-            //setTimeout(() => { this.$v.$reset() }, 0)
-
-            // this works even better - using Vue.nextTick method
-            this.$nextTick(() => { this.$v.$reset() })
-
-            // notification de succès
+            // Success notification
             this.$notify({
               type: "success",
               title: `Publication crée`,
@@ -265,7 +261,7 @@ export default {
           .catch((error) => {
             this.apiErrors = error.response.data.error;
 
-            // error notification
+            // Error notification
             this.$notify({
               type: "error",
               title: `Erreur lors de la publication`,
@@ -273,13 +269,13 @@ export default {
             });
           });
       } else {
-        // error notification
+        // Error notification
         this.$notify({
           type: "warn",
           title: `📝 Veuillez remplir le formulaire correctement`,
         });
 
-        // shows errors on screen
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")
@@ -312,14 +308,6 @@ export default {
   border-radius: 0.8rem;
   width: auto;
   margin: 0 1rem 1rem;
-
-  // @media only screen and (min-width: 600px) {
-  //   width: 430px;
-  // }
-
-  // @media only screen and (min-width: 768px) {
-  //   width: 530px;
-  // }
 }
 
 h2 {

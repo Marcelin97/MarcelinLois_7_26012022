@@ -3,7 +3,12 @@
     <div class="wrapper">
       <div class="left-col">
         <div class="status-wrapper">
-          <router-link class="more" :to="`/communities/profil/${this.id}`" aria-label="Profile de la communauté">
+          <!-- LINK TO COMMUNITY -->
+          <router-link
+            class="more"
+            :to="`/communities/profil/${this.id}`"
+            aria-label="Profile de la communauté"
+          >
             <div class="status-card">
               <div class="profile-pic">
                 <img
@@ -37,44 +42,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.main {
-  // justify-content: center;
-  // display: flex;
-  // flex-direction: row;
-  overflow: scroll;
-}
-.wrapper {
-  // width: 70%;
-  // max-width: 1000px;
-  // display: grid;
-  // grid-template-columns: 100% 100%;
-  // grid-gap: 30px;
-}
-.left-col {
-  // display: flex;
-  // flex-direction: column;
-}
 .status-wrapper {
   width: 100%;
   border-radius: 2px;
   padding: 10px;
   padding-right: 0;
-  // display: flex;
-  // align-items: center;
   overflow: hidden;
   overflow-x: auto;
-}
-.status-wrapper::-webkit-scrollbar {
-  // display: none;
-}
-.status-card {
-  // flex: 0 0 auto;
-  // width: 80px;
-  // max-width: 80px;
-  // display: flex;
-  // flex-direction: column;
-  // align-items: center;
-  // margin-right: 15px;
 }
 .profile-pic {
   width: 70px;
@@ -94,7 +68,7 @@ export default {
 .username {
   width: auto;
   height: 15px;
-  overflow: hidden;
+  // overflow: hidden;
   text-align: center;
   font-size: 12px;
   margin-top: 5px;

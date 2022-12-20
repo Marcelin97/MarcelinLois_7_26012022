@@ -76,6 +76,7 @@
           <div class="community-profile-actions__btn">
             <!-- export data -->
             <button
+              v-if="!isFollowingCommunity(community.id)"
               type="button"
               class="btn btn-export"
               aria-label="S'abonner"
@@ -86,6 +87,7 @@
             </button>
 
             <button
+              v-else
               type="button"
               class="btn btn-export"
               aria-label="Se désabonner"
@@ -111,15 +113,22 @@
       </div>
     </div>
 
-    <div>
+    <div v-if="posts.length != 0">
+      <!-- POSTS -->
       <PostCard
         v-for="(post, index) in posts"
-          :key="index"
-          :post="post"
-          v-bind:id="post.id"
-          @delete-post="deletePost"
-          @update-post="onUpdatePost"
+        :key="index"
+        :post="post"
+        v-bind:id="post.id"
+        @delete-post="deletePost"
+        @update-post="onUpdatePost"
       />
+    </div>
+    <!-- IF ANY POSTS -->
+    <div v-else>
+      <div class="container-communities">
+        <h2>{{ this.loadingPost }}</h2>
+      </div>
     </div>
 
     <!-- modal delete account -->
@@ -139,6 +148,7 @@
 
       <template v-slot:footer>
         <div class="modal__actions">
+          <!-- BTN cancel -->
           <button
             class="btn"
             text="Annuler"
@@ -147,6 +157,7 @@
           >
             Annuler
           </button>
+          <!-- BTN delete community -->
           <deleteBtn @click="deleteCommunityClick" />
         </div>
       </template>
@@ -160,6 +171,7 @@
 
       <template v-slot:body>
         <div class="container">
+          <!-- Form report community -->
           <form action="#" method="post" @submit.prevent="reportAccountClick">
             <div class="FormGroup">
               <label class="FormGroupLabel" for=""
@@ -194,6 +206,7 @@
               <!-- Error Message -->
             </div>
 
+            <!-- BTN report community -->
             <button
               type="submit"
               class="btn button"
@@ -224,6 +237,7 @@
 
       <template v-slot:body>
         <div class="container">
+          <!-- Form add moderator -->
           <form action="#" method="post" @submit.prevent="addModeratorClick">
             <div>
               <select class="vue-select" v-model="state.user.id">
@@ -242,6 +256,7 @@
               <div>Modérateur choisi: {{ state.user.id }}</div>
             </div>
 
+            <!-- BTN add moderator -->
             <button
               type="submit"
               class="btn button"
@@ -272,6 +287,7 @@
 
       <template v-slot:body>
         <div class="container">
+          <!-- Form delete moderator -->
           <form action="#" method="post" @submit.prevent="deleteModeratorClick">
             <div>
               <select class="vue-select" v-model="state.user.id">
@@ -290,6 +306,7 @@
               <div>Modérateur supprimé: {{ state.user.id }}</div>
             </div>
 
+            <!-- BTN delete moderator -->
             <button
               type="submit"
               class="btn button"
@@ -318,15 +335,18 @@ import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
 import PostCard from "../Posts/PostCard.vue";
 
-
+// Communities requests
 import communitiesApi from "../../api/community";
+// Users requests
 import usersApi from "../../api/users";
+// API requests
 import axiosInstance from "../../services/api";
 
 import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
+// Manage role
 import roleMixin from "../../mixins/role.mixin";
 
 export default {
@@ -370,7 +390,7 @@ export default {
   components: {
     modalStructure,
     deleteBtn,
-    PostCard
+    PostCard,
   },
   data() {
     return {
@@ -388,7 +408,6 @@ export default {
       },
       selectValue: "",
       placeholder: "Choisi un modérateur",
-      isHidden: false,
       posts: [], // add posts array
     };
   },
@@ -397,32 +416,33 @@ export default {
     isOwner() {
       return this.community.userId === this.$store.state.user.id;
     },
-    // Check if current user is following a specific community
-    isFollowingCommunity() {
-      return this.follower.find(
-        (feed) => feed.userId === this.$store.state.user.id
-      );
-    },
   },
   async created() {
+    // I assign data to the user array
     this.user = this.$store.state.user;
+
     this.communityId = this.$route.params.id;
-    console.log("DEBUG COMMUNI ID ", this.communityId)
 
     // I get all the posts
-    const postsCommunity = await communitiesApi.getPostsCommunity(`${this.communityId}`);
+    const postsCommunity = await communitiesApi.getPostsCommunity(
+      `${this.communityId}`
+    );
+    // I assign datas to the posts array
     this.posts = postsCommunity.posts;
-    console.log("DEBU POST COMMUNITY", this.posts);
+    if (this.posts.length < 1) {
+      this.loadingPost = "Il n y a pas encore de publications à afficher";
+    }
 
     // I'm creating a query to retrieve all users informations.
     try {
       const response = await usersApi.getUsers();
+      // I assign datas to the users array
       this.users = response;
     } catch (error) {
       if (error.response.status === 404) {
         this.apiErrors = "Utilisateurs introuvable !";
 
-        // notification d'erreur
+        // Error notification
         this.$notify({
           type: "error",
           title: `Erreur de l'api`,
@@ -440,11 +460,25 @@ export default {
     } catch (error) {
       if (error.status === 404) {
         this.apiErrors = "Il n'y a pas encore de communauté !";
+
+        // Error notification
+        this.$notify({
+          type: "error",
+          title: `Erreur de l'api`,
+          text: `Erreur reporté : ${this.apiErrors}`,
+        });
       } else {
         this.apiErrors = error.data.error;
+
+        // Error notification
+        this.$notify({
+          type: "error",
+          title: `Erreur de l'api`,
+          text: `Erreur reporté : ${this.apiErrors}`,
+        });
       }
 
-      // notification error message
+      // Error notification
       this.$notify({
         type: "error",
         title: `Accès refusé:`,
@@ -454,6 +488,7 @@ export default {
     }
   },
   methods: {
+    // DELETE COMMUNITY
     async deleteCommunityClick() {
       if (
         window.confirm(
@@ -463,7 +498,8 @@ export default {
         try {
           await communitiesApi.deleteCommunity(this.communityId);
           this.$emit("delete-community", this.communityId);
-          // notification success
+
+          // Success notification
           this.$notify({
             type: "success",
             title: `Suppression`,
@@ -471,12 +507,12 @@ export default {
             duration: 30000,
           });
 
-          // redirect to the community page to create new one
+          // Redirect to the community page to create new one
           this.$router.push("/communities");
         } catch (error) {
           this.apiErrors = error.data.error;
 
-          // notification error message
+          // Error notification
           this.$notify({
             type: "error",
             title: `Accès refusé:`,
@@ -486,6 +522,7 @@ export default {
         }
       }
     },
+    // REPORT COMMUNITY
     reportAccountClick() {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
@@ -539,14 +576,13 @@ export default {
         });
       }
     },
+    // FOLLOW COMMUNITY
     async followCommunityClick() {
       try {
         await communitiesApi.followCommunity(this.communityId);
         this.$emit("follow-community", this.communityId);
-        // this.hasFollow = !this.hasFollow;
-        this.isFollowingCommunity = false;
 
-        // notification success
+        // Success notification
         this.$notify({
           type: "success",
           text: "Vous suivez cette communauté",
@@ -554,7 +590,7 @@ export default {
       } catch (error) {
         this.apiErrors = error.response;
 
-        // notification d'erreur
+        // Error notification
         this.$notify({
           duration: 2500,
           type: "error",
@@ -562,12 +598,13 @@ export default {
         });
       }
     },
+    // UNFOLLOW COMMUNITY
     async unfollowCommunityClick() {
       try {
         await communitiesApi.unfollowCommunity(this.communityId);
         this.$emit("unfollow-community", this.communityId);
 
-        // notification success
+        // Success notification
         this.$notify({
           type: "success",
           text: "Vous ne suivez plus cette communauté",
@@ -575,7 +612,7 @@ export default {
       } catch (error) {
         this.apiErrors = error.response;
 
-        // notification d'erreur
+        // Error notification
         this.$notify({
           duration: 2500,
           type: "error",
@@ -583,6 +620,7 @@ export default {
         });
       }
     },
+    // ADD MODERATOR
     async addModeratorClick() {
       try {
         axiosInstance
@@ -597,11 +635,10 @@ export default {
           })
           .catch((error) => {
             if (error.response.status === 500) {
-              // console.log(error.response.data.error);
               this.apiErrors =
                 "Vous n'êtes pas autorisé à gérer les rôles de communauté !";
 
-              // notification d'erreur
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de l'ajoute du modérateur`,
@@ -610,7 +647,7 @@ export default {
             } else if (error.response) {
               this.apiErrors = error.response;
 
-              // error notification
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de l'ajoute du modérateur`,
@@ -621,7 +658,7 @@ export default {
       } catch (error) {
         this.apiErrors = error.response.data.error;
 
-        // notification d'erreur
+        // Error notification
         this.$notify({
           duration: 2500,
           type: "error",
@@ -630,6 +667,7 @@ export default {
         });
       }
     },
+    // DELETE MODERATOR
     async deleteModeratorClick() {
       try {
         axiosInstance
@@ -638,7 +676,7 @@ export default {
             this.state.user
           )
           .then(() => {
-            // notification de succès
+            // Success notification
             this.$notify({
               type: "success",
               title: "Modérateur supprimer",
@@ -650,7 +688,7 @@ export default {
               this.apiErrors =
                 "Vous n'êtes pas autorisé à gérer les rôles de communauté !";
 
-              // notification d'erreur
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la suppression du modérateur`,
@@ -659,7 +697,7 @@ export default {
             } else if (error.response) {
               this.state.apiErrors = error.response;
 
-              // error notification
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors de la suppression du modérateur`,
@@ -670,31 +708,23 @@ export default {
       } catch (error) {
         this.apiErrors = error.response.data.error;
 
-        // notification d'erreur
+        // Error notification
         this.$notify({
           duration: 2500,
           type: "error",
-          title: `Erreur lors de l'ajoute du modérateur`,
+          title: `Erreur lors de la suppression du modérateur`,
           text: `Erreur reporté : ${this.apiErrors}`,
         });
       }
     },
-    // EVENT : update my account
-    onUpdateAccount(data) {
-      this.user = data.user;
-    },
     // EVENT : update publication
     onUpdatePost(data, postId) {
-      // console.log("DEBUG POST", data);
       this.posts = this.posts.map((post) => {
         if (post.id === postId) {
-          // console.log("DEBUG DATA PROFILE", data)
           post = data;
-          // console.log('DEBUG POST PROFILE', post)
         }
         return post;
       });
-      // console.log("READ POSTS AFTER UPDATE", this.posts)
     },
     // EVENT : delete post
     deletePost(postId) {

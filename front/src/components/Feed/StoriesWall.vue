@@ -2,13 +2,14 @@
   <section class="stories">
     <h2>Dernières communautés</h2>
     <div class="stories__card">
-    
-    <StoryCard
-    class="card"
-      v-for="(community, index) in communities"
-      :key="index"
-      :community="community"
-    />
+      <StoryCard
+        id="scroll-div"
+        ref="scrollDiv"
+        class="card"
+        v-for="(community, index) in communities"
+        :key="index"
+        :community="community"
+      />
     </div>
   </section>
 </template>
@@ -36,23 +37,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.stories{
-      display: flex;
-      margin: 35px auto;
-      flex-direction: column;
-      width: 100%;
+.stories {
+  display: flex;
+  margin: 35px auto;
+  flex-direction: column;
+  justify-content: center;
+  // width: 100%;
 
-        &__card{
-            display: flex;
-            flex: 1;
-          }
+  &__card {
+    display: flex;
+    // overflow-x: auto;
+  }
+  h2 {
+    text-align: center;
+  }
 }
 
-h2{
+h2 {
   flex-basis: 100%;
 }
 
-.card{
+.card {
   display: flex;
   flex-direction: row;
 }

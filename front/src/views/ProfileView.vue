@@ -71,7 +71,7 @@ export default {
     const posts = await postsApi.getPostsByUser(this.$store.state.user.id);
     this.posts = posts;
     if (this.posts.length < 1) {
-      this.loadingMessage = "Il n y a pas encore de publications à afficher";
+      this.loadingPost = "Il n y a pas encore de publications à afficher";
     }
   },
   methods: {
