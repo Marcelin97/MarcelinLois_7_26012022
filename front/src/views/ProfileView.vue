@@ -25,8 +25,9 @@
           @update-post="onUpdatePost"
         />
       </div>
+      <!-- If there are any posts -->
       <div v-else>
-        <h3>{{ this.loadingMessage }}</h3>
+        <h2>{{ this.loadingPost }}</h2>
         <router-link
           class="link"
           to="/communities"
@@ -37,7 +38,7 @@
     </section>
   </div>
   <div v-else>
-    <h2>Chargement en cours...</h2>
+    <h2>{{ this.loadingMessage }}</h2>
   </div>
 </template>
 
@@ -45,7 +46,7 @@
 import UserProfile from "@/components/Profil/UserProfile.vue";
 import PostCard from "../components/Posts/PostCard.vue";
 
-// Post requests
+// Posts requests
 import postsApi from "../api/posts";
 
 export default {

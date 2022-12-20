@@ -36,7 +36,7 @@ export default {
     ...mapGetters(["isAuthenticated", "isSuperAdmin"]),
     ...mapGetters({
       isModerator: "isModerator",
-      isFollowingCommunity: "isFollowingCommunity"
+      isFollowingCommunity: "isFollowingCommunity",
     }),
     ...mapState({
       authData: "user",

@@ -3,7 +3,14 @@
     <h1>{{ this.community.title }}</h1>
 
     <!-- output component -->
-    <CommunityProfile :hasFollow="true" @delete-community="deleteCommunity" @unfollow-community="unfollowCommunity" @follow-community="followCommunity" :community="community" :communityId="communityId" />
+    <CommunityProfile
+      :hasFollow="true"
+      @delete-community="deleteCommunity"
+      @unfollow-community="unfollowCommunity"
+      @follow-community="followCommunity"
+      :community="community"
+      :communityId="communityId"
+    />
 
     <!-- gestion erreur API avec axios -->
     <div v-if="apiErrors" class="error-api">
@@ -38,9 +45,11 @@ export default {
     this.communityId = this.$route.params.id;
 
     // I'm creating a query to retrieve target community information.
-      const getCommunities = await communitiesApi.readTargetCommunity(this.communityId);
-      // I assign data to the community array
-      this.community = getCommunities.data.datas;
+    const getCommunities = await communitiesApi.readTargetCommunity(
+      this.communityId
+    );
+    // I assign data to the community array
+    this.community = getCommunities.data.datas;
   },
   methods: {
     followCommunity(communityId) {
@@ -52,7 +61,7 @@ export default {
     deleteCommunity(communityId) {
       this.community.id == communityId;
     },
-  }
+  },
 };
 </script>
 

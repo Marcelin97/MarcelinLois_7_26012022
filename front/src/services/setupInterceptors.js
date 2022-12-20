@@ -37,7 +37,7 @@ const setup = () => {
             const { accessToken } = rs.data;
 
             TokenService.updateLocalAccessToken(accessToken);
-            
+
             return axiosInstance(originalConfig);
           } catch (_error) {
             return Promise.reject(_error);

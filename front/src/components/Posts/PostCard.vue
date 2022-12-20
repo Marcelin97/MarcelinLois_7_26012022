@@ -154,7 +154,7 @@
           <span class="vote-count" :class="isLikedByUser ? 'like' : ''" >{{ showLikesCount }}</span>
         </div>
 
-        <!-- btn dislike -->
+        <!-- BTN dislike -->
         <div class="vote-data">
           <button
             type="button"
@@ -176,7 +176,7 @@
           <span class="vote-count" :class="isDisLikedByUser ? 'dislike' : ''" >{{ showDislikesCount }}</span>
         </div>
 
-        <!-- section data of post -->
+        <!-- Post information -->
         <div>
           <p class="post__content">
             {{ post.title }}
@@ -186,7 +186,7 @@
           </p>
         </div>
 
-        <!-- section comment(s) -->
+        <!-- Section comment(s) -->
         <div>
           <div>
             {{ showCommentsCount }}
@@ -194,7 +194,7 @@
               <font-awesome-icon icon="fa-regular fa-comments" />
             </span>
           </div>
-          <!-- comment(s) list -->
+          <!-- Comment(s) list -->
           <PostComments
             v-for="(comment, index) in comments"
             :key="index"
@@ -214,14 +214,14 @@
             Soyez le premier !
           </p>
 
-          <!-- add a comment -->
+          <!-- Component add a comment -->
           <div class="post-comment">
             <AddComment @add-comment="onAddComment" />
           </div>
         </div>
       </div>
 
-      <!-- publication date -->
+      <!-- Date of publication -->
       <p class="post-createdat">
         {{ showDate }}
         <font-awesome-icon icon="fa-regular fa-clock" />
@@ -425,7 +425,6 @@
 <script>
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
-
 import PostComments from "../Comments/PostComments";
 import AddComment from "../Comments/AddComment.vue";
 
@@ -433,10 +432,14 @@ import useVuelidate from "@vuelidate/core";
 import { helpers, minLength, maxLength } from "@vuelidate/validators";
 import { reactive, computed } from "vue";
 
+// API requests
 import axiosInstance from "../../services/api";
+// Posts requests
 import postsApi from "../../api/posts";
+// Comments requests
 import commentsApi from "../../api/comments";
 
+// Manage roles
 import roleMixin from "../../mixins/role.mixin";
 
 import timeAgo from "../../services/timeAgo";

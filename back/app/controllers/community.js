@@ -37,7 +37,6 @@ exports.create = async (req, res, next) => {
 exports.readOne = async (req, res, next) => {
   try {
     const { id } = req.params;
-    // console.log(id);
     let communityFind = await community.findOne(
       { where: { id } },
       {

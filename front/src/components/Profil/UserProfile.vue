@@ -2,8 +2,9 @@
   <div>
     <div class="wrapper">
       <div class="profile-card js-profile-card">
-        <!-- Profil image -->
+        <!-- User informations -->
         <div>
+          <!-- User image -->
           <div class="profile-card__img">
             <img
               v-if="user.imageUrl"
@@ -19,12 +20,13 @@
             />
           </div>
 
+          <!-- Ribbon if admin -->
           <div v-if="user.isAdmin == true" class="ribbon">
             <span>Admin</span>
           </div>
         </div>
 
-        <!-- Profil informations -->
+        <!-- Username -->
         <div class="profile-card__cnt js-profile-cnt">
           <div class="profile-card-name">
             {{ user.username }}
@@ -32,7 +34,7 @@
 
           <!-- Profil statistics -->
           <div class="profile-card-inf">
-            <!-- Publications -->
+            <!-- Length of posts -->
             <div v-if="user.posts != 0" class="profile-card-inf__item">
               <div class="profile-card-inf__title">
                 {{ user.posts.length }}
@@ -40,7 +42,7 @@
               <div class="profile-card-inf__txt">Publications</div>
             </div>
 
-            <!-- Commentaires -->
+            <!-- Length of comments -->
             <div v-if="user.comments != 0" class="profile-card-inf__item">
               <div class="profile-card-inf__title">
                 {{ user.comments.length }}
@@ -48,7 +50,7 @@
               <div class="profile-card-inf__txt">Commentaires</div>
             </div>
 
-            <!-- Communautés crées -->
+            <!-- Length of communities -->
             <div v-if="user.community != 0" class="profile-card-inf__item">
               <div class="profile-card-inf__title">
                 {{ user.community.length }}
@@ -61,12 +63,11 @@
         <!-- button actions -->
         <div class="profile-card-ctr">
           <div v-if="userLoggedIn == false" class="profile-card-ctr__actions">
-            <!-- button report user -->
+            <!-- BTN report user -->
             <button
               type="button"
               class="btn"
               @click="$refs.reportUser.openModal()"
-              text="Signaler ce compte"
               aria-label="Signaler ce compte"
             >
               Signaler...
@@ -74,34 +75,31 @@
           </div>
 
           <div v-else class="profile-card-ctr__actions">
-            <!-- update profile -->
+            <!-- BTN update profile -->
             <button
               type="button"
               class="btn"
               @click="$refs.updateUser.openModal()"
-              text="Modifier ce compte"
               aria-label="Modifier son profile"
             >
               Modifier mon profil
             </button>
 
-            <!-- export data -->
+            <!-- BTN export data -->
             <button
               type="button"
               class="btn btn-export"
               @click="exportDataClick"
-              text="Exporter mes données"
               aria-label="Exporter mes données"
             >
               Exporter mes données
             </button>
 
-            <!-- button delete account -->
+            <!-- BTN delete account -->
             <button
               type="button"
               class="btn btn-delete"
               @click="$refs.deleteAccount.openModal()"
-              text="Supprimer mon compte"
               aria-label="Supprimer mon compte"
             >
               Supprimer mon compte
@@ -311,7 +309,6 @@
 
             <button
               class="btn"
-              text="Annuler"
               type="button"
               aria-label="Annuler la modification"
               @click="$refs.updateUser.closeModal()"
@@ -340,7 +337,6 @@
         <div class="modal__actions">
           <button
             class="btn"
-            text="Annuler"
             type="button"
             aria-label="Annuler la suppression"
             @click="$refs.deleteAccount.closeModal()"
@@ -399,7 +395,6 @@
               type="submit"
               class="btn button"
               title="Signaler"
-              text="Signaler"
               value="Signaler"
               aria-label="Signaler un utilisateur"
             >
@@ -423,7 +418,9 @@
 import modalStructure from "../Modal/ModalStructure.vue";
 import deleteBtn from "../Base/DeleteBtn.vue";
 
+// User requests
 import usersApi from "../../api/users";
+// API requests
 import axiosInstance from "../../services/api";
 
 import useVuelidate from "@vuelidate/core";
@@ -508,7 +505,6 @@ export default {
           maxLength: maxLength(60),
         },
         newPassword: {
-          // $autoDirty: true,
           $lazy: true,
           password_validation: {
             $validator: strongPassword,
@@ -540,13 +536,16 @@ export default {
     };
   },
   mounted() {
+    // I assign my user to update with the data I have in my store
     this.state.userUpdate = this.$store.state.user;
   },
   methods: {
+    // Capture the picture
     onChangeFileUpload() {
       this.state.userUpdate.userImage =
         document.querySelector("#userImage").files[0];
     },
+    // UPDATE MY ACCOUNT
     async onUpdateUser() {
       let bodyFormData = new FormData();
       if (this.state.userUpdate.userImage)
@@ -576,33 +575,33 @@ export default {
         .then((result) => {
           this.$emit("update-user", result.data);
           // console.log("result: ", result.data);
+          // Send data to store to update current user
           this.$store.commit("updateUser", result.data);
 
           // close update user modal
           this.$refs.updateUser.closeModal();
 
-          // success notification
+          this.state.userUpdate;
+
+          // Success notification
           this.$notify({
             type: "success",
             title: `Profil mise à jour`,
             text: `Vous allez être redirigé vers votre profil.`,
           });
-
-          // // redirect to user page
-          // this.$router.push("/user");
         })
         .catch((err) => {
           this.apiErrors = err.response;
 
-          // notification error message
+          // Error notification
           this.$notify({
             type: "error",
             title: `Erreur lors de la mise à jour de l'utilisateur'`,
             text: `Erreur reporté : ${this.apiErrors}`,
-            duration: 30000,
           });
         });
     },
+    // EXPORT DATA OF MY ACCOUNT
     async exportDataClick() {
       try {
         const response = await usersApi.exportMyData();
@@ -610,11 +609,12 @@ export default {
         let fileLink = document.createElement("a");
 
         fileLink.href = fileURL;
-        fileLink.setAttribute("download", "file.txt");
+        fileLink.setAttribute("download", `${this.user.username}_datas.txt`);
         document.body.appendChild(fileLink);
 
         fileLink.click();
 
+        // Success notification
         this.$notify({
           type: "success",
           text: "Le téléchargement commence.",
@@ -622,7 +622,7 @@ export default {
       } catch (error) {
         this.apiErrors = error.response;
 
-        // notification d'erreur
+        // Error notification
         this.$notify({
           duration: 2500,
           type: "error",
@@ -631,6 +631,7 @@ export default {
         });
       }
     },
+    // DELETE MY ACCOUNT
     async deleteAccountClick() {
       if (
         window.confirm(
@@ -644,9 +645,8 @@ export default {
         } catch (error) {
           this.apiErrors = error.response;
 
-          // notification d'erreur
+          // Error notification
           this.$notify({
-            duration: 2500,
             type: "error",
             title: `Erreur lors de la suppression du compte`,
             text: `Erreur reporté : ${this.apiErrors}`,
@@ -654,6 +654,7 @@ export default {
         }
       }
     },
+    // REPORT USER ACCOUNT
     reportAccountClick() {
       this.v$.$validate(); // checks all inputs
       if (!this.v$.$error) {
@@ -661,30 +662,29 @@ export default {
         axiosInstance
           .post(`/auth/report/${this.user.id}`, this.state.user)
           .then(() => {
-            // notification de succès
+            // Success notification
             this.$notify({
               type: "success",
               title: `Signalement envoyé !`,
             });
-            // close report user modal
+            // Close report user modal
             this.$refs.reportUser.closeModal();
           })
           .catch((error) => {
-            // console.log(error.response.status);
+            // Close report user modal
+            this.$refs.reportUser.closeModal();
+
             if (error.response.status === 404) {
               this.apiErrors = "Utilisateur introuvable !";
-              // notification d'erreur
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors du signalement`,
                 text: `Erreur reporté : ${this.apiErrors}`,
               });
             } else if (error.response.status === 409) {
-              // close report user modal
-              this.$refs.reportUser.closeModal();
-
               this.apiErrors = "Vous avez déjà signalé cet utilisateur !";
-              // notification d'erreur
+              // Error notification
               this.$notify({
                 type: "error",
                 title: `Erreur lors du signalement`,
@@ -693,13 +693,13 @@ export default {
             }
           });
       } else {
-        // notification d'erreur
+        // Error notification
         this.$notify({
           type: "warn",
           title: `Veuillez faire un signalement complet.`,
         });
 
-        // montre les erreurs à l'écran
+        // Shows errors on screen
         this.$nextTick(() => {
           let domRect = document
             .querySelector(".error")

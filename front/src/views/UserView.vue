@@ -16,16 +16,22 @@
     </section>
 
     <!-- If there are posts -->
-    <section v-if="posts.length != 0">
-      <!-- output component -->
-      <PostCard
-        v-for="(post, index) in posts"
-        :key="index"
-        :post="post"
-        v-bind:id="post.id"
-        :creatorInfo="creatorInfo"
-        @update-post="onUpdatePost"
-      />
+    <section>
+      <div v-if="posts.length != 0">
+        <!-- output component -->
+        <PostCard
+          v-for="(post, index) in posts"
+          :key="index"
+          :post="post"
+          v-bind:id="post.id"
+          :creatorInfo="creatorInfo"
+          @update-post="onUpdatePost"
+        />
+      </div>
+      <!-- If there are any posts -->
+      <div v-else>
+        <h2>{{ this.loadingPost }}</h2>
+      </div>
     </section>
   </div>
   <div v-else>
@@ -55,7 +61,7 @@ export default {
       user: [], // target user info
       userId: "",
       apiErrors: "",
-      loadingMessage: 'Chargement en cours'
+      loadingMessage: "Chargement en cours",
     };
   },
   async created() {
@@ -63,11 +69,11 @@ export default {
     this.userId = this.$route.params.id;
 
     // I'm creating a query to retrieve post by target user.
-    const posts = await postsApi.getPostsByUser(this.userId)
+    const posts = await postsApi.getPostsByUser(this.userId);
     this.posts = posts;
     // console.log("user target => posts", this.posts);
     if (this.posts.length < 1) {
-      this.loadingMessage = 'Il n y a pas encore de publications à afficher'
+      this.loadingPost = "Il n y a pas encore de publications à afficher";
     }
   },
   async mounted() {

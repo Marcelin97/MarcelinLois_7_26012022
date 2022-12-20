@@ -40,7 +40,7 @@ export default {
       users: [], // add users array
       apiErrors: "",
       search: "",
-      loadingMessage: 'Chargement en cours'
+      loadingMessage: "Chargement en cours",
     };
   },
   computed: {
@@ -65,7 +65,7 @@ export default {
       this.users = response;
       // If no users
       if (this.users.length < 1) {
-        this.loadingMessage = 'Il n y a pas encore d autres utilisateurs'
+        this.loadingMessage = "Il n y a pas encore d autres utilisateurs";
       }
     } catch (error) {
       if (error.response.status === 404) {
