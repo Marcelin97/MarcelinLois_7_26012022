@@ -1,5 +1,5 @@
 <template>
-  <section class="stories">
+  <section class="stories" v-if="communities.length != 0">
     <h2>Dernières communautés</h2>
     <div class="stories__card">
       <StoryCard

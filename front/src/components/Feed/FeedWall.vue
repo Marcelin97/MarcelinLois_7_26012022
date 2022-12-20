@@ -133,16 +133,18 @@ export default {
   display: flex;
   /* Take the remaining width */
   flex: 1;
-
+  justify-content: center;
   /* Make it scrollable */
   overflow: auto;
 }
 
 .container-communities {
   display: flex;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
   margin-bottom: 1.2rem;
+  margin-left: 2rem;
 }
 
 .post {
