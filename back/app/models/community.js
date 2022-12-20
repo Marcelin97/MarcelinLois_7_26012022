@@ -42,10 +42,6 @@ module.exports = (sequelize, Sequelize) => {
       as: "posts",
       foreignKey: "communityId",
     });
-    // Community.hasMany(models.community_moderator, {
-    //   as: "community_moderators",
-    //   // foreignKey: "communityId",
-    // });
 
     // * Many to Many associations
 
@@ -65,9 +61,6 @@ module.exports = (sequelize, Sequelize) => {
     // ! One community can be managed by 0 or many users
     Community.belongsToMany(models.user, {
       through: "community_moderator",
-      // as: "moderators",
-      // foreignKey: "communityId", // replaces `communityId`
-      // otherKey: "moderatorId", // replaces `userId`
     });
   };
 

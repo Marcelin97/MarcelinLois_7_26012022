@@ -81,12 +81,9 @@ export default {
     },
     // EVENT : update publication
     onUpdatePost(data, postId) {
-      // console.log("DEBUG POST", data);
       this.posts = this.posts.map((post) => {
         if (post.id === postId) {
-          // console.log("DEBUG DATA PROFILE", data)
           post = data;
-          // console.log('DEBUG POST PROFILE', post)
         }
         return post;
       });

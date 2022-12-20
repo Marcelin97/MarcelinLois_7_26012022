@@ -590,7 +590,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log("result: ", result.data.datas);
           this.$emit("update-post", result.data.datas, this.post.id);
 
           // close update post modal
@@ -675,7 +674,7 @@ export default {
       );
 
       let valueLikeToSend = 0;
-      console.log("DEBUG POSTREAD", this.post.likePosts);
+      // console.log("DEBUG POSTREAD", this.post.likePosts);
       if (!likePost || !likePost.vote || likePost.vote + valeurLike === 0)
         valueLikeToSend = valeurLike;
 
@@ -741,13 +740,9 @@ export default {
       }
     },
     onUpdateComment(data, commentId) {
-      // console.log(data);
-      // console.log(commentId);
-      // console.log(this.comments)
       this.comments = this.comments.map((comment) => {
         if (comment.id === commentId) {
           comment.content = data.content;
-          console.log(comment.content);
         }
         return comment;
       });

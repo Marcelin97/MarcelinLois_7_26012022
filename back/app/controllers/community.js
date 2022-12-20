@@ -395,6 +395,7 @@ exports.deleteModerator = (req, res, next) => {
   community
     .findByPk(req.params.id)
     .then(async (result) => {
+      // console.log("DEBUG COMMUNITY", result);
       if (!result) {
         return res.status(404).json({ message: "Community not found" });
       }
@@ -417,13 +418,12 @@ exports.deleteModerator = (req, res, next) => {
 
       // TODO : Find a user in moderators list
       community_moderator
-        .findAll({ where: { communityId: result.id } })
+        .findOne({ where: { communityId: result.id, userId: req.body.id } })
         .then((resultUser) => {
           // console.log("moderator list", resultUser);
           if (resultUser != null)
-            // TODO : Delete this user to the moderator list
             community_moderator.destroy({
-              where: { userId: resultUser.id, communityId: result.id },
+              where: { communityId: result.id, userId: req.body.id },
             });
           return res.status(200).json({
             status: 200,

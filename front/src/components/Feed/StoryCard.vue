@@ -65,9 +65,15 @@ export default {
   border-radius: 50%;
   border: 2px solid #fff;
 }
+
+.status-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min-content;
+}
 .username {
   width: auto;
-  height: 15px;
   // overflow: hidden;
   text-align: center;
   font-size: 12px;

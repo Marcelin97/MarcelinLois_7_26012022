@@ -626,6 +626,10 @@ export default {
         axiosInstance
           .post(`/community/${this.communityId}/moderator`, this.state.user)
           .then(() => {
+
+            // close update post modal
+            this.$refs.moderatorCommunity.closeModal();
+
             // notification de succès
             this.$notify({
               type: "success",
@@ -676,6 +680,10 @@ export default {
             this.state.user
           )
           .then(() => {
+
+            // Close modal delete moderator
+            this.$refs.deleteModeratorClick.closeModal();
+
             // Success notification
             this.$notify({
               type: "success",

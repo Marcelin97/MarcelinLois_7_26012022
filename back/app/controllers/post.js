@@ -428,7 +428,6 @@ exports.deletePost = (req, res, next) => {
 // ? gestion neutre si pas like et pas dislike
 exports.likePost = async (req, res, next) => {
   let like = req.body.vote;
-  console.log("DEBUG");
   // TODO : Find the post to be like
   post
     .findOne({ where: { id: req.params.id } })
