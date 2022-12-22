@@ -530,6 +530,10 @@ export default {
         axiosInstance
           .post(`/community/${this.communityId}/report`, this.state.community)
           .then(() => {
+
+            // close update user modal
+            this.$refs.reportCommunity.closeModal();
+            
             // notification de succès
             this.$notify({
               type: "success",

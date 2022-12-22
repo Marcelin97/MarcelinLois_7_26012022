@@ -716,12 +716,14 @@ export default {
     async onAddComment({ content }) {
       try {
         const response = await commentsApi.addComment(this.id, content);
+        const currentComment= this.post.comments;
         // console.log(response.post);
         // console.log(response.post.comments[response.post.comments.length - 1]);
-        this.comments.push(
+        currentComment.push(
           response.post.comments[response.post.comments.length - 1]
         );
         // console.log(this.comments);
+        this.state.content = ""
 
         this.$notify({
           type: "success",

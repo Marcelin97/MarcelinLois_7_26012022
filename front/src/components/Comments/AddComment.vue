@@ -87,6 +87,7 @@ export default {
   methods: {
     onSubmit() {
       this.$emit("add-comment", { content: this.state.content });
+      this.state.content = ""
     },
   },
 };

@@ -224,7 +224,7 @@ export default {
       this.state.post.image = document.querySelector("#image").files[0];
     },
     // CREATE POST
-    createPostClick() {
+    async createPostClick() {
       this.v$.$validate(); // Checks all inputs
 
       if (!this.v$.$error) {
@@ -250,6 +250,7 @@ export default {
 
             // Reset form
             this.v$.$reset();
+
 
             // Success notification
             this.$notify({

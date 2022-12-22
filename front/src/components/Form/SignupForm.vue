@@ -243,7 +243,7 @@ export default {
             this.$notify({
               type: "error",
               title: `Erreur lors de l'inscription`,
-              text: `Erreur reporté : ${this.apiErrors}`,
+              text: `Erreur reporté : ${this.state.apiErrors}`,
             });
           });
       } else {
